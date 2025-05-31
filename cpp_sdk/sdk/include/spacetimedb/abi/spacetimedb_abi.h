@@ -1,10 +1,11 @@
 #ifndef SPACETIMEDB_ABI_H
 #define SPACETIMEDB_ABI_H
 
-#include <cstdint> // For uint8_t, uint32_t, uint64_t, etc.
-#include <cstddef> // For size_t
+#include "common_defs.h" // For Status, LogLevel, BytesSink, BytesSource etc.
+#include <cstdint>       // For uint8_t, uint32_t, uint64_t, etc.
+#include <cstddef>       // For size_t
 
-// Type Definitions from bindings.h
+// Type Definitions from existing bindings.h (Buffer, BufferIter)
 typedef uint32_t Buffer;
 typedef uint32_t BufferIter;
 
@@ -144,6 +145,61 @@ uint16_t _iter_start_filtered(
     size_t filter_bsatn_len,
     BufferIter *out_iter_ptr // out-parameter
 );
+
+
+// --- BytesSink and BytesSource Operations ---
+// Based on common/bindings.c style, assuming "spacetime" module
+// These might need different import_name if already defined by host with other names.
+
+__attribute__((import_module("spacetime"), import_name("_bytes_sink_create")))
+BytesSink _bytes_sink_create();
+
+__attribute__((import_module("spacetime"), import_name("_bytes_sink_done")))
+void _bytes_sink_done(BytesSink sink_handle);
+
+__attribute__((import_module("spacetime"), import_name("_bytes_sink_write")))
+Status _bytes_sink_write(BytesSink sink_handle, const uint8_t* data_ptr, uint32_t data_len);
+
+__attribute__((import_module("spacetime"), import_name("_bytes_sink_get_written_count")))
+uint32_t _bytes_sink_get_written_count(BytesSink sink_handle);
+
+
+__attribute__((import_module("spacetime"), import_name("_bytes_source_create_from_bytes")))
+BytesSource _bytes_source_create_from_bytes(const uint8_t* data_ptr, uint32_t data_len);
+
+__attribute__((import_module("spacetime"), import_name("_bytes_source_create_from_sink_bytes")))
+BytesSource _bytes_source_create_from_sink_bytes(BytesSink sink_handle);
+
+__attribute__((import_module("spacetime"), import_name("_bytes_source_done")))
+void _bytes_source_done(BytesSource source_handle);
+
+// Returns actual number of bytes read into buffer_ptr
+__attribute__((import_module("spacetime"), import_name("_bytes_source_read")))
+uint32_t _bytes_source_read(BytesSource source_handle, uint8_t* buffer_ptr, uint32_t buffer_len);
+
+__attribute__((import_module("spacetime"), import_name("_bytes_source_get_remaining_count")))
+uint32_t _bytes_source_get_remaining_count(BytesSource source_handle);
+
+
+// Update existing log function to use LogLevel from common_defs.h
+// The existing _console_log has a different signature.
+// We need one that matches: IMPORT void log_message(LogLevel level, String message_str);
+// This means the host must provide `_log_message_abi` or similar.
+__attribute__((import_module("spacetime"), import_name("_log_message_abi")))
+void _log_message_abi(LogLevel level, const uint8_t* message_ptr, uint32_t message_len);
+
+// Update table functions to use Status from common_defs.h
+// And to match simplified signatures from previous steps, if different from current _insert etc.
+// Current _insert takes uint32_t table_id. My previous plan used name.
+// I will keep the existing ABI for _insert, _delete_by_col_eq, etc. and adapt C++ wrappers.
+// The generic table_insert/delete_by_pk wrappers will need to resolve names to table_id first.
+// This might require a new host call: _get_table_id_by_name -> uint32_t table_id, Status status
+
+// Example for a name-based insert if host provides it (matching my earlier wrappers):
+// __attribute__((import_module("spacetime"), import_name("_table_insert_by_name")))
+// Status _table_insert_by_name(const uint8_t* table_name_ptr, uint32_t table_name_len,
+//                              const uint8_t* row_data_ptr, uint32_t row_data_len);
+
 
 } // extern "C"
 
