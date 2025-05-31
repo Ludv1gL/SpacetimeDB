@@ -1,27 +1,34 @@
-#include "bsatn_reader.h"
+#include "spacetimedb/bsatn/reader.h" // Updated include path
 #include <cstring>   // For std::memcpy
 #include <stdexcept> // For std::runtime_error, std::out_of_range
 #include <limits>    // For std::numeric_limits
+#include <algorithm> // For std::min (used in read_le_bytes via ensure_bytes)
 
 // Helper for endian conversion if system is big-endian.
 // For simplicity, this implementation assumes little-endian system.
 namespace {
 template<typename T>
-T read_le_bytes(const std::byte*& current_ptr, const std::byte* end_ptr) {
-    if (static_cast<size_t>(end_ptr - current_ptr) < sizeof(T)) {
-        throw std::out_of_range("BSATN Reader: Not enough bytes to read type.");
-    }
+T read_le_bytes(const std::byte*& current_ptr, const std::byte* end_ptr, size_t T_size) {
+    // This helper is now slightly different as ensure_bytes is called by public methods.
+    // We assume ensure_bytes(T_size) was called before this.
+    // if (static_cast<size_t>(end_ptr - current_ptr) < T_size) {
+    //     throw std::out_of_range("BSATN Reader: Not enough bytes to read type.");
+    // }
     T value;
     // On a little-endian system, this is a direct copy.
     // On a big-endian system, bytes of `value` would need to be reversed after copy.
-    std::memcpy(&value, current_ptr, sizeof(T));
-    current_ptr += sizeof(T);
+    std::memcpy(&value, current_ptr, T_size);
+    current_ptr += T_size;
     return value;
 }
 } // anonymous namespace
 
 
 namespace bsatn {
+
+// Static constants defined in header, no need to redefine here unless they were not static const.
+// const uint32_t Reader::max_string_length_sanity_check; (already static const in .h)
+// const uint32_t Reader::max_vector_elements_sanity_check;
 
 Reader::Reader(std::span<const std::byte> data_span)
     : current_ptr(data_span.data()), end_ptr(data_span.data() + data_span.size()) {}
@@ -46,7 +53,6 @@ bool Reader::read_bool() {
     uint8_t val = static_cast<uint8_t>(*current_ptr);
     current_ptr++;
     if (val > 1) { // Strict bool (0 or 1)
-        // Or, could just return val != 0; depending on strictness desired
         throw std::runtime_error("BSATN Reader: Invalid boolean value " + std::to_string(val));
     }
     return val == 1;
@@ -60,18 +66,22 @@ uint8_t Reader::read_u8() {
 }
 
 uint16_t Reader::read_u16_le() {
-    return read_le_bytes<uint16_t>(current_ptr, end_ptr);
+    ensure_bytes(sizeof(uint16_t));
+    return read_le_bytes<uint16_t>(current_ptr, end_ptr, sizeof(uint16_t));
 }
 
 uint32_t Reader::read_u32_le() {
-    return read_le_bytes<uint32_t>(current_ptr, end_ptr);
+    ensure_bytes(sizeof(uint32_t));
+    return read_le_bytes<uint32_t>(current_ptr, end_ptr, sizeof(uint32_t));
 }
 
 uint64_t Reader::read_u64_le() {
-    return read_le_bytes<uint64_t>(current_ptr, end_ptr);
+    ensure_bytes(sizeof(uint64_t));
+    return read_le_bytes<uint64_t>(current_ptr, end_ptr, sizeof(uint64_t));
 }
 
 SpacetimeDB::Types::uint128_t_placeholder Reader::read_u128_le() {
+    // ensure_bytes for both parts is handled by individual read_u64_le calls
     SpacetimeDB::Types::uint128_t_placeholder val;
     val.low = read_u64_le();  // Assuming little-endian: lower part first
     val.high = read_u64_le(); // Then higher part
@@ -86,15 +96,18 @@ int8_t Reader::read_i8() {
 }
 
 int16_t Reader::read_i16_le() {
-    return read_le_bytes<int16_t>(current_ptr, end_ptr);
+    ensure_bytes(sizeof(int16_t));
+    return read_le_bytes<int16_t>(current_ptr, end_ptr, sizeof(int16_t));
 }
 
 int32_t Reader::read_i32_le() {
-    return read_le_bytes<int32_t>(current_ptr, end_ptr);
+    ensure_bytes(sizeof(int32_t));
+    return read_le_bytes<int32_t>(current_ptr, end_ptr, sizeof(int32_t));
 }
 
 int64_t Reader::read_i64_le() {
-    return read_le_bytes<int64_t>(current_ptr, end_ptr);
+    ensure_bytes(sizeof(int64_t));
+    return read_le_bytes<int64_t>(current_ptr, end_ptr, sizeof(int64_t));
 }
 
 SpacetimeDB::Types::int128_t_placeholder Reader::read_i128_le() {
@@ -109,7 +122,7 @@ float Reader::read_f32_le() {
         uint32_t u;
         float f;
     } pun;
-    pun.u = read_u32_le();
+    pun.u = read_u32_le(); // This already calls ensure_bytes for uint32_t
     return pun.f;
 }
 
@@ -118,34 +131,34 @@ double Reader::read_f64_le() {
         uint64_t u;
         double d;
     } pun;
-    pun.u = read_u64_le();
+    pun.u = read_u64_le(); // This already calls ensure_bytes for uint64_t
     return pun.d;
 }
 
 std::string Reader::read_string() {
-    uint32_t len = read_u32_le();
-    if (len > max_string_length_sanity_check) {
+    uint32_t len = read_u32_le(); // This ensures bytes for length
+    if (len > max_string_length_sanity_check) { // max_string_length_sanity_check is static const in Reader class
         throw std::runtime_error(
             "BSATN Reader: String length " + std::to_string(len) +
             " exceeds sanity limit " + std::to_string(max_string_length_sanity_check));
     }
-    ensure_bytes(len);
+    ensure_bytes(len); // Ensure bytes for string content
     std::string str(reinterpret_cast<const char*>(current_ptr), len);
     current_ptr += len;
     return str;
 }
 
 std::vector<std::byte> Reader::read_bytes() {
-    uint32_t len = read_u32_le();
-     if (len > max_vector_elements_sanity_check * sizeof(std::byte)) { // A bit arbitrary, but check total bytes
+    uint32_t len = read_u32_le(); // This ensures bytes for length
+     if (len > max_vector_elements_sanity_check) { // A bit arbitrary, but check total bytes. max_vector_elements_sanity_check is static const.
         throw std::runtime_error(
             "BSATN Reader: Byte vector length " + std::to_string(len) +
-            " exceeds sanity limit.");
+            " exceeds sanity limit for elements (treat as bytes here).");
     }
-    ensure_bytes(len);
-    std::vector<std::byte> bytes(current_ptr, current_ptr + len);
+    ensure_bytes(len); // Ensure bytes for vector content
+    std::vector<std::byte> bytes_vec(current_ptr, current_ptr + len); // Renamed to avoid conflict
     current_ptr += len;
-    return bytes;
+    return bytes_vec;
 }
 
 std::vector<std::byte> Reader::read_vector_byte() {
@@ -161,5 +174,10 @@ size_t Reader::remaining_bytes() const {
     if (current_ptr >= end_ptr) return 0;
     return static_cast<size_t>(end_ptr - current_ptr);
 }
+
+// The generic bsatn::deserialize<T> template and its specializations
+// are expected to be in headers (e.g., bsatn_reader.h for the primary template,
+// generated type headers for user type specializations, and bsatn_lib.h or similar for primitives).
+// No implementation for it goes in reader.cpp itself, unless it's a non-template helper.
 
 } // namespace bsatn

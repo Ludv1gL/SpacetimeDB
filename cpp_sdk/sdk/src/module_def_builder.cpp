@@ -1,7 +1,11 @@
-#include "spacetime_module_def.h"
-#include "spacetime_schema.h" // For SpacetimeDb::ModuleSchema and its contained types
+#include "spacetimedb/internal/module_def.h"    // Updated path
+#include "spacetimedb/internal/module_schema.h" // Updated path, For SpacetimeDb::ModuleSchema etc.
+#include "spacetimedb/bsatn/writer.h"           // Explicit include for bsatn::Writer, though module_def.h includes it
+
 #include <stdexcept> // For std::runtime_error
-#include <algorithm> // For std::transform
+#include <algorithm> // For std::transform (not currently used, but can be useful)
+#include <vector>    // For std::vector
+#include <string>    // For std::string
 
 // Helper function to convert SpacetimeDb::CoreType to SpacetimeDB::Internal::InternalPrimitiveType
 SpacetimeDB::Internal::InternalPrimitiveType map_core_type_to_internal_primitive(SpacetimeDb::CoreType core_type) {
@@ -22,8 +26,6 @@ SpacetimeDB::Internal::InternalPrimitiveType map_core_type_to_internal_primitive
         case SpacetimeDb::CoreType::F64:  return InternalPT::F64;
         case SpacetimeDb::CoreType::String: return InternalPT::String;
         case SpacetimeDb::CoreType::Bytes:  return InternalPT::Bytes;
-        // SpacetimeDb::CoreType::UserDefined is not a primitive.
-        // SpacetimeDb::CoreType::Unit could be InternalPrimitiveType::Unit if that's added.
         default:
             throw std::runtime_error("Unsupported SpacetimeDb::CoreType for primitive mapping: " + std::to_string(static_cast<int>(core_type)));
     }
@@ -32,31 +34,13 @@ SpacetimeDB::Internal::InternalPrimitiveType map_core_type_to_internal_primitive
 // Helper function to convert SpacetimeDb::TypeIdentifier to SpacetimeDB::Internal::InternalType
 SpacetimeDB::Internal::InternalType map_type_identifier_to_internal_type(
     const SpacetimeDb::TypeIdentifier& type_id,
-    const SpacetimeDb::ModuleSchema& user_schema // Needed to check if a user_defined_name is an Option or Vector "alias"
+    const SpacetimeDb::ModuleSchema& user_schema
 ) {
+    (void)user_schema; // user_schema not strictly needed in this simplified version
     SpacetimeDB::Internal::InternalType internal_ty;
-
-    // This simplified mapping assumes that if type_id.user_defined_name is "Option" or "Vector",
-    // it's a direct reference to a conceptual Option or Vector, not a user-defined struct *named* "Option".
-    // The SpacetimeDB SATS schema parser resolves these to specific Type variants (Type::Option, Type::Vector).
-    // Our ModuleSchema from macros doesn't explicitly store this distinction yet for user_defined_name.
-    // For now, we'll assume user_defined_name is for actual custom structs/enums.
-    // Optionals are handled by FieldDefinition::is_optional. Vectors are not explicitly handled by TypeIdentifier alone.
-    // This part needs careful alignment with how the schema is meant to be structured.
-    // The InternalType struct *does* have Kind::Option and Kind::Vector.
-
-    // Let's refine: The schema definition from macros uses `is_optional` on FieldDefinition.
-    // And `SPACETIMEDB_TYPE_VECTOR` would be needed if we were to support vector fields directly in this manner.
-    // For now, let's assume TypeIdentifier mostly maps to Primitive or UserDefined.
-    // We will construct Option/Vector kinds if the context dictates (e.g. field.is_optional).
-
     if (type_id.core_type == SpacetimeDb::CoreType::UserDefined) {
-        // Check if this "user_defined_name" corresponds to a type that should be treated as Option or Vector
-        // This logic is a bit of a placeholder as the macro schema doesn't fully qualify options/vectors
-        // in TypeIdentifier itself, but rather uses `is_optional` or would need a specific VectorType.
-        // For now, assume user_defined_name directly maps to a type name.
         internal_ty.kind = SpacetimeDB::Internal::InternalType::Kind::UserDefined;
-        internal_ty.user_defined_name = type_id.user_defined_name; // This should be the SpacetimeDB name
+        internal_ty.user_defined_name = type_id.user_defined_name;
     } else {
         internal_ty.kind = SpacetimeDB::Internal::InternalType::Kind::Primitive;
         internal_ty.primitive_type = map_core_type_to_internal_primitive(type_id.core_type);
@@ -64,8 +48,6 @@ SpacetimeDB::Internal::InternalType map_type_identifier_to_internal_type(
     return internal_ty;
 }
 
-
-// Overloaded helper for fields which might be optional
 SpacetimeDB::Internal::InternalType map_field_type_to_internal_type(
     const SpacetimeDb::FieldDefinition& field_def,
     const SpacetimeDb::ModuleSchema& user_schema
@@ -77,6 +59,11 @@ SpacetimeDB::Internal::InternalType map_field_type_to_internal_type(
         option_type.element_type = std::make_unique<SpacetimeDB::Internal::InternalType>(std::move(element_type));
         return option_type;
     }
+    // TODO: Add mapping for Vector kind if FieldDefinition supports it explicitly
+    // For now, vectors are not directly representable by FieldDefinition's TypeIdentifier in a distinct way
+    // other than a user-defined type named "vector" which is not standard.
+    // The SATS schema would define vector<T> and option<T> explicitly.
+    // This mapping should ideally handle those if the macro schema also captures them.
     return element_type;
 }
 
@@ -84,13 +71,12 @@ SpacetimeDB::Internal::InternalType map_field_type_to_internal_type(
 SpacetimeDB::Internal::InternalModuleDef SpacetimeDB::Internal::build_internal_module_def(
     const SpacetimeDb::ModuleSchema& user_schema) {
     InternalModuleDef module_def_internal;
-    module_def_internal.name = "module"; // Default module name, can be configured if needed
+    module_def_internal.name = "module";
 
-    // Convert Types
     for (const auto& pair : user_schema.types) {
         const SpacetimeDb::TypeDefinition& user_type_def = pair.second;
         InternalTypeDef internal_type_def;
-        internal_type_def.name = user_type_def.spacetime_db_name; // Use SpacetimeDB name
+        internal_type_def.name = user_type_def.spacetime_db_name;
 
         if (std::holds_alternative<SpacetimeDb::StructDefinition>(user_type_def.definition)) {
             const SpacetimeDb::StructDefinition& struct_def_user = std::get<SpacetimeDb::StructDefinition>(user_type_def.definition);
@@ -115,19 +101,16 @@ SpacetimeDB::Internal::InternalModuleDef SpacetimeDB::Internal::build_internal_m
         module_def_internal.types.push_back(internal_type_def);
     }
 
-    // Convert Tables
     for (const auto& pair : user_schema.tables) {
         const SpacetimeDb::TableDefinition& table_def_user = pair.second;
         InternalTableDef table_def_internal;
         table_def_internal.name = table_def_user.spacetime_name;
 
-        // Find the SpacetimeDB name for the row type
         auto it_type = user_schema.types.find(table_def_user.cpp_row_type_name);
         if (it_type != user_schema.types.end()) {
             table_def_internal.row_type_name = it_type->second.spacetime_db_name;
         } else {
-            // This should not happen if schema is consistent
-            throw std::runtime_error("Row type '" + table_def_user.cpp_row_type_name + "' not found in schema for table '" + table_def_user.spacetime_name + "'.");
+            throw std::runtime_error("Row type '" + table_def_user.cpp_row_type_name + "' not found for table '" + table_def_user.spacetime_name + "'.");
         }
 
         if (!table_def_user.primary_key_field_name.empty()) {
@@ -136,7 +119,6 @@ SpacetimeDB::Internal::InternalModuleDef SpacetimeDB::Internal::build_internal_m
         module_def_internal.tables.push_back(table_def_internal);
     }
 
-    // Convert Reducers
     for (const auto& pair : user_schema.reducers) {
         const SpacetimeDb::ReducerDefinition& reducer_def_user = pair.second;
         InternalReducerDef reducer_def_internal;
@@ -145,23 +127,21 @@ SpacetimeDB::Internal::InternalModuleDef SpacetimeDB::Internal::build_internal_m
         for (const auto& param_user : reducer_def_user.parameters) {
             InternalReducerParameterDef param_internal;
             param_internal.name = param_user.name;
-            // For reducer parameters, `is_optional` is not directly on ReducerParameterDefinition.
-            // If a reducer parameter can be optional, its TypeIdentifier would need to reflect that,
-            // or the mapping logic here would need context if options are specified differently for reducers.
-            // Assuming ReducerParameterDefinition's type is already final (e.g. an `Option<T>` if applicable)
-            // The current map_type_identifier_to_internal_type is basic and doesn't create Option/Vector kinds.
-            // This needs to be more robust.
-            // Let's assume for now parameters are not optional unless their TypeIdentifier somehow encodes it.
-            // For now, use the direct mapping for parameters. If a parameter is optional, its SpacetimeDb::TypeIdentifier
-            // would need to be structured to represent an Option<T>, which the current macro setup doesn't fully do.
-            // This is a limitation of the current macro schema design's TypeIdentifier for params.
-            // A temporary fix: assume reducer params are not optional for this mapping.
-            // A better fix: enhance SpacetimeDb::ReducerParameterDefinition to include an is_optional flag or richer type info.
-            SpacetimeDb::FieldDefinition temp_field_for_mapping;
-            temp_field_for_mapping.name = param_user.name;
-            temp_field_for_mapping.type = param_user.type;
-            temp_field_for_mapping.is_optional = false; // Explicitly false for now for reducer params
-            param_internal.ty = map_field_type_to_internal_type(temp_field_for_mapping, user_schema);
+
+            // This mapping needs to be robust for optionals/vectors if reducer params can be such.
+            // Currently, map_field_type_to_internal_type expects a FieldDefinition.
+            // We simulate one here.
+            SpacetimeDb::FieldDefinition temp_field_for_param_mapping;
+            temp_field_for_param_mapping.name = param_user.name;
+            temp_field_for_param_mapping.type = param_user.type;
+            // TODO: How are optional parameters for reducers specified in ModuleSchema?
+            // Assuming ReducerParameterDefinition::type already correctly reflects if it's an Option<T>
+            // by having type.user_defined_name be "Option" and type.core_type be UserDefined,
+            // which map_type_identifier_to_internal_type doesn't currently expand to InternalType::Kind::Option.
+            // This is a gap if reducer params can be directly optional via this path.
+            // For now, assume parameters are not optional unless their TypeIdentifier is already complex.
+            temp_field_for_param_mapping.is_optional = false;
+            param_internal.ty = map_field_type_to_internal_type(temp_field_for_param_mapping, user_schema);
 
             reducer_def_internal.parameters.push_back(param_internal);
         }
@@ -171,10 +151,7 @@ SpacetimeDB::Internal::InternalModuleDef SpacetimeDB::Internal::build_internal_m
     return module_def_internal;
 }
 
-
 // BSATN Serialization Implementations
-// These need to match spacetimedb-schema/src/def.rs format
-
 void SpacetimeDB::Internal::serialize(bsatn::Writer& writer, const InternalPrimitiveType& value) {
     writer.write_u8(static_cast<uint8_t>(value));
 }
@@ -186,17 +163,13 @@ void SpacetimeDB::Internal::serialize(bsatn::Writer& writer, const InternalType&
             serialize(writer, type.primitive_type);
             break;
         case InternalType::Kind::UserDefined:
-            writer.write_string(type.user_defined_name); // Assuming ScopedTypeName is string
+            writer.write_string(type.user_defined_name);
             break;
         case InternalType::Kind::Option:
         case InternalType::Kind::Vector:
-            if (!type.element_type) throw std::runtime_error("Option/Vector element_type is null");
+            if (!type.element_type) throw std::runtime_error("Option/Vector element_type is null during serialization.");
             serialize(writer, *type.element_type);
             break;
-        // case InternalType::Kind::Map: // If maps are supported
-            // serialize(writer, *type.key_type);   // Assuming key_type field exists
-            // serialize(writer, *type.value_type); // Assuming value_type field exists
-            // break;
         default:
             throw std::runtime_error("Unknown InternalType::Kind for serialization");
     }
@@ -209,7 +182,6 @@ void SpacetimeDB::Internal::serialize(bsatn::Writer& writer, const InternalField
 
 void SpacetimeDB::Internal::serialize(bsatn::Writer& writer, const InternalEnumVariantDef& def) {
     writer.write_string(def.name);
-    // If variants had explicit discriminant values: writer.write_u32_le(def.value);
 }
 
 void SpacetimeDB::Internal::serialize(bsatn::Writer& writer, const InternalStructDef& def) {
@@ -227,7 +199,7 @@ void SpacetimeDB::Internal::serialize(bsatn::Writer& writer, const InternalEnumD
 }
 
 void SpacetimeDB::Internal::serialize(bsatn::Writer& writer, const InternalTypeDef& def) {
-    writer.write_string(def.name); // ScopedTypeName
+    writer.write_string(def.name);
     writer.write_u8(static_cast<uint8_t>(def.variant_kind));
     switch (def.variant_kind) {
         case InternalTypeDefVariantKind::Struct:
@@ -243,14 +215,13 @@ void SpacetimeDB::Internal::serialize(bsatn::Writer& writer, const InternalTypeD
 
 void SpacetimeDB::Internal::serialize(bsatn::Writer& writer, const InternalTableDef& def) {
     writer.write_string(def.name);
-    writer.write_string(def.row_type_name); // ScopedTypeName
+    writer.write_string(def.row_type_name);
 
     bool has_pk = def.primary_key_field_name.has_value();
     writer.write_u8(static_cast<uint8_t>(has_pk));
     if (has_pk) {
         writer.write_string(def.primary_key_field_name.value());
     }
-    // writer.write_u32_le(0); // Placeholder for secondary_indexes.len() if supported
 }
 
 void SpacetimeDB::Internal::serialize(bsatn::Writer& writer, const InternalReducerParameterDef& def) {
@@ -264,7 +235,6 @@ void SpacetimeDB::Internal::serialize(bsatn::Writer& writer, const InternalReduc
     for (const auto& param : def.parameters) {
         serialize(writer, param);
     }
-    // serialize(writer, def.return_type); // If return types are supported
 }
 
 void SpacetimeDB::Internal::serialize(bsatn::Writer& writer, const InternalModuleDef& def) {
@@ -284,24 +254,13 @@ void SpacetimeDB::Internal::serialize(bsatn::Writer& writer, const InternalModul
     for (const auto& reducer_def : def.reducers) {
         serialize(writer, reducer_def);
     }
-    // writer.write_bytes(def.checksum); // If checksum is part of schema
 }
 
-
-// Public accessor function implementation
 std::vector<std::byte> SpacetimeDB::Internal::get_serialized_module_definition_bytes() {
-    // 1. Get the ModuleSchema instance (populated by macros)
     const SpacetimeDb::ModuleSchema& user_schema = SpacetimeDb::ModuleSchema::instance();
-
-    // 2. Build InternalModuleDef from ModuleSchema
     InternalModuleDef internal_module_def = build_internal_module_def(user_schema);
-
-    // 3. Create a bsatn::Writer
-    bsatn::Writer writer; // Assuming default constructor exists and manages a std::vector<std::byte>
-
-    // 4. Serialize InternalModuleDef
+    bsatn::Writer writer;
     serialize(writer, internal_module_def);
-
-    // 5. Return the bytes
-    return writer.getBytes(); // Assuming getBytes() returns std::vector<std::byte> or similar
+    return writer.get_buffer(); // Use get_buffer() if take_buffer() is not what we want (e.g. if writer is reused)
+                                // Assuming getBytes() was a typo for get_buffer() or take_buffer() from bsatn::Writer
 }

@@ -1,24 +1,32 @@
-#ifndef SPACETIME_SCHEMA_H
-#define SPACETIME_SCHEMA_H
+#ifndef SPACETIMEDB_INTERNAL_MODULE_SCHEMA_H // Renamed header guard
+#define SPACETIMEDB_INTERNAL_MODULE_SCHEMA_H
+
+#include "spacetimedb/bsatn/reader.h" // For bsatn::Reader
 
 #include <string>
 #include <vector>
 #include <variant>
-#include <functional>
+#include <functional> // For std::function
 #include <map>
-#include <vector> // For std::vector<std::byte>
 #include <cstddef> // For std::byte
 
-// Forward declarations
+// Forward declarations within the namespace
+namespace bsatn { class Reader; } // Already included, but good practice if it were only forward needed by this header
+
 namespace SpacetimeDb {
+    // Forward declarations for types defined within this file, used in ModuleSchema
     struct TypeDefinition;
     struct TableDefinition;
     struct ReducerDefinition;
+    struct FieldDefinition;
+    struct EnumVariantDefinition;
+    struct ReducerParameterDefinition;
 
     // Enum to represent basic SpacetimeDB types and user-defined types
+    // This is used by the macros to describe types to the schema system.
     enum class CoreType {
-        Bool, U8, U16, U32, U64, U128, // U256 removed for simplicity, can be added later
-        I8, I16, I32, I64, I128, // I256 removed for simplicity
+        Bool, U8, U16, U32, U64, U128,
+        I8, I16, I32, I64, I128,
         F32, F64,
         String, Bytes,
         UserDefined // For structs and enums by name
@@ -45,34 +53,31 @@ namespace SpacetimeDb {
 
     struct EnumVariantDefinition {
         std::string name;
-        // Potentially a TypeIdentifier if enums can have associated data
     };
 
     struct StructDefinition {
-        std::string cpp_name; // C++ name of the struct
-        std::string spacetime_db_name; // SpacetimeDB name (can be different)
+        std::string cpp_name;
+        std::string spacetime_db_name;
         std::vector<FieldDefinition> fields;
     };
 
     struct EnumDefinition {
-        std::string cpp_name; // C++ name of the enum
-        std::string spacetime_db_name; // SpacetimeDB name
+        std::string cpp_name;
+        std::string spacetime_db_name;
         std::vector<EnumVariantDefinition> variants;
     };
 
     struct TypeDefinition {
         std::string name; // The C++ name of the type (used as key in ModuleSchema::types)
-        std::string spacetime_db_name; // The name as it should appear in SpacetimeDB schema
+        std::string spacetime_db_name;
         std::variant<StructDefinition, EnumDefinition> definition;
     };
 
     struct TableDefinition {
         std::string spacetime_name;
-        std::string cpp_row_type_name; // References a TypeDefinition (must be a struct)
-        std::string primary_key_field_name; // Empty if no PK
+        std::string cpp_row_type_name;
+        std::string primary_key_field_name;
     };
-
-    using ReducerFunctionWrapper = std::function<void(const std::vector<std::byte>& /* packed_args */)>;
 
     struct ReducerParameterDefinition {
         std::string name;
@@ -81,16 +86,16 @@ namespace SpacetimeDb {
 
     struct ReducerDefinition {
         std::string spacetime_name;
-        std::string cpp_function_name; // For informational purposes
+        std::string cpp_function_name;
         std::vector<ReducerParameterDefinition> parameters;
-        std::function<void(bsatn::Reader&)> invoker; // Type-erased invoker
+        std::function<void(bsatn::Reader&)> invoker;
     };
 
     class ModuleSchema {
     public:
-        std::map<std::string, TypeDefinition> types; // Keyed by C++ type name
-        std::map<std::string, TableDefinition> tables; // Keyed by C++ row type name for now for easy PK association
-        std::map<std::string, ReducerDefinition> reducers; // Keyed by SpacetimeDB reducer name
+        std::map<std::string, TypeDefinition> types;
+        std::map<std::string, TableDefinition> tables;
+        std::map<std::string, ReducerDefinition> reducers;
 
         void register_struct_type(const std::string& cpp_name, const std::string& spacetimedb_name, const std::vector<FieldDefinition>& fields) {
             StructDefinition def_struct;
@@ -113,7 +118,7 @@ namespace SpacetimeDb {
 
             TypeDefinition type_def;
             type_def.name = cpp_name;
-            type_def.spacetime_db_name = spacetimedb_name; // Assume same for now, or add another param
+            type_def.spacetime_db_name = spacetimedb_name;
             type_def.definition = def_enum;
             types[cpp_name] = type_def;
         }
@@ -122,14 +127,6 @@ namespace SpacetimeDb {
             TableDefinition def;
             def.cpp_row_type_name = cpp_row_type;
             def.spacetime_name = spacetime_db_table_name;
-            // Use cpp_row_type_name as key for now, assuming one table def per C++ type.
-            // If multiple tables per C++ type are needed with different SpacetimeDB names,
-            // the key for `tables` map might need to be `spacetime_db_table_name` or a composite.
-            // For now, let's stick to the design doc's implication that CppRowType is the key and PK is added later.
-            // The design doc states: `std::vector<TableDefinition> tables;` which implies multiple tables are possible.
-            // Let's change `tables` to be a vector as per the design doc.
-            // We'll need a way to find a table to set its PK.
-            // Let's make `tables` a map keyed by `spacetime_name` as that's more unique for lookup.
             tables[spacetime_db_table_name] = def;
         }
 
@@ -138,12 +135,10 @@ namespace SpacetimeDb {
             if (it != tables.end()) {
                 it->second.primary_key_field_name = pk_field_name;
             } else {
-                // Handle error: table not found
-                // For now, just ignore or throw an exception in a real scenario
+                // Consider logging an error or throwing if table not found
             }
         }
 
-        // Updated register_reducer to accept an invoker
         void register_reducer(const std::string& spacetimedb_name,
                               const std::string& cpp_func_name,
                               const std::vector<ReducerParameterDefinition>& params,
@@ -157,7 +152,7 @@ namespace SpacetimeDb {
         }
 
         static ModuleSchema& instance() {
-            static ModuleSchema schema;
+            static ModuleSchema schema; // Singleton instance
             return schema;
         }
     private:
@@ -167,4 +162,4 @@ namespace SpacetimeDb {
     };
 } // namespace SpacetimeDb
 
-#endif // SPACETIME_SCHEMA_H
+#endif // SPACETIMEDB_INTERNAL_MODULE_SCHEMA_H

@@ -2,10 +2,10 @@
 #include "test_types.h"       // For SpacetimeDB::Test types
 #include "spacetimedb/sdk/logging.h"           // For SpacetimeDB::log_info etc.
 #include "spacetimedb/sdk/database.h"          // For SpacetimeDB::sdk::table_insert etc.
-#include "spacetimedb/spacetime_module_def.h"  // For SpacetimeDB::Internal::get_serialized_module_definition_bytes()
+#include "spacetimedb/internal/module_def.h"   // Updated path for SpacetimeDB::Internal::get_serialized_module_definition_bytes()
 // spacetime_module_exports.h (for __describe_module__ etc.) is implicitly included via test_common.h
-#include "spacetimedb/bsatn/bsatn_writer.h"    // For bsatn::Writer
-#include "spacetimedb/bsatn/bsatn_reader.h"    // For bsatn::Reader
+#include "spacetimedb/bsatn/writer.h"          // For bsatn::Writer (updated to new path style)
+#include "spacetimedb/bsatn/reader.h"          // For bsatn::Reader (updated to new path style)
 #include "spacetimedb/abi/abi_utils.h"         // For SpacetimeDB::Abi::Utils e.g. ManagedBytesSink
 
 #include <iostream>
