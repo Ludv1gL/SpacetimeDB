@@ -1,1 +1,67 @@
-emcc: error: sdk_test.cpp: No such file or directory ("sdk_test.cpp" was expected to be an input file, based on the commandline arguments provided)
+In file included from sdk_test.cpp:1:
+In file included from .\sdk_test.h:4:
+In file included from ../../../sdk/include\spacetimedb/macros.h:4:
+In file included from ../../../sdk/include\spacetimedb/internal/module_schema.h:4:
+../../../sdk/include\spacetimedb/bsatn/reader.h:53:40: error: invalid use of 'this' outside of a non-static member function
+   53 |                 return deserialize<T>(*this); // Use the generic deserialize
+      |                                        ^
+../../../sdk/include\spacetimedb/bsatn/reader.h:62:25: error: use of undeclared identifier 'max_vector_elements_sanity_check'
+   62 |             if (count > max_vector_elements_sanity_check) {
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../sdk/include\spacetimedb/bsatn/reader.h:63:134: error: use of undeclared identifier 'max_vector_elements_sanity_check'
+   63 |                 throw std::runtime_error("Vector element count " + std::to_string(count) + " exceeds sanity limit " + std::to_string(max_vector_elements_sanity_check));
+      |                                                                                                                                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../sdk/include\spacetimedb/bsatn/reader.h:67:47: error: invalid use of 'this' outside of a non-static member function
+   67 |                 vec.push_back(deserialize<T>(*this)); // Use the generic deserialize
+      |                                               ^
+../../../sdk/include\spacetimedb/bsatn/reader.h:77:36: error: invalid use of 'this' outside of a non-static member function
+   77 |             return deserialize<T>(*this);
+      |                                    ^
+../../../sdk/include\spacetimedb/bsatn/reader.h:80:23: error: non-member function cannot have 'const' qualifier
+   80 |         bool is_eos() const;
+      |                       ^~~~~
+../../../sdk/include\spacetimedb/bsatn/reader.h:81:34: error: non-member function cannot have 'const' qualifier
+   81 |         size_t remaining_bytes() const;
+      |                                  ^~~~~
+../../../sdk/include\spacetimedb/bsatn/reader.h:84:5: error: expected unqualified-id
+   84 |     private:
+      |     ^
+../../../sdk/include\spacetimedb/bsatn/reader.h:96:19: error: unknown type name 'Reader'
+   96 |     T deserialize(Reader& r) {
+      |                   ^
+../../../sdk/include\spacetimedb/bsatn/reader.h:116:52: error: unknown type name 'Reader'
+  116 |     template<typename T> T deserialize_specialized(Reader& r);
+      |                                                    ^
+../../../sdk/include\spacetimedb/bsatn/reader.h:118:1: error: extraneous closing brace ('}')
+  118 | } // namespace bsatn
+      | ^
+In file included from sdk_test.cpp:1:
+In file included from .\sdk_test.h:4:
+../../../sdk/include\spacetimedb/macros.h:279:16: error: unknown type name 'Register'
+  279 |         static Register##SanitizedCppTypeName register_##SanitizedCppTypeName##_instance; \
+      |                ^
+../../../sdk/include\spacetimedb/macros.h:279:24: error: expected unqualified-id
+  279 |         static Register##SanitizedCppTypeName register_##SanitizedCppTypeName##_instance; \
+      |                        ^
+../../../sdk/include\spacetimedb/macros.h:280:5: error: extraneous closing brace ('}')
+  280 |     }} \
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:280:6: error: extraneous closing brace ('}')
+  280 |     }} \
+      |      ^
+../../../sdk/include\spacetimedb/macros.h:283:9: error: unknown type name 'CppTypeName'
+  283 |         CppTypeName deserialize_##SanitizedCppTypeName(::bsatn::Reader& reader); \
+      |         ^
+../../../sdk/include\spacetimedb/macros.h:283:33: error: expected ';' after top level declarator
+  283 |         CppTypeName deserialize_##SanitizedCppTypeName(::bsatn::Reader& reader); \
+      |                                 ^
+      |                                 ;
+../../../sdk/include\spacetimedb/macros.h:285:62: error: unknown type name 'CppTypeName'
+  285 |         inline void serialize(::bsatn::Writer& writer, const CppTypeName& value) { \
+      |                                                              ^
+../../../sdk/include\spacetimedb/macros.h:286:26: error: use of undeclared identifier 'SPACETIMEDB_XX_SERIALIZE_FIELD'
+  286 |             FIELDS_MACRO(SPACETIMEDB_XX_SERIALIZE_FIELD, writer, value); \
+      |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+fatal error: too many errors emitted, stopping now [-ferror-limit=]
+20 errors generated.
+emcc: error: ''C:/Users/ludvi/emsdk/upstream/bin\clang.exe' -target wasm32-unknown-emscripten -fignore-exceptions -mllvm -combiner-global-alias-analysis=false -mllvm -enable-emscripten-sjlj -mllvm -disable-lsr '--sysroot=C:\Users\ludvi\emsdk\upstream\emscripten\cache\sysroot' -DEMSCRIPTEN -Xclang '-iwithsysroot/include\fakesdl' -Xclang '-iwithsysroot/include\compat' -std=c++20 -I../../../sdk/include -c sdk_test.cpp -o 'C:\Users\ludvi\AppData\Local\Temp\emscripten_temp_4a3w7xl_\sdk_test_0.o'' failed (returned 1)

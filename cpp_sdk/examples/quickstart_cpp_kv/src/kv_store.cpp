@@ -19,21 +19,25 @@
 namespace spacetimedb_quickstart {
 
 // KeyValue BSATN implementation
-void KeyValue::bsatn_serialize(spacetimedb::sdk::bsatn::bsatn_writer& writer) const {
-    writer.write_string(key_str);   // First field, assumed PK (index 0)
-    writer.write_string(value_str); // Second field
-}
+// void KeyValue::bsatn_serialize(spacetimedb::sdk::bsatn::bsatn_writer& writer) const {
+//     writer.write_string(key_str);   // First field, assumed PK (index 0)
+//     writer.write_string(value_str); // Second field
+// }
 
-void KeyValue::bsatn_deserialize(spacetimedb::sdk::bsatn::bsatn_reader& reader) {
-    key_str = reader.read_string();
-    value_str = reader.read_string();
-}
+// void KeyValue::bsatn_deserialize(spacetimedb::sdk::bsatn::bsatn_reader& reader) {
+//     key_str = reader.read_string();
+//     value_str = reader.read_string();
+// }
 
 // Register the KeyValue table with the SDK's global registry.
 // "key_str" is declared as the primary key field.
 // The SDK's table registration currently assumes if a PK field name is provided,
 // its column index is 0 (i.e., it's the first field serialized).
-SPACETIMEDB_REGISTER_TABLE(spacetimedb_quickstart::KeyValue, "kv_pairs", "key_str");
+// SPACETIMEDB_REGISTER_TABLE(spacetimedb_quickstart::KeyValue, "kv_pairs", "key_str"); // Removed as per plan
+
+SPACETIMEDB_TABLE(spacetimedb_quickstart::KeyValue, "kv_pairs", true /* is_public */);
+SPACETIMEDB_PRIMARY_KEY("kv_pairs", "id"); // Changed PK to "id"
+SPACETIMEDB_INDEX("kv_pairs", "idx_key_str", { "key_str" });
 
 // Helper for logging from reducers via the raw ABI
 static void log_message_abi(uint8_t level, const std::string& context_info, const std::string& message) {
@@ -56,24 +60,21 @@ void kv_put(spacetimedb::sdk::ReducerContext& ctx, const std::string& key, const
     try {
         auto kv_table = ctx.db().get_table<KeyValue>("kv_pairs");
 
-        // To simulate an "upsert", we first delete any existing entry with the same key, then insert.
-        // This assumes `key_str` is the primary key and at column index 0.
-        // The TableMetadata registry sets pk_column_index to 0 if "key_str" is the PK.
-        uint32_t pk_col_idx = spacetimedb::sdk::get_pk_column_index<KeyValue>();
-        if (pk_col_idx != 0) {
-             // This case should ideally not be reached if PK registration is correct and PK is first field.
-             log_message_abi(LOG_LEVEL_WARN, reducer_name, "Warning: PK column index for KeyValue is not 0 as expected. Actual: " + std::to_string(pk_col_idx));
-             // Potentially throw or use a default if this is critical, for now proceed with found/defaulted index.
+        // Upsert logic based on key_str (column index 1)
+        // Primary key 'id' (column index 0) is auto-incrementing.
+        uint32_t key_str_col_idx = 1;
+        uint32_t id_pk_col_idx = 0;
+
+        std::vector<KeyValue> existing_rows = kv_table.find_by_col_eq(key_str_col_idx, key);
+        if (!existing_rows.empty()) {
+            // key_str is unique, so there should be at most one row.
+            kv_table.delete_by_col_eq(id_pk_col_idx, existing_rows[0].id);
         }
 
-        kv_table.delete_by_col_eq(pk_col_idx, key); // Delete if exists (idempotent)
+        KeyValue row_to_insert(key, value); // id is 0 initially
+        kv_table.insert(row_to_insert); // id will be auto-generated and updated in row_to_insert
 
-        KeyValue row_to_insert(key, value);
-        kv_table.insert(row_to_insert);
-        // Note: `insert` is in-out for `row_to_insert` but for KeyValue, PK is `key_str`, which we provide.
-        // If PK was auto-generated, `row_to_insert` would be updated here.
-
-        std::string log_msg = "Successfully put K-V: (" + key + ": " + value + ")";
+        std::string log_msg = "Successfully put K-V: (id: " + std::to_string(row_to_insert.id) + ", key: " + key + ", value: " + value + ")";
         log_message_abi(LOG_LEVEL_INFO, reducer_name, log_msg);
 
     } catch (const std::runtime_error& e) {
@@ -88,17 +89,17 @@ void kv_get(spacetimedb::sdk::ReducerContext& ctx, const std::string& key) {
     std::string reducer_name = "kv_get";
     try {
         auto kv_table = ctx.db().get_table<KeyValue>("kv_pairs");
-        uint32_t pk_col_idx = spacetimedb::sdk::get_pk_column_index<KeyValue>();
+        uint32_t key_str_col_idx = 1; // Find by key_str (column index 1)
 
-        std::vector<KeyValue> rows = kv_table.find_by_col_eq(pk_col_idx, key);
+        std::vector<KeyValue> rows = kv_table.find_by_col_eq(key_str_col_idx, key);
 
         if (!rows.empty()) {
-            // Since key_str is PK, there should be at most one row.
+            // key_str is unique, so there should be at most one row.
             const auto& row = rows[0];
-            std::string log_msg = "Found Key: " + row.key_str + ", Value: " + row.value_str;
+            std::string log_msg = "Found by key_str '" + key + "': (id: " + std::to_string(row.id) + ", key: " + row.key_str + ", value: " + row.value_str + ")";
             log_message_abi(LOG_LEVEL_INFO, reducer_name, log_msg);
         } else {
-            std::string log_msg = "Key not found: " + key;
+            std::string log_msg = "No entry found for key_str: " + key;
             log_message_abi(LOG_LEVEL_INFO, reducer_name, log_msg);
         }
     } catch (const std::runtime_error& e) {
@@ -112,15 +113,15 @@ void kv_del(spacetimedb::sdk::ReducerContext& ctx, const std::string& key) {
     std::string reducer_name = "kv_del";
     try {
         auto kv_table = ctx.db().get_table<KeyValue>("kv_pairs");
-        uint32_t pk_col_idx = spacetimedb::sdk::get_pk_column_index<KeyValue>();
+        uint32_t key_str_col_idx = 1; // Delete by key_str (column index 1)
 
-        uint32_t deleted_count = kv_table.delete_by_col_eq(pk_col_idx, key);
+        uint32_t deleted_count = kv_table.delete_by_col_eq(key_str_col_idx, key);
 
         if (deleted_count > 0) {
-            std::string log_msg = "Successfully deleted " + std::to_string(deleted_count) + " item(s) for key: " + key;
+            std::string log_msg = "Successfully deleted " + std::to_string(deleted_count) + " item(s) for key_str: " + key;
             log_message_abi(LOG_LEVEL_INFO, reducer_name, log_msg);
         } else {
-            std::string log_msg = "No items found to delete for key: " + key;
+            std::string log_msg = "No items found to delete for key_str: " + key;
             log_message_abi(LOG_LEVEL_INFO, reducer_name, log_msg);
         }
     } catch (const std::runtime_error& e) {
@@ -136,5 +137,22 @@ void kv_del(spacetimedb::sdk::ReducerContext& ctx, const std::string& key) {
 SPACETIMEDB_REDUCER(spacetimedb_quickstart::kv_put, const std::string&, const std::string&);
 SPACETIMEDB_REDUCER(spacetimedb_quickstart::kv_get, const std::string&);
 SPACETIMEDB_REDUCER(spacetimedb_quickstart::kv_del, const std::string&);
+
+// Schema registrations for reducers
+SPACETIMEDB_REDUCER("kv_put", spacetimedb_quickstart::kv_put,
+    { SPACETIMEDB_REDUCER_PARAM("key", SpacetimeDb::CoreType::String),
+      SPACETIMEDB_REDUCER_PARAM("value", SpacetimeDb::CoreType::String) },
+    std::string, std::string
+);
+
+SPACETIMEDB_REDUCER("kv_get", spacetimedb_quickstart::kv_get,
+    { SPACETIMEDB_REDUCER_PARAM("key", SpacetimeDb::CoreType::String) },
+    std::string
+);
+
+SPACETIMEDB_REDUCER("kv_del", spacetimedb_quickstart::kv_del,
+    { SPACETIMEDB_REDUCER_PARAM("key", SpacetimeDb::CoreType::String) },
+    std::string
+);
 
 } // namespace spacetimedb_quickstart

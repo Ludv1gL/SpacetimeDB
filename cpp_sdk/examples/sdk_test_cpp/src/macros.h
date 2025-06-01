@@ -1,16 +1,16 @@
 #ifndef SPACETIMEDB_MACROS_H
 #define SPACETIMEDB_MACROS_H
 
-#include "spacetimedb/internal/module_schema.h"
-#include "spacetimedb/bsatn/reader.h"
-#include "spacetimedb/bsatn/writer.h"
+#include "module_schema.h"
+#include "reader.h"
+#include "writer.h"
 
 #include <string>
 #include <vector>
-#include <utility>
-#include <tuple>
-#include <functional>
-#include <type_traits> // For std::is_same_v
+#include <utility> // For std::make_pair for potential future use, not directly now
+#include <tuple>   // For std::tuple, std::apply (used in SPACETIMEDB_REDUCER)
+#include <functional> // For std::function (used in ReducerDefinition)
+
 
 // Helper macro to stringify its argument
 #define SPACETIMEDB_STRINGIFY_IMPL(x) #x
@@ -64,7 +64,6 @@ inline ::SpacetimeDb::FieldDefinition SPACETIMEDB_FIELD_INTERNAL(const char* nam
 #define SPACETIMEDB_ENUM_VARIANT(VariantNameStr) \
     ::SpacetimeDb::EnumVariantDefinition{VariantNameStr}
 
-
 #define SPACETIMEDB_TYPE_ENUM(CppTypeName, SanitizedCppTypeName, SpacetimeDbEnumNameStr, VariantsInitializerList) \
     namespace SpacetimeDb { namespace ModuleRegistration { \
         struct Register##SanitizedCppTypeName { \
@@ -72,7 +71,7 @@ inline ::SpacetimeDb::FieldDefinition SPACETIMEDB_FIELD_INTERNAL(const char* nam
                 ::SpacetimeDb::ModuleSchema::instance().register_enum_type( \
                     SPACETIMEDB_STRINGIFY(CppTypeName), \
                     SpacetimeDbEnumNameStr, \
-                    std::vector< ::SpacetimeDb::EnumVariantDefinition> VariantsInitializerList \
+                    VariantsInitializerList \
                 ); \
             } \
         }; \
@@ -189,6 +188,7 @@ inline ::SpacetimeDb::ReducerParameterDefinition SPACETIMEDB_REDUCER_PARAM_INTER
         static RegisterReducer_##CppFunctionName register_reducer_##CppFunctionName##_instance; \
     }}
 
+
 #ifndef SPACETIMEDB_EXPORT_REDUCER
 #define SPACETIMEDB_EXPORT_REDUCER(SpacetimedbNameStr, CppFunctionName, ...) \
     static_assert(true, "SPACETIMEDB_EXPORT_REDUCER placeholder");
@@ -227,6 +227,7 @@ inline ::SpacetimeDb::ReducerParameterDefinition SPACETIMEDB_REDUCER_PARAM_INTER
         static RegisterFilter_##FilterNameConstStr register_filter_##FilterNameConstStr##_instance; \
     }}
 
+
 #define SPACETIMEDB_XX_SERIALIZE_FIELD(WRITER, VALUE_OBJ, CPP_TYPE, FIELD_NAME, IS_OPTIONAL, IS_VECTOR) \
     if constexpr (IS_OPTIONAL) { \
         (WRITER).write_optional((VALUE_OBJ).FIELD_NAME); \
@@ -242,26 +243,7 @@ inline ::SpacetimeDb::ReducerParameterDefinition SPACETIMEDB_REDUCER_PARAM_INTER
     } else if constexpr (IS_VECTOR) { \
         (VALUE_OBJ).FIELD_NAME = (READER).read_vector<CPP_TYPE>(); \
     } else { \
-        if constexpr (std::is_same_v<CPP_TYPE, uint8_t>) { obj.FIELD_NAME = reader.read_u8(); } \
-        else if constexpr (std::is_same_v<CPP_TYPE, uint16_t>) { obj.FIELD_NAME = reader.read_u16_le(); } \
-        else if constexpr (std::is_same_v<CPP_TYPE, uint32_t>) { obj.FIELD_NAME = reader.read_u32_le(); } \
-        else if constexpr (std::is_same_v<CPP_TYPE, uint64_t>) { obj.FIELD_NAME = reader.read_u64_le(); } \
-        else if constexpr (std::is_same_v<CPP_TYPE, int8_t>) { obj.FIELD_NAME = reader.read_i8(); } \
-        else if constexpr (std::is_same_v<CPP_TYPE, int16_t>) { obj.FIELD_NAME = reader.read_i16_le(); } \
-        else if constexpr (std::is_same_v<CPP_TYPE, int32_t>) { obj.FIELD_NAME = reader.read_i32_le(); } \
-        else if constexpr (std::is_same_v<CPP_TYPE, int64_t>) { obj.FIELD_NAME = reader.read_i64_le(); } \
-        else if constexpr (std::is_same_v<CPP_TYPE, float>) { obj.FIELD_NAME = reader.read_f32_le(); } \
-        else if constexpr (std::is_same_v<CPP_TYPE, double>) { obj.FIELD_NAME = reader.read_f64_le(); } \
-        else if constexpr (std::is_same_v<CPP_TYPE, bool>) { obj.FIELD_NAME = reader.read_bool(); } \
-        else if constexpr (std::is_same_v<CPP_TYPE, std::string>) { obj.FIELD_NAME = reader.read_string(); } \
-        /* For SpacetimeDB specific SDK types that have bsatn_deserialize methods */ \
-        else if constexpr (std::is_same_v<CPP_TYPE, ::spacetimedb::sdk::Identity>) { obj.FIELD_NAME.bsatn_deserialize(reader); } \
-        else if constexpr (std::is_same_v<CPP_TYPE, ::spacetimedb::sdk::Timestamp>) { obj.FIELD_NAME.bsatn_deserialize(reader); } \
-        /* Add other spacetimedb::sdk types here if they have direct bsatn_deserialize methods */ \
-        /* Fallback for enums or other custom structs that have global deserialize specializations */ \
-        else { \
-            obj.FIELD_NAME = ::bsatn::deserialize<CPP_TYPE>(reader); \
-        } \
+        (VALUE_OBJ).FIELD_NAME = ::bsatn::deserialize<CPP_TYPE>((READER)); \
     }
 
 #define SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(CppTypeName, SanitizedCppTypeName, SpacetimeDbNameStr, FIELDS_MACRO, RegFieldsInitializerList) \
@@ -275,7 +257,6 @@ inline ::SpacetimeDb::ReducerParameterDefinition SPACETIMEDB_REDUCER_PARAM_INTER
                 ); \
             } \
         }; \
-
         static Register##SanitizedCppTypeName register_##SanitizedCppTypeName##_instance; \
     }} \
     namespace bsatn { /* Functions in global bsatn namespace */ \
@@ -300,4 +281,3 @@ inline ::SpacetimeDb::ReducerParameterDefinition SPACETIMEDB_REDUCER_PARAM_INTER
     }
 
 #endif // SPACETIME_MACROS_H
-
