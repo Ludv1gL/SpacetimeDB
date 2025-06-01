@@ -258,22 +258,7 @@ namespace sdk_test_cpp {
         TagTimestamp, TagBytes, TagInts, TagStrings, TagSimpleEnums
     };
 
-    // Manual BSATN for EnumWithPayloadTag
-    inline void serialize(::SpacetimeDb::bsatn::Writer& writer, const EnumWithPayloadTag& value) {
-        writer.write_u8(static_cast<uint8_t>(value));
-    }
-    inline EnumWithPayloadTag deserialize_EnumWithPayloadTag(::SpacetimeDb::bsatn::Reader& reader) {
-        return static_cast<EnumWithPayloadTag>(reader.read_u8());
-    }
 } // namespace sdk_test_cpp
-
-// Specialization for bsatn::deserialize must be in bsatn namespace
-namespace SpacetimeDb::bsatn {
-    template<>
-    inline ::sdk_test_cpp::EnumWithPayloadTag deserialize<::sdk_test_cpp::EnumWithPayloadTag>(::SpacetimeDb::bsatn::Reader& reader) {
-        return ::sdk_test_cpp::deserialize_EnumWithPayloadTag(reader);
-    }
-} // namespace SpacetimeDb::bsatn
 
 namespace sdk_test_cpp {
     struct EnumWithPayload {

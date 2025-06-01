@@ -1,108 +1,69 @@
-#include <spacetimedb/sdk/spacetimedb_sdk_types.h>
-#include <spacetimedb/bsatn/bsatn.h> // For bsatn_writer, bsatn_reader
-#include <iomanip>  // For std::setw, std::setfill with to_hex_string
-#include <sstream>  // For std::ostringstream with to_hex_string
-#include <algorithm> // for std::copy
-#include <stdexcept> // For std::runtime_error
+#include "spacetimedb/sdk/spacetimedb_sdk_types.h"
+#include "spacetimedb/bsatn/reader.h"
+#include "spacetimedb/bsatn/writer.h"
+#include <array>
+#include <stdexcept>
+#include <string> 
+#include <iomanip> 
+#include <sstream> 
+#include <chrono> 
 
-namespace spacetimedb {
-namespace sdk {
+namespace SpacetimeDb {
+    namespace sdk {
 
-// Identity Implementation
-Identity::Identity() {
-    value.fill(0);
-}
+        // Identity methods (assuming they are defined elsewhere or will be added, as they were not inline)
+        // Identity::Identity() { value.fill(0); }
+        // Identity::Identity(const std::array<uint8_t, IDENTITY_SIZE>& bytes) : value(bytes) {}
+        // const std::array<uint8_t, IDENTITY_SIZE>& Identity::get_bytes() const { return value; }
+        // std::string Identity::to_hex_string() const { /* ... */ }
+        // bool Identity::operator==(const Identity& other) const { return value == other.value; }
+        // bool Identity::operator!=(const Identity& other) const { return !(*this == other); }
+        // bool Identity::operator<(const Identity& other) const { return value < other.value; }
+        // void Identity::bsatn_serialize(SpacetimeDb::bsatn::Writer& writer) const { writer.write_bytes(value.data(), IDENTITY_SIZE); }
+        // void Identity::bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader) { reader.read_bytes(value.data(), IDENTITY_SIZE); }
 
-Identity::Identity(const std::array<uint8_t, IDENTITY_SIZE>& bytes) : value(bytes) {}
+        // Timestamp methods (assuming they are defined elsewhere or will be added, as they were not inline)
+        // Timestamp::Timestamp() : ms_since_epoch(0) {}
+        // Timestamp::Timestamp(uint64_t milliseconds_since_epoch) : ms_since_epoch(milliseconds_since_epoch) {}
+        // uint64_t Timestamp::as_milliseconds() const { return ms_since_epoch; }
+        // Timestamp Timestamp::current() { /* ... */ }
+        // bool Timestamp::operator==(const Timestamp& other) const { return ms_since_epoch == other.ms_since_epoch; }
+        // bool Timestamp::operator!=(const Timestamp& other) const { return !(*this == other); }
+        // bool Timestamp::operator<(const Timestamp& other) const { return ms_since_epoch < other.ms_since_epoch; }
+        // bool Timestamp::operator<=(const Timestamp& other) const { return ms_since_epoch <= other.ms_since_epoch; }
+        // bool Timestamp::operator>(const Timestamp& other) const { return ms_since_epoch > other.ms_since_epoch; }
+        // bool Timestamp::operator>=(const Timestamp& other) const { return ms_since_epoch >= other.ms_since_epoch; }
+        // void Timestamp::bsatn_serialize(SpacetimeDb::bsatn::Writer& writer) const { writer.write_u64_le(ms_since_epoch); }
+        // void Timestamp::bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader) { ms_since_epoch = reader.read_u64_le(); }
 
-const std::array<uint8_t, IDENTITY_SIZE>& Identity::get_bytes() const {
-    return value;
-}
+        void ScheduleAt::bsatn_serialize(SpacetimeDb::bsatn::Writer& writer) const {
+            writer.write_u64_le(timestamp_micros);
+        }
+        void ScheduleAt::bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader) {
+            timestamp_micros = reader.read_u64_le();
+        }
 
-std::string Identity::to_hex_string() const {
-    std::ostringstream oss;
-    oss << std::hex << std::setfill('0');
-    for (uint8_t byte : value) {
-        oss << std::setw(2) << static_cast<int>(byte);
-    }
-    return oss.str();
-}
+        void ConnectionId::bsatn_serialize(SpacetimeDb::bsatn::Writer& writer) const {
+            writer.write_u64_le(id);
+        }
+        void ConnectionId::bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader) {
+            id = reader.read_u64_le();
+        }
 
-bool Identity::operator==(const Identity& other) const {
-    return value == other.value;
-}
+        void TimeDuration::bsatn_serialize(SpacetimeDb::bsatn::Writer& writer) const {
+            writer.write_i64_le(nanoseconds);
+        }
+        void TimeDuration::bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader) {
+            nanoseconds = reader.read_i64_le();
+        }
 
-bool Identity::operator!=(const Identity& other) const {
-    return value != other.value;
-}
+        // Definitions for u256_placeholder and i256_placeholder bsatn methods
+        // These need the full Reader/Writer definitions.
+        void u256_placeholder::bsatn_serialize(SpacetimeDb::bsatn::Writer& writer) const { writer.write_u256_le(*this); }
+        void u256_placeholder::bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader) { *this = reader.read_u256_le(); }
 
-bool Identity::operator<(const Identity& other) const {
-    // Lexicographical comparison for std::map ordering
-    return std::lexicographical_compare(value.begin(), value.end(),
-                                        other.value.begin(), other.value.end());
-}
+        void i256_placeholder::bsatn_serialize(SpacetimeDb::bsatn::Writer& writer) const { writer.write_i256_le(*this); }
+        void i256_placeholder::bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader) { *this = reader.read_i256_le(); }
 
-void Identity::bsatn_serialize(bsatn::bsatn_writer& writer) const {
-    // Serialize as a length-prefixed byte array
-    std::vector<uint8_t> bytes_vec(value.begin(), value.end());
-    writer.write_bytes(bytes_vec);
-}
-
-void Identity::bsatn_deserialize(bsatn::bsatn_reader& reader) {
-    std::vector<uint8_t> bytes_vec = reader.read_bytes();
-    if (bytes_vec.size() != IDENTITY_SIZE) {
-        throw std::runtime_error("BSATN deserialization error: Identity size mismatch. Expected " +
-                                 std::to_string(IDENTITY_SIZE) + ", got " + std::to_string(bytes_vec.size()));
-    }
-    std::copy(bytes_vec.begin(), bytes_vec.end(), value.begin());
-}
-
-// Timestamp Implementation
-Timestamp::Timestamp() : ms_since_epoch(0) {}
-
-Timestamp::Timestamp(uint64_t milliseconds_since_epoch) : ms_since_epoch(milliseconds_since_epoch) {}
-
-uint64_t Timestamp::as_milliseconds() const {
-    return ms_since_epoch;
-}
-
-Timestamp Timestamp::current() {
-    auto now = std::chrono::system_clock::now();
-    auto duration = now.time_since_epoch();
-    return Timestamp(static_cast<uint64_t>(std::chrono::duration_cast<std::chrono::milliseconds>(duration).count()));
-}
-
-bool Timestamp::operator==(const Timestamp& other) const {
-    return ms_since_epoch == other.ms_since_epoch;
-}
-
-bool Timestamp::operator!=(const Timestamp& other) const {
-    return ms_since_epoch != other.ms_since_epoch;
-}
-
-bool Timestamp::operator<(const Timestamp& other) const {
-    return ms_since_epoch < other.ms_since_epoch;
-}
-
-bool Timestamp::operator<=(const Timestamp& other) const {
-    return ms_since_epoch <= other.ms_since_epoch;
-}
-
-bool Timestamp::operator>(const Timestamp& other) const {
-    return ms_since_epoch > other.ms_since_epoch;
-}
-
-bool Timestamp::operator>=(const Timestamp& other) const {
-    return ms_since_epoch >= other.ms_since_epoch;
-}
-
-void Timestamp::bsatn_serialize(bsatn::bsatn_writer& writer) const {
-    writer.write_u64(ms_since_epoch);
-}
-
-void Timestamp::bsatn_deserialize(bsatn::bsatn_reader& reader) {
-    ms_since_epoch = reader.read_u64();
-}
-
-} // namespace sdk
-} // namespace spacetimedb
+    } // namespace sdk
+} // namespace SpacetimeDb

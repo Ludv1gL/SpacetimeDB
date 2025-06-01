@@ -9,9 +9,6 @@ namespace SpacetimeDb {
     } // namespace bsatn
 } // namespace SpacetimeDb
 
-#include "spacetimedb/bsatn/reader.h"
-#include "spacetimedb/bsatn/writer.h"
-
 #include "spacetimedb/bsatn/uint128_placeholder.h" // For uint128_t_placeholder
 #include <cstdint>
 #include <vector>
@@ -79,12 +76,8 @@ namespace SpacetimeDb {
             explicit ScheduleAt(uint64_t ts_micros) : timestamp_micros(ts_micros) {}
 
             // BSATN Serialization methods
-            void bsatn_serialize(SpacetimeDb::bsatn::Writer& writer) const {
-                writer.write_u64_le(timestamp_micros); // Assuming write_u64_le for consistency
-            }
-            void bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader) {
-                timestamp_micros = reader.read_u64_le(); // Assuming read_u64_le for consistency
-            }
+            void bsatn_serialize(SpacetimeDb::bsatn::Writer& writer) const;
+            void bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader);
 
             bool operator==(const ScheduleAt& other) const {
                 return timestamp_micros == other.timestamp_micros;
@@ -98,12 +91,8 @@ namespace SpacetimeDb {
 
             ConnectionId(uint64_t val = 0) : id(val) {}
 
-            void bsatn_serialize(SpacetimeDb::bsatn::Writer& writer) const {
-                writer.write_u64_le(id);
-            }
-            void bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader) {
-                id = reader.read_u64_le();
-            }
+            void bsatn_serialize(SpacetimeDb::bsatn::Writer& writer) const;
+            void bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader);
             bool operator==(const ConnectionId& other) const { return id == other.id; }
             bool operator<(const ConnectionId& other) const { return id < other.id; } // For map keys
         };
@@ -114,12 +103,8 @@ namespace SpacetimeDb {
 
             TimeDuration(int64_t val = 0) : nanoseconds(val) {}
 
-            void bsatn_serialize(SpacetimeDb::bsatn::Writer& writer) const {
-                writer.write_i64_le(nanoseconds);
-            }
-            void bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader) {
-                nanoseconds = reader.read_i64_le();
-            }
+            void bsatn_serialize(SpacetimeDb::bsatn::Writer& writer) const;
+            void bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader);
             bool operator==(const TimeDuration& other) const { return nanoseconds == other.nanoseconds; }
             bool operator<(const TimeDuration& other) const { return nanoseconds < other.nanoseconds; } // For map keys
         };
@@ -146,18 +131,5 @@ namespace SpacetimeDb {
         };
     } // namespace sdk
 } // namespace SpacetimeDb
-
-// Definitions for u256_placeholder and i256_placeholder bsatn methods
-// These need the full Reader/Writer definitions.
-namespace SpacetimeDb {
-    namespace sdk {
-        inline void u256_placeholder::bsatn_serialize(SpacetimeDb::bsatn::Writer& writer) const { writer.write_u256_le(*this); }
-        inline void u256_placeholder::bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader) { *this = reader.read_u256_le(); }
-
-        inline void i256_placeholder::bsatn_serialize(SpacetimeDb::bsatn::Writer& writer) const { writer.write_i256_le(*this); }
-        inline void i256_placeholder::bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader) { *this = reader.read_i256_le(); }
-    } // namespace sdk
-} // namespace SpacetimeDb
-
 
 #endif // SPACETIMEDB_SDK_TYPES_H

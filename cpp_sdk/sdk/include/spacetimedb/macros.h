@@ -126,9 +126,10 @@ inline ::SpacetimeDb::FieldDefinition SPACETIMEDB_FIELD_INTERNAL(const char* nam
         }; \
         static SPACETIMEDB_PASTE(Register, SanitizedCppTypeName) SPACETIMEDB_PASTE(register_, SPACETIMEDB_PASTE(SanitizedCppTypeName, _instance)); \
     }} /* SpacetimeDb::ModuleRegistration */ \
+/* START_COMMENT_BLOCK_ENUM \
 namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
-    // Note: The following serialize/deserialize specializations depend on the
-    // primary `SpacetimeDb::bsatn::deserialize` template being declared,
+    // Note: The following serialize/deserialize specializations depend on the \
+    // primary `SpacetimeDb::bsatn::deserialize` template being declared, \
     // which is achieved by including "spacetimedb/bsatn/reader.h" prior to this macro's usage.
 /* Forward declaration of the concrete deserialization function */ \
 /* Ensure _actual_cpp_type_name_ is fully qualified or this is within a context where _actual_cpp_type_name_ is known */ \
@@ -142,7 +143,8 @@ inline _actual_cpp_type_name_ deserialize<_actual_cpp_type_name_>(::SpacetimeDb:
             uint8_t val = reader.read_u8(); \
             return static_cast<_actual_cpp_type_name_>(val); \
     } \
-}
+} \
+END_COMMENT_BLOCK_ENUM* /
 
 
 #define SPACETIMEDB_TABLE(CppRowTypeName, SpacetimeDbTableNameStr, IsPublicBool, ScheduledReducerNameStr) \
@@ -198,16 +200,16 @@ inline _actual_cpp_type_name_ deserialize<_actual_cpp_type_name_>(::SpacetimeDb:
     ::SpacetimeDb::SPACETIMEDB_REDUCER_PARAM_INTERNAL(ParamNameStr, ::SpacetimeDb::CoreType::UserDefined, UserDefinedTypeNameStr)
 
 inline ::SpacetimeDb::ReducerParameterDefinition SPACETIMEDB_REDUCER_PARAM_INTERNAL(const char* name, ::SpacetimeDb::CoreType core_type, const char* user_defined_name) {
-    ::SpacetimeDb::TypeIdentifier type_id;
-    type_id.core_type = core_type;
-    if (user_defined_name) {
-        type_id.user_defined_name = user_defined_name;
-    }
-    ::SpacetimeDb::ReducerParameterDefinition param_def;
-    param_def.name = name;
-    param_def.type = type_id;
-    return param_def;
-}
+            ::SpacetimeDb::TypeIdentifier type_id;
+            type_id.core_type = core_type;
+            if (user_defined_name) {
+                type_id.user_defined_name = user_defined_name;
+            }
+            ::SpacetimeDb::ReducerParameterDefinition param_def;
+            param_def.name = name;
+            param_def.type = type_id;
+            return param_def;
+        }
 
 #define SPACETIMEDB_XX_DESERIALIZE_REDUCER_ARG_AND_PASS(ParamCppType, ParamName, ReaderName, ArgsVectorName) \
     ArgsVectorName.push_back(std::make_any<ParamCppType>(::SpacetimeDb::bsatn::deserialize<ParamCppType>(ReaderName)));
@@ -287,23 +289,25 @@ inline ::SpacetimeDb::ReducerParameterDefinition SPACETIMEDB_REDUCER_PARAM_INTER
         }; \
         static SPACETIMEDB_PASTE(Register, SanitizedCppTypeName) SPACETIMEDB_PASTE(register_, SPACETIMEDB_PASTE(SanitizedCppTypeName, _instance)); \
     }} /* SpacetimeDb::ModuleRegistration */ \
+/* START_COMMENT_BLOCK_STRUCT \
 namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
-    // Note: The following serialize/deserialize specializations depend on the
-// primary `SpacetimeDb::bsatn::deserialize` template being declared,
+    // Note: The following serialize/deserialize specializations depend on the \
+// primary `SpacetimeDb::bsatn::deserialize` template being declared, \
 // which is achieved by including "spacetimedb/bsatn/reader.h" prior to this macro's usage.
-/* Forward declaration for the struct's deserialize function */ \
-/* _actual_cpp_type_name_ needs to be fully qualified if this is not in its namespace, or use ADL */ \
-inline void serialize(::SpacetimeDb::bsatn::Writer& writer, const _actual_cpp_type_name_& value) {
-    \
-        FIELDS_MACRO(SPACETIMEDB_XX_SERIALIZE_FIELD, writer, value); \
+        /* Forward declaration for the struct's deserialize function */ \
+            /* _actual_cpp_type_name_ needs to be fully qualified if this is not in its namespace, or use ADL */ \
+            inline void serialize(::SpacetimeDb::bsatn::Writer& writer, const _actual_cpp_type_name_& value) {
+            \
+                FIELDS_MACRO(SPACETIMEDB_XX_SERIALIZE_FIELD, writer, value); \
+        } \
+            template<> \
+                inline _actual_cpp_type_name_ deserialize<_actual_cpp_type_name_>(::SpacetimeDb::bsatn::Reader& reader) {
+                \
+                    _actual_cpp_type_name_ obj{}; \
+                    FIELDS_MACRO(SPACETIMEDB_XX_DESERIALIZE_FIELD, reader, obj); \
+                    return obj; \
+            } \
 } \
-template<> \
-inline _actual_cpp_type_name_ deserialize<_actual_cpp_type_name_>(::SpacetimeDb::bsatn::Reader& reader) {
-        \
-            _actual_cpp_type_name_ obj{}; \
-            FIELDS_MACRO(SPACETIMEDB_XX_DESERIALIZE_FIELD, reader, obj); \
-            return obj; \
-    } \
-}
+END_COMMENT_BLOCK_STRUCT* /
 
 #endif // SPACETIME_MACROS_H
