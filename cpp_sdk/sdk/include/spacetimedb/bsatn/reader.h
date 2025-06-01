@@ -55,7 +55,8 @@ namespace SpacetimeDb::bsatn {
         double read_f64_le();
 
         std::string read_string();
-        std::vector<std::byte> read_bytes();
+        std::vector<std::byte> read_bytes(); // Reads a length-prefixed byte array
+        std::vector<std::byte> read_fixed_bytes(size_t count); // Reads a fixed number of bytes
 
         template<typename T>
         std::optional<T> read_optional() {

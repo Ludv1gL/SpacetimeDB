@@ -11,7 +11,7 @@
 
 namespace sdk_test_cpp {
 
-    void EnumWithPayload::bsatn_serialize(::SpacetimeDb::bsatn::Writer& writer) const {
+    void sdk_test_cpp::EnumWithPayload::bsatn_serialize(::SpacetimeDb::bsatn::Writer& writer) const {
         // Serialize the tag
         ::SpacetimeDb::bsatn::serialize(writer, this->tag);
 
@@ -21,7 +21,7 @@ namespace sdk_test_cpp {
             }, this->value);
     }
 
-    void EnumWithPayload::bsatn_deserialize(::SpacetimeDb::bsatn::Reader& reader) {
+    void sdk_test_cpp::EnumWithPayload::bsatn_deserialize(::SpacetimeDb::bsatn::Reader& reader) {
         // Deserialize the tag
         this->tag = ::SpacetimeDb::bsatn::deserialize<sdk_test_cpp::EnumWithPayloadTag>(reader);
 
