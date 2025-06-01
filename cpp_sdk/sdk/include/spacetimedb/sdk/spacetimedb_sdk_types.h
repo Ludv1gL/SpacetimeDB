@@ -9,6 +9,9 @@ namespace SpacetimeDb {
     } // namespace bsatn
 } // namespace SpacetimeDb
 
+#include "spacetimedb/bsatn/reader.h"
+#include "spacetimedb/bsatn/writer.h"
+
 #include "spacetimedb/bsatn/uint128_placeholder.h" // For uint128_t_placeholder
 #include <cstdint>
 #include <vector>
@@ -16,8 +19,6 @@ namespace SpacetimeDb {
 #include <array>
 #include <chrono>
 #include <stdexcept>
-// Removed: #include "spacetimedb/bsatn/reader.h" from top
-// Removed: #include "spacetimedb/bsatn/writer.h" from top
 
 namespace SpacetimeDb {
     namespace sdk {
@@ -145,11 +146,6 @@ namespace SpacetimeDb {
         };
     } // namespace sdk
 } // namespace SpacetimeDb
-
-// Full includes for Reader/Writer for inline method implementations
-// These are now included after all SDK types are defined.
-#include "spacetimedb/bsatn/reader.h"
-#include "spacetimedb/bsatn/writer.h"
 
 // Definitions for u256_placeholder and i256_placeholder bsatn methods
 // These need the full Reader/Writer definitions.

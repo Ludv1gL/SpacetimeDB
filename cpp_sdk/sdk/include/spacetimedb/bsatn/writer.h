@@ -26,14 +26,12 @@ namespace SpacetimeDb::bsatn {
         void write_u32_le(uint32_t value);
         void write_u64_le(uint64_t value);
         void write_u128_le(const SpacetimeDb::Types::uint128_t_placeholder& value);
-        void write_u256_le(const SpacetimeDb::sdk::u256_placeholder& value);
 
         void write_i8(int8_t value);
         void write_i16_le(int16_t value);
         void write_i32_le(int32_t value);
         void write_i64_le(int64_t value);
         void write_i128_le(const SpacetimeDb::Types::int128_t_placeholder& value);
-        void write_i256_le(const SpacetimeDb::sdk::i256_placeholder& value);
 
         void write_f32_le(float value);
         void write_f64_le(double value);
