@@ -35,7 +35,7 @@
 // Or for optional custom: SPACETIMEDB_FIELD_CUSTOM_OPTIONAL("fieldName", "MyCustomStructName")
 
 /** @internal Basic helper to construct a FieldDefinition for schema registration. */
-inline SpacetimeDb::FieldDefinition SPACETIMEDB_FIELD_INTERNAL(const char* name, SpacetimeDb::CoreType core_type, const char* user_defined_name, bool is_optional) {
+inline SpacetimeDb::FieldDefinition SPACETIMEDB_FIELD_INTERNAL(const char* name, SpacetimeDb::CoreType core_type, const char* user_defined_name, bool is_optional, bool is_unique_field, bool is_auto_inc_field) {
     SpacetimeDb::TypeIdentifier type_id;
     type_id.core_type = core_type;
     if (user_defined_name) {
@@ -45,6 +45,8 @@ inline SpacetimeDb::FieldDefinition SPACETIMEDB_FIELD_INTERNAL(const char* name,
     field_def.name = name;
     field_def.type = type_id;
     field_def.is_optional = is_optional;
+    field_def.is_unique = is_unique_field;
+    field_def.is_auto_increment = is_auto_inc_field;
     return field_def;
 }
 
@@ -52,33 +54,41 @@ inline SpacetimeDb::FieldDefinition SPACETIMEDB_FIELD_INTERNAL(const char* name,
  * @brief Defines a basic field for schema registration.
  * @param FieldNameStr The string name of the field.
  * @param FieldCoreType The `SpacetimeDb::CoreType` of the field (e.g., `SpacetimeDb::CoreType::U64`).
+ * @param IsUniqueBool A boolean indicating if this field should have a unique constraint.
+ * @param IsAutoIncBool A boolean indicating if this field should be auto-incrementing (primarily for integer types).
  */
-#define SPACETIMEDB_FIELD(FieldNameStr, FieldCoreType) \
-    SpacetimeDb::SPACETIMEDB_FIELD_INTERNAL(FieldNameStr, FieldCoreType, nullptr, false)
+#define SPACETIMEDB_FIELD(FieldNameStr, FieldCoreType, IsUniqueBool, IsAutoIncBool) \
+    SpacetimeDb::SPACETIMEDB_FIELD_INTERNAL(FieldNameStr, FieldCoreType, nullptr, false, IsUniqueBool, IsAutoIncBool)
 
 /**
  * @brief Defines an optional basic field for schema registration.
  * @param FieldNameStr The string name of the field.
  * @param FieldCoreType The `SpacetimeDb::CoreType` of the field's value (e.g., `SpacetimeDb::CoreType::String`).
+ * @param IsUniqueBool A boolean indicating if this field should have a unique constraint.
+ * @param IsAutoIncBool A boolean indicating if this field should be auto-incrementing. Typically `false` for optional fields.
  */
-#define SPACETIMEDB_FIELD_OPTIONAL(FieldNameStr, FieldCoreType) \
-    SpacetimeDb::SPACETIMEDB_FIELD_INTERNAL(FieldNameStr, FieldCoreType, nullptr, true)
+#define SPACETIMEDB_FIELD_OPTIONAL(FieldNameStr, FieldCoreType, IsUniqueBool, IsAutoIncBool) \
+    SpacetimeDb::SPACETIMEDB_FIELD_INTERNAL(FieldNameStr, FieldCoreType, nullptr, true, IsUniqueBool, IsAutoIncBool)
 
 /**
  * @brief Defines a field of a user-defined type for schema registration.
  * @param FieldNameStr The string name of the field.
  * @param UserDefinedTypeNameStr The string name of the user-defined C++ type (must be registered separately).
+ * @param IsUniqueBool A boolean indicating if this field should have a unique constraint.
+ * @param IsAutoIncBool A boolean indicating if this field should be auto-incrementing. Typically `false` for custom types.
  */
-#define SPACETIMEDB_FIELD_CUSTOM(FieldNameStr, UserDefinedTypeNameStr) \
-    SpacetimeDb::SPACETIMEDB_FIELD_INTERNAL(FieldNameStr, SpacetimeDb::CoreType::UserDefined, UserDefinedTypeNameStr, false)
+#define SPACETIMEDB_FIELD_CUSTOM(FieldNameStr, UserDefinedTypeNameStr, IsUniqueBool, IsAutoIncBool) \
+    SpacetimeDb::SPACETIMEDB_FIELD_INTERNAL(FieldNameStr, SpacetimeDb::CoreType::UserDefined, UserDefinedTypeNameStr, false, IsUniqueBool, IsAutoIncBool)
 
 /**
  * @brief Defines an optional field of a user-defined type for schema registration.
  * @param FieldNameStr The string name of the field.
  * @param UserDefinedTypeNameStr The string name of the user-defined C++ type (must be registered separately).
+ * @param IsUniqueBool A boolean indicating if this field should have a unique constraint.
+ * @param IsAutoIncBool A boolean indicating if this field should be auto-incrementing. Typically `false` for optional or custom types.
  */
-#define SPACETIMEDB_FIELD_CUSTOM_OPTIONAL(FieldNameStr, UserDefinedTypeNameStr) \
-    SpacetimeDb::SPACETIMEDB_FIELD_INTERNAL(FieldNameStr, SpacetimeDb::CoreType::UserDefined, UserDefinedTypeNameStr, true)
+#define SPACETIMEDB_FIELD_CUSTOM_OPTIONAL(FieldNameStr, UserDefinedTypeNameStr, IsUniqueBool, IsAutoIncBool) \
+    SpacetimeDb::SPACETIMEDB_FIELD_INTERNAL(FieldNameStr, SpacetimeDb::CoreType::UserDefined, UserDefinedTypeNameStr, true, IsUniqueBool, IsAutoIncBool)
 
 
 /**
@@ -165,11 +175,13 @@ inline SpacetimeDb::FieldDefinition SPACETIMEDB_FIELD_INTERNAL(const char* name,
  * @brief Declares a SpacetimeDB table for schema registration.
  * @details Associates a C++ row type (previously registered, typically with `SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS`
  *          or `SPACETIMEDB_TYPE_STRUCT`) with a table name in the SpacetimeDB schema.
+ *          It also specifies if the table is public or private.
  * @param CppRowTypeName The C++ name of the struct representing a row in this table (e.g., `Player`).
  * @param SpacetimeDbTableNameStr The string name of this table as it should appear in the SpacetimeDB schema (e.g., "PlayersTable").
+ * @param IsPublicBool A boolean value indicating table visibility: `true` for public, `false` for private.
  * @ingroup schema_definition
  */
-#define SPACETIMEDB_TABLE(CppRowTypeName, SpacetimeDbTableNameStr) \
+#define SPACETIMEDB_TABLE(CppRowTypeName, SpacetimeDbTableNameStr, IsPublicBool) \
     /* static_assert(true, "Ensuring semicolon at end of macro call"); // Dummy static assert for semicolon */ \
     namespace SpacetimeDb { namespace ModuleRegistration { \
         /* Using a simple concatenation for struct name; complex table names might need mangling for uniqueness. */ \
@@ -181,7 +193,8 @@ inline SpacetimeDb::FieldDefinition SPACETIMEDB_FIELD_INTERNAL(const char* name,
                 /* Replace invalid chars in SpacetimeDbTableNameStr for unique struct name */ \
                 SpacetimeDb::ModuleSchema::instance().register_table( \
                     SPACETIMEDB_STRINGIFY(CppRowTypeName), \
-                    SpacetimeDbTableNameStr \
+                    SpacetimeDbTableNameStr, \
+                    IsPublicBool \
                 ); \
             } \
         }; \
@@ -213,6 +226,35 @@ inline SpacetimeDb::FieldDefinition SPACETIMEDB_FIELD_INTERNAL(const char* name,
         /* Using FieldNameStr for static var name for simplicity, assuming one PK per field name (globally) for this style. */ \
         static SetPrimaryKey_Default_##FieldNameStr set_pk_##FieldNameStr##_instance; \
     }}
+
+/**
+ * @brief Defines a B-Tree index on a SpacetimeDB table.
+ * @param SpacetimeDbTableNameStr The string name of the table (must match name in SPACETIMEDB_TABLE).
+ * @param IndexNameStr The desired string name for this index.
+ * @param ColumnFieldNamesInitializerList An initializer list of C-string literals representing the
+ *                                      C++ field names to be included in the index, in order.
+ *                                      Example: { "field_a", "field_b" }
+ * @ingroup schema_definition
+ */
+#define SPACETIMEDB_INDEX(SpacetimeDbTableNameStr, IndexNameStr, ColumnFieldNamesInitializerList) \
+    namespace SpacetimeDb { namespace ModuleRegistration { \
+        /* Create a unique struct name for the static instance */ \
+        /* Combining table and index name should be reasonably unique */ \
+        /* A more robust mangling might be needed for complex names */ \
+        struct RegisterIndex_##SpacetimeDbTableNameStr##_##IndexNameStr { \
+            RegisterIndex_##SpacetimeDbTableNameStr##_##IndexNameStr() { \
+                SpacetimeDb::IndexDefinition index_def; \
+                index_def.index_name = IndexNameStr; \
+                std::vector<std::string> cols = ColumnFieldNamesInitializerList; \
+                index_def.column_field_names = std::move(cols); \
+                SpacetimeDb::ModuleSchema::instance().add_index( \
+                    SpacetimeDbTableNameStr, \
+                    index_def \
+                ); \
+            } \
+        }; \
+        static RegisterIndex_##SpacetimeDbTableNameStr##_##IndexNameStr register_index_##SpacetimeDbTableNameStr##_##IndexNameStr##_instance; \
+    }} /* ; intentionally omitted */
 
 
 // --- Reducer Definition Macros ---
@@ -264,13 +306,14 @@ inline SpacetimeDb::ReducerParameterDefinition SPACETIMEDB_REDUCER_PARAM_INTERNA
  *          and calling the actual C++ reducer function.
  *          The C++ reducer function (e.g., `void my_reducer(uint64_t p1, std::string p2);`)
  *          must be defined by the user.
- * @param SpacetimeDbReducerNameStr The string name of this reducer as it should be known to SpacetimeDB.
+ * @param SpacetimedbNameStr The string name of this reducer as it should be known to SpacetimeDB.
  * @param CppFunctionName The C++ name of the reducer function (e.g., `my_reducer`).
+ * @param Kind The `SpacetimeDb::ReducerKind` for this reducer (e.g., `SpacetimeDb::ReducerKind::None`).
  * @param RegParamsInitializerList An initializer list of `SpacetimeDb::ReducerParameterDefinition` for schema
  *                                 registration, created using `SPACETIMEDB_REDUCER_PARAM` or `SPACETIMEDB_REDUCER_PARAM_CUSTOM`.
  *                                 Example: `{ SPACETIMEDB_REDUCER_PARAM("p1", SpacetimeDb::CoreType::U64), ... }`
- * @param ... A variable argument list of the C++ types of the reducer function's parameters, in order.
- *            Example: `uint64_t, std::string` for `void my_reducer(uint64_t, std::string);`
+ * @param ... A variable argument list of the C++ types of the reducer function's parameters, in order (excluding ReducerContext).
+ *            Example: `uint64_t, std::string` for `void my_reducer(ReducerContext&, uint64_t, std::string);`
  * @ingroup schema_definition
  * @note Requires C++17 for `std::apply` and fold expressions in the invoker.
  * @see SPACETIMEDB_REDUCER_PARAM
@@ -279,14 +322,15 @@ inline SpacetimeDb::ReducerParameterDefinition SPACETIMEDB_REDUCER_PARAM_INTERNA
  * Example Usage:
  * ```cpp
  * void my_actual_reducer(uint64_t id, std::string name);
- * SPACETIMEDB_REDUCER("CreatePlayer", my_actual_reducer,
+ * SPACETIMEDB_REGISTER_REDUCER_SCHEMA("CreatePlayer", my_actual_reducer,
+ *    SpacetimeDb::ReducerKind::None, // Kind
  *    { SPACETIMEDB_REDUCER_PARAM("id", SpacetimeDb::CoreType::U64),
  *      SPACETIMEDB_REDUCER_PARAM("name", SpacetimeDb::CoreType::String) },
- *    uint64_t, std::string // These are the __VA_ARGS__ for types
+ *    uint64_t, std::string // These are the __VA_ARGS__ for C++ types for invoker
  * );
  * ```
  */
-#define SPACETIMEDB_REDUCER(SpacetimeDbReducerNameStr, CppFunctionName, RegParamsInitializerList, ...) \
+#define SPACETIMEDB_REGISTER_REDUCER_SCHEMA(SpacetimedbNameStr, CppFunctionName, Kind, RegParamsInitializerList, ...) \
     namespace SpacetimeDb { namespace ModuleRegistration { \
         struct RegisterReducer_##CppFunctionName { \
             RegisterReducer_##CppFunctionName() { \
@@ -301,23 +345,121 @@ inline SpacetimeDb::ReducerParameterDefinition SPACETIMEDB_REDUCER_PARAM_INTERNA
                     std::apply(CppFunctionName, args_tuple); \
                 }; \
                 SpacetimeDb::ModuleSchema::instance().register_reducer( \
-                    SpacetimeDbReducerNameStr, \
+                    SpacetimedbNameStr, \
                     SPACETIMEDB_STRINGIFY(CppFunctionName), \
                     std::vector<SpacetimeDb::ReducerParameterDefinition> RegParamsInitializerList, \
-                    invoker_lambda \
+                    invoker_lambda, \
+                    Kind \
                 ); \
             } \
         }; \
         static RegisterReducer_##CppFunctionName register_reducer_##CppFunctionName##_instance; \
     }} /* ; intentionally omitted */
 
-// Example Usage:
+// Example Usage (using the new name and Kind parameter):
 // void my_actual_reducer(uint64_t id, std::string name);
-// SPACETIMEDB_REDUCER("CreatePlayer", my_actual_reducer,
+// SPACETIMEDB_REGISTER_REDUCER_SCHEMA("CreatePlayer", my_actual_reducer,
+//    SpacetimeDb::ReducerKind::None,
 //    { SPACETIMEDB_REDUCER_PARAM("id", SpacetimeDb::CoreType::U64),
 //      SPACETIMEDB_REDUCER_PARAM("name", SpacetimeDb::CoreType::String) },
-//    uint64_t, std::string // These are the __VA_ARGS__ for types
+//    uint64_t, std::string // These are the __VA_ARGS__ for types for invoker
 // );
+
+// Old lifecycle-specific macros are removed as per plan.
+// New user-facing macros (SPACETIMEDB_REDUCER_INIT, etc.) are part of a future step.
+
+// Placeholder for ABI export macro - actual definition would be in spacetimedb_sdk_reducer.h or similar
+#ifndef SPACETIMEDB_EXPORT_REDUCER
+#define SPACETIMEDB_EXPORT_REDUCER(SpacetimedbNameStr, CppFunctionName, ...) \
+    /* TODO: This is a placeholder for ABI export. Actual export mechanism needed. */ \
+    /* Example: extern "C" void CppFunctionName ## _abi(); */ \
+    /* For now, just a static assert to ensure it's seen by the compiler if used. */ \
+    static_assert(true, "SPACETIMEDB_EXPORT_REDUCER placeholder");
+#endif
+
+// --- User-Facing Reducer Macros ---
+// These combine schema registration and ABI export.
+
+/**
+ * @brief Defines and registers an 'init' reducer.
+ * @param CppFunctionName The C++ name of the reducer function.
+ * @param ParamsSchemaList An initializer list of `SpacetimeDb::ReducerParameterDefinition` for schema.
+ *                         Typically empty `{}` for init reducers if they only take ReducerContext.
+ * @param ... Variadic C++ types of the function parameters (excluding ReducerContext).
+ * @ingroup module_api reducers
+ */
+#define SPACETIMEDB_REDUCER_INIT(CppFunctionName, ParamsSchemaList, ...) \
+    SPACETIMEDB_REGISTER_REDUCER_SCHEMA("init", CppFunctionName, SpacetimeDb::ReducerKind::Init, ParamsSchemaList, ##__VA_ARGS__); \
+    SPACETIMEDB_EXPORT_REDUCER("init", CppFunctionName, ##__VA_ARGS__)
+
+/**
+ * @brief Defines and registers a 'client_connected' reducer.
+ * @param CppFunctionName The C++ name of the reducer function.
+ * @param ParamsSchemaList An initializer list of `SpacetimeDb::ReducerParameterDefinition` for schema.
+ * @param ... Variadic C++ types of the function parameters (excluding ReducerContext).
+ * @ingroup module_api reducers
+ */
+#define SPACETIMEDB_REDUCER_CLIENT_CONNECTED(CppFunctionName, ParamsSchemaList, ...) \
+    SPACETIMEDB_REGISTER_REDUCER_SCHEMA("client_connected", CppFunctionName, SpacetimeDb::ReducerKind::ClientConnected, ParamsSchemaList, ##__VA_ARGS__); \
+    SPACETIMEDB_EXPORT_REDUCER("client_connected", CppFunctionName, ##__VA_ARGS__)
+
+/**
+ * @brief Defines and registers a 'client_disconnected' reducer.
+ * @param CppFunctionName The C++ name of the reducer function.
+ * @param ParamsSchemaList An initializer list of `SpacetimeDb::ReducerParameterDefinition` for schema.
+ * @param ... Variadic C++ types of the function parameters (excluding ReducerContext).
+ * @ingroup module_api reducers
+ */
+#define SPACETIMEDB_REDUCER_CLIENT_DISCONNECTED(CppFunctionName, ParamsSchemaList, ...) \
+    SPACETIMEDB_REGISTER_REDUCER_SCHEMA("client_disconnected", CppFunctionName, SpacetimeDb::ReducerKind::ClientDisconnected, ParamsSchemaList, ##__VA_ARGS__); \
+    SPACETIMEDB_EXPORT_REDUCER("client_disconnected", CppFunctionName, ##__VA_ARGS__)
+
+/**
+ * @brief Defines and registers a 'scheduled' reducer.
+ * @param SpacetimedbNameStr The SpacetimeDB name for this scheduled reducer.
+ * @param CppFunctionName The C++ name of the reducer function.
+ * @param ParamsSchemaList An initializer list of `SpacetimeDb::ReducerParameterDefinition` for schema.
+ * @param ... Variadic C++ types of the function parameters (excluding ReducerContext).
+ * @ingroup module_api reducers
+ */
+#define SPACETIMEDB_REDUCER_SCHEDULED(SpacetimedbNameStr, CppFunctionName, ParamsSchemaList, ...) \
+    SPACETIMEDB_REGISTER_REDUCER_SCHEMA(SpacetimedbNameStr, CppFunctionName, SpacetimeDb::ReducerKind::Scheduled, ParamsSchemaList, ##__VA_ARGS__); \
+    SPACETIMEDB_EXPORT_REDUCER(SpacetimedbNameStr, CppFunctionName, ##__VA_ARGS__)
+
+/**
+ * @brief Defines and registers a regular named reducer.
+ * @param SpacetimedbNameStr The SpacetimeDB name for this reducer.
+ * @param CppFunctionName The C++ name of the reducer function.
+ * @param ParamsSchemaList An initializer list of `SpacetimeDb::ReducerParameterDefinition` for schema.
+ * @param ... Variadic C++ types of the function parameters (excluding ReducerContext).
+ * @ingroup module_api reducers
+ */
+#define SPACETIMEDB_REDUCER_NAMED(SpacetimedbNameStr, CppFunctionName, ParamsSchemaList, ...) \
+    SPACETIMEDB_REGISTER_REDUCER_SCHEMA(SpacetimedbNameStr, CppFunctionName, SpacetimeDb::ReducerKind::None, ParamsSchemaList, ##__VA_ARGS__); \
+    SPACETIMEDB_EXPORT_REDUCER(SpacetimedbNameStr, CppFunctionName, ##__VA_ARGS__)
+
+// --- Client Visibility Filter Macro ---
+
+/**
+ * @brief Defines a client visibility filter for schema registration.
+ * @param FilterNameConstStr The string name of the filter.
+ * @param SqlString The SQL query string defining the filter logic.
+ * @ingroup schema_definition
+ */
+#define SPACETIMEDB_CLIENT_VISIBILITY_FILTER(FilterNameConstStr, SqlString) \
+    namespace SpacetimeDb { namespace ModuleRegistration { \
+        /* Create a unique struct name for the static instance based on filter name */ \
+        /* A more robust mangling might be needed for complex or conflicting names */ \
+        struct RegisterFilter_##FilterNameConstStr { \
+            RegisterFilter_##FilterNameConstStr() { \
+                SpacetimeDb::ModuleSchema::instance().register_filter( \
+                    #FilterNameConstStr, \
+                    SqlString \
+                ); \
+            } \
+        }; \
+        static RegisterFilter_##FilterNameConstStr register_filter_##FilterNameConstStr##_instance; \
+    }} /* ; intentionally omitted */
 
 
 // --- X-Macro Helpers for Struct Serialization ---

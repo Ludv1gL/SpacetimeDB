@@ -14,6 +14,14 @@
 namespace bsatn { class Reader; } // Already included, but good practice if it were only forward needed by this header
 
 namespace SpacetimeDb {
+    enum class ReducerKind {
+        None, // Regular named reducer
+        Init,
+        ClientConnected,
+        ClientDisconnected,
+        Scheduled // For reducers linked to scheduled tables
+    };
+
     // Forward declarations for types defined within this file, used in ModuleSchema
     struct TypeDefinition;
     struct TableDefinition;
@@ -25,11 +33,12 @@ namespace SpacetimeDb {
     // Enum to represent basic SpacetimeDB types and user-defined types
     // This is used by the macros to describe types to the schema system.
     enum class CoreType {
-        Bool, U8, U16, U32, U64, U128,
-        I8, I16, I32, I64, I128,
+        Bool, U8, U16, U32, U64, U128, U256,
+        I8, I16, I32, I64, I128, I256,
         F32, F64,
         String, Bytes,
         UserDefined // For structs and enums by name
+        // ScheduleAt will be a UserDefined type for now
     };
 
     struct TypeIdentifier {
@@ -49,6 +58,8 @@ namespace SpacetimeDb {
         std::string name;
         TypeIdentifier type;
         bool is_optional = false;
+        bool is_unique = false; // Default to not unique
+        bool is_auto_increment = false; // Default to false
     };
 
     struct EnumVariantDefinition {
@@ -73,10 +84,19 @@ namespace SpacetimeDb {
         std::variant<StructDefinition, EnumDefinition> definition;
     };
 
+    struct IndexDefinition {
+        std::string index_name;
+        std::vector<std::string> column_field_names;
+        // bool is_unique_index = false; // Optional: Consider for future enhancement
+    };
+
     struct TableDefinition {
         std::string spacetime_name;
         std::string cpp_row_type_name;
         std::string primary_key_field_name;
+        bool is_public = false; // Default to private
+        std::vector<IndexDefinition> indexes;
+        std::string scheduled_reducer_name; // Name of the reducer for scheduled tables
     };
 
     struct ReducerParameterDefinition {
@@ -89,6 +109,7 @@ namespace SpacetimeDb {
         std::string cpp_function_name;
         std::vector<ReducerParameterDefinition> parameters;
         std::function<void(bsatn::Reader&)> invoker;
+        ReducerKind kind = ReducerKind::None;
     };
 
     class ModuleSchema {
@@ -96,6 +117,7 @@ namespace SpacetimeDb {
         std::map<std::string, TypeDefinition> types;
         std::map<std::string, TableDefinition> tables;
         std::map<std::string, ReducerDefinition> reducers;
+        std::map<std::string, std::string> client_visibility_filters;
 
         void register_struct_type(const std::string& cpp_name, const std::string& spacetimedb_name, const std::vector<FieldDefinition>& fields) {
             StructDefinition def_struct;
@@ -123,10 +145,11 @@ namespace SpacetimeDb {
             types[cpp_name] = type_def;
         }
 
-        void register_table(const std::string& cpp_row_type, const std::string& spacetime_db_table_name) {
+        void register_table(const std::string& cpp_row_type, const std::string& spacetime_db_table_name, bool is_public_table) {
             TableDefinition def;
             def.cpp_row_type_name = cpp_row_type;
             def.spacetime_name = spacetime_db_table_name;
+            def.is_public = is_public_table;
             tables[spacetime_db_table_name] = def;
         }
 
@@ -139,16 +162,33 @@ namespace SpacetimeDb {
             }
         }
 
+        void add_index(const std::string& spacetime_db_table_name, const IndexDefinition& index_def) {
+            auto it = tables.find(spacetime_db_table_name);
+            if (it != tables.end()) {
+                it->second.indexes.push_back(index_def);
+            } else {
+                // Consider logging an error or throwing if table not found
+                // For now, do nothing if table not found to avoid exceptions during static init order issues.
+                // A separate validation step could check for this.
+            }
+        }
+
         void register_reducer(const std::string& spacetimedb_name,
                               const std::string& cpp_func_name,
                               const std::vector<ReducerParameterDefinition>& params,
-                              std::function<void(bsatn::Reader&)> invoker_func) {
+                              std::function<void(bsatn::Reader&)> invoker_func,
+                              ReducerKind reducer_kind) {
             ReducerDefinition def;
             def.spacetime_name = spacetimedb_name;
             def.cpp_function_name = cpp_func_name;
             def.parameters = params;
             def.invoker = std::move(invoker_func);
+            def.kind = reducer_kind;
             reducers[spacetimedb_name] = def;
+        }
+
+        void register_filter(const std::string& filter_name, const std::string& sql_string) {
+            client_visibility_filters[filter_name] = sql_string;
         }
 
         static ModuleSchema& instance() {

@@ -68,6 +68,27 @@ private:
     uint64_t ms_since_epoch;
 };
 
+// Placeholder for a type that might be used with scheduled tables/reducers
+struct ScheduleAt {
+    uint64_t timestamp_micros; // Or whatever precision/representation is decided
+
+    ScheduleAt() : timestamp_micros(0) {}
+    explicit ScheduleAt(uint64_t ts_micros) : timestamp_micros(ts_micros) {}
+
+    // BSATN Serialization methods
+    void bsatn_serialize(bsatn::bsatn_writer& writer) const {
+        writer.write_u64(timestamp_micros);
+    }
+    void bsatn_deserialize(bsatn::bsatn_reader& reader) {
+        timestamp_micros = reader.read_u64();
+    }
+
+    bool operator==(const ScheduleAt& other) const {
+        return timestamp_micros == other.timestamp_micros;
+    }
+    // Add other operators as needed
+};
+
 } // namespace sdk
 } // namespace spacetimedb
 
