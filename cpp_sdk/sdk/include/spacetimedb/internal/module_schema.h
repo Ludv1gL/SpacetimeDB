@@ -145,11 +145,15 @@ namespace SpacetimeDb {
             types[cpp_name] = type_def;
         }
 
-        void register_table(const std::string& cpp_row_type, const std::string& spacetime_db_table_name, bool is_public_table) {
+        void register_table(const std::string& cpp_row_type,
+                            const std::string& spacetime_db_table_name,
+                            bool is_public_table,
+                            const std::string& scheduled_reducer_name_or_empty) {
             TableDefinition def;
             def.cpp_row_type_name = cpp_row_type;
             def.spacetime_name = spacetime_db_table_name;
             def.is_public = is_public_table;
+            def.scheduled_reducer_name = scheduled_reducer_name_or_empty;
             tables[spacetime_db_table_name] = def;
         }
 

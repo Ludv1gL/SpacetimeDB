@@ -179,29 +179,31 @@ inline SpacetimeDb::FieldDefinition SPACETIMEDB_FIELD_INTERNAL(const char* name,
  * @param CppRowTypeName The C++ name of the struct representing a row in this table (e.g., `Player`).
  * @param SpacetimeDbTableNameStr The string name of this table as it should appear in the SpacetimeDB schema (e.g., "PlayersTable").
  * @param IsPublicBool A boolean value indicating table visibility: `true` for public, `false` for private.
+ * @param ScheduledReducerNameStr The name of the reducer to call for scheduled tables, or an empty string "" if not scheduled.
  * @ingroup schema_definition
  */
-#define SPACETIMEDB_TABLE(CppRowTypeName, SpacetimeDbTableNameStr, IsPublicBool) \
+#define SPACETIMEDB_TABLE(CppRowTypeName, SpacetimeDbTableNameStr, IsPublicBool, ScheduledReducerNameStr) \
     /* static_assert(true, "Ensuring semicolon at end of macro call"); // Dummy static assert for semicolon */ \
     namespace SpacetimeDb { namespace ModuleRegistration { \
         /* Using a simple concatenation for struct name; complex table names might need mangling for uniqueness. */ \
-        struct RegisterTable_##CppRowTypeName##_Default { \
+        struct RegisterTable_##CppRowTypeName##_##SpacetimedbNameStr { \
             /* Default suffix used if table name is not simple enough for identifier */ \
             /* A better approach might involve hashing or a counter for unique static var names */ \
-            RegisterTable_##CppRowTypeName##_Default() { \
+            RegisterTable_##CppRowTypeName##_##SpacetimedbNameStr() { \
             /*RegisterTable_##CppRowTypeName##_##SpacetimeDbTableNameStr() {*/ \
                 /* Replace invalid chars in SpacetimeDbTableNameStr for unique struct name */ \
                 SpacetimeDb::ModuleSchema::instance().register_table( \
                     SPACETIMEDB_STRINGIFY(CppRowTypeName), \
                     SpacetimeDbTableNameStr, \
-                    IsPublicBool \
+                    IsPublicBool, \
+                    ScheduledReducerNameStr \
                 ); \
             } \
         }; \
-        /* Using CppRowTypeName for static var name for simplicity, assuming one table per CppRowType for this registration style. */ \
+        /* Using CppRowTypeName and SpacetimedbNameStr for static var name for simplicity. */ \
         /* If multiple tables use the same CppRowType, this static var name would collide. */ \
         /* The registration key in ModuleSchema is SpacetimeDbTableNameStr, which is fine. */ \
-        static RegisterTable_##CppRowTypeName##_Default register_table_##CppRowTypeName##_instance; \
+        static RegisterTable_##CppRowTypeName##_##SpacetimedbNameStr register_table_##CppRowTypeName##_##SpacetimedbNameStr##_instance; \
     }}
 
 /**
