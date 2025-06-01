@@ -1,0 +1,176 @@
+
+---
+events:
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.0/Modules/CMakeDetermineSystem.cmake:200 (message)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      The target system is: Emscripten -  - wasm32
+      The host system is: Windows - 10.0.26100 - AMD64
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.0/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "C:/Program Files/CMake/share/cmake-4.0/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "C:/Program Files/CMake/share/cmake-4.0/Modules/CMakeDetermineCXXCompiler.cmake:126 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+      Compiler: C:/Users/ludvi/emsdk/upstream/emscripten/em++ 
+      Build flags: -O2;-s;SIDE_MODULE=1;-s;STRICT=1;--no-entry;-Wall;-Wextra
+      Id flags:  
+      
+      The output was:
+      0
+      MSBuild version 17.13.19+0d9f5a35a for .NET Framework
+      Build started 2025-06-01 14:23:43.
+      
+      Project "C:\\Users\\ludvi\\stdbfork\\SpacetimeDB\\cpp_sdk\\examples\\quickstart_cpp_kv\\build\\CMakeFiles\\4.0.2\\CompilerIdCXX\\CompilerIdCXX.vcxproj" on node 1 (default targets).
+      PrepareForBuild:
+        Creating directory "Debug\\".
+        Structured output is enabled. The formatting of compiler diagnostics will reflect the error hierarchy. See https://aka.ms/cpp/structured-output for more details.
+        Creating directory "Debug\\CompilerIdCXX.tlog\\".
+      InitializeBuildStatus:
+        Creating "Debug\\CompilerIdCXX.tlog\\unsuccessfulbuild" because "AlwaysCreate" was specified.
+        Touching "Debug\\CompilerIdCXX.tlog\\unsuccessfulbuild".
+      ClCompile:
+        C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\CL.exe /c /nologo /W0 /WX- /diagnostics:column /Od /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\\\" /Fd"Debug\\vc143.pdb" /external:W0 /Gd /TP /FC /errorReport:queue CMakeCXXCompilerId.cpp
+        CMakeCXXCompilerId.cpp
+      Link:
+        C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:".\\CompilerIdCXX.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:".\\CompilerIdCXX.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:".\\CompilerIdCXX.lib" /MACHINE:X64 Debug\\CMakeCXXCompilerId.obj
+        CompilerIdCXX.vcxproj -> C:\\Users\\ludvi\\stdbfork\\SpacetimeDB\\cpp_sdk\\examples\\quickstart_cpp_kv\\build\\CMakeFiles\\4.0.2\\CompilerIdCXX\\CompilerIdCXX.exe
+      PostBuildEvent:
+        for %%i in (cl.exe) do @echo CMAKE_CXX_COMPILER=%%~$PATH:i
+        :VCEnd
+        CMAKE_CXX_COMPILER=C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe
+      FinalizeBuildStatus:
+        Deleting file "Debug\\CompilerIdCXX.tlog\\unsuccessfulbuild".
+        Touching "Debug\\CompilerIdCXX.tlog\\CompilerIdCXX.lastbuildstate".
+      Done Building Project "C:\\Users\\ludvi\\stdbfork\\SpacetimeDB\\cpp_sdk\\examples\\quickstart_cpp_kv\\build\\CMakeFiles\\4.0.2\\CompilerIdCXX\\CompilerIdCXX.vcxproj" (default targets).
+      
+      Build succeeded.
+          0 Warning(s)
+          0 Error(s)
+      
+      Time Elapsed 00:00:00.65
+      
+      
+      Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CompilerIdCXX.exe"
+      
+      Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CompilerIdCXX.vcxproj"
+      
+      The CXX compiler identification is MSVC, found in:
+        C:/Users/ludvi/stdbfork/SpacetimeDB/cpp_sdk/examples/quickstart_cpp_kv/build/CMakeFiles/4.0.2/CompilerIdCXX/CompilerIdCXX.exe
+      
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.0/Modules/CMakeDetermineCompilerABI.cmake:83 (try_compile)"
+      - "C:/Program Files/CMake/share/cmake-4.0/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:2 (project)"
+    checks:
+      - "Detecting CXX compiler ABI info"
+    directories:
+      source: "C:/Users/ludvi/stdbfork/SpacetimeDB/cpp_sdk/examples/quickstart_cpp_kv/build/CMakeFiles/CMakeScratch/TryCompile-w7zxub"
+      binary: "C:/Users/ludvi/stdbfork/SpacetimeDB/cpp_sdk/examples/quickstart_cpp_kv/build/CMakeFiles/CMakeScratch/TryCompile-w7zxub"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: "-O2 -s SIDE_MODULE=1 -s STRICT=1 --no-entry -Wall -Wextra"
+      CMAKE_CXX_FLAGS_DEBUG: ""
+      CMAKE_CXX_SCAN_FOR_MODULES: "OFF"
+      CMAKE_EXE_LINKER_FLAGS: ""
+    buildResult:
+      variable: "CMAKE_CXX_ABI_COMPILED"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/ludvi/stdbfork/SpacetimeDB/cpp_sdk/examples/quickstart_cpp_kv/build/CMakeFiles/CMakeScratch/TryCompile-w7zxub'
+        
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_5ad37.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        MSBuild version 17.13.19+0d9f5a35a for .NET Framework
+        Build started 2025-06-01 14:23:44.
+        
+        Project "C:\\Users\\ludvi\\stdbfork\\SpacetimeDB\\cpp_sdk\\examples\\quickstart_cpp_kv\\build\\CMakeFiles\\CMakeScratch\\TryCompile-w7zxub\\cmTC_5ad37.vcxproj" on node 1 (default targets).
+        PrepareForBuild:
+          Creating directory "cmTC_5ad37.dir\\Debug\\".
+          Structured output is enabled. The formatting of compiler diagnostics will reflect the error hierarchy. See https://aka.ms/cpp/structured-output for more details.
+          Creating directory "C:\\Users\\ludvi\\stdbfork\\SpacetimeDB\\cpp_sdk\\examples\\quickstart_cpp_kv\\build\\CMakeFiles\\CMakeScratch\\TryCompile-w7zxub\\Debug\\".
+          Creating directory "cmTC_5ad37.dir\\Debug\\cmTC_5ad37.tlog\\".
+        InitializeBuildStatus:
+          Creating "cmTC_5ad37.dir\\Debug\\cmTC_5ad37.tlog\\unsuccessfulbuild" because "AlwaysCreate" was specified.
+          Touching "cmTC_5ad37.dir\\Debug\\cmTC_5ad37.tlog\\unsuccessfulbuild".
+        ClCompile:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\CL.exe /c /Wall /WX- /diagnostics:column /O2 /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_5ad37.dir\\Debug\\\\" /Fd"cmTC_5ad37.dir\\Debug\\vc143.pdb" /external:W4 /Gd /TP /errorReport:queue  -s SIDE_MODULE=1 -s STRICT=1 --no-entry -Wextra "C:\\Program Files\\CMake\\share\\cmake-4.0\\Modules\\CMakeCXXCompilerABI.cpp"
+          Microsoft (R) C/C++ Optimizing Compiler Version 19.38.33145 for x64
+          Copyright (C) Microsoft Corporation.  All rights reserved.
+          cl /c /Wall /WX- /diagnostics:column /O2 /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_5ad37.dir\\Debug\\\\" /Fd"cmTC_5ad37.dir\\Debug\\vc143.pdb" /external:W4 /Gd /TP /errorReport:queue  -s SIDE_MODULE=1 -s STRICT=1 --no-entry -Wextra "C:\\Program Files\\CMake\\share\\cmake-4.0\\Modules\\CMakeCXXCompilerABI.cpp"
+        cl : command line  error D8021: invalid numeric argument '/Wextra' [C:\\Users\\ludvi\\stdbfork\\SpacetimeDB\\cpp_sdk\\examples\\quickstart_cpp_kv\\build\\CMakeFiles\\CMakeScratch\\TryCompile-w7zxub\\cmTC_5ad37.vcxproj]
+        Done Building Project "C:\\Users\\ludvi\\stdbfork\\SpacetimeDB\\cpp_sdk\\examples\\quickstart_cpp_kv\\build\\CMakeFiles\\CMakeScratch\\TryCompile-w7zxub\\cmTC_5ad37.vcxproj" (default targets) -- FAILED.
+        
+        Build FAILED.
+        
+        "C:\\Users\\ludvi\\stdbfork\\SpacetimeDB\\cpp_sdk\\examples\\quickstart_cpp_kv\\build\\CMakeFiles\\CMakeScratch\\TryCompile-w7zxub\\cmTC_5ad37.vcxproj" (default target) (1) ->
+        (ClCompile target) -> 
+          cl : command line  error D8021: invalid numeric argument '/Wextra' [C:\\Users\\ludvi\\stdbfork\\SpacetimeDB\\cpp_sdk\\examples\\quickstart_cpp_kv\\build\\CMakeFiles\\CMakeScratch\\TryCompile-w7zxub\\cmTC_5ad37.vcxproj]
+        
+            0 Warning(s)
+            1 Error(s)
+        
+        Time Elapsed 00:00:00.20
+        
+      exitCode: 1
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.0/Modules/CMakeTestCXXCompiler.cmake:56 (try_compile)"
+      - "CMakeLists.txt:2 (project)"
+    checks:
+      - "Check for working CXX compiler: C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.38.33130/bin/Hostx64/x64/cl.exe"
+    directories:
+      source: "C:/Users/ludvi/stdbfork/SpacetimeDB/cpp_sdk/examples/quickstart_cpp_kv/build/CMakeFiles/CMakeScratch/TryCompile-xl8cur"
+      binary: "C:/Users/ludvi/stdbfork/SpacetimeDB/cpp_sdk/examples/quickstart_cpp_kv/build/CMakeFiles/CMakeScratch/TryCompile-xl8cur"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: "-O2 -s SIDE_MODULE=1 -s STRICT=1 --no-entry -Wall -Wextra"
+      CMAKE_CXX_FLAGS_DEBUG: ""
+      CMAKE_CXX_SCAN_FOR_MODULES: "OFF"
+      CMAKE_EXE_LINKER_FLAGS: ""
+    buildResult:
+      variable: "CMAKE_CXX_COMPILER_WORKS"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/ludvi/stdbfork/SpacetimeDB/cpp_sdk/examples/quickstart_cpp_kv/build/CMakeFiles/CMakeScratch/TryCompile-xl8cur'
+        
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_cbb83.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        MSBuild version 17.13.19+0d9f5a35a for .NET Framework
+        Build started 2025-06-01 14:23:45.
+        
+        Project "C:\\Users\\ludvi\\stdbfork\\SpacetimeDB\\cpp_sdk\\examples\\quickstart_cpp_kv\\build\\CMakeFiles\\CMakeScratch\\TryCompile-xl8cur\\cmTC_cbb83.vcxproj" on node 1 (default targets).
+        PrepareForBuild:
+          Creating directory "cmTC_cbb83.dir\\Debug\\".
+          Structured output is enabled. The formatting of compiler diagnostics will reflect the error hierarchy. See https://aka.ms/cpp/structured-output for more details.
+          Creating directory "C:\\Users\\ludvi\\stdbfork\\SpacetimeDB\\cpp_sdk\\examples\\quickstart_cpp_kv\\build\\CMakeFiles\\CMakeScratch\\TryCompile-xl8cur\\Debug\\".
+          Creating directory "cmTC_cbb83.dir\\Debug\\cmTC_cbb83.tlog\\".
+        InitializeBuildStatus:
+          Creating "cmTC_cbb83.dir\\Debug\\cmTC_cbb83.tlog\\unsuccessfulbuild" because "AlwaysCreate" was specified.
+          Touching "cmTC_cbb83.dir\\Debug\\cmTC_cbb83.tlog\\unsuccessfulbuild".
+        ClCompile:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\CL.exe /c /Wall /WX- /diagnostics:column /O2 /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_cbb83.dir\\Debug\\\\" /Fd"cmTC_cbb83.dir\\Debug\\vc143.pdb" /external:W4 /Gd /TP /errorReport:queue  -s SIDE_MODULE=1 -s STRICT=1 --no-entry -Wextra "C:\\Users\\ludvi\\stdbfork\\SpacetimeDB\\cpp_sdk\\examples\\quickstart_cpp_kv\\build\\CMakeFiles\\CMakeScratch\\TryCompile-xl8cur\\testCXXCompiler.cxx"
+          Microsoft (R) C/C++ Optimizing Compiler Version 19.38.33145 for x64
+          Copyright (C) Microsoft Corporation.  All rights reserved.
+          cl /c /Wall /WX- /diagnostics:column /O2 /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_cbb83.dir\\Debug\\\\" /Fd"cmTC_cbb83.dir\\Debug\\vc143.pdb" /external:W4 /Gd /TP /errorReport:queue  -s SIDE_MODULE=1 -s STRICT=1 --no-entry -Wextra "C:\\Users\\ludvi\\stdbfork\\SpacetimeDB\\cpp_sdk\\examples\\quickstart_cpp_kv\\build\\CMakeFiles\\CMakeScratch\\TryCompile-xl8cur\\testCXXCompiler.cxx"
+        cl : command line  error D8021: invalid numeric argument '/Wextra' [C:\\Users\\ludvi\\stdbfork\\SpacetimeDB\\cpp_sdk\\examples\\quickstart_cpp_kv\\build\\CMakeFiles\\CMakeScratch\\TryCompile-xl8cur\\cmTC_cbb83.vcxproj]
+        Done Building Project "C:\\Users\\ludvi\\stdbfork\\SpacetimeDB\\cpp_sdk\\examples\\quickstart_cpp_kv\\build\\CMakeFiles\\CMakeScratch\\TryCompile-xl8cur\\cmTC_cbb83.vcxproj" (default targets) -- FAILED.
+        
+        Build FAILED.
+        
+        "C:\\Users\\ludvi\\stdbfork\\SpacetimeDB\\cpp_sdk\\examples\\quickstart_cpp_kv\\build\\CMakeFiles\\CMakeScratch\\TryCompile-xl8cur\\cmTC_cbb83.vcxproj" (default target) (1) ->
+        (ClCompile target) -> 
+          cl : command line  error D8021: invalid numeric argument '/Wextra' [C:\\Users\\ludvi\\stdbfork\\SpacetimeDB\\cpp_sdk\\examples\\quickstart_cpp_kv\\build\\CMakeFiles\\CMakeScratch\\TryCompile-xl8cur\\cmTC_cbb83.vcxproj]
+        
+            0 Warning(s)
+            1 Error(s)
+        
+        Time Elapsed 00:00:00.19
+        
+      exitCode: 1
+...

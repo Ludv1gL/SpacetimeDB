@@ -17,12 +17,12 @@
 
 namespace bsatn {
 
-    class Reader {
-    public:
-        // Construct with a span (non-owning view)
-        explicit Reader(std::span<const std::byte> data_span);
-        // Construct with raw pointer and length (non-owning)
-        Reader(const std::byte* data_ptr, size_t length);
+
+// Forward declaration of Reader class
+class Reader;
+
+// Forward declare the generic deserialize template used by Reader's methods
+template<typename T> T deserialize(Reader& r);
 
         bool read_bool();
         uint8_t read_u8();
