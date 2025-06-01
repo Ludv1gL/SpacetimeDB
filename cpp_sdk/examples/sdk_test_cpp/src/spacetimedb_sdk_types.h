@@ -9,8 +9,8 @@
 #include <stdexcept> // For std::runtime_error in Identity deserialization
 
 // Include actual definitions for Reader and Writer
-#include "../bsatn/reader.h" // Adjusted path assuming bsatn is sibling to sdk directory
-#include "../bsatn/writer.h" // Adjusted path
+#include "reader.h"
+#include "writer.h"
 
 // Forward declarations from bsatn.h - needed for BsatnSerializable usage
 namespace spacetimedb {

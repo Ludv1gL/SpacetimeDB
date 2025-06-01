@@ -1,9 +1,9 @@
 #ifndef SPACETIMEDB_MACROS_H
 #define SPACETIMEDB_MACROS_H
 
-#include "spacetimedb/internal/module_schema.h" // Updated path
-#include "spacetimedb/bsatn/reader.h"           // Added for bsatn::Reader
-#include "spacetimedb/bsatn/writer.h"           // Added for bsatn::Writer
+#include "module_schema.h"
+#include "reader.h"
+#include "writer.h"
 
 #include <string>
 #include <vector>
@@ -71,7 +71,7 @@ inline ::SpacetimeDb::FieldDefinition SPACETIMEDB_FIELD_INTERNAL(const char* nam
                 ::SpacetimeDb::ModuleSchema::instance().register_enum_type( \
                     SPACETIMEDB_STRINGIFY(CppTypeName), \
                     SpacetimeDbEnumNameStr, \
-                    std::vector< ::SpacetimeDb::EnumVariantDefinition> VariantsInitializerList \
+                    VariantsInitializerList \
                 ); \
             } \
         }; \
