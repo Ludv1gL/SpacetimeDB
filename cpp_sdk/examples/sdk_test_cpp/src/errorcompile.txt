@@ -1,42 +1,5 @@
 In file included from sdk_test.cpp:1:
 In file included from .\sdk_test.h:4:
-In file included from ../../../sdk/include\spacetimedb/macros.h:4:
-In file included from ../../../sdk/include\spacetimedb/internal/module_schema.h:4:
-../../../sdk/include\spacetimedb/bsatn/reader.h:53:40: error: invalid use of 'this' outside of a non-static member function
-   53 |                 return deserialize<T>(*this); // Use the generic deserialize
-      |                                        ^
-../../../sdk/include\spacetimedb/bsatn/reader.h:62:25: error: use of undeclared identifier 'max_vector_elements_sanity_check'
-   62 |             if (count > max_vector_elements_sanity_check) {
-      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-../../../sdk/include\spacetimedb/bsatn/reader.h:63:134: error: use of undeclared identifier 'max_vector_elements_sanity_check'
-   63 |                 throw std::runtime_error("Vector element count " + std::to_string(count) + " exceeds sanity limit " + std::to_string(max_vector_elements_sanity_check));
-      |                                                                                                                                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-../../../sdk/include\spacetimedb/bsatn/reader.h:67:47: error: invalid use of 'this' outside of a non-static member function
-   67 |                 vec.push_back(deserialize<T>(*this)); // Use the generic deserialize
-      |                                               ^
-../../../sdk/include\spacetimedb/bsatn/reader.h:77:36: error: invalid use of 'this' outside of a non-static member function
-   77 |             return deserialize<T>(*this);
-      |                                    ^
-../../../sdk/include\spacetimedb/bsatn/reader.h:80:23: error: non-member function cannot have 'const' qualifier
-   80 |         bool is_eos() const;
-      |                       ^~~~~
-../../../sdk/include\spacetimedb/bsatn/reader.h:81:34: error: non-member function cannot have 'const' qualifier
-   81 |         size_t remaining_bytes() const;
-      |                                  ^~~~~
-../../../sdk/include\spacetimedb/bsatn/reader.h:84:5: error: expected unqualified-id
-   84 |     private:
-      |     ^
-../../../sdk/include\spacetimedb/bsatn/reader.h:96:19: error: unknown type name 'Reader'
-   96 |     T deserialize(Reader& r) {
-      |                   ^
-../../../sdk/include\spacetimedb/bsatn/reader.h:116:52: error: unknown type name 'Reader'
-  116 |     template<typename T> T deserialize_specialized(Reader& r);
-      |                                                    ^
-../../../sdk/include\spacetimedb/bsatn/reader.h:118:1: error: extraneous closing brace ('}')
-  118 | } // namespace bsatn
-      | ^
-In file included from sdk_test.cpp:1:
-In file included from .\sdk_test.h:4:
 ../../../sdk/include\spacetimedb/macros.h:279:16: error: unknown type name 'Register'
   279 |         static Register##SanitizedCppTypeName register_##SanitizedCppTypeName##_instance; \
       |                ^
@@ -62,6 +25,86 @@ In file included from .\sdk_test.h:4:
 ../../../sdk/include\spacetimedb/macros.h:286:26: error: use of undeclared identifier 'SPACETIMEDB_XX_SERIALIZE_FIELD'
   286 |             FIELDS_MACRO(SPACETIMEDB_XX_SERIALIZE_FIELD, writer, value); \
       |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../sdk/include\spacetimedb/macros.h:291:16: error: unknown type name 'CppTypeName'
+  291 |         inline CppTypeName deserialize<CppTypeName>(::bsatn::Reader& reader) { \
+      |                ^
+../../../sdk/include\spacetimedb/macros.h:291:40: error: use of undeclared identifier 'CppTypeName'
+  291 |         inline CppTypeName deserialize<CppTypeName>(::bsatn::Reader& reader) { \
+      |                                        ^~~~~~~~~~~
+../../../sdk/include\spacetimedb/macros.h:295:16: error: unknown type name 'CppTypeName'
+  295 |         inline CppTypeName deserialize_##SanitizedCppTypeName(::bsatn::Reader& reader) { \
+      |                ^
+../../../sdk/include\spacetimedb/macros.h:295:40: error: expected ';' after top level declarator
+  295 |         inline CppTypeName deserialize_##SanitizedCppTypeName(::bsatn::Reader& reader) { \
+      |                                        ^
+      |                                        ;
+In file included from sdk_test.cpp:1:
+.\sdk_test.h:47:1: error: no function template matches function template specialization 'deserialize'
+   47 | SPACETIMEDB_TYPE_ENUM(
+      | ^
+../../../sdk/include\spacetimedb/macros.h:90:28: note: expanded from macro 'SPACETIMEDB_TYPE_ENUM'
+   90 |         inline CppTypeName deserialize<CppTypeName>(::bsatn::Reader& reader) { \
+      |                            ^
+In file included from sdk_test.cpp:1:
+.\sdk_test.h:81:9: error: no member named 'SPACETIMEDB_FIELD_INTERNAL' in namespace 'SpacetimeDb'; did you mean simply 'SPACETIMEDB_FIELD_INTERNAL'?
+   81 |         SPACETIMEDB_FIELD("b", ::SpacetimeDb::CoreType::U8, false, false)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../sdk/include\spacetimedb/macros.h:38:5: note: expanded from macro 'SPACETIMEDB_FIELD'
+   38 |     ::SpacetimeDb::SPACETIMEDB_FIELD_INTERNAL(FieldNameStr, FieldCoreType, nullptr, false, IsUniqueBool, IsAutoIncBool)
+      |     ^              ~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../sdk/include\spacetimedb/macros.h:22:39: note: 'SPACETIMEDB_FIELD_INTERNAL' declared here
+   22 | inline ::SpacetimeDb::FieldDefinition SPACETIMEDB_FIELD_INTERNAL(const char* name, ::SpacetimeDb::CoreType core_type, const char* user_defined_name, bool is_optional, bool is_unique_field, bool is_auto_inc_field) {
+      |                                       ^
+In file included from sdk_test.cpp:1:
+.\sdk_test.h:142:9: error: no member named 'SPACETIMEDB_FIELD_INTERNAL' in namespace 'SpacetimeDb'; did you mean simply 'SPACETIMEDB_FIELD_INTERNAL'?
+  142 |         SPACETIMEDB_FIELD("a", ::SpacetimeDb::CoreType::U8, false, false),
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../sdk/include\spacetimedb/macros.h:38:5: note: expanded from macro 'SPACETIMEDB_FIELD'
+   38 |     ::SpacetimeDb::SPACETIMEDB_FIELD_INTERNAL(FieldNameStr, FieldCoreType, nullptr, false, IsUniqueBool, IsAutoIncBool)
+      |     ^              ~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../sdk/include\spacetimedb/macros.h:22:39: note: 'SPACETIMEDB_FIELD_INTERNAL' declared here
+   22 | inline ::SpacetimeDb::FieldDefinition SPACETIMEDB_FIELD_INTERNAL(const char* name, ::SpacetimeDb::CoreType core_type, const char* user_defined_name, bool is_optional, bool is_unique_field, bool is_auto_inc_field) {
+      |                                       ^
+In file included from sdk_test.cpp:1:
+.\sdk_test.h:143:9: error: no member named 'SPACETIMEDB_FIELD_INTERNAL' in namespace 'SpacetimeDb'; did you mean simply 'SPACETIMEDB_FIELD_INTERNAL'?
+  143 |         SPACETIMEDB_FIELD("b", ::SpacetimeDb::CoreType::U16, false, false),
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../sdk/include\spacetimedb/macros.h:38:5: note: expanded from macro 'SPACETIMEDB_FIELD'
+   38 |     ::SpacetimeDb::SPACETIMEDB_FIELD_INTERNAL(FieldNameStr, FieldCoreType, nullptr, false, IsUniqueBool, IsAutoIncBool)
+      |     ^              ~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../sdk/include\spacetimedb/macros.h:22:39: note: 'SPACETIMEDB_FIELD_INTERNAL' declared here
+   22 | inline ::SpacetimeDb::FieldDefinition SPACETIMEDB_FIELD_INTERNAL(const char* name, ::SpacetimeDb::CoreType core_type, const char* user_defined_name, bool is_optional, bool is_unique_field, bool is_auto_inc_field) {
+      |                                       ^
+In file included from sdk_test.cpp:1:
+.\sdk_test.h:144:9: error: no member named 'SPACETIMEDB_FIELD_INTERNAL' in namespace 'SpacetimeDb'; did you mean simply 'SPACETIMEDB_FIELD_INTERNAL'?
+  144 |         SPACETIMEDB_FIELD("c", ::SpacetimeDb::CoreType::U32, false, false),
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../sdk/include\spacetimedb/macros.h:38:5: note: expanded from macro 'SPACETIMEDB_FIELD'
+   38 |     ::SpacetimeDb::SPACETIMEDB_FIELD_INTERNAL(FieldNameStr, FieldCoreType, nullptr, false, IsUniqueBool, IsAutoIncBool)
+      |     ^              ~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../sdk/include\spacetimedb/macros.h:22:39: note: 'SPACETIMEDB_FIELD_INTERNAL' declared here
+   22 | inline ::SpacetimeDb::FieldDefinition SPACETIMEDB_FIELD_INTERNAL(const char* name, ::SpacetimeDb::CoreType core_type, const char* user_defined_name, bool is_optional, bool is_unique_field, bool is_auto_inc_field) {
+      |                                       ^
+In file included from sdk_test.cpp:1:
+.\sdk_test.h:145:9: error: no member named 'SPACETIMEDB_FIELD_INTERNAL' in namespace 'SpacetimeDb'; did you mean simply 'SPACETIMEDB_FIELD_INTERNAL'?
+  145 |         SPACETIMEDB_FIELD("d", ::SpacetimeDb::CoreType::U64, false, false),
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../sdk/include\spacetimedb/macros.h:38:5: note: expanded from macro 'SPACETIMEDB_FIELD'
+   38 |     ::SpacetimeDb::SPACETIMEDB_FIELD_INTERNAL(FieldNameStr, FieldCoreType, nullptr, false, IsUniqueBool, IsAutoIncBool)
+      |     ^              ~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../sdk/include\spacetimedb/macros.h:22:39: note: 'SPACETIMEDB_FIELD_INTERNAL' declared here
+   22 | inline ::SpacetimeDb::FieldDefinition SPACETIMEDB_FIELD_INTERNAL(const char* name, ::SpacetimeDb::CoreType core_type, const char* user_defined_name, bool is_optional, bool is_unique_field, bool is_auto_inc_field) {
+      |                                       ^
+In file included from sdk_test.cpp:1:
+.\sdk_test.h:146:9: error: no member named 'SPACETIMEDB_FIELD_INTERNAL' in namespace 'SpacetimeDb'; did you mean simply 'SPACETIMEDB_FIELD_INTERNAL'?
+  146 |         SPACETIMEDB_FIELD("e", ::SpacetimeDb::CoreType::U128, false, false),
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../sdk/include\spacetimedb/macros.h:38:5: note: expanded from macro 'SPACETIMEDB_FIELD'
+   38 |     ::SpacetimeDb::SPACETIMEDB_FIELD_INTERNAL(FieldNameStr, FieldCoreType, nullptr, false, IsUniqueBool, IsAutoIncBool)
+      |     ^              ~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../sdk/include\spacetimedb/macros.h:22:39: note: 'SPACETIMEDB_FIELD_INTERNAL' declared here
+   22 | inline ::SpacetimeDb::FieldDefinition SPACETIMEDB_FIELD_INTERNAL(const char* name, ::SpacetimeDb::CoreType core_type, const char* user_defined_name, bool is_optional, bool is_unique_field, bool is_auto_inc_field) {
+      |                                       ^
 fatal error: too many errors emitted, stopping now [-ferror-limit=]
 20 errors generated.
-emcc: error: ''C:/Users/ludvi/emsdk/upstream/bin\clang.exe' -target wasm32-unknown-emscripten -fignore-exceptions -mllvm -combiner-global-alias-analysis=false -mllvm -enable-emscripten-sjlj -mllvm -disable-lsr '--sysroot=C:\Users\ludvi\emsdk\upstream\emscripten\cache\sysroot' -DEMSCRIPTEN -Xclang '-iwithsysroot/include\fakesdl' -Xclang '-iwithsysroot/include\compat' -std=c++20 -I../../../sdk/include -c sdk_test.cpp -o 'C:\Users\ludvi\AppData\Local\Temp\emscripten_temp_4a3w7xl_\sdk_test_0.o'' failed (returned 1)
+emcc: error: ''C:/Users/ludvi/emsdk/upstream/bin\clang.exe' -target wasm32-unknown-emscripten -fignore-exceptions -mllvm -combiner-global-alias-analysis=false -mllvm -enable-emscripten-sjlj -mllvm -disable-lsr '--sysroot=C:\Users\ludvi\emsdk\upstream\emscripten\cache\sysroot' -DEMSCRIPTEN -Xclang '-iwithsysroot/include\fakesdl' -Xclang '-iwithsysroot/include\compat' -std=c++20 -I../../../sdk/include -c sdk_test.cpp -o 'C:\Users\ludvi\AppData\Local\Temp\emscripten_temp_7zegc2ze\sdk_test_0.o'' failed (returned 1)
