@@ -83,13 +83,13 @@ namespace sdk_test_cpp {
             this->value = reader.read_string();
             break;
         case sdk_test_cpp::EnumWithPayloadTag::TagIdentity:
-            this->value = ::SpacetimeDb::bsatn::deserialize<SpacetimeDb::sdk::Identity>(reader);
+            this->value = ::SpacetimeDb::bsatn::deserialize<::SpacetimeDb::sdk::Identity>(reader);
             break;
         case sdk_test_cpp::EnumWithPayloadTag::TagConnectionId:
-            this->value = ::SpacetimeDb::bsatn::deserialize<SpacetimeDb::sdk::ConnectionId>(reader);
+            this->value = ::SpacetimeDb::bsatn::deserialize<::SpacetimeDb::sdk::ConnectionId>(reader);
             break;
         case sdk_test_cpp::EnumWithPayloadTag::TagTimestamp:
-            this->value = ::SpacetimeDb::bsatn::deserialize<SpacetimeDb::sdk::Timestamp>(reader);
+            this->value = ::SpacetimeDb::bsatn::deserialize<::SpacetimeDb::sdk::Timestamp>(reader);
             break;
         case sdk_test_cpp::EnumWithPayloadTag::TagBytes: // std::vector<uint8_t>
             // EnumWithPayload variant type is std::vector<uint8_t>
