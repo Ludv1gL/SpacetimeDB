@@ -1,382 +1,413 @@
 In file included from sdk_test.cpp:1:
 In file included from .\sdk_test.h:4:
-../../../sdk/include\spacetimedb/macros.h:286:8: error: unknown type name 'RegisterSanitizedCppTypeName'
-  286 | static SPACETIMEDB_PASTE(Register, SanitizedCppTypeName) SPACETIMEDB_PASTE(register_, SPACETIMEDB_PASTE(SanitizedCppTypeName, _instance)); \
-      |        ^
-../../../sdk/include\spacetimedb/macros.h:21:33: note: expanded from macro 'SPACETIMEDB_PASTE'
-   21 | #define SPACETIMEDB_PASTE(a, b) SPACETIMEDB_PASTE_IMPL(a, b)
-      |                                 ^
-../../../sdk/include\spacetimedb/macros.h:20:38: note: expanded from macro 'SPACETIMEDB_PASTE_IMPL'
-   20 | #define SPACETIMEDB_PASTE_IMPL(a, b) a##b
-      |                                      ^
-<scratch space>:359:1: note: expanded from here
-  359 | RegisterSanitizedCppTypeName
-      | ^
+In file included from ../../../sdk/include\spacetimedb/macros.h:4:
+In file included from ../../../sdk/include\spacetimedb/internal/module_schema.h:4:
+In file included from ../../../sdk/include\spacetimedb/bsatn/reader.h:14:
+In file included from ../../../sdk/include\spacetimedb/sdk/spacetimedb_sdk_types.h:11:
+../../../sdk/include\spacetimedb/bsatn/writer.h:29:34: error: use of undeclared identifier 'spacetimedb'; did you mean 'SpacetimeDB'?
+   29 |         void write_u256_le(const spacetimedb::sdk::u256_placeholder& value);
+      |                                  ^~~~~~~~~~~
+      |                                  SpacetimeDB
+../../../sdk/include\spacetimedb/bsatn\uint128_placeholder.h:11:11: note: 'SpacetimeDB' declared here
+   11 | namespace SpacetimeDB {
+      |           ^
 In file included from sdk_test.cpp:1:
 In file included from .\sdk_test.h:4:
-../../../sdk/include\spacetimedb/macros.h:286:140: error: extraneous closing brace ('}')
-  286 | static SPACETIMEDB_PASTE(Register, SanitizedCppTypeName) SPACETIMEDB_PASTE(register_, SPACETIMEDB_PASTE(SanitizedCppTypeName, _instance)); \
-      |                                                                                                                                            ^
-../../../sdk/include\spacetimedb/macros.h:288:1: error: extraneous closing brace ('}')
-  288 | } \
+In file included from ../../../sdk/include\spacetimedb/macros.h:4:
+In file included from ../../../sdk/include\spacetimedb/internal/module_schema.h:4:
+In file included from ../../../sdk/include\spacetimedb/bsatn/reader.h:14:
+In file included from ../../../sdk/include\spacetimedb/sdk/spacetimedb_sdk_types.h:11:
+../../../sdk/include\spacetimedb/bsatn/writer.h:29:47: error: no member named 'sdk' in namespace 'SpacetimeDB'
+   29 |         void write_u256_le(const spacetimedb::sdk::u256_placeholder& value);
+      |                                  ~~~~~~~~~~~~~^
+../../../sdk/include\spacetimedb/bsatn/writer.h:36:34: error: use of undeclared identifier 'spacetimedb'; did you mean 'SpacetimeDB'?
+   36 |         void write_i256_le(const spacetimedb::sdk::i256_placeholder& value);
+      |                                  ^~~~~~~~~~~
+      |                                  SpacetimeDB
+../../../sdk/include\spacetimedb/bsatn\uint128_placeholder.h:11:11: note: 'SpacetimeDB' declared here
+   11 | namespace SpacetimeDB {
+      |           ^
+In file included from sdk_test.cpp:1:
+In file included from .\sdk_test.h:4:
+In file included from ../../../sdk/include\spacetimedb/macros.h:4:
+In file included from ../../../sdk/include\spacetimedb/internal/module_schema.h:4:
+In file included from ../../../sdk/include\spacetimedb/bsatn/reader.h:14:
+In file included from ../../../sdk/include\spacetimedb/sdk/spacetimedb_sdk_types.h:11:
+../../../sdk/include\spacetimedb/bsatn/writer.h:36:47: error: no member named 'sdk' in namespace 'SpacetimeDB'
+   36 |         void write_i256_le(const spacetimedb::sdk::i256_placeholder& value);
+      |                                  ~~~~~~~~~~~~~^
+../../../sdk/include\spacetimedb/bsatn/writer.h:80:41: error: use of undeclared identifier 'spacetimedb'; did you mean 'SpacetimeDB'?
+   80 |         inline void write_u256_le(const spacetimedb::sdk::u256_placeholder& value) {
+      |                                         ^~~~~~~~~~~
+      |                                         SpacetimeDB
+../../../sdk/include\spacetimedb/bsatn\uint128_placeholder.h:11:11: note: 'SpacetimeDB' declared here
+   11 | namespace SpacetimeDB {
+      |           ^
+In file included from sdk_test.cpp:1:
+In file included from .\sdk_test.h:4:
+In file included from ../../../sdk/include\spacetimedb/macros.h:4:
+In file included from ../../../sdk/include\spacetimedb/internal/module_schema.h:4:
+In file included from ../../../sdk/include\spacetimedb/bsatn/reader.h:14:
+In file included from ../../../sdk/include\spacetimedb/sdk/spacetimedb_sdk_types.h:11:
+../../../sdk/include\spacetimedb/bsatn/writer.h:80:54: error: no member named 'sdk' in namespace 'SpacetimeDB'
+   80 |         inline void write_u256_le(const spacetimedb::sdk::u256_placeholder& value) {
+      |                                         ~~~~~~~~~~~~~^
+../../../sdk/include\spacetimedb/bsatn/writer.h:85:41: error: use of undeclared identifier 'spacetimedb'; did you mean 'SpacetimeDB'?
+   85 |         inline void write_i256_le(const spacetimedb::sdk::i256_placeholder& value) {
+      |                                         ^~~~~~~~~~~
+      |                                         SpacetimeDB
+../../../sdk/include\spacetimedb/bsatn\uint128_placeholder.h:11:11: note: 'SpacetimeDB' declared here
+   11 | namespace SpacetimeDB {
+      |           ^
+In file included from sdk_test.cpp:1:
+In file included from .\sdk_test.h:4:
+In file included from ../../../sdk/include\spacetimedb/macros.h:4:
+In file included from ../../../sdk/include\spacetimedb/internal/module_schema.h:4:
+In file included from ../../../sdk/include\spacetimedb/bsatn/reader.h:14:
+In file included from ../../../sdk/include\spacetimedb/sdk/spacetimedb_sdk_types.h:11:
+../../../sdk/include\spacetimedb/bsatn/writer.h:85:54: error: no member named 'sdk' in namespace 'SpacetimeDB'
+   85 |         inline void write_i256_le(const spacetimedb::sdk::i256_placeholder& value) {
+      |                                         ~~~~~~~~~~~~~^
+../../../sdk/include\spacetimedb/bsatn/writer.h:141:44: error: use of undeclared identifier 'spacetimedb'; did you mean 'SpacetimeDB'?
+  141 |     inline void serialize(Writer& w, const spacetimedb::sdk::u256_placeholder& value) { w.write_u256_le(value); }
+      |                                            ^~~~~~~~~~~
+      |                                            SpacetimeDB
+../../../sdk/include\spacetimedb/bsatn\uint128_placeholder.h:11:11: note: 'SpacetimeDB' declared here
+   11 | namespace SpacetimeDB {
+      |           ^
+In file included from sdk_test.cpp:1:
+In file included from .\sdk_test.h:4:
+In file included from ../../../sdk/include\spacetimedb/macros.h:4:
+In file included from ../../../sdk/include\spacetimedb/internal/module_schema.h:4:
+In file included from ../../../sdk/include\spacetimedb/bsatn/reader.h:14:
+In file included from ../../../sdk/include\spacetimedb/sdk/spacetimedb_sdk_types.h:11:
+../../../sdk/include\spacetimedb/bsatn/writer.h:141:57: error: no member named 'sdk' in namespace 'SpacetimeDB'
+  141 |     inline void serialize(Writer& w, const spacetimedb::sdk::u256_placeholder& value) { w.write_u256_le(value); }
+      |                                            ~~~~~~~~~~~~~^
+../../../sdk/include\spacetimedb/bsatn/writer.h:147:44: error: use of undeclared identifier 'spacetimedb'; did you mean 'SpacetimeDB'?
+  147 |     inline void serialize(Writer& w, const spacetimedb::sdk::i256_placeholder& value) { w.write_i256_le(value); }
+      |                                            ^~~~~~~~~~~
+      |                                            SpacetimeDB
+../../../sdk/include\spacetimedb/bsatn\uint128_placeholder.h:11:11: note: 'SpacetimeDB' declared here
+   11 | namespace SpacetimeDB {
+      |           ^
+In file included from sdk_test.cpp:1:
+In file included from .\sdk_test.h:4:
+In file included from ../../../sdk/include\spacetimedb/macros.h:4:
+In file included from ../../../sdk/include\spacetimedb/internal/module_schema.h:4:
+In file included from ../../../sdk/include\spacetimedb/bsatn/reader.h:14:
+In file included from ../../../sdk/include\spacetimedb/sdk/spacetimedb_sdk_types.h:11:
+../../../sdk/include\spacetimedb/bsatn/writer.h:147:57: error: no member named 'sdk' in namespace 'SpacetimeDB'
+  147 |     inline void serialize(Writer& w, const spacetimedb::sdk::i256_placeholder& value) { w.write_i256_le(value); }
+      |                                            ~~~~~~~~~~~~~^
+In file included from sdk_test.cpp:1:
+In file included from .\sdk_test.h:4:
+In file included from ../../../sdk/include\spacetimedb/macros.h:4:
+In file included from ../../../sdk/include\spacetimedb/internal/module_schema.h:4:
+In file included from ../../../sdk/include\spacetimedb/bsatn/reader.h:14:
+../../../sdk/include\spacetimedb/sdk/spacetimedb_sdk_types.h:49:45: error: no type named 'Reader' in namespace 'bsatn'
+   49 |             void bsatn_deserialize(::bsatn::Reader& reader);
+      |                                    ~~~~~~~~~^
+../../../sdk/include\spacetimedb/sdk/spacetimedb_sdk_types.h:73:45: error: no type named 'Reader' in namespace 'bsatn'
+   73 |             void bsatn_deserialize(::bsatn::Reader& reader);
+      |                                    ~~~~~~~~~^
+../../../sdk/include\spacetimedb/sdk/spacetimedb_sdk_types.h:90:45: error: no type named 'Reader' in namespace 'bsatn'
+   90 |             void bsatn_deserialize(::bsatn::Reader& reader) {
+      |                                    ~~~~~~~~~^
+../../../sdk/include\spacetimedb/sdk/spacetimedb_sdk_types.h:109:45: error: no type named 'Reader' in namespace 'bsatn'
+  109 |             void bsatn_deserialize(::bsatn::Reader& reader) {
+      |                                    ~~~~~~~~~^
+../../../sdk/include\spacetimedb/sdk/spacetimedb_sdk_types.h:125:45: error: no type named 'Reader' in namespace 'bsatn'
+  125 |             void bsatn_deserialize(::bsatn::Reader& reader) {
+      |                                    ~~~~~~~~~^
+../../../sdk/include\spacetimedb/sdk/spacetimedb_sdk_types.h:139:45: error: no type named 'Reader' in namespace 'bsatn'
+  139 |             void bsatn_deserialize(::bsatn::Reader& reader) { *this = reader.read_u256_le(); }
+      |                                    ~~~~~~~~~^
+C:\Users\ludvi\emsdk\upstream\emscripten\cache\sysroot/include/c++/v1\__compare/synth_three_way.h:28:65: note: unnamed type used in template argument was declared here
+   28 | _LIBCPP_HIDE_FROM_ABI inline constexpr auto __synth_three_way = []<class _Tp, class _Up>(const _Tp& __t, const _Up& __u)
+      |                                                                 ^
+In file included from sdk_test.cpp:1:
+In file included from .\sdk_test.h:4:
+In file included from ../../../sdk/include\spacetimedb/macros.h:4:
+In file included from ../../../sdk/include\spacetimedb/internal/module_schema.h:4:
+In file included from ../../../sdk/include\spacetimedb/bsatn/reader.h:14:
+../../../sdk/include\spacetimedb/sdk/spacetimedb_sdk_types.h:149:45: error: no type named 'Reader' in namespace 'bsatn'
+  149 |             void bsatn_deserialize(::bsatn::Reader& reader) { *this = reader.read_i256_le(); }
+      |                                    ~~~~~~~~~^
+In file included from sdk_test.cpp:1:
+In file included from .\sdk_test.h:4:
+In file included from ../../../sdk/include\spacetimedb/macros.h:4:
+In file included from ../../../sdk/include\spacetimedb/internal/module_schema.h:4:
+../../../sdk/include\spacetimedb/bsatn/reader.h:95:14: error: class member cannot be redeclared
+   95 |         void ensure_bytes(size_t count) {
+      |              ^
+../../../sdk/include\spacetimedb/bsatn/reader.h:85:14: note: previous declaration is here
+   85 |         void ensure_bytes(size_t count);
+      |              ^
+../../../sdk/include\spacetimedb/bsatn/reader.h:103:51: error: class member cannot be redeclared
+  103 |         inline spacetimedb::sdk::u256_placeholder read_u256_le() {
+      |                                                   ^
+../../../sdk/include\spacetimedb/bsatn/reader.h:40:44: note: previous declaration is here
+   40 |         spacetimedb::sdk::u256_placeholder read_u256_le();
+      |                                            ^
+../../../sdk/include\spacetimedb/bsatn/reader.h:112:51: error: class member cannot be redeclared
+  112 |         inline spacetimedb::sdk::i256_placeholder read_i256_le() {
+      |                                                   ^
+../../../sdk/include\spacetimedb/bsatn/reader.h:47:44: note: previous declaration is here
+   47 |         spacetimedb::sdk::i256_placeholder read_i256_le();
+      |                                            ^
+In file included from sdk_test.cpp:1:
+In file included from .\sdk_test.h:4:
+../../../sdk/include\spacetimedb/macros.h:129:1: error: extraneous closing brace ('}')
+  129 | } /* SpacetimeDb */
       | ^
-../../../sdk/include\spacetimedb/macros.h:291:5: error: unknown type name 'CppTypeName'
-  291 |     CppTypeName SPACETIMEDB_PASTE(deserialize_, SanitizedCppTypeName)(::bsatn::Reader& reader); \
-      |     ^
-../../../sdk/include\spacetimedb/macros.h:293:58: error: unknown type name 'CppTypeName'
-  293 |     inline void serialize(::bsatn::Writer& writer, const CppTypeName& value) {
-      |                                                          ^
-../../../sdk/include\spacetimedb/macros.h:295:22: error: use of undeclared identifier 'SPACETIMEDB_XX_SERIALIZE_FIELD'
-  295 |         FIELDS_MACRO(SPACETIMEDB_XX_SERIALIZE_FIELD, writer, value); \
+../../../sdk/include\spacetimedb/macros.h:132:7: error: no type named 'CppTypeName' in the global namespace
+  132 |     ::CppTypeName SPACETIMEDB_PASTE(deserialize_, SanitizedCppTypeName)(::bsatn::Reader& reader); \
+      |     ~~^
+../../../sdk/include\spacetimedb/macros.h:134:60: error: no type named 'CppTypeName' in the global namespace
+  134 |     inline void serialize(::bsatn::Writer& writer, const ::CppTypeName& value) {
+      |                                                          ~~^
+../../../sdk/include\spacetimedb/macros.h:140:10: error: no type named 'CppTypeName' in the global namespace
+  140 | inline ::CppTypeName deserialize<CppTypeName>(::bsatn::Reader& reader) {
+      |        ~~^
+../../../sdk/include\spacetimedb/macros.h:140:34: error: use of undeclared identifier 'CppTypeName'
+  140 | inline ::CppTypeName deserialize<CppTypeName>(::bsatn::Reader& reader) {
+      |                                  ^~~~~~~~~~~
+../../../sdk/include\spacetimedb/macros.h:145:22: error: no type named 'CppTypeName' in the global namespace
+  145 |             inline ::CppTypeName SPACETIMEDB_PASTE(deserialize_, SanitizedCppTypeName)(::bsatn::Reader& reader) {
+      |                    ~~^
+../../../sdk/include\spacetimedb/macros.h:148:38: error: no type named 'CppTypeName' in the global namespace
+  148 |                 return static_cast<::CppTypeName>(val); \
+      |                                    ~~^
+../../../sdk/include\spacetimedb/macros.h:295:1: error: extraneous closing brace ('}')
+  295 | } /* SpacetimeDb */
+      | ^
+../../../sdk/include\spacetimedb/macros.h:298:7: error: no type named 'CppTypeName' in the global namespace
+  298 |     ::CppTypeName SPACETIMEDB_PASTE(deserialize_, SanitizedCppTypeName)(::bsatn::Reader& reader); \
+      |     ~~^
+../../../sdk/include\spacetimedb/macros.h:300:60: error: no type named 'CppTypeName' in the global namespace
+  300 |     inline void serialize(::bsatn::Writer& writer, const ::CppTypeName& value) {
+      |                                                          ~~^
+../../../sdk/include\spacetimedb/macros.h:302:22: error: use of undeclared identifier 'SPACETIMEDB_XX_SERIALIZE_FIELD'
+  302 |         FIELDS_MACRO(SPACETIMEDB_XX_SERIALIZE_FIELD, writer, value); \
       |                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-../../../sdk/include\spacetimedb/macros.h:300:8: error: unknown type name 'CppTypeName'
-  300 | inline CppTypeName deserialize<CppTypeName>(::bsatn::Reader& reader) {
-      |        ^
-../../../sdk/include\spacetimedb/macros.h:300:32: error: use of undeclared identifier 'CppTypeName'
-  300 | inline CppTypeName deserialize<CppTypeName>(::bsatn::Reader& reader) {
-      |                                ^~~~~~~~~~~
-../../../sdk/include\spacetimedb/macros.h:305:20: error: unknown type name 'CppTypeName'
-  305 |             inline CppTypeName SPACETIMEDB_PASTE(deserialize_, SanitizedCppTypeName)(::bsatn::Reader& reader) {
-      |                    ^
-../../../sdk/include\spacetimedb/macros.h:307:17: error: unknown type name 'CppTypeName'
-  307 |                 CppTypeName obj; \
-      |                 ^
-../../../sdk/include\spacetimedb/macros.h:308:30: error: use of undeclared identifier 'SPACETIMEDB_XX_DESERIALIZE_FIELD'
-  308 |                 FIELDS_MACRO(SPACETIMEDB_XX_DESERIALIZE_FIELD, reader, obj); \
+../../../sdk/include\spacetimedb/macros.h:307:10: error: no type named 'CppTypeName' in the global namespace
+  307 | inline ::CppTypeName deserialize<CppTypeName>(::bsatn::Reader& reader) {
+      |        ~~^
+../../../sdk/include\spacetimedb/macros.h:307:34: error: use of undeclared identifier 'CppTypeName'
+  307 | inline ::CppTypeName deserialize<CppTypeName>(::bsatn::Reader& reader) {
+      |                                  ^~~~~~~~~~~
+../../../sdk/include\spacetimedb/macros.h:312:22: error: no type named 'CppTypeName' in the global namespace
+  312 |             inline ::CppTypeName SPACETIMEDB_PASTE(deserialize_, SanitizedCppTypeName)(::bsatn::Reader& reader) {
+      |                    ~~^
+../../../sdk/include\spacetimedb/macros.h:314:19: error: no type named 'CppTypeName' in the global namespace
+  314 |                 ::CppTypeName obj; \
+      |                 ~~^
+../../../sdk/include\spacetimedb/macros.h:315:30: error: use of undeclared identifier 'SPACETIMEDB_XX_DESERIALIZE_FIELD'
+  315 |                 FIELDS_MACRO(SPACETIMEDB_XX_DESERIALIZE_FIELD, reader, obj); \
       |                              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 In file included from sdk_test.cpp:1:
-.\sdk_test.h:47:5: error: no function template matches function template specialization 'deserialize'
-   47 |     SPACETIMEDB_TYPE_ENUM(
-      |     ^
-../../../sdk/include\spacetimedb/macros.h:134:28: note: expanded from macro 'SPACETIMEDB_TYPE_ENUM'
-  134 |         inline CppTypeName deserialize<CppTypeName>(::bsatn::Reader& reader) { \
-      |                            ^
-In file included from sdk_test.cpp:1:
-.\sdk_test.h:97:27: error: no type named 'u128' in namespace 'spacetimedb::sdk'
-   97 |         spacetimedb::sdk::u128 e; // Corrected type
-      |         ~~~~~~~~~~~~~~~~~~^
-.\sdk_test.h:98:27: error: no type named 'u256' in namespace 'spacetimedb::sdk'
-   98 |         spacetimedb::sdk::u256 f; // Corrected type
-      |         ~~~~~~~~~~~~~~~~~~^
-.\sdk_test.h:103:27: error: no type named 'i128' in namespace 'spacetimedb::sdk'
-  103 |         spacetimedb::sdk::i128 k; // Corrected type
-      |         ~~~~~~~~~~~~~~~~~~^
-.\sdk_test.h:104:27: error: no type named 'i256' in namespace 'spacetimedb::sdk'
-  104 |         spacetimedb::sdk::i256 l; // Corrected type
-      |         ~~~~~~~~~~~~~~~~~~^
-.\sdk_test.h:170:39: error: no member named 'u128' in namespace 'spacetimedb::sdk'
-  170 |         std::vector<spacetimedb::sdk::u128> e;
-      |                                       ^~~~
-.\sdk_test.h:171:39: error: no member named 'u256' in namespace 'spacetimedb::sdk'
-  171 |         std::vector<spacetimedb::sdk::u256> f;
-      |                                       ^~~~
-.\sdk_test.h:176:39: error: no member named 'i128' in namespace 'spacetimedb::sdk'
-  176 |         std::vector<spacetimedb::sdk::i128> k;
-      |                                       ^~~~
-.\sdk_test.h:177:39: error: no member named 'i256' in namespace 'spacetimedb::sdk'
-  177 |         std::vector<spacetimedb::sdk::i256> l;
-      |                                       ^~~~
-.\sdk_test.h:250:27: error: no type named 'Writer' in namespace 'SpacetimeDb::ModuleRegistration::sdk_test_cpp::bsatn'; did you mean '::bsatn::Writer'?
-  250 |     inline void serialize(bsatn::Writer& writer, const EnumWithPayloadTag& value) {
-      |                           ^~~~~~~~~~~~~
-      |                           ::bsatn::Writer
-../../../sdk/include\spacetimedb/bsatn/writer.h:18:7: note: '::bsatn::Writer' declared here
-   18 | class Writer {
-      |       ^
-In file included from sdk_test.cpp:1:
-.\sdk_test.h:253:62: error: no type named 'Reader' in namespace 'SpacetimeDb::ModuleRegistration::sdk_test_cpp::bsatn'; did you mean '::bsatn::Reader'?
-  253 |     inline EnumWithPayloadTag deserialize_EnumWithPayloadTag(bsatn::Reader& reader) {
-      |                                                              ^~~~~~~~~~~~~
-      |                                                              ::bsatn::Reader
-../../../sdk/include\spacetimedb/internal/module_schema.h:14:25: note: '::bsatn::Reader' declared here
-   14 | namespace bsatn { class Reader; } // Already included, but good practice if it were only forward needed by this header
-      |                         ^
-In file included from sdk_test.cpp:1:
-.\sdk_test.h:261:26: error: no type named 'EnumWithPayloadTag' in namespace 'SpacetimeDb::ModuleRegistration::sdk_test_cpp'
-  261 |     inline sdk_test_cpp::EnumWithPayloadTag deserialize<sdk_test_cpp::EnumWithPayloadTag>(Reader& reader) {
+.\sdk_test.h:261:26: error: no type named 'EnumWithPayloadTag' in namespace 'SpacetimeDb::SpacetimeDb::sdk_test_cpp'
+  261 |     inline sdk_test_cpp::EnumWithPayloadTag deserialize<sdk_test_cpp::EnumWithPayloadTag>(::bsatn::Reader& reader) {
       |            ~~~~~~~~~~~~~~^
-.\sdk_test.h:261:71: error: no member named 'EnumWithPayloadTag' in namespace 'SpacetimeDb::ModuleRegistration::sdk_test_cpp'
-  261 |     inline sdk_test_cpp::EnumWithPayloadTag deserialize<sdk_test_cpp::EnumWithPayloadTag>(Reader& reader) {
+.\sdk_test.h:261:71: error: no member named 'EnumWithPayloadTag' in namespace 'SpacetimeDb::SpacetimeDb::sdk_test_cpp'
+  261 |     inline sdk_test_cpp::EnumWithPayloadTag deserialize<sdk_test_cpp::EnumWithPayloadTag>(::bsatn::Reader& reader) {
       |                                                                       ^~~~~~~~~~~~~~~~~~
-.\sdk_test.h:261:91: error: unknown type name 'Reader'
-  261 |     inline sdk_test_cpp::EnumWithPayloadTag deserialize<sdk_test_cpp::EnumWithPayloadTag>(Reader& reader) {
-      |                                                                                           ^
-.\sdk_test.h:268:9: error: unknown type name 'EnumWithPayloadTag'; did you mean 'EnumWithPayload'?
-  268 |         EnumWithPayloadTag tag;
-      |         ^~~~~~~~~~~~~~~~~~
-      |         EnumWithPayload
+.\sdk_test.h:268:23: error: no type named 'EnumWithPayloadTag' in namespace 'SpacetimeDb::SpacetimeDb::sdk_test_cpp::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::sdk_test_cpp'; did you mean 'EnumWithPayload'?
+  268 |         sdk_test_cpp::EnumWithPayloadTag tag;
+      |         ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+      |                       EnumWithPayload
 .\sdk_test.h:267:12: note: 'EnumWithPayload' declared here
   267 |     struct EnumWithPayload {
       |            ^
-.\sdk_test.h:268:28: error: field has incomplete type 'EnumWithPayload'
-  268 |         EnumWithPayloadTag tag;
-      |                            ^
-.\sdk_test.h:267:12: note: definition of 'SpacetimeDb::ModuleRegistration::sdk_test_cpp::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::sdk_test_cpp::EnumWithPayload' is not complete until the closing '}'
+.\sdk_test.h:268:42: error: field has incomplete type 'sdk_test_cpp::EnumWithPayload'
+  268 |         sdk_test_cpp::EnumWithPayloadTag tag;
+      |                                          ^
+.\sdk_test.h:267:12: note: definition of 'SpacetimeDb::SpacetimeDb::sdk_test_cpp::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::sdk_test_cpp::EnumWithPayload' is not complete until the closing '}'
   267 |     struct EnumWithPayload {
       |            ^
-.\sdk_test.h:270:70: error: no member named 'u128' in namespace 'spacetimedb::sdk'
-  270 |             uint8_t, uint16_t, uint32_t, uint64_t, spacetimedb::sdk::u128, spacetimedb::sdk::u256,
-      |                                                                      ^~~~
-.\sdk_test.h:273:62: error: expected member name or ';' after declaration specifiers
-  269 |         std::variant<
-      |         ~~~~~~~~~~~~~
-  270 |             uint8_t, uint16_t, uint32_t, uint64_t, spacetimedb::sdk::u128, spacetimedb::sdk::u256,
-      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  271 |             int8_t, int16_t, int32_t, int64_t, spacetimedb::sdk::i128, spacetimedb::sdk::i256,
-      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  272 |             bool, float, double, std::string, spacetimedb::sdk::Identity, spacetimedb::sdk::ConnectionId,
-      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  273 |             spacetimedb::sdk::Timestamp, std::vector<uint8_t>, std::vector<int32_t>,
-      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
-.\sdk_test.h:278:30: error: no type named 'Writer' in namespace 'SpacetimeDb::ModuleRegistration::sdk_test_cpp::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::bsatn'; did you mean '::bsatn::Writer'?
-  278 |         void bsatn_serialize(bsatn::Writer& writer) const;
-      |                              ^~~~~~~~~~~~~
-      |                              ::bsatn::Writer
-../../../sdk/include\spacetimedb/bsatn/writer.h:18:7: note: '::bsatn::Writer' declared here
-   18 | class Writer {
-      |       ^
-In file included from sdk_test.cpp:1:
-.\sdk_test.h:279:32: error: no type named 'Reader' in namespace 'SpacetimeDb::ModuleRegistration::sdk_test_cpp::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::bsatn'; did you mean '::bsatn::Reader'?
-  279 |         void bsatn_deserialize(bsatn::Reader& reader);
-      |                                ^~~~~~~~~~~~~
-      |                                ::bsatn::Reader
-../../../sdk/include\spacetimedb/internal/module_schema.h:14:25: note: '::bsatn::Reader' declared here
-   14 | namespace bsatn { class Reader; } // Already included, but good practice if it were only forward needed by this header
-      |                         ^
-In file included from sdk_test.cpp:1:
-.\sdk_test.h:290:41: error: no type named 'EnumWithPayloadTag' in namespace 'SpacetimeDb::ModuleRegistration::sdk_test_cpp::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::sdk_test_cpp'
-  290 |     SPACETIMEDB_TYPE_ENUM(sdk_test_cpp::EnumWithPayloadTag, sdk_test_cpp_EnumWithPayloadTag, "EnumWithPayloadTag", ({
-      |                           ~~~~~~~~~~~~~~^
-../../../sdk/include\spacetimedb/macros.h:127:9: note: expanded from macro 'SPACETIMEDB_TYPE_ENUM'
-  127 |         CppTypeName SPACETIMEDB_PASTE(deserialize_, SanitizedCppTypeName)(::bsatn::Reader& reader); \
-      |         ^~~~~~~~~~~
-In file included from sdk_test.cpp:1:
-.\sdk_test.h:290:41: error: no type named 'EnumWithPayloadTag' in namespace 'SpacetimeDb::ModuleRegistration::sdk_test_cpp::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::sdk_test_cpp'
-  290 |     SPACETIMEDB_TYPE_ENUM(sdk_test_cpp::EnumWithPayloadTag, sdk_test_cpp_EnumWithPayloadTag, "EnumWithPayloadTag", ({
-      |                           ~~~~~~~~~~~~~~^
-../../../sdk/include\spacetimedb/macros.h:129:62: note: expanded from macro 'SPACETIMEDB_TYPE_ENUM'
-  129 |         inline void serialize(::bsatn::Writer& writer, const CppTypeName& value) { \
-      |                                                              ^~~~~~~~~~~
-In file included from sdk_test.cpp:1:
-.\sdk_test.h:290:41: error: no type named 'EnumWithPayloadTag' in namespace 'SpacetimeDb::ModuleRegistration::sdk_test_cpp::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::sdk_test_cpp'
-  290 |     SPACETIMEDB_TYPE_ENUM(sdk_test_cpp::EnumWithPayloadTag, sdk_test_cpp_EnumWithPayloadTag, "EnumWithPayloadTag", ({
-      |                           ~~~~~~~~~~~~~~^
-../../../sdk/include\spacetimedb/macros.h:134:16: note: expanded from macro 'SPACETIMEDB_TYPE_ENUM'
-  134 |         inline CppTypeName deserialize<CppTypeName>(::bsatn::Reader& reader) { \
-      |                ^~~~~~~~~~~
-In file included from sdk_test.cpp:1:
-.\sdk_test.h:290:41: error: no member named 'EnumWithPayloadTag' in namespace 'SpacetimeDb::ModuleRegistration::sdk_test_cpp::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::sdk_test_cpp'
-  290 |     SPACETIMEDB_TYPE_ENUM(sdk_test_cpp::EnumWithPayloadTag, sdk_test_cpp_EnumWithPayloadTag, "EnumWithPayloadTag", ({
-      |                                         ^~~~~~~~~~~~~~~~~~
-.\sdk_test.h:290:41: error: no type named 'EnumWithPayloadTag' in namespace 'SpacetimeDb::ModuleRegistration::sdk_test_cpp::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::sdk_test_cpp'
-  290 |     SPACETIMEDB_TYPE_ENUM(sdk_test_cpp::EnumWithPayloadTag, sdk_test_cpp_EnumWithPayloadTag, "EnumWithPayloadTag", ({
-      |                           ~~~~~~~~~~~~~~^
-../../../sdk/include\spacetimedb/macros.h:138:16: note: expanded from macro 'SPACETIMEDB_TYPE_ENUM'
-  138 |         inline CppTypeName SPACETIMEDB_PASTE(deserialize_, SanitizedCppTypeName)(::bsatn::Reader& reader) { \
-      |                ^~~~~~~~~~~
-In file included from sdk_test.cpp:1:
-.\sdk_test.h:290:41: error: no type named 'EnumWithPayloadTag' in namespace 'SpacetimeDb::ModuleRegistration::sdk_test_cpp::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::sdk_test_cpp'
-  290 |     SPACETIMEDB_TYPE_ENUM(sdk_test_cpp::EnumWithPayloadTag, sdk_test_cpp_EnumWithPayloadTag, "EnumWithPayloadTag", ({
-      |                           ~~~~~~~~~~~~~~^
-../../../sdk/include\spacetimedb/macros.h:140:32: note: expanded from macro 'SPACETIMEDB_TYPE_ENUM'
-  140 |             return static_cast<CppTypeName>(val); \
-      |                                ^~~~~~~~~~~
-In file included from sdk_test.cpp:1:
-.\sdk_test.h:366:27: error: no type named 'u128' in namespace 'spacetimedb::sdk'
-  366 |         spacetimedb::sdk::u128 n;
-      |         ~~~~~~~~~~~~~~~~~~^
-.\sdk_test.h:376:27: error: no type named 'u256' in namespace 'spacetimedb::sdk'
-  376 |         spacetimedb::sdk::u256 n;
-      |         ~~~~~~~~~~~~~~~~~~^
-.\sdk_test.h:426:27: error: no type named 'i128' in namespace 'spacetimedb::sdk'
-  426 |         spacetimedb::sdk::i128 n;
-      |         ~~~~~~~~~~~~~~~~~~^
-.\sdk_test.h:436:27: error: no type named 'i256' in namespace 'spacetimedb::sdk'
-  436 |         spacetimedb::sdk::i256 n;
-      |         ~~~~~~~~~~~~~~~~~~^
-.\sdk_test.h:583:35: error: no member named 'CoreType' in namespace 'SpacetimeDb::ModuleRegistration::sdk_test_cpp::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::sdk_test_cpp::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb'; did you mean simply 'CoreType'?
+.\sdk_test.h:583:35: error: no member named 'CoreType' in namespace 'SpacetimeDb::SpacetimeDb::sdk_test_cpp::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::sdk_test_cpp::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb'; did you mean simply 'CoreType'?
   583 |         ({ SPACETIMEDB_FIELD("n", SpacetimeDb::CoreType::U8, false, false) }) // Schema for element type
       |                                   ^~~~~~~~~~~~~~~~~~~~~
       |                                   CoreType
 ../../../sdk/include\spacetimedb/macros.h:45:48: note: expanded from macro 'SPACETIMEDB_FIELD'
    45 |     ::SPACETIMEDB_FIELD_INTERNAL(FieldNameStr, FieldCoreType, nullptr, false, IsUniqueBool, IsAutoIncBool)
       |                                                ^
-../../../sdk/include\spacetimedb/macros.h:281:66: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
-  281 |                     std::vector< ::SpacetimeDb::FieldDefinition> RegFieldsInitializerList \
+../../../sdk/include\spacetimedb/macros.h:289:66: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  289 |                     std::vector< ::SpacetimeDb::FieldDefinition> RegFieldsInitializerList \
       |                                                                  ^
 ../../../sdk/include\spacetimedb/internal/module_schema.h:35:16: note: 'CoreType' declared here
    35 |     enum class CoreType {
       |                ^
 In file included from sdk_test.cpp:1:
-.\sdk_test.h:590:35: error: no member named 'CoreType' in namespace 'SpacetimeDb::ModuleRegistration::sdk_test_cpp::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::sdk_test_cpp::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb'; did you mean simply 'CoreType'?
+.\sdk_test.h:590:35: error: no member named 'CoreType' in namespace 'SpacetimeDb::SpacetimeDb::sdk_test_cpp::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::sdk_test_cpp::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb'; did you mean simply 'CoreType'?
   590 |         ({ SPACETIMEDB_FIELD("n", SpacetimeDb::CoreType::String, false, false) })
       |                                   ^~~~~~~~~~~~~~~~~~~~~
       |                                   CoreType
 ../../../sdk/include\spacetimedb/macros.h:45:48: note: expanded from macro 'SPACETIMEDB_FIELD'
    45 |     ::SPACETIMEDB_FIELD_INTERNAL(FieldNameStr, FieldCoreType, nullptr, false, IsUniqueBool, IsAutoIncBool)
       |                                                ^
-../../../sdk/include\spacetimedb/macros.h:281:66: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
-  281 |                     std::vector< ::SpacetimeDb::FieldDefinition> RegFieldsInitializerList \
+../../../sdk/include\spacetimedb/macros.h:289:66: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  289 |                     std::vector< ::SpacetimeDb::FieldDefinition> RegFieldsInitializerList \
       |                                                                  ^
 ../../../sdk/include\spacetimedb/internal/module_schema.h:35:16: note: 'CoreType' declared here
    35 |     enum class CoreType {
       |                ^
 In file included from sdk_test.cpp:1:
-.\sdk_test.h:624:41: error: no member named 'CoreType' in namespace 'SpacetimeDb::ModuleRegistration::sdk_test_cpp::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::sdk_test_cpp::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb'; did you mean simply 'CoreType'?
+.\sdk_test.h:624:41: error: no member named 'CoreType' in namespace 'SpacetimeDb::SpacetimeDb::sdk_test_cpp::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::sdk_test_cpp::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb'; did you mean simply 'CoreType'?
   624 |             SPACETIMEDB_FIELD("row_id", SpacetimeDb::CoreType::U64, false, true),
       |                                         ^~~~~~~~~~~~~~~~~~~~~
       |                                         CoreType
 ../../../sdk/include\spacetimedb/macros.h:45:48: note: expanded from macro 'SPACETIMEDB_FIELD'
    45 |     ::SPACETIMEDB_FIELD_INTERNAL(FieldNameStr, FieldCoreType, nullptr, false, IsUniqueBool, IsAutoIncBool)
       |                                                ^
-../../../sdk/include\spacetimedb/macros.h:281:66: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
-  281 |                     std::vector< ::SpacetimeDb::FieldDefinition> RegFieldsInitializerList \
+../../../sdk/include\spacetimedb/macros.h:289:66: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  289 |                     std::vector< ::SpacetimeDb::FieldDefinition> RegFieldsInitializerList \
       |                                                                  ^
 ../../../sdk/include\spacetimedb/internal/module_schema.h:35:16: note: 'CoreType' declared here
    35 |     enum class CoreType {
       |                ^
 In file included from sdk_test.cpp:1:
-.\sdk_test.h:625:36: error: no member named 'CoreType' in namespace 'SpacetimeDb::ModuleRegistration::sdk_test_cpp::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::sdk_test_cpp::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb'; did you mean simply 'CoreType'?
+.\sdk_test.h:625:36: error: no member named 'CoreType' in namespace 'SpacetimeDb::SpacetimeDb::sdk_test_cpp::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::sdk_test_cpp::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb'; did you mean simply 'CoreType'?
   625 |             SPACETIMEDB_FIELD("n", SpacetimeDb::CoreType::U8, true, false),
       |                                    ^~~~~~~~~~~~~~~~~~~~~
       |                                    CoreType
 ../../../sdk/include\spacetimedb/macros.h:45:48: note: expanded from macro 'SPACETIMEDB_FIELD'
    45 |     ::SPACETIMEDB_FIELD_INTERNAL(FieldNameStr, FieldCoreType, nullptr, false, IsUniqueBool, IsAutoIncBool)
       |                                                ^
-../../../sdk/include\spacetimedb/macros.h:281:66: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
-  281 |                     std::vector< ::SpacetimeDb::FieldDefinition> RegFieldsInitializerList \
+../../../sdk/include\spacetimedb/macros.h:289:66: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  289 |                     std::vector< ::SpacetimeDb::FieldDefinition> RegFieldsInitializerList \
       |                                                                  ^
 ../../../sdk/include\spacetimedb/internal/module_schema.h:35:16: note: 'CoreType' declared here
    35 |     enum class CoreType {
       |                ^
 In file included from sdk_test.cpp:1:
-.\sdk_test.h:626:39: error: no member named 'CoreType' in namespace 'SpacetimeDb::ModuleRegistration::sdk_test_cpp::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::sdk_test_cpp::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb'; did you mean simply 'CoreType'?
+.\sdk_test.h:626:39: error: no member named 'CoreType' in namespace 'SpacetimeDb::SpacetimeDb::sdk_test_cpp::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::sdk_test_cpp::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb'; did you mean simply 'CoreType'?
   626 |             SPACETIMEDB_FIELD("data", SpacetimeDb::CoreType::I32, false, false)
       |                                       ^~~~~~~~~~~~~~~~~~~~~
       |                                       CoreType
 ../../../sdk/include\spacetimedb/macros.h:45:48: note: expanded from macro 'SPACETIMEDB_FIELD'
    45 |     ::SPACETIMEDB_FIELD_INTERNAL(FieldNameStr, FieldCoreType, nullptr, false, IsUniqueBool, IsAutoIncBool)
       |                                                ^
-../../../sdk/include\spacetimedb/macros.h:281:66: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
-  281 |                     std::vector< ::SpacetimeDb::FieldDefinition> RegFieldsInitializerList \
+../../../sdk/include\spacetimedb/macros.h:289:66: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  289 |                     std::vector< ::SpacetimeDb::FieldDefinition> RegFieldsInitializerList \
       |                                                                  ^
 ../../../sdk/include\spacetimedb/internal/module_schema.h:35:16: note: 'CoreType' declared here
    35 |     enum class CoreType {
       |                ^
 In file included from sdk_test.cpp:1:
-.\sdk_test.h:643:41: error: no member named 'CoreType' in namespace 'SpacetimeDb::ModuleRegistration::sdk_test_cpp::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::sdk_test_cpp::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb'; did you mean simply 'CoreType'?
+.\sdk_test.h:643:41: error: no member named 'CoreType' in namespace 'SpacetimeDb::SpacetimeDb::sdk_test_cpp::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::sdk_test_cpp::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb'; did you mean simply 'CoreType'?
   643 |             SPACETIMEDB_FIELD("row_id", SpacetimeDb::CoreType::U64, false, true),
       |                                         ^~~~~~~~~~~~~~~~~~~~~
       |                                         CoreType
 ../../../sdk/include\spacetimedb/macros.h:45:48: note: expanded from macro 'SPACETIMEDB_FIELD'
    45 |     ::SPACETIMEDB_FIELD_INTERNAL(FieldNameStr, FieldCoreType, nullptr, false, IsUniqueBool, IsAutoIncBool)
       |                                                ^
-../../../sdk/include\spacetimedb/macros.h:281:66: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
-  281 |                     std::vector< ::SpacetimeDb::FieldDefinition> RegFieldsInitializerList \
+../../../sdk/include\spacetimedb/macros.h:289:66: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  289 |                     std::vector< ::SpacetimeDb::FieldDefinition> RegFieldsInitializerList \
       |                                                                  ^
 ../../../sdk/include\spacetimedb/internal/module_schema.h:35:16: note: 'CoreType' declared here
    35 |     enum class CoreType {
       |                ^
 In file included from sdk_test.cpp:1:
-.\sdk_test.h:644:36: error: no member named 'CoreType' in namespace 'SpacetimeDb::ModuleRegistration::sdk_test_cpp::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::sdk_test_cpp::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb'; did you mean simply 'CoreType'?
+.\sdk_test.h:644:36: error: no member named 'CoreType' in namespace 'SpacetimeDb::SpacetimeDb::sdk_test_cpp::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::sdk_test_cpp::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb'; did you mean simply 'CoreType'?
   644 |             SPACETIMEDB_FIELD("s", SpacetimeDb::CoreType::String, true, false),
       |                                    ^~~~~~~~~~~~~~~~~~~~~
       |                                    CoreType
 ../../../sdk/include\spacetimedb/macros.h:45:48: note: expanded from macro 'SPACETIMEDB_FIELD'
    45 |     ::SPACETIMEDB_FIELD_INTERNAL(FieldNameStr, FieldCoreType, nullptr, false, IsUniqueBool, IsAutoIncBool)
       |                                                ^
-../../../sdk/include\spacetimedb/macros.h:281:66: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
-  281 |                     std::vector< ::SpacetimeDb::FieldDefinition> RegFieldsInitializerList \
+../../../sdk/include\spacetimedb/macros.h:289:66: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  289 |                     std::vector< ::SpacetimeDb::FieldDefinition> RegFieldsInitializerList \
       |                                                                  ^
 ../../../sdk/include\spacetimedb/internal/module_schema.h:35:16: note: 'CoreType' declared here
    35 |     enum class CoreType {
       |                ^
 In file included from sdk_test.cpp:1:
-.\sdk_test.h:645:39: error: no member named 'CoreType' in namespace 'SpacetimeDb::ModuleRegistration::sdk_test_cpp::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::sdk_test_cpp::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb'; did you mean simply 'CoreType'?
+.\sdk_test.h:645:39: error: no member named 'CoreType' in namespace 'SpacetimeDb::SpacetimeDb::sdk_test_cpp::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::sdk_test_cpp::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb'; did you mean simply 'CoreType'?
   645 |             SPACETIMEDB_FIELD("data", SpacetimeDb::CoreType::I32, false, false)
       |                                       ^~~~~~~~~~~~~~~~~~~~~
       |                                       CoreType
 ../../../sdk/include\spacetimedb/macros.h:45:48: note: expanded from macro 'SPACETIMEDB_FIELD'
    45 |     ::SPACETIMEDB_FIELD_INTERNAL(FieldNameStr, FieldCoreType, nullptr, false, IsUniqueBool, IsAutoIncBool)
       |                                                ^
-../../../sdk/include\spacetimedb/macros.h:281:66: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
-  281 |                     std::vector< ::SpacetimeDb::FieldDefinition> RegFieldsInitializerList \
+../../../sdk/include\spacetimedb/macros.h:289:66: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  289 |                     std::vector< ::SpacetimeDb::FieldDefinition> RegFieldsInitializerList \
       |                                                                  ^
 ../../../sdk/include\spacetimedb/internal/module_schema.h:35:16: note: 'CoreType' declared here
    35 |     enum class CoreType {
       |                ^
 In file included from sdk_test.cpp:1:
-.\sdk_test.h:662:41: error: no member named 'CoreType' in namespace 'SpacetimeDb::ModuleRegistration::sdk_test_cpp::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::sdk_test_cpp::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb'; did you mean simply 'CoreType'?
+.\sdk_test.h:662:41: error: no member named 'CoreType' in namespace 'SpacetimeDb::SpacetimeDb::sdk_test_cpp::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::sdk_test_cpp::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb'; did you mean simply 'CoreType'?
   662 |             SPACETIMEDB_FIELD("row_id", SpacetimeDb::CoreType::U64, false, true),
       |                                         ^~~~~~~~~~~~~~~~~~~~~
       |                                         CoreType
 ../../../sdk/include\spacetimedb/macros.h:45:48: note: expanded from macro 'SPACETIMEDB_FIELD'
    45 |     ::SPACETIMEDB_FIELD_INTERNAL(FieldNameStr, FieldCoreType, nullptr, false, IsUniqueBool, IsAutoIncBool)
       |                                                ^
-../../../sdk/include\spacetimedb/macros.h:281:66: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
-  281 |                     std::vector< ::SpacetimeDb::FieldDefinition> RegFieldsInitializerList \
+../../../sdk/include\spacetimedb/macros.h:289:66: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  289 |                     std::vector< ::SpacetimeDb::FieldDefinition> RegFieldsInitializerList \
       |                                                                  ^
 ../../../sdk/include\spacetimedb/internal/module_schema.h:35:16: note: 'CoreType' declared here
    35 |     enum class CoreType {
       |                ^
 In file included from sdk_test.cpp:1:
-.\sdk_test.h:664:39: error: no member named 'CoreType' in namespace 'SpacetimeDb::ModuleRegistration::sdk_test_cpp::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::sdk_test_cpp::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb'; did you mean simply 'CoreType'?
+.\sdk_test.h:664:39: error: no member named 'CoreType' in namespace 'SpacetimeDb::SpacetimeDb::sdk_test_cpp::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::sdk_test_cpp::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb'; did you mean simply 'CoreType'?
   664 |             SPACETIMEDB_FIELD("data", SpacetimeDb::CoreType::I32, false, false)
       |                                       ^~~~~~~~~~~~~~~~~~~~~
       |                                       CoreType
 ../../../sdk/include\spacetimedb/macros.h:45:48: note: expanded from macro 'SPACETIMEDB_FIELD'
    45 |     ::SPACETIMEDB_FIELD_INTERNAL(FieldNameStr, FieldCoreType, nullptr, false, IsUniqueBool, IsAutoIncBool)
       |                                                ^
-../../../sdk/include\spacetimedb/macros.h:281:66: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
-  281 |                     std::vector< ::SpacetimeDb::FieldDefinition> RegFieldsInitializerList \
+../../../sdk/include\spacetimedb/macros.h:289:66: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  289 |                     std::vector< ::SpacetimeDb::FieldDefinition> RegFieldsInitializerList \
       |                                                                  ^
 ../../../sdk/include\spacetimedb/internal/module_schema.h:35:16: note: 'CoreType' declared here
    35 |     enum class CoreType {
       |                ^
 In file included from sdk_test.cpp:1:
-.\sdk_test.h:681:41: error: no member named 'CoreType' in namespace 'SpacetimeDb::ModuleRegistration::sdk_test_cpp::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::sdk_test_cpp::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb'; did you mean simply 'CoreType'?
+.\sdk_test.h:681:41: error: no member named 'CoreType' in namespace 'SpacetimeDb::SpacetimeDb::sdk_test_cpp::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::sdk_test_cpp::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb'; did you mean simply 'CoreType'?
   681 |             SPACETIMEDB_FIELD("row_id", SpacetimeDb::CoreType::U64, false, true),
       |                                         ^~~~~~~~~~~~~~~~~~~~~
       |                                         CoreType
 ../../../sdk/include\spacetimedb/macros.h:45:48: note: expanded from macro 'SPACETIMEDB_FIELD'
    45 |     ::SPACETIMEDB_FIELD_INTERNAL(FieldNameStr, FieldCoreType, nullptr, false, IsUniqueBool, IsAutoIncBool)
       |                                                ^
-../../../sdk/include\spacetimedb/macros.h:281:66: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
-  281 |                     std::vector< ::SpacetimeDb::FieldDefinition> RegFieldsInitializerList \
+../../../sdk/include\spacetimedb/macros.h:289:66: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  289 |                     std::vector< ::SpacetimeDb::FieldDefinition> RegFieldsInitializerList \
       |                                                                  ^
 ../../../sdk/include\spacetimedb/internal/module_schema.h:35:16: note: 'CoreType' declared here
    35 |     enum class CoreType {
       |                ^
 In file included from sdk_test.cpp:1:
-.\sdk_test.h:683:39: error: no member named 'CoreType' in namespace 'SpacetimeDb::ModuleRegistration::sdk_test_cpp::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::sdk_test_cpp::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb::ModuleRegistration::SpacetimeDb'; did you mean simply 'CoreType'?
+.\sdk_test.h:683:39: error: no member named 'CoreType' in namespace 'SpacetimeDb::SpacetimeDb::sdk_test_cpp::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::sdk_test_cpp::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb'; did you mean simply 'CoreType'?
   683 |             SPACETIMEDB_FIELD("data", SpacetimeDb::CoreType::I32, false, false)
       |                                       ^~~~~~~~~~~~~~~~~~~~~
       |                                       CoreType
 ../../../sdk/include\spacetimedb/macros.h:45:48: note: expanded from macro 'SPACETIMEDB_FIELD'
    45 |     ::SPACETIMEDB_FIELD_INTERNAL(FieldNameStr, FieldCoreType, nullptr, false, IsUniqueBool, IsAutoIncBool)
       |                                                ^
-../../../sdk/include\spacetimedb/macros.h:281:66: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
-  281 |                     std::vector< ::SpacetimeDb::FieldDefinition> RegFieldsInitializerList \
+../../../sdk/include\spacetimedb/macros.h:289:66: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  289 |                     std::vector< ::SpacetimeDb::FieldDefinition> RegFieldsInitializerList \
       |                                                                  ^
 ../../../sdk/include\spacetimedb/internal/module_schema.h:35:16: note: 'CoreType' declared here
    35 |     enum class CoreType {
       |                ^
 In file included from sdk_test.cpp:1:
-.\sdk_test.h:699:27: error: no type named 'u128' in namespace 'spacetimedb::sdk'
-  699 |         spacetimedb::sdk::u128 e;
-      |         ~~~~~~~~~~~~~~~~~~^
-.\sdk_test.h:700:27: error: no type named 'u256' in namespace 'spacetimedb::sdk'
-  700 |         spacetimedb::sdk::u256 f;
-      |         ~~~~~~~~~~~~~~~~~~^
-.\sdk_test.h:705:27: error: no type named 'i128' in namespace 'spacetimedb::sdk'
-  705 |         spacetimedb::sdk::i128 k;
-      |         ~~~~~~~~~~~~~~~~~~^
-.\sdk_test.h:706:27: error: no type named 'i256' in namespace 'spacetimedb::sdk'
-  706 |         spacetimedb::sdk::i256 l;
-      |         ~~~~~~~~~~~~~~~~~~^
-.\sdk_test.h:768:54: error: 'SpacetimeDb::CoreType' is not a class, namespace, or enumeration
+.\sdk_test.h:768:41: error: no member named 'CoreType' in namespace 'SpacetimeDb::SpacetimeDb::sdk_test_cpp::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::sdk_test_cpp::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb::SpacetimeDb'; did you mean simply 'CoreType'?
   768 |             SPACETIMEDB_FIELD("row_id", SpacetimeDb::CoreType::U64, false, true),
-      |                                                      ^
+      |                                         ^~~~~~~~~~~~~~~~~~~~~
+      |                                         CoreType
+../../../sdk/include\spacetimedb/macros.h:45:48: note: expanded from macro 'SPACETIMEDB_FIELD'
+   45 |     ::SPACETIMEDB_FIELD_INTERNAL(FieldNameStr, FieldCoreType, nullptr, false, IsUniqueBool, IsAutoIncBool)
+      |                                                ^
+../../../sdk/include\spacetimedb/macros.h:289:66: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  289 |                     std::vector< ::SpacetimeDb::FieldDefinition> RegFieldsInitializerList \
+      |                                                                  ^
+../../../sdk/include\spacetimedb/internal/module_schema.h:35:16: note: 'CoreType' declared here
+   35 |     enum class CoreType {
+      |                ^
+In file included from sdk_test.cpp:1:
 .\sdk_test.h:769:49: error: 'SpacetimeDb::CoreType' is not a class, namespace, or enumeration
   769 |             SPACETIMEDB_FIELD("a", SpacetimeDb::CoreType::U8, false, false),
       |                                                 ^
@@ -437,9 +468,6 @@ In file included from sdk_test.cpp:1:
 .\sdk_test.h:793:59: error: 'SpacetimeDb::CoreType' is not a class, namespace, or enumeration
   793 |             SPACETIMEDB_FIELD_OPTIONAL("os", SpacetimeDb::CoreType::String, false, false),
       |                                                           ^
-.\sdk_test.h:794:13: error: use of undeclared identifier 'SPACETIMEDB_FIELD_OPTIONAL_CUSTOM'
-  794 |             SPACETIMEDB_FIELD_OPTIONAL_CUSTOM("oes", "EveryPrimitiveStruct", false, false),
-      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .\sdk_test.h:817:54: error: 'SpacetimeDb::CoreType' is not a class, namespace, or enumeration
   817 |             SPACETIMEDB_FIELD("row_id", SpacetimeDb::CoreType::U64, false, true),
       |                                                      ^
@@ -503,6 +531,18 @@ In file included from sdk_test.cpp:1:
 .\sdk_test.h:1014:49: error: 'SpacetimeDb::CoreType' is not a class, namespace, or enumeration
  1014 |             SPACETIMEDB_FIELD("b", SpacetimeDb::CoreType::U32, false, false), // Not marked unique here
       |                                                 ^
+.\sdk_test.h:1015:52: error: 'SpacetimeDb::CoreType' is not a class, namespace, or enumeration
+ 1015 |             SPACETIMEDB_FIELD("data", SpacetimeDb::CoreType::I32, false, false)
+      |                                                    ^
+.\sdk_test.h:1029:57: error: 'SpacetimeDb::CoreType' is not a class, namespace, or enumeration
+ 1029 |         ({ SPACETIMEDB_FIELD_OPTIONAL("n", SpacetimeDb::CoreType::I32, false, false) })
+      |                                                         ^
+.\sdk_test.h:1036:57: error: 'SpacetimeDb::CoreType' is not a class, namespace, or enumeration
+ 1036 |         ({ SPACETIMEDB_FIELD_OPTIONAL("n", SpacetimeDb::CoreType::String, false, false) })
+      |                                                         ^
+.\sdk_test.h:1043:12: error: use of undeclared identifier 'SPACETIMEDB_FIELD_OPTIONAL_CUSTOM'
+ 1043 |         ({ SPACETIMEDB_FIELD_OPTIONAL_CUSTOM("n", "Identity", false, false) }) // Custom types don't use ::SpacetimeDb::CoreType directly in schema
+      |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 fatal error: too many errors emitted, stopping now [-ferror-limit=]
 101 errors generated.
-emcc: error: ''C:/Users/ludvi/emsdk/upstream/bin\clang.exe' -target wasm32-unknown-emscripten -fignore-exceptions -mllvm -combiner-global-alias-analysis=false -mllvm -enable-emscripten-sjlj -mllvm -disable-lsr '--sysroot=C:\Users\ludvi\emsdk\upstream\emscripten\cache\sysroot' -DEMSCRIPTEN -Xclang '-iwithsysroot/include\fakesdl' -Xclang '-iwithsysroot/include\compat' -std=c++20 -I../../../sdk/include -ferror-limit=100 -c sdk_test.cpp -o 'C:\Users\ludvi\AppData\Local\Temp\emscripten_temp_iv4acv6f\sdk_test_0.o'' failed (returned 1)
+emcc: error: ''C:/Users/ludvi/emsdk/upstream/bin\clang.exe' -target wasm32-unknown-emscripten -fignore-exceptions -mllvm -combiner-global-alias-analysis=false -mllvm -enable-emscripten-sjlj -mllvm -disable-lsr '--sysroot=C:\Users\ludvi\emsdk\upstream\emscripten\cache\sysroot' -DEMSCRIPTEN -Xclang '-iwithsysroot/include\fakesdl' -Xclang '-iwithsysroot/include\compat' -std=c++20 -I../../../sdk/include -ferror-limit=100 -c sdk_test.cpp -o 'C:\Users\ludvi\AppData\Local\Temp\emscripten_temp__4r5q7il\sdk_test_0.o'' failed (returned 1)

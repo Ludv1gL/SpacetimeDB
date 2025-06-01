@@ -9,7 +9,9 @@
 #include <functional>
 #include <span> // For std::span (C++20)
 #include <type_traits> // For std::is_enum
+#include <cstring> // For memcpy
 #include "uint128_placeholder.h" // Assumes this is in the same directory or accessible via include paths
+#include "spacetimedb/sdk/spacetimedb_sdk_types.h" // For u256_placeholder, i256_placeholder
 
 // Forward declaration for user-defined types' deserialize functions
 // E.g. MyStruct deserialize_MyStruct(bsatn::Reader& reader);
@@ -35,12 +37,14 @@ namespace bsatn {
         uint32_t read_u32_le();
         uint64_t read_u64_le();
         SpacetimeDB::Types::uint128_t_placeholder read_u128_le();
+        spacetimedb::sdk::u256_placeholder read_u256_le();
 
         int8_t read_i8();
         int16_t read_i16_le();
         int32_t read_i32_le();
         int64_t read_i64_le();
         SpacetimeDB::Types::int128_t_placeholder read_i128_le();
+        spacetimedb::sdk::i256_placeholder read_i256_le();
 
         float read_f32_le();
         double read_f64_le();
@@ -86,6 +90,33 @@ namespace bsatn {
 
         static const uint32_t max_string_length_sanity_check = 1024 * 1024 * 10;
         static const uint32_t max_vector_elements_sanity_check = 1024 * 1024;
+
+    public:
+        void ensure_bytes(size_t count) {
+            if (static_cast<size_t>(end_ptr - current_ptr) < count) {
+                throw std::runtime_error("Attempt to read past end of buffer.");
+            }
+        }
+
+    public:
+        // Inline implementations for 256-bit types
+        inline spacetimedb::sdk::u256_placeholder read_u256_le() {
+            spacetimedb::sdk::u256_placeholder val;
+            ensure_bytes(sizeof(val.data)); // Assuming data is std::array<uint64_t, 4>
+            memcpy(val.data.data(), current_ptr, sizeof(val.data));
+            current_ptr += sizeof(val.data);
+            // TODO: Handle endianness if necessary for each uint64_t component
+            return val;
+        }
+
+        inline spacetimedb::sdk::i256_placeholder read_i256_le() {
+            spacetimedb::sdk::i256_placeholder val;
+            ensure_bytes(sizeof(val.data));
+            memcpy(val.data.data(), current_ptr, sizeof(val.data));
+            current_ptr += sizeof(val.data);
+            // TODO: Handle endianness
+            return val;
+        }
     };
 
     // Definition of the generic deserialize template (relies on specializations)
