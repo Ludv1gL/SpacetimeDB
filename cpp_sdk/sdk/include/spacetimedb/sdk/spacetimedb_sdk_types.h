@@ -17,6 +17,9 @@ namespace SpacetimeDb {
 #include <chrono>
 #include <stdexcept>
 
+#include "spacetimedb/bsatn/writer.h" // Full definition for Writer
+#include "spacetimedb/bsatn/reader.h" // Full definition for Reader
+
 namespace SpacetimeDb {
     namespace sdk {
 
@@ -132,15 +135,12 @@ namespace SpacetimeDb {
     } // namespace sdk
 } // namespace SpacetimeDb
 
-#include "spacetimedb/bsatn/writer.h" // Full definition for Writer
-#include "spacetimedb/bsatn/reader.h" // Full definition for Reader
-
 namespace SpacetimeDb {
     namespace sdk {
 
         // Identity
         inline void Identity::bsatn_serialize(::SpacetimeDb::bsatn::Writer& writer) const {
-            writer.write_bytes_raw(this->value.data(), this->value.size());
+            writer.write_bytes(std::vector<std::byte>(reinterpret_cast<const std::byte*>(this->value.data()), reinterpret_cast<const std::byte*>(this->value.data() + this->value.size())));
         }
         inline void Identity::bsatn_deserialize(::SpacetimeDb::bsatn::Reader& reader) {
             std::vector<std::byte> bytes = reader.read_bytes(IDENTITY_SIZE);
@@ -207,8 +207,7 @@ namespace SpacetimeDb {
             // or u256_placeholder has a .data() and .size() like Identity for write_bytes_raw.
             // Based on writer.h, write_u256_le exists. Let's use that if available,
             // otherwise, write_bytes_raw is a fallback.
-            // writer.write_u256_le(*this); // If Writer has this method
-            writer.write_bytes_raw(this->data.data(), sizeof(this->data)); // Fallback
+            writer.write_u256_le(*this);
         }
         inline void u256_placeholder::bsatn_deserialize(::SpacetimeDb::bsatn::Reader& reader) {
             // Similar to serialize, assuming reader.read_u256_le() or fallback
@@ -225,8 +224,7 @@ namespace SpacetimeDb {
 
         // i256_placeholder
         inline void i256_placeholder::bsatn_serialize(::SpacetimeDb::bsatn::Writer& writer) const {
-            // writer.write_i256_le(*this); // If Writer has this method
-            writer.write_bytes_raw(this->data.data(), sizeof(this->data)); // Fallback
+            writer.write_i256_le(*this);
         }
         inline void i256_placeholder::bsatn_deserialize(::SpacetimeDb::bsatn::Reader& reader) {
             // *this = reader.read_i256_le(); // If Reader has this method

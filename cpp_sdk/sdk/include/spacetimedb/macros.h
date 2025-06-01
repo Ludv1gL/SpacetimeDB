@@ -126,7 +126,6 @@ inline ::SpacetimeDb::FieldDefinition SPACETIMEDB_FIELD_INTERNAL(const char* nam
         }; \
         static SPACETIMEDB_PASTE(Register, SanitizedCppTypeName) SPACETIMEDB_PASTE(register_, SPACETIMEDB_PASTE(SanitizedCppTypeName, _instance)); \
     }} /* SpacetimeDb::ModuleRegistration */ \
-/* START_COMMENT_BLOCK_ENUM \
 namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
     // Note: The following serialize/deserialize specializations depend on the \
     // primary `SpacetimeDb::bsatn::deserialize` template being declared, \
@@ -144,7 +143,6 @@ inline _actual_cpp_type_name_ deserialize<_actual_cpp_type_name_>(::SpacetimeDb:
             return static_cast<_actual_cpp_type_name_>(val); \
     } \
 } \
-END_COMMENT_BLOCK_ENUM* /
 
 
 #define SPACETIMEDB_TABLE(CppRowTypeName, SpacetimeDbTableNameStr, IsPublicBool, ScheduledReducerNameStr) \
@@ -289,7 +287,6 @@ inline ::SpacetimeDb::ReducerParameterDefinition SPACETIMEDB_REDUCER_PARAM_INTER
         }; \
         static SPACETIMEDB_PASTE(Register, SanitizedCppTypeName) SPACETIMEDB_PASTE(register_, SPACETIMEDB_PASTE(SanitizedCppTypeName, _instance)); \
     }} /* SpacetimeDb::ModuleRegistration */ \
-/* START_COMMENT_BLOCK_STRUCT \
 namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
     // Note: The following serialize/deserialize specializations depend on the \
 // primary `SpacetimeDb::bsatn::deserialize` template being declared, \
@@ -307,7 +304,6 @@ namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
                     FIELDS_MACRO(SPACETIMEDB_XX_DESERIALIZE_FIELD, reader, obj); \
                     return obj; \
             } \
-} \
-END_COMMENT_BLOCK_STRUCT* /
+        } \
 
 #endif // SPACETIME_MACROS_H

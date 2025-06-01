@@ -3,12 +3,19 @@ In file included from .\sdk_test.h:5:
 In file included from ../../../sdk/include\spacetimedb/macros.h:4:
 In file included from ../../../sdk/include\spacetimedb/internal/module_schema.h:4:
 In file included from ../../../sdk/include\spacetimedb/bsatn/reader.h:14:
-../../../sdk/include\spacetimedb/sdk/spacetimedb_sdk_types.h:143:20: error: 'write_bytes_raw' is a private member of 'SpacetimeDb::bsatn::Writer'
-  143 |             writer.write_bytes_raw(this->value.data(), this->value.size());
-      |                    ^
-../../../sdk/include\spacetimedb/bsatn/writer.h:99:14: note: declared private here
-   99 |         void write_bytes_raw(const void* data, size_t size);
-      |              ^
+In file included from ../../../sdk/include\spacetimedb/sdk/spacetimedb_sdk_types.h:20:
+../../../sdk/include\spacetimedb/bsatn/writer.h:26:57: error: no member named 'sdk' in namespace 'SpacetimeDb'
+   26 |     inline void serialize(Writer& w, const SpacetimeDb::sdk::u256_placeholder& value);
+      |                                            ~~~~~~~~~~~~~^
+../../../sdk/include\spacetimedb/bsatn/writer.h:32:57: error: no member named 'sdk' in namespace 'SpacetimeDb'
+   32 |     inline void serialize(Writer& w, const SpacetimeDb::sdk::i256_placeholder& value);
+      |                                            ~~~~~~~~~~~~~^
+../../../sdk/include\spacetimedb/bsatn/writer.h:104:54: error: no member named 'sdk' in namespace 'SpacetimeDb'
+  104 |         inline void write_u256_le(const SpacetimeDb::sdk::u256_placeholder& value) {
+      |                                         ~~~~~~~~~~~~~^
+../../../sdk/include\spacetimedb/bsatn/writer.h:109:54: error: no member named 'sdk' in namespace 'SpacetimeDb'
+  109 |         inline void write_i256_le(const SpacetimeDb::sdk::i256_placeholder& value) {
+      |                                         ~~~~~~~~~~~~~^
 In file included from sdk_test.cpp:1:
 In file included from .\sdk_test.h:5:
 In file included from ../../../sdk/include\spacetimedb/macros.h:4:
@@ -44,86 +51,943 @@ In file included from ../../../sdk/include\spacetimedb/bsatn/reader.h:14:
 ../../../sdk/include\spacetimedb/sdk/spacetimedb_sdk_types.h:7:15: note: forward declaration of 'SpacetimeDb::bsatn::Reader'
     7 |         class Reader;
       |               ^
-../../../sdk/include\spacetimedb/sdk/spacetimedb_sdk_types.h:211:20: error: 'write_bytes_raw' is a private member of 'SpacetimeDb::bsatn::Writer'
-  211 |             writer.write_bytes_raw(this->data.data(), sizeof(this->data)); // Fallback
-      |                    ^
-../../../sdk/include\spacetimedb/bsatn/writer.h:99:14: note: declared private here
-   99 |         void write_bytes_raw(const void* data, size_t size);
-      |              ^
-In file included from sdk_test.cpp:1:
-In file included from .\sdk_test.h:5:
-In file included from ../../../sdk/include\spacetimedb/macros.h:4:
-In file included from ../../../sdk/include\spacetimedb/internal/module_schema.h:4:
-In file included from ../../../sdk/include\spacetimedb/bsatn/reader.h:14:
-../../../sdk/include\spacetimedb/sdk/spacetimedb_sdk_types.h:217:50: error: member access into incomplete type '::SpacetimeDb::bsatn::Reader'
-  217 |             std::vector<std::byte> bytes = reader.read_bytes(sizeof(this->data));
+../../../sdk/include\spacetimedb/sdk/spacetimedb_sdk_types.h:216:50: error: member access into incomplete type '::SpacetimeDb::bsatn::Reader'
+  216 |             std::vector<std::byte> bytes = reader.read_bytes(sizeof(this->data));
       |                                                  ^
 ../../../sdk/include\spacetimedb/sdk/spacetimedb_sdk_types.h:7:15: note: forward declaration of 'SpacetimeDb::bsatn::Reader'
     7 |         class Reader;
       |               ^
-../../../sdk/include\spacetimedb/sdk/spacetimedb_sdk_types.h:229:20: error: 'write_bytes_raw' is a private member of 'SpacetimeDb::bsatn::Writer'
-  229 |             writer.write_bytes_raw(this->data.data(), sizeof(this->data)); // Fallback
-      |                    ^
-../../../sdk/include\spacetimedb/bsatn/writer.h:99:14: note: declared private here
-   99 |         void write_bytes_raw(const void* data, size_t size);
-      |              ^
-In file included from sdk_test.cpp:1:
-In file included from .\sdk_test.h:5:
-In file included from ../../../sdk/include\spacetimedb/macros.h:4:
-In file included from ../../../sdk/include\spacetimedb/internal/module_schema.h:4:
-In file included from ../../../sdk/include\spacetimedb/bsatn/reader.h:14:
-../../../sdk/include\spacetimedb/sdk/spacetimedb_sdk_types.h:234:50: error: member access into incomplete type '::SpacetimeDb::bsatn::Reader'
-  234 |             std::vector<std::byte> bytes = reader.read_bytes(sizeof(this->data));
+../../../sdk/include\spacetimedb/sdk/spacetimedb_sdk_types.h:232:50: error: member access into incomplete type '::SpacetimeDb::bsatn::Reader'
+  232 |             std::vector<std::byte> bytes = reader.read_bytes(sizeof(this->data));
       |                                                  ^
 ../../../sdk/include\spacetimedb/sdk/spacetimedb_sdk_types.h:7:15: note: forward declaration of 'SpacetimeDb::bsatn::Reader'
     7 |         class Reader;
       |               ^
 In file included from sdk_test.cpp:1:
 In file included from .\sdk_test.h:5:
-../../../sdk/include\spacetimedb/macros.h:130:32: warning: '/*' within block comment [-Wcomment]
-  130 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
-      |                                ^
-../../../sdk/include\spacetimedb/macros.h:136:67: error: unknown type name '_actual_cpp_type_name_'
-  136 | inline void serialize(::SpacetimeDb::bsatn::Writer& writer, const _actual_cpp_type_name_& value) {
+../../../sdk/include\spacetimedb/macros.h:135:67: error: unknown type name '_actual_cpp_type_name_'
+  135 | inline void serialize(::SpacetimeDb::bsatn::Writer& writer, const _actual_cpp_type_name_& value) {
       |                                                                   ^
-../../../sdk/include\spacetimedb/macros.h:141:8: error: unknown type name '_actual_cpp_type_name_'
-  141 | inline _actual_cpp_type_name_ deserialize<_actual_cpp_type_name_>(::SpacetimeDb::bsatn::Reader& reader) {
+../../../sdk/include\spacetimedb/macros.h:140:8: error: unknown type name '_actual_cpp_type_name_'
+  140 | inline _actual_cpp_type_name_ deserialize<_actual_cpp_type_name_>(::SpacetimeDb::bsatn::Reader& reader) {
       |        ^
-../../../sdk/include\spacetimedb/macros.h:141:43: error: use of undeclared identifier '_actual_cpp_type_name_'
-  141 | inline _actual_cpp_type_name_ deserialize<_actual_cpp_type_name_>(::SpacetimeDb::bsatn::Reader& reader) {
+../../../sdk/include\spacetimedb/macros.h:140:43: error: use of undeclared identifier '_actual_cpp_type_name_'
+  140 | inline _actual_cpp_type_name_ deserialize<_actual_cpp_type_name_>(::SpacetimeDb::bsatn::Reader& reader) {
       |                                           ^~~~~~~~~~~~~~~~~~~~~~
-../../../sdk/include\spacetimedb/macros.h:145:7: error: extraneous closing brace ('}')
-  145 |     } \
+../../../sdk/include\spacetimedb/macros.h:144:7: error: extraneous closing brace ('}')
+  144 |     } \
       |       ^
-../../../sdk/include\spacetimedb/macros.h:146:3: error: unknown type name 'END_COMMENT_BLOCK_ENUM'
-  146 | } \
-      |   ^
-../../../sdk/include\spacetimedb/macros.h:147:25: error: expected unqualified-id
-  147 | END_COMMENT_BLOCK_ENUM* /
-      |                         ^
-../../../sdk/include\spacetimedb/macros.h:293:32: warning: '/*' within block comment [-Wcomment]
-  293 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
-      |                                ^
-../../../sdk/include\spacetimedb/macros.h:299:79: error: unknown type name '_actual_cpp_type_name_'
-  299 |             inline void serialize(::SpacetimeDb::bsatn::Writer& writer, const _actual_cpp_type_name_& value) {
+../../../sdk/include\spacetimedb/macros.h:296:79: error: unknown type name '_actual_cpp_type_name_'
+  296 |             inline void serialize(::SpacetimeDb::bsatn::Writer& writer, const _actual_cpp_type_name_& value) {
       |                                                                               ^
-../../../sdk/include\spacetimedb/macros.h:301:30: error: use of undeclared identifier 'SPACETIMEDB_XX_SERIALIZE_FIELD'
-  301 |                 FIELDS_MACRO(SPACETIMEDB_XX_SERIALIZE_FIELD, writer, value); \
+../../../sdk/include\spacetimedb/macros.h:298:30: error: use of undeclared identifier 'SPACETIMEDB_XX_SERIALIZE_FIELD'
+  298 |                 FIELDS_MACRO(SPACETIMEDB_XX_SERIALIZE_FIELD, writer, value); \
       |                              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-../../../sdk/include\spacetimedb/macros.h:304:24: error: unknown type name '_actual_cpp_type_name_'
-  304 |                 inline _actual_cpp_type_name_ deserialize<_actual_cpp_type_name_>(::SpacetimeDb::bsatn::Reader& reader) {
+../../../sdk/include\spacetimedb/macros.h:301:24: error: unknown type name '_actual_cpp_type_name_'
+  301 |                 inline _actual_cpp_type_name_ deserialize<_actual_cpp_type_name_>(::SpacetimeDb::bsatn::Reader& reader) {
       |                        ^
-../../../sdk/include\spacetimedb/macros.h:304:59: error: use of undeclared identifier '_actual_cpp_type_name_'
-  304 |                 inline _actual_cpp_type_name_ deserialize<_actual_cpp_type_name_>(::SpacetimeDb::bsatn::Reader& reader) {
+../../../sdk/include\spacetimedb/macros.h:301:59: error: use of undeclared identifier '_actual_cpp_type_name_'
+  301 |                 inline _actual_cpp_type_name_ deserialize<_actual_cpp_type_name_>(::SpacetimeDb::bsatn::Reader& reader) {
       |                                                           ^~~~~~~~~~~~~~~~~~~~~~
-../../../sdk/include\spacetimedb/macros.h:309:15: error: extraneous closing brace ('}')
-  309 |             } \
-      |               ^
-../../../sdk/include\spacetimedb/macros.h:310:3: error: unknown type name 'END_COMMENT_BLOCK_STRUCT'
-  310 | } \
-      |   ^
-../../../sdk/include\spacetimedb/macros.h:311:27: error: expected unqualified-id
-  311 | END_COMMENT_BLOCK_STRUCT* /
-      |                           ^
-2 warnings and 23 errors generated.
-emcc: error: ''C:/Users/ludvi/emsdk/upstream/bin\clang.exe' -target wasm32-unknown-emscripten -fignore-exceptions -mllvm -combiner-global-alias-analysis=false -mllvm -enable-emscripten-sjlj -mllvm -disable-lsr '--sysroot=C:\Users\ludvi\emsdk\upstream\emscripten\cache\sysroot' -DEMSCRIPTEN -Xclang '-iwithsysroot/include\fakesdl' -Xclang '-iwithsysroot/include\compat' -std=c++20 -I../../../sdk/include -ferror-limit=500 -c sdk_test.cpp -o 'C:\Users\ludvi\AppData\Local\Temp\emscripten_temp_l_6mq8vy\sdk_test_0.o'' failed (returned 1)
+../../../sdk/include\spacetimedb/macros.h:307:9: error: extraneous closing brace ('}')
+  307 |         } \
+      |         ^
+In file included from sdk_test.cpp:1:
+.\sdk_test.h:265:23: error: no type named 'EnumWithPayloadTag' in namespace 'SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp'; did you mean 'EnumWithPayload'?
+  265 |         sdk_test_cpp::EnumWithPayloadTag tag;
+      |         ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+      |                       EnumWithPayload
+.\sdk_test.h:264:12: note: 'EnumWithPayload' declared here
+  264 |     struct EnumWithPayload {
+      |            ^
+.\sdk_test.h:265:42: error: field has incomplete type 'sdk_test_cpp::EnumWithPayload'
+  265 |         sdk_test_cpp::EnumWithPayloadTag tag;
+      |                                          ^
+.\sdk_test.h:264:12: note: definition of 'SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::EnumWithPayload' is not complete until the closing '}'
+  264 |     struct EnumWithPayload {
+      |            ^
+sdk_test.cpp:14:27: error: cannot define or redeclare 'bsatn_serialize' here because namespace 'sdk_test_cpp' does not enclose namespace 'EnumWithPayload'
+   14 |     void EnumWithPayload::bsatn_serialize(::SpacetimeDb::bsatn::Writer& writer) const {
+      |          ~~~~~~~~~~~~~~~~~^
+sdk_test.cpp:16:49: error: invalid use of 'this' outside of a non-static member function
+   16 |         ::SpacetimeDb::bsatn::serialize(writer, this->tag);
+      |                                                 ^
+sdk_test.cpp:16:41: error: use of undeclared identifier 'writer'; did you mean 'fwrite'?
+   16 |         ::SpacetimeDb::bsatn::serialize(writer, this->tag);
+      |                                         ^~~~~~
+      |                                         fwrite
+C:\Users\ludvi\emsdk\upstream\emscripten\cache\sysroot/include\stdio.h:100:8: note: 'fwrite' declared here
+  100 | size_t fwrite(const void *__restrict, size_t, size_t, FILE *__restrict);
+      |        ^
+sdk_test.cpp:19:22: error: use of undeclared identifier 'writer'
+   19 |         std::visit([&writer](const auto& arg) {
+      |                      ^~~~~~
+sdk_test.cpp:20:45: error: use of undeclared identifier 'writer'; did you mean 'fwrite'?
+   20 |             ::SpacetimeDb::bsatn::serialize(writer, arg);
+      |                                             ^~~~~~
+      |                                             fwrite
+C:\Users\ludvi\emsdk\upstream\emscripten\cache\sysroot/include\stdio.h:100:8: note: 'fwrite' declared here
+  100 | size_t fwrite(const void *__restrict, size_t, size_t, FILE *__restrict);
+      |        ^
+sdk_test.cpp:21:16: error: invalid use of 'this' outside of a non-static member function
+   21 |             }, this->value);
+      |                ^
+sdk_test.cpp:24:27: error: cannot define or redeclare 'bsatn_deserialize' here because namespace 'sdk_test_cpp' does not enclose namespace 'EnumWithPayload'
+   24 |     void EnumWithPayload::bsatn_deserialize(::SpacetimeDb::bsatn::Reader& reader) {
+      |          ~~~~~~~~~~~~~~~~~^
+sdk_test.cpp:26:9: error: invalid use of 'this' outside of a non-static member function
+   26 |         this->tag = ::SpacetimeDb::bsatn::deserialize<sdk_test_cpp::EnumWithPayloadTag>(reader);
+      |         ^
+sdk_test.cpp:26:69: error: no member named 'EnumWithPayloadTag' in namespace 'SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp'
+   26 |         this->tag = ::SpacetimeDb::bsatn::deserialize<sdk_test_cpp::EnumWithPayloadTag>(reader);
+      |                                                                     ^~~~~~~~~~~~~~~~~~
+sdk_test.cpp:26:89: error: use of undeclared identifier 'reader'
+   26 |         this->tag = ::SpacetimeDb::bsatn::deserialize<sdk_test_cpp::EnumWithPayloadTag>(reader);
+      |                                                                                         ^~~~~~
+sdk_test.cpp:29:17: error: invalid use of 'this' outside of a non-static member function
+   29 |         switch (this->tag) {
+      |                 ^
+sdk_test.cpp:30:14: error: no member named 'EnumWithPayloadTag' in namespace 'SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp'; did you mean 'EnumWithPayload'?
+   30 |         case sdk_test_cpp::EnumWithPayloadTag::TagU8:
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      |              EnumWithPayload
+.\sdk_test.h:264:12: note: 'EnumWithPayload' declared here
+  264 |     struct EnumWithPayload {
+      |            ^
+sdk_test.cpp:30:48: error: no member named 'TagU8' in 'SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::EnumWithPayload'
+   30 |         case sdk_test_cpp::EnumWithPayloadTag::TagU8:
+      |                                                ^~~~~
+sdk_test.cpp:31:13: error: invalid use of 'this' outside of a non-static member function
+   31 |             this->value = reader.read_u8();
+      |             ^
+sdk_test.cpp:31:27: error: use of undeclared identifier 'reader'
+   31 |             this->value = reader.read_u8();
+      |                           ^~~~~~
+sdk_test.cpp:33:14: error: no member named 'EnumWithPayloadTag' in namespace 'SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp'; did you mean 'EnumWithPayload'?
+   33 |         case sdk_test_cpp::EnumWithPayloadTag::TagU16:
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      |              EnumWithPayload
+.\sdk_test.h:264:12: note: 'EnumWithPayload' declared here
+  264 |     struct EnumWithPayload {
+      |            ^
+sdk_test.cpp:33:48: error: no member named 'TagU16' in 'SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::EnumWithPayload'
+   33 |         case sdk_test_cpp::EnumWithPayloadTag::TagU16:
+      |                                                ^~~~~~
+sdk_test.cpp:34:13: error: invalid use of 'this' outside of a non-static member function
+   34 |             this->value = reader.read_u16_le();
+      |             ^
+sdk_test.cpp:34:27: error: use of undeclared identifier 'reader'
+   34 |             this->value = reader.read_u16_le();
+      |                           ^~~~~~
+sdk_test.cpp:36:14: error: no member named 'EnumWithPayloadTag' in namespace 'SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp'; did you mean 'EnumWithPayload'?
+   36 |         case sdk_test_cpp::EnumWithPayloadTag::TagU32:
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      |              EnumWithPayload
+.\sdk_test.h:264:12: note: 'EnumWithPayload' declared here
+  264 |     struct EnumWithPayload {
+      |            ^
+sdk_test.cpp:36:48: error: no member named 'TagU32' in 'SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::EnumWithPayload'
+   36 |         case sdk_test_cpp::EnumWithPayloadTag::TagU32:
+      |                                                ^~~~~~
+sdk_test.cpp:37:13: error: invalid use of 'this' outside of a non-static member function
+   37 |             this->value = reader.read_u32_le();
+      |             ^
+sdk_test.cpp:37:27: error: use of undeclared identifier 'reader'
+   37 |             this->value = reader.read_u32_le();
+      |                           ^~~~~~
+sdk_test.cpp:39:14: error: no member named 'EnumWithPayloadTag' in namespace 'SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp'; did you mean 'EnumWithPayload'?
+   39 |         case sdk_test_cpp::EnumWithPayloadTag::TagU64:
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      |              EnumWithPayload
+.\sdk_test.h:264:12: note: 'EnumWithPayload' declared here
+  264 |     struct EnumWithPayload {
+      |            ^
+sdk_test.cpp:39:48: error: no member named 'TagU64' in 'SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::EnumWithPayload'
+   39 |         case sdk_test_cpp::EnumWithPayloadTag::TagU64:
+      |                                                ^~~~~~
+sdk_test.cpp:40:13: error: invalid use of 'this' outside of a non-static member function
+   40 |             this->value = reader.read_u64_le();
+      |             ^
+sdk_test.cpp:40:27: error: use of undeclared identifier 'reader'
+   40 |             this->value = reader.read_u64_le();
+      |                           ^~~~~~
+sdk_test.cpp:42:14: error: no member named 'EnumWithPayloadTag' in namespace 'SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp'; did you mean 'EnumWithPayload'?
+   42 |         case sdk_test_cpp::EnumWithPayloadTag::TagU128:
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      |              EnumWithPayload
+.\sdk_test.h:264:12: note: 'EnumWithPayload' declared here
+  264 |     struct EnumWithPayload {
+      |            ^
+sdk_test.cpp:42:48: error: no member named 'TagU128' in 'SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::EnumWithPayload'
+   42 |         case sdk_test_cpp::EnumWithPayloadTag::TagU128:
+      |                                                ^~~~~~~
+sdk_test.cpp:46:13: error: invalid use of 'this' outside of a non-static member function
+   46 |             this->value = reader.read_u128_le();
+      |             ^
+sdk_test.cpp:46:27: error: use of undeclared identifier 'reader'
+   46 |             this->value = reader.read_u128_le();
+      |                           ^~~~~~
+sdk_test.cpp:48:14: error: no member named 'EnumWithPayloadTag' in namespace 'SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp'; did you mean 'EnumWithPayload'?
+   48 |         case sdk_test_cpp::EnumWithPayloadTag::TagU256:
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      |              EnumWithPayload
+.\sdk_test.h:264:12: note: 'EnumWithPayload' declared here
+  264 |     struct EnumWithPayload {
+      |            ^
+sdk_test.cpp:48:48: error: no member named 'TagU256' in 'SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::EnumWithPayload'
+   48 |         case sdk_test_cpp::EnumWithPayloadTag::TagU256:
+      |                                                ^~~~~~~
+sdk_test.cpp:51:13: error: invalid use of 'this' outside of a non-static member function
+   51 |             this->value = reader.read_u256_le();
+      |             ^
+sdk_test.cpp:51:27: error: use of undeclared identifier 'reader'
+   51 |             this->value = reader.read_u256_le();
+      |                           ^~~~~~
+sdk_test.cpp:53:14: error: no member named 'EnumWithPayloadTag' in namespace 'SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp'; did you mean 'EnumWithPayload'?
+   53 |         case sdk_test_cpp::EnumWithPayloadTag::TagI8:
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      |              EnumWithPayload
+.\sdk_test.h:264:12: note: 'EnumWithPayload' declared here
+  264 |     struct EnumWithPayload {
+      |            ^
+sdk_test.cpp:53:48: error: no member named 'TagI8' in 'SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::EnumWithPayload'
+   53 |         case sdk_test_cpp::EnumWithPayloadTag::TagI8:
+      |                                                ^~~~~
+sdk_test.cpp:54:13: error: invalid use of 'this' outside of a non-static member function
+   54 |             this->value = reader.read_i8();
+      |             ^
+sdk_test.cpp:54:27: error: use of undeclared identifier 'reader'
+   54 |             this->value = reader.read_i8();
+      |                           ^~~~~~
+sdk_test.cpp:56:14: error: no member named 'EnumWithPayloadTag' in namespace 'SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp'; did you mean 'EnumWithPayload'?
+   56 |         case sdk_test_cpp::EnumWithPayloadTag::TagI16:
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      |              EnumWithPayload
+.\sdk_test.h:264:12: note: 'EnumWithPayload' declared here
+  264 |     struct EnumWithPayload {
+      |            ^
+sdk_test.cpp:56:48: error: no member named 'TagI16' in 'SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::EnumWithPayload'
+   56 |         case sdk_test_cpp::EnumWithPayloadTag::TagI16:
+      |                                                ^~~~~~
+sdk_test.cpp:57:13: error: invalid use of 'this' outside of a non-static member function
+   57 |             this->value = reader.read_i16_le();
+      |             ^
+sdk_test.cpp:57:27: error: use of undeclared identifier 'reader'
+   57 |             this->value = reader.read_i16_le();
+      |                           ^~~~~~
+sdk_test.cpp:59:14: error: no member named 'EnumWithPayloadTag' in namespace 'SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp'; did you mean 'EnumWithPayload'?
+   59 |         case sdk_test_cpp::EnumWithPayloadTag::TagI32:
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      |              EnumWithPayload
+.\sdk_test.h:264:12: note: 'EnumWithPayload' declared here
+  264 |     struct EnumWithPayload {
+      |            ^
+sdk_test.cpp:59:48: error: no member named 'TagI32' in 'SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::EnumWithPayload'
+   59 |         case sdk_test_cpp::EnumWithPayloadTag::TagI32:
+      |                                                ^~~~~~
+sdk_test.cpp:60:13: error: invalid use of 'this' outside of a non-static member function
+   60 |             this->value = reader.read_i32_le();
+      |             ^
+sdk_test.cpp:60:27: error: use of undeclared identifier 'reader'
+   60 |             this->value = reader.read_i32_le();
+      |                           ^~~~~~
+sdk_test.cpp:62:14: error: no member named 'EnumWithPayloadTag' in namespace 'SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp'; did you mean 'EnumWithPayload'?
+   62 |         case sdk_test_cpp::EnumWithPayloadTag::TagI64:
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      |              EnumWithPayload
+.\sdk_test.h:264:12: note: 'EnumWithPayload' declared here
+  264 |     struct EnumWithPayload {
+      |            ^
+sdk_test.cpp:62:48: error: no member named 'TagI64' in 'SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::EnumWithPayload'
+   62 |         case sdk_test_cpp::EnumWithPayloadTag::TagI64:
+      |                                                ^~~~~~
+sdk_test.cpp:63:13: error: invalid use of 'this' outside of a non-static member function
+   63 |             this->value = reader.read_i64_le();
+      |             ^
+sdk_test.cpp:63:27: error: use of undeclared identifier 'reader'
+   63 |             this->value = reader.read_i64_le();
+      |                           ^~~~~~
+sdk_test.cpp:65:14: error: no member named 'EnumWithPayloadTag' in namespace 'SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp'; did you mean 'EnumWithPayload'?
+   65 |         case sdk_test_cpp::EnumWithPayloadTag::TagI128:
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      |              EnumWithPayload
+.\sdk_test.h:264:12: note: 'EnumWithPayload' declared here
+  264 |     struct EnumWithPayload {
+      |            ^
+sdk_test.cpp:65:48: error: no member named 'TagI128' in 'SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::EnumWithPayload'
+   65 |         case sdk_test_cpp::EnumWithPayloadTag::TagI128:
+      |                                                ^~~~~~~
+sdk_test.cpp:67:13: error: invalid use of 'this' outside of a non-static member function
+   67 |             this->value = reader.read_i128_le();
+      |             ^
+sdk_test.cpp:67:27: error: use of undeclared identifier 'reader'
+   67 |             this->value = reader.read_i128_le();
+      |                           ^~~~~~
+sdk_test.cpp:69:28: error: no member named 'EnumWithPayloadTag' in namespace 'SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp'
+   69 |         case sdk_test_cpp::EnumWithPayloadTag::TagI256:
+      |              ~~~~~~~~~~~~~~^
+sdk_test.cpp:71:13: error: invalid use of 'this' outside of a non-static member function
+   71 |             this->value = reader.read_i256_le();
+      |             ^
+sdk_test.cpp:71:27: error: use of undeclared identifier 'reader'
+   71 |             this->value = reader.read_i256_le();
+      |                           ^~~~~~
+sdk_test.cpp:73:28: error: no member named 'EnumWithPayloadTag' in namespace 'SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp'
+   73 |         case sdk_test_cpp::EnumWithPayloadTag::TagBool:
+      |              ~~~~~~~~~~~~~~^
+sdk_test.cpp:74:13: error: invalid use of 'this' outside of a non-static member function
+   74 |             this->value = reader.read_bool();
+      |             ^
+sdk_test.cpp:74:27: error: use of undeclared identifier 'reader'
+   74 |             this->value = reader.read_bool();
+      |                           ^~~~~~
+sdk_test.cpp:76:28: error: no member named 'EnumWithPayloadTag' in namespace 'SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp'
+   76 |         case sdk_test_cpp::EnumWithPayloadTag::TagF32:
+      |              ~~~~~~~~~~~~~~^
+sdk_test.cpp:77:13: error: invalid use of 'this' outside of a non-static member function
+   77 |             this->value = reader.read_f32_le();
+      |             ^
+sdk_test.cpp:77:27: error: use of undeclared identifier 'reader'
+   77 |             this->value = reader.read_f32_le();
+      |                           ^~~~~~
+sdk_test.cpp:79:28: error: no member named 'EnumWithPayloadTag' in namespace 'SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp'
+   79 |         case sdk_test_cpp::EnumWithPayloadTag::TagF64:
+      |              ~~~~~~~~~~~~~~^
+sdk_test.cpp:80:13: error: invalid use of 'this' outside of a non-static member function
+   80 |             this->value = reader.read_f64_le();
+      |             ^
+sdk_test.cpp:80:27: error: use of undeclared identifier 'reader'
+   80 |             this->value = reader.read_f64_le();
+      |                           ^~~~~~
+sdk_test.cpp:82:28: error: no member named 'EnumWithPayloadTag' in namespace 'SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp'
+   82 |         case sdk_test_cpp::EnumWithPayloadTag::TagStr:
+      |              ~~~~~~~~~~~~~~^
+sdk_test.cpp:83:13: error: invalid use of 'this' outside of a non-static member function
+   83 |             this->value = reader.read_string();
+      |             ^
+sdk_test.cpp:83:27: error: use of undeclared identifier 'reader'
+   83 |             this->value = reader.read_string();
+      |                           ^~~~~~
+sdk_test.cpp:85:28: error: no member named 'EnumWithPayloadTag' in namespace 'SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp'
+   85 |         case sdk_test_cpp::EnumWithPayloadTag::TagIdentity:
+      |              ~~~~~~~~~~~~~~^
+sdk_test.cpp:86:13: error: invalid use of 'this' outside of a non-static member function
+   86 |             this->value = ::SpacetimeDb::bsatn::deserialize<::SpacetimeDb::sdk::Identity>(reader);
+      |             ^
+sdk_test.cpp:86:91: error: use of undeclared identifier 'reader'
+   86 |             this->value = ::SpacetimeDb::bsatn::deserialize<::SpacetimeDb::sdk::Identity>(reader);
+      |                                                                                           ^~~~~~
+sdk_test.cpp:88:28: error: no member named 'EnumWithPayloadTag' in namespace 'SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp'
+   88 |         case sdk_test_cpp::EnumWithPayloadTag::TagConnectionId:
+      |              ~~~~~~~~~~~~~~^
+sdk_test.cpp:89:13: error: invalid use of 'this' outside of a non-static member function
+   89 |             this->value = ::SpacetimeDb::bsatn::deserialize<::SpacetimeDb::sdk::ConnectionId>(reader);
+      |             ^
+sdk_test.cpp:89:95: error: use of undeclared identifier 'reader'
+   89 |             this->value = ::SpacetimeDb::bsatn::deserialize<::SpacetimeDb::sdk::ConnectionId>(reader);
+      |                                                                                               ^~~~~~
+sdk_test.cpp:91:28: error: no member named 'EnumWithPayloadTag' in namespace 'SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp'
+   91 |         case sdk_test_cpp::EnumWithPayloadTag::TagTimestamp:
+      |              ~~~~~~~~~~~~~~^
+sdk_test.cpp:92:13: error: invalid use of 'this' outside of a non-static member function
+   92 |             this->value = ::SpacetimeDb::bsatn::deserialize<::SpacetimeDb::sdk::Timestamp>(reader);
+      |             ^
+sdk_test.cpp:92:92: error: use of undeclared identifier 'reader'
+   92 |             this->value = ::SpacetimeDb::bsatn::deserialize<::SpacetimeDb::sdk::Timestamp>(reader);
+      |                                                                                            ^~~~~~
+sdk_test.cpp:94:28: error: no member named 'EnumWithPayloadTag' in namespace 'SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp'
+   94 |         case sdk_test_cpp::EnumWithPayloadTag::TagBytes: // std::vector<uint8_t>
+      |              ~~~~~~~~~~~~~~^
+sdk_test.cpp:96:13: error: invalid use of 'this' outside of a non-static member function
+   96 |             this->value = reader.read_vector<uint8_t>();
+      |             ^
+sdk_test.cpp:96:27: error: use of undeclared identifier 'reader'
+   96 |             this->value = reader.read_vector<uint8_t>();
+      |                           ^~~~~~
+sdk_test.cpp:98:28: error: no member named 'EnumWithPayloadTag' in namespace 'SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp'
+   98 |         case sdk_test_cpp::EnumWithPayloadTag::TagInts: // std::vector<int32_t>
+      |              ~~~~~~~~~~~~~~^
+sdk_test.cpp:99:13: error: invalid use of 'this' outside of a non-static member function
+   99 |             this->value = reader.read_vector<int32_t>();
+      |             ^
+sdk_test.cpp:99:27: error: use of undeclared identifier 'reader'
+   99 |             this->value = reader.read_vector<int32_t>();
+      |                           ^~~~~~
+sdk_test.cpp:101:28: error: no member named 'EnumWithPayloadTag' in namespace 'SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp'
+  101 |         case sdk_test_cpp::EnumWithPayloadTag::TagStrings: // std::vector<std::string>
+      |              ~~~~~~~~~~~~~~^
+sdk_test.cpp:102:13: error: invalid use of 'this' outside of a non-static member function
+  102 |             this->value = reader.read_vector<std::string>();
+      |             ^
+sdk_test.cpp:102:27: error: use of undeclared identifier 'reader'
+  102 |             this->value = reader.read_vector<std::string>();
+      |                           ^~~~~~
+sdk_test.cpp:104:28: error: no member named 'EnumWithPayloadTag' in namespace 'SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp'
+  104 |         case sdk_test_cpp::EnumWithPayloadTag::TagSimpleEnums: // std::vector<SimpleEnum>
+      |              ~~~~~~~~~~~~~~^
+sdk_test.cpp:105:13: error: invalid use of 'this' outside of a non-static member function
+  105 |             this->value = reader.read_vector<sdk_test_cpp::SimpleEnum>();
+      |             ^
+sdk_test.cpp:105:27: error: use of undeclared identifier 'reader'
+  105 |             this->value = reader.read_vector<sdk_test_cpp::SimpleEnum>();
+      |                           ^~~~~~
+sdk_test.cpp:105:60: error: no member named 'SimpleEnum' in namespace 'SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::SpacetimeDb::bsatn::sdk_test_cpp'
+  105 |             this->value = reader.read_vector<sdk_test_cpp::SimpleEnum>();
+      |                                                            ^~~~~~~~~~
+sdk_test.cpp:109:139: error: invalid use of 'this' outside of a non-static member function
+  109 |             throw std::runtime_error("Unknown tag encountered during EnumWithPayload deserialization: " + std::to_string(static_cast<int>(this->tag)));
+      |                                                                                                                                           ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:1072:5: note: to match this '{'
+ 1072 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:1053:5: note: to match this '{'
+ 1053 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(sdk_test_cpp::OptionEveryPrimitiveStructRow, sdk_test_cpp_OptionEveryPrimitiveStructRow, "OptionEveryPrimitiveStructRow", OPTION_EVERY_PRIMITIVE_STRUCT_ROW_FIELDS,
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:1046:5: note: to match this '{'
+ 1046 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(sdk_test_cpp::OptionSimpleEnumRow, sdk_test_cpp_OptionSimpleEnumRow, "OptionSimpleEnumRow", OPTION_SIMPLE_ENUM_ROW_FIELDS,
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:1039:5: note: to match this '{'
+ 1039 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(sdk_test_cpp::OptionIdentityRow, sdk_test_cpp_OptionIdentityRow, "OptionIdentityRow", OPTION_IDENTITY_ROW_FIELDS,
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:1032:5: note: to match this '{'
+ 1032 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(sdk_test_cpp::OptionStringRow, sdk_test_cpp_OptionStringRow, "OptionStringRow", OPTION_STRING_ROW_FIELDS,
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:1025:5: note: to match this '{'
+ 1025 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(sdk_test_cpp::OptionI32Row, sdk_test_cpp_OptionI32Row, "OptionI32Row", OPTION_I32_ROW_FIELDS,
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:1007:5: note: to match this '{'
+ 1007 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:987:5: note: to match this '{'
+  987 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:971:5: note: to match this '{'
+  971 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:955:5: note: to match this '{'
+  955 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:939:5: note: to match this '{'
+  939 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:917:5: note: to match this '{'
+  917 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:901:5: note: to match this '{'
+  901 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:884:5: note: to match this '{'
+  884 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:865:5: note: to match this '{'
+  865 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:847:5: note: to match this '{'
+  847 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:830:5: note: to match this '{'
+  830 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:811:5: note: to match this '{'
+  811 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:762:5: note: to match this '{'
+  762 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:675:5: note: to match this '{'
+  675 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:656:5: note: to match this '{'
+  656 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:637:5: note: to match this '{'
+  637 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:618:5: note: to match this '{'
+  618 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:600:5: note: to match this '{'
+  600 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(sdk_test_cpp::VecEveryPrimitiveStructRow, sdk_test_cpp_VecEveryPrimitiveStructRow, "VecEveryPrimitiveStructRow", VEC_EVERY_PRIMITIVE_STRUCT_ROW_FIELDS,
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:593:5: note: to match this '{'
+  593 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(sdk_test_cpp::VecSimpleEnumRow, sdk_test_cpp_VecSimpleEnumRow, "VecSimpleEnumRow", VEC_SIMPLE_ENUM_ROW_FIELDS,
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:586:5: note: to match this '{'
+  586 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(sdk_test_cpp::VecStringRow, sdk_test_cpp_VecStringRow, "VecStringRow", VEC_STRING_ROW_FIELDS,
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:579:5: note: to match this '{'
+  579 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(sdk_test_cpp::VecU8Row, sdk_test_cpp_VecU8Row, "VecU8Row", VEC_U8_ROW_FIELDS,
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:566:5: note: to match this '{'
+  566 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:556:5: note: to match this '{'
+  556 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:546:5: note: to match this '{'
+  546 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:536:5: note: to match this '{'
+  536 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:526:5: note: to match this '{'
+  526 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:516:5: note: to match this '{'
+  516 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:506:5: note: to match this '{'
+  506 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:496:5: note: to match this '{'
+  496 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:486:5: note: to match this '{'
+  486 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:476:5: note: to match this '{'
+  476 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:466:5: note: to match this '{'
+  466 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:456:5: note: to match this '{'
+  456 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:446:5: note: to match this '{'
+  446 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:436:5: note: to match this '{'
+  436 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:426:5: note: to match this '{'
+  426 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:416:5: note: to match this '{'
+  416 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:406:5: note: to match this '{'
+  406 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:396:5: note: to match this '{'
+  396 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:386:5: note: to match this '{'
+  386 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:376:5: note: to match this '{'
+  376 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:366:5: note: to match this '{'
+  366 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:356:5: note: to match this '{'
+  356 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:346:5: note: to match this '{'
+  346 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:336:5: note: to match this '{'
+  336 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:326:5: note: to match this '{'
+  326 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:307:5: note: to match this '{'
+  307 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:287:5: note: to match this '{'
+  287 |     SPACETIMEDB_TYPE_ENUM(sdk_test_cpp::EnumWithPayloadTag, sdk_test_cpp_EnumWithPayloadTag, "EnumWithPayloadTag", ({
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:129:30: note: expanded from macro 'SPACETIMEDB_TYPE_ENUM'
+  129 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:263:24: note: to match this '{'
+  263 | namespace sdk_test_cpp {
+      |                        ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:149:5: note: to match this '{'
+  149 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:88:5: note: to match this '{'
+   88 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:74:5: note: to match this '{'
+   74 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:59:5: note: to match this '{'
+   59 |     SPACETIMEDB_TYPE_ENUM(
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:129:30: note: expanded from macro 'SPACETIMEDB_TYPE_ENUM'
+  129 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:50:24: note: to match this '{'
+   50 | namespace sdk_test_cpp {
+      |                        ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:42:1: note: to match this '{'
+   42 | SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      | ^
+../../../sdk/include\spacetimedb/macros.h:290:30: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+sdk_test.cpp:113:28: error: expected '}'
+  113 | } // namespace sdk_test_cpp
+      |                            ^
+.\sdk_test.h:30:1: note: to match this '{'
+   30 | SPACETIMEDB_TYPE_ENUM(
+      | ^
+../../../sdk/include\spacetimedb/macros.h:129:30: note: expanded from macro 'SPACETIMEDB_TYPE_ENUM'
+  129 | namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
+      |                              ^
+177 errors generated.
+emcc: error: ''C:/Users/ludvi/emsdk/upstream/bin\clang.exe' -target wasm32-unknown-emscripten -fignore-exceptions -mllvm -combiner-global-alias-analysis=false -mllvm -enable-emscripten-sjlj -mllvm -disable-lsr '--sysroot=C:\Users\ludvi\emsdk\upstream\emscripten\cache\sysroot' -DEMSCRIPTEN -Xclang '-iwithsysroot/include\fakesdl' -Xclang '-iwithsysroot/include\compat' -std=c++20 -I../../../sdk/include -ferror-limit=500 -c sdk_test.cpp -o 'C:\Users\ludvi\AppData\Local\Temp\emscripten_temp_4z4kzo9l\sdk_test_0.o'' failed (returned 1)
