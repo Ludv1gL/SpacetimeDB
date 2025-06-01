@@ -16,6 +16,13 @@
 #define SPACETIMEDB_STRINGIFY_IMPL(x) #x
 #define SPACETIMEDB_STRINGIFY(x) SPACETIMEDB_STRINGIFY_IMPL(x)
 
+// Helper macros for token pasting
+#define SPACETIMEDB_PASTE_IMPL(a, b) a##b
+#define SPACETIMEDB_PASTE(a, b) SPACETIMEDB_PASTE_IMPL(a, b)
+
+#define SPACETIMEDB_PASTE_PREFIX_IMPL(prefix, type) prefix##type
+#define SPACETIMEDB_PASTE_PREFIX(prefix, type) SPACETIMEDB_PASTE_PREFIX_IMPL(prefix, type)
+
 // --- Type Definition Macros ---
 
 /** @internal Basic helper to construct a FieldDefinition for schema registration. */
@@ -35,16 +42,53 @@ inline ::SpacetimeDb::FieldDefinition SPACETIMEDB_FIELD_INTERNAL(const char* nam
 }
 
 #define SPACETIMEDB_FIELD(FieldNameStr, FieldCoreType, IsUniqueBool, IsAutoIncBool) \
-    ::SpacetimeDb::SPACETIMEDB_FIELD_INTERNAL(FieldNameStr, FieldCoreType, nullptr, false, IsUniqueBool, IsAutoIncBool)
+    ::SPACETIMEDB_FIELD_INTERNAL(FieldNameStr, FieldCoreType, nullptr, false, IsUniqueBool, IsAutoIncBool)
 
 #define SPACETIMEDB_FIELD_OPTIONAL(FieldNameStr, FieldCoreType, IsUniqueBool, IsAutoIncBool) \
-    ::SpacetimeDb::SPACETIMEDB_FIELD_INTERNAL(FieldNameStr, FieldCoreType, nullptr, true, IsUniqueBool, IsAutoIncBool)
+    ::SPACETIMEDB_FIELD_INTERNAL(FieldNameStr, FieldCoreType, nullptr, true, IsUniqueBool, IsAutoIncBool)
 
 #define SPACETIMEDB_FIELD_CUSTOM(FieldNameStr, UserDefinedTypeNameStr, IsUniqueBool, IsAutoIncBool) \
-    ::SpacetimeDb::SPACETIMEDB_FIELD_INTERNAL(FieldNameStr, ::SpacetimeDb::CoreType::UserDefined, UserDefinedTypeNameStr, false, IsUniqueBool, IsAutoIncBool)
+    ::SPACETIMEDB_FIELD_INTERNAL(FieldNameStr, ::SpacetimeDb::CoreType::UserDefined, UserDefinedTypeNameStr, false, IsUniqueBool, IsAutoIncBool)
 
 #define SPACETIMEDB_FIELD_CUSTOM_OPTIONAL(FieldNameStr, UserDefinedTypeNameStr, IsUniqueBool, IsAutoIncBool) \
-    ::SpacetimeDb::SPACETIMEDB_FIELD_INTERNAL(FieldNameStr, ::SpacetimeDb::CoreType::UserDefined, UserDefinedTypeNameStr, true, IsUniqueBool, IsAutoIncBool)
+    ::SPACETIMEDB_FIELD_INTERNAL(FieldNameStr, ::SpacetimeDb::CoreType::UserDefined, UserDefinedTypeNameStr, true, IsUniqueBool, IsAutoIncBool)
+
+#define SPACETIMEDB_XX_SERIALIZE_FIELD(WRITER, VALUE_OBJ, CPP_TYPE, FIELD_NAME, IS_OPTIONAL, IS_VECTOR) \
+    if constexpr (IS_OPTIONAL) { \
+        (WRITER).write_optional((VALUE_OBJ).FIELD_NAME); \
+    } else if constexpr (IS_VECTOR) { \
+        (WRITER).write_vector((VALUE_OBJ).FIELD_NAME); \
+    } else { \
+        ::bsatn::serialize((WRITER), (VALUE_OBJ).FIELD_NAME); \
+    }
+
+#define SPACETIMEDB_XX_DESERIALIZE_FIELD(READER, VALUE_OBJ, CPP_TYPE, FIELD_NAME, IS_OPTIONAL, IS_VECTOR) \
+    if constexpr (IS_OPTIONAL) { \
+        (VALUE_OBJ).FIELD_NAME = (READER).read_optional<CPP_TYPE>(); \
+    } else if constexpr (IS_VECTOR) { \
+        (VALUE_OBJ).FIELD_NAME = (READER).read_vector<CPP_TYPE>(); \
+    } else { \
+        if constexpr (std::is_same_v<CPP_TYPE, uint8_t>) { obj.FIELD_NAME = reader.read_u8(); } \
+        else if constexpr (std::is_same_v<CPP_TYPE, uint16_t>) { obj.FIELD_NAME = reader.read_u16_le(); } \
+        else if constexpr (std::is_same_v<CPP_TYPE, uint32_t>) { obj.FIELD_NAME = reader.read_u32_le(); } \
+        else if constexpr (std::is_same_v<CPP_TYPE, uint64_t>) { obj.FIELD_NAME = reader.read_u64_le(); } \
+        else if constexpr (std::is_same_v<CPP_TYPE, int8_t>) { obj.FIELD_NAME = reader.read_i8(); } \
+        else if constexpr (std::is_same_v<CPP_TYPE, int16_t>) { obj.FIELD_NAME = reader.read_i16_le(); } \
+        else if constexpr (std::is_same_v<CPP_TYPE, int32_t>) { obj.FIELD_NAME = reader.read_i32_le(); } \
+        else if constexpr (std::is_same_v<CPP_TYPE, int64_t>) { obj.FIELD_NAME = reader.read_i64_le(); } \
+        else if constexpr (std::is_same_v<CPP_TYPE, float>) { obj.FIELD_NAME = reader.read_f32_le(); } \
+        else if constexpr (std::is_same_v<CPP_TYPE, double>) { obj.FIELD_NAME = reader.read_f64_le(); } \
+        else if constexpr (std::is_same_v<CPP_TYPE, bool>) { obj.FIELD_NAME = reader.read_bool(); } \
+        else if constexpr (std::is_same_v<CPP_TYPE, std::string>) { obj.FIELD_NAME = reader.read_string(); } \
+        /* For SpacetimeDB specific SDK types that have bsatn_deserialize methods */ \
+        else if constexpr (std::is_same_v<CPP_TYPE, ::spacetimedb::sdk::Identity>) { obj.FIELD_NAME.bsatn_deserialize(reader); } \
+        else if constexpr (std::is_same_v<CPP_TYPE, ::spacetimedb::sdk::Timestamp>) { obj.FIELD_NAME.bsatn_deserialize(reader); } \
+        /* Add other spacetimedb::sdk types here if they have direct bsatn_deserialize methods */ \
+        /* Fallback for enums or other custom structs that have global deserialize specializations */ \
+        else { \
+            obj.FIELD_NAME = ::bsatn::deserialize<CPP_TYPE>(reader); \
+        } \
+    }
 
 // Schema-only struct registration (no BSATN generation)
 #define SPACETIMEDB_TYPE_STRUCT(CppTypeName, SanitizedCppTypeName, SpacetimeDbTypeNameStr, FieldsInitializerList) \
@@ -67,8 +111,8 @@ inline ::SpacetimeDb::FieldDefinition SPACETIMEDB_FIELD_INTERNAL(const char* nam
 
 #define SPACETIMEDB_TYPE_ENUM(CppTypeName, SanitizedCppTypeName, SpacetimeDbEnumNameStr, VariantsInitializerList) \
     namespace SpacetimeDb { namespace ModuleRegistration { \
-        struct Register##SanitizedCppTypeName { \
-            Register##SanitizedCppTypeName() { \
+        struct SPACETIMEDB_PASTE(Register, SanitizedCppTypeName) { \
+            SPACETIMEDB_PASTE(Register, SanitizedCppTypeName)() { \
                 ::SpacetimeDb::ModuleSchema::instance().register_enum_type( \
                     SPACETIMEDB_STRINGIFY(CppTypeName), \
                     SpacetimeDbEnumNameStr, \
@@ -76,11 +120,11 @@ inline ::SpacetimeDb::FieldDefinition SPACETIMEDB_FIELD_INTERNAL(const char* nam
                 ); \
             } \
         }; \
-        static Register##SanitizedCppTypeName register_##SanitizedCppTypeName##_instance; \
+        static SPACETIMEDB_PASTE(Register, SanitizedCppTypeName) SPACETIMEDB_PASTE(register_, SPACETIMEDB_PASTE(SanitizedCppTypeName, _instance)); \
     }} \
     namespace bsatn { /* Functions in global bsatn namespace */ \
         /* Forward declaration of the concrete deserialization function */ \
-        CppTypeName deserialize_##SanitizedCppTypeName(::bsatn::Reader& reader); \
+        CppTypeName SPACETIMEDB_PASTE(deserialize_, SanitizedCppTypeName)(::bsatn::Reader& reader); \
         \
         inline void serialize(::bsatn::Writer& writer, const CppTypeName& value) { \
             writer.write_u8(static_cast<uint8_t>(value)); \
@@ -88,10 +132,10 @@ inline ::SpacetimeDb::FieldDefinition SPACETIMEDB_FIELD_INTERNAL(const char* nam
         /* Specialization calling the forward-declared function */ \
         template<> \
         inline CppTypeName deserialize<CppTypeName>(::bsatn::Reader& reader) { \
-            return deserialize_##SanitizedCppTypeName(reader); \
+            return SPACETIMEDB_PASTE(deserialize_, SanitizedCppTypeName)(reader); \
         } \
         /* Definition of the concrete deserialization function */ \
-        inline CppTypeName deserialize_##SanitizedCppTypeName(::bsatn::Reader& reader) { \
+        inline CppTypeName SPACETIMEDB_PASTE(deserialize_, SanitizedCppTypeName)(::bsatn::Reader& reader) { \
             uint8_t val = reader.read_u8(); \
             return static_cast<CppTypeName>(val); \
         } \
@@ -227,47 +271,10 @@ inline ::SpacetimeDb::ReducerParameterDefinition SPACETIMEDB_REDUCER_PARAM_INTER
         static RegisterFilter_##FilterNameConstStr register_filter_##FilterNameConstStr##_instance; \
     }}
 
-#define SPACETIMEDB_XX_SERIALIZE_FIELD(WRITER, VALUE_OBJ, CPP_TYPE, FIELD_NAME, IS_OPTIONAL, IS_VECTOR) \
-    if constexpr (IS_OPTIONAL) { \
-        (WRITER).write_optional((VALUE_OBJ).FIELD_NAME); \
-    } else if constexpr (IS_VECTOR) { \
-        (WRITER).write_vector((VALUE_OBJ).FIELD_NAME); \
-    } else { \
-        ::bsatn::serialize((WRITER), (VALUE_OBJ).FIELD_NAME); \
-    }
-
-#define SPACETIMEDB_XX_DESERIALIZE_FIELD(READER, VALUE_OBJ, CPP_TYPE, FIELD_NAME, IS_OPTIONAL, IS_VECTOR) \
-    if constexpr (IS_OPTIONAL) { \
-        (VALUE_OBJ).FIELD_NAME = (READER).read_optional<CPP_TYPE>(); \
-    } else if constexpr (IS_VECTOR) { \
-        (VALUE_OBJ).FIELD_NAME = (READER).read_vector<CPP_TYPE>(); \
-    } else { \
-        if constexpr (std::is_same_v<CPP_TYPE, uint8_t>) { obj.FIELD_NAME = reader.read_u8(); } \
-        else if constexpr (std::is_same_v<CPP_TYPE, uint16_t>) { obj.FIELD_NAME = reader.read_u16_le(); } \
-        else if constexpr (std::is_same_v<CPP_TYPE, uint32_t>) { obj.FIELD_NAME = reader.read_u32_le(); } \
-        else if constexpr (std::is_same_v<CPP_TYPE, uint64_t>) { obj.FIELD_NAME = reader.read_u64_le(); } \
-        else if constexpr (std::is_same_v<CPP_TYPE, int8_t>) { obj.FIELD_NAME = reader.read_i8(); } \
-        else if constexpr (std::is_same_v<CPP_TYPE, int16_t>) { obj.FIELD_NAME = reader.read_i16_le(); } \
-        else if constexpr (std::is_same_v<CPP_TYPE, int32_t>) { obj.FIELD_NAME = reader.read_i32_le(); } \
-        else if constexpr (std::is_same_v<CPP_TYPE, int64_t>) { obj.FIELD_NAME = reader.read_i64_le(); } \
-        else if constexpr (std::is_same_v<CPP_TYPE, float>) { obj.FIELD_NAME = reader.read_f32_le(); } \
-        else if constexpr (std::is_same_v<CPP_TYPE, double>) { obj.FIELD_NAME = reader.read_f64_le(); } \
-        else if constexpr (std::is_same_v<CPP_TYPE, bool>) { obj.FIELD_NAME = reader.read_bool(); } \
-        else if constexpr (std::is_same_v<CPP_TYPE, std::string>) { obj.FIELD_NAME = reader.read_string(); } \
-        /* For SpacetimeDB specific SDK types that have bsatn_deserialize methods */ \
-        else if constexpr (std::is_same_v<CPP_TYPE, ::spacetimedb::sdk::Identity>) { obj.FIELD_NAME.bsatn_deserialize(reader); } \
-        else if constexpr (std::is_same_v<CPP_TYPE, ::spacetimedb::sdk::Timestamp>) { obj.FIELD_NAME.bsatn_deserialize(reader); } \
-        /* Add other spacetimedb::sdk types here if they have direct bsatn_deserialize methods */ \
-        /* Fallback for enums or other custom structs that have global deserialize specializations */ \
-        else { \
-            obj.FIELD_NAME = ::bsatn::deserialize<CPP_TYPE>(reader); \
-        } \
-    }
-
 #define SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(CppTypeName, SanitizedCppTypeName, SpacetimeDbNameStr, FIELDS_MACRO, RegFieldsInitializerList) \
     namespace SpacetimeDb { namespace ModuleRegistration { \
-        struct Register##SanitizedCppTypeName { \
-            Register##SanitizedCppTypeName() { \
+        struct SPACETIMEDB_PASTE(Register, SanitizedCppTypeName) { \
+            SPACETIMEDB_PASTE(Register, SanitizedCppTypeName)() { \
                 ::SpacetimeDb::ModuleSchema::instance().register_struct_type( \
                     SPACETIMEDB_STRINGIFY(CppTypeName), \
                     SpacetimeDbNameStr, \
@@ -276,28 +283,32 @@ inline ::SpacetimeDb::ReducerParameterDefinition SPACETIMEDB_REDUCER_PARAM_INTER
             } \
         }; \
 
-        static Register##SanitizedCppTypeName register_##SanitizedCppTypeName##_instance; \
-    }} \
-    namespace bsatn { /* Functions in global bsatn namespace */ \
-        /* Forward declaration of the concrete deserialization function */ \
-        CppTypeName deserialize_##SanitizedCppTypeName(::bsatn::Reader& reader); \
+static SPACETIMEDB_PASTE(Register, SanitizedCppTypeName) SPACETIMEDB_PASTE(register_, SPACETIMEDB_PASTE(SanitizedCppTypeName, _instance)); \
+}
+} \
+namespace bsatn { /* Functions in global bsatn namespace */ \
+    /* Forward declaration of the concrete deserialization function */ \
+    CppTypeName SPACETIMEDB_PASTE(deserialize_, SanitizedCppTypeName)(::bsatn::Reader& reader); \
+    \
+    inline void serialize(::bsatn::Writer& writer, const CppTypeName& value) {
+    \
+        FIELDS_MACRO(SPACETIMEDB_XX_SERIALIZE_FIELD, writer, value); \
+} \
+\
+/* Specialization calling the forward-declared function */ \
+template<> \
+inline CppTypeName deserialize<CppTypeName>(::bsatn::Reader& reader) {
         \
-        inline void serialize(::bsatn::Writer& writer, const CppTypeName& value) { \
-            FIELDS_MACRO(SPACETIMEDB_XX_SERIALIZE_FIELD, writer, value); \
-        } \
-        \
-        /* Specialization calling the forward-declared function */ \
-        template<> \
-        inline CppTypeName deserialize<CppTypeName>(::bsatn::Reader& reader) { \
-            return deserialize_##SanitizedCppTypeName(reader); \
-        } \
+            return SPACETIMEDB_PASTE(deserialize_, SanitizedCppTypeName)(reader); \
+    } \
         /* Definition of the concrete deserialization function */ \
-        inline CppTypeName deserialize_##SanitizedCppTypeName(::bsatn::Reader& reader) { \
-            CppTypeName obj; \
-            FIELDS_MACRO(SPACETIMEDB_XX_DESERIALIZE_FIELD, reader, obj); \
-            return obj; \
+            inline CppTypeName SPACETIMEDB_PASTE(deserialize_, SanitizedCppTypeName)(::bsatn::Reader& reader) {
+            \
+                CppTypeName obj; \
+                FIELDS_MACRO(SPACETIMEDB_XX_DESERIALIZE_FIELD, reader, obj); \
+                return obj; \
         } \
-    }
+}
 
 #endif // SPACETIME_MACROS_H
 

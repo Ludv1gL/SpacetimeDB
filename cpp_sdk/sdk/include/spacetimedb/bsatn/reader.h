@@ -17,12 +17,17 @@
 
 namespace bsatn {
 
+    // Forward declaration of Reader class
+    class Reader;
 
-// Forward declaration of Reader class
-class Reader;
+    // Forward declare the generic deserialize template used by Reader's methods
+    template<typename T> T deserialize(Reader& r);
 
-// Forward declare the generic deserialize template used by Reader's methods
-template<typename T> T deserialize(Reader& r);
+    class Reader {
+    public:
+        // Constructors
+        Reader(const std::byte* data, size_t size) : current_ptr(data), end_ptr(data + size) {}
+        Reader(std::span<const std::byte> data) : current_ptr(data.data()), end_ptr(data.data() + data.size()) {}
 
         bool read_bool();
         uint8_t read_u8();
@@ -43,20 +48,20 @@ template<typename T> T deserialize(Reader& r);
         std::string read_string();
         std::vector<std::byte> read_bytes();
 
-        template<typename T> // Removed Func, will use bsatn::deserialize<T>
-        std::optional<T> read_optional() { // Renamed from read_optional(Func)
+        template<typename T>
+        std::optional<T> read_optional() {
             uint8_t tag = read_u8();
             if (tag == 0) {
                 return std::nullopt;
             }
-            else if (tag == 1) { // Assuming 1 means present
-                return deserialize<T>(*this); // Use the generic deserialize
+            else if (tag == 1) {
+                return deserialize<T>(*this);
             }
             throw std::runtime_error("Invalid tag for optional type: " + std::to_string(tag));
         }
 
-        template<typename T> // Removed Func, will use bsatn::deserialize<T>
-        std::vector<T> read_vector() { // Renamed from read_vector(Func)
+        template<typename T>
+        std::vector<T> read_vector() {
             uint32_t count = read_u32_le();
             std::vector<T> vec;
             if (count > max_vector_elements_sanity_check) {
@@ -64,18 +69,12 @@ template<typename T> T deserialize(Reader& r);
             }
             vec.reserve(count);
             for (uint32_t i = 0; i < count; ++i) {
-                vec.push_back(deserialize<T>(*this)); // Use the generic deserialize
+                vec.push_back(deserialize<T>(*this));
             }
             return vec;
         }
 
-        std::vector<std::byte> read_vector_byte(); // Specific version for vector of bytes
-
-        // Generic deserialize member function (calls the free template function bsatn::deserialize<T>)
-        template<typename T>
-        T deserialize_member() { // Renamed to avoid conflict if free function is in global/bsatn
-            return deserialize<T>(*this);
-        }
+        std::vector<std::byte> read_vector_byte();
 
         bool is_eos() const;
         size_t remaining_bytes() const;
@@ -91,7 +90,7 @@ template<typename T> T deserialize(Reader& r);
 
     // Definition of the generic deserialize template (relies on specializations)
     // This should be in bsatn_lib.h from codegen, or a similar central place.
-    // For now, to make this header self-contained for what it needs:
+        // For now, to make this header self-contained for what it needs:
     template<typename T>
     T deserialize(Reader& r) {
         // This generic version should ideally static_assert(false, "No bsatn::deserialize specialization for this type T")
