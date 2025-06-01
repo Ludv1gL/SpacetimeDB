@@ -1,0 +1,490 @@
+In file included from sdk_test.cpp:1:
+.\sdk_test.h:36:5: error: no function template matches function template specialization 'deserialize'
+   36 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:300:28: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  300 |         inline CppTypeName deserialize<CppTypeName>(::bsatn::Reader& reader) { \
+      |                            ^
+In file included from sdk_test.cpp:1:
+.\sdk_test.h:36:5: error: no member named 'bsatn' in namespace 'SpacetimeDb'; did you mean simply 'bsatn'?
+../../../sdk/include\spacetimedb/macros.h:301:20: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  301 |             return ::SpacetimeDb::bsatn::deserialize_##CppCleanName(reader); \
+      |                    ^
+.\sdk_test.h:36:5: note: 'bsatn' declared here
+../../../sdk/include\spacetimedb/macros.h:298:15: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  298 |     namespace bsatn { \
+      |               ^
+In file included from sdk_test.cpp:1:
+.\sdk_test.h:36:5: error: no member named 'deserialize_UnitStruct' in namespace 'sdk_test_cpp::bsatn'; did you mean 'SpacetimeDb::bsatn::deserialize_UnitStruct'?
+   36 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   37 |         sdk_test_cpp::UnitStruct,
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~
+   38 |         UnitStruct,
+      |         ~~~~~~~~~~~
+   39 |         "UnitStruct",
+      |         ~~~~~~~~~~~~~
+   40 |         UNIT_STRUCT_FIELDS,
+      |         ~~~~~~~~~~~~~~~~~~~
+   41 |         ({ /* No fields */ })
+      |         ~~~~~~~~~~~~~~~~~~~~~
+   42 |     );
+      |     ~
+../../../sdk/include\spacetimedb/macros.h:301:35: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  301 |             return ::SpacetimeDb::bsatn::deserialize_##CppCleanName(reader); \
+      |                                   ^      ~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\sdk_test.h:36:5: note: 'SpacetimeDb::bsatn::deserialize_UnitStruct' declared here
+../../../sdk/include\spacetimedb/macros.h:290:28: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  290 |         inline CppTypeName deserialize_##CppCleanName(::bsatn::Reader& reader) { \
+      |                            ^
+<scratch space>:399:1: note: expanded from here
+  399 | deserialize_UnitStruct
+      | ^
+In file included from sdk_test.cpp:1:
+.\sdk_test.h:57:36: error: no member named 'CoreType' in namespace 'sdk_test_cpp::SpacetimeDb'; did you mean '::SpacetimeDb::CoreType'?
+   57 |             SPACETIMEDB_FIELD("b", SpacetimeDb::CoreType::U8, false, false)
+      |                                    ^~~~~~~~~~~~~~~~~~~~~
+      |                                    ::SpacetimeDb::CoreType
+../../../sdk/include\spacetimedb/macros.h:38:61: note: expanded from macro 'SPACETIMEDB_FIELD'
+   38 |     ::SpacetimeDb::SPACETIMEDB_FIELD_INTERNAL(FieldNameStr, FieldCoreType, nullptr, false, IsUniqueBool, IsAutoIncBool)
+      |                                                             ^~~~~~~~~~~~~
+../../../sdk/include\spacetimedb/macros.h:276:66: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  276 |                     std::vector< ::SpacetimeDb::FieldDefinition> RegFieldsInitializerList \
+      |                                                                  ^~~~~~~~~~~~~~~~~~~~~~~~
+../../../sdk/include\spacetimedb/internal/module_schema.h:35:16: note: '::SpacetimeDb::CoreType' declared here
+   35 |     enum class CoreType {
+      |                ^
+In file included from sdk_test.cpp:1:
+.\sdk_test.h:57:13: error: no member named 'SPACETIMEDB_FIELD_INTERNAL' in namespace 'SpacetimeDb'; did you mean simply 'SPACETIMEDB_FIELD_INTERNAL'?
+   57 |             SPACETIMEDB_FIELD("b", SpacetimeDb::CoreType::U8, false, false)
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../sdk/include\spacetimedb/macros.h:38:5: note: expanded from macro 'SPACETIMEDB_FIELD'
+   38 |     ::SpacetimeDb::SPACETIMEDB_FIELD_INTERNAL(FieldNameStr, FieldCoreType, nullptr, false, IsUniqueBool, IsAutoIncBool)
+      |     ^              ~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../sdk/include\spacetimedb/macros.h:22:39: note: 'SPACETIMEDB_FIELD_INTERNAL' declared here
+   22 | inline ::SpacetimeDb::FieldDefinition SPACETIMEDB_FIELD_INTERNAL(const char* name, ::SpacetimeDb::CoreType core_type, const char* user_defined_name, bool is_optional, bool is_unique_field, bool is_auto_inc_field) {
+      |                                       ^
+In file included from sdk_test.cpp:1:
+.\sdk_test.h:51:5: error: no matching member function for call to 'write_optional'
+   51 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   52 |         sdk_test_cpp::ByteStruct,
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~
+   53 |         ByteStruct,
+      |         ~~~~~~~~~~~
+   54 |         "ByteStruct",
+      |         ~~~~~~~~~~~~~
+   55 |         BYTE_STRUCT_FIELDS,
+      |         ~~~~~~~~~~~~~~~~~~~
+   56 |         ({
+      |         ~~
+   57 |             SPACETIMEDB_FIELD("b", SpacetimeDb::CoreType::U8, false, false)
+      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   58 |             })
+      |             ~~
+   59 |     );
+      |     ~
+../../../sdk/include\spacetimedb/macros.h:287:26: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  287 |             FIELDS_MACRO(SPACETIMEDB_XX_SERIALIZE_FIELD) \
+      |             ~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\sdk_test.h:50:5: note: expanded from macro 'BYTE_STRUCT_FIELDS'
+   50 |     XX(uint8_t, b, false, false)
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../sdk/include\spacetimedb/macros.h:215:16: note: expanded from macro 'SPACETIMEDB_XX_SERIALIZE_FIELD'
+  215 |         writer.write_optional(value.FIELD_NAME); \
+      |         ~~~~~~~^~~~~~~~~~~~~~
+../../../sdk/include\spacetimedb/bsatn/writer.h:42:10: note: candidate template ignored: could not match 'const std::optional<T>' against 'const uint8_t' (aka 'const unsigned char')
+   42 |     void write_optional(const std::optional<T>& opt_value) { // Renamed from write_optional(Func)
+      |          ^
+In file included from sdk_test.cpp:1:
+.\sdk_test.h:51:5: error: no matching member function for call to 'write_vector'
+   51 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   52 |         sdk_test_cpp::ByteStruct,
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~
+   53 |         ByteStruct,
+      |         ~~~~~~~~~~~
+   54 |         "ByteStruct",
+      |         ~~~~~~~~~~~~~
+   55 |         BYTE_STRUCT_FIELDS,
+      |         ~~~~~~~~~~~~~~~~~~~
+   56 |         ({
+      |         ~~
+   57 |             SPACETIMEDB_FIELD("b", SpacetimeDb::CoreType::U8, false, false)
+      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   58 |             })
+      |             ~~
+   59 |     );
+      |     ~
+../../../sdk/include\spacetimedb/macros.h:287:26: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  287 |             FIELDS_MACRO(SPACETIMEDB_XX_SERIALIZE_FIELD) \
+      |             ~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\sdk_test.h:50:5: note: expanded from macro 'BYTE_STRUCT_FIELDS'
+   50 |     XX(uint8_t, b, false, false)
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../sdk/include\spacetimedb/macros.h:217:16: note: expanded from macro 'SPACETIMEDB_XX_SERIALIZE_FIELD'
+  217 |         writer.write_vector(value.FIELD_NAME); \
+      |         ~~~~~~~^~~~~~~~~~~~
+../../../sdk/include\spacetimedb/bsatn/writer.h:52:10: note: candidate template ignored: could not match 'const std::vector<T>' against 'const uint8_t' (aka 'const unsigned char')
+   52 |     void write_vector(const std::vector<T>& vec) { // Renamed from write_vector(Func)
+      |          ^
+In file included from sdk_test.cpp:1:
+.\sdk_test.h:51:5: error: reference to type 'const std::string' (aka 'const basic_string<char>') could not bind to an lvalue of type 'const uint8_t' (aka 'const unsigned char')
+   51 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   52 |         sdk_test_cpp::ByteStruct,
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~
+   53 |         ByteStruct,
+      |         ~~~~~~~~~~~
+   54 |         "ByteStruct",
+      |         ~~~~~~~~~~~~~
+   55 |         BYTE_STRUCT_FIELDS,
+      |         ~~~~~~~~~~~~~~~~~~~
+   56 |         ({
+      |         ~~
+   57 |             SPACETIMEDB_FIELD("b", SpacetimeDb::CoreType::U8, false, false)
+      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   58 |             })
+      |             ~~
+   59 |     );
+      |     ~
+../../../sdk/include\spacetimedb/macros.h:287:26: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  287 |             FIELDS_MACRO(SPACETIMEDB_XX_SERIALIZE_FIELD) \
+      |             ~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\sdk_test.h:50:5: note: expanded from macro 'BYTE_STRUCT_FIELDS'
+   50 |     XX(uint8_t, b, false, false)
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../sdk/include\spacetimedb/macros.h:230:89: note: expanded from macro 'SPACETIMEDB_XX_SERIALIZE_FIELD'
+  230 |         else if constexpr (std::is_same_v<CPP_TYPE, std::string>) { writer.write_string(value.FIELD_NAME); } \
+      |                                                                                         ^~~~~~~~~~~~~~~~
+../../../sdk/include\spacetimedb/bsatn/writer.h:38:42: note: passing argument to parameter 'value' here
+   38 |     void write_string(const std::string& value);
+      |                                          ^
+In file included from sdk_test.cpp:1:
+.\sdk_test.h:51:5: error: member reference base type 'const uint8_t' (aka 'const unsigned char') is not a structure or union
+   51 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   52 |         sdk_test_cpp::ByteStruct,
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~
+   53 |         ByteStruct,
+      |         ~~~~~~~~~~~
+   54 |         "ByteStruct",
+      |         ~~~~~~~~~~~~~
+   55 |         BYTE_STRUCT_FIELDS,
+      |         ~~~~~~~~~~~~~~~~~~~
+   56 |         ({
+      |         ~~
+   57 |             SPACETIMEDB_FIELD("b", SpacetimeDb::CoreType::U8, false, false)
+      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   58 |             })
+      |             ~~
+   59 |     );
+      |     ~
+../../../sdk/include\spacetimedb/macros.h:287:26: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  287 |             FIELDS_MACRO(SPACETIMEDB_XX_SERIALIZE_FIELD) \
+      |             ~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\sdk_test.h:50:5: note: expanded from macro 'BYTE_STRUCT_FIELDS'
+   50 |     XX(uint8_t, b, false, false)
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../sdk/include\spacetimedb/macros.h:232:102: note: expanded from macro 'SPACETIMEDB_XX_SERIALIZE_FIELD'
+  232 |         else if constexpr (std::is_same_v<CPP_TYPE, ::spacetimedb::sdk::Identity>) { value.FIELD_NAME.bsatn_serialize(writer); } \
+      |                                                                                      ~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~
+In file included from sdk_test.cpp:1:
+.\sdk_test.h:51:5: error: member reference base type 'const uint8_t' (aka 'const unsigned char') is not a structure or union
+   51 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   52 |         sdk_test_cpp::ByteStruct,
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~
+   53 |         ByteStruct,
+      |         ~~~~~~~~~~~
+   54 |         "ByteStruct",
+      |         ~~~~~~~~~~~~~
+   55 |         BYTE_STRUCT_FIELDS,
+      |         ~~~~~~~~~~~~~~~~~~~
+   56 |         ({
+      |         ~~
+   57 |             SPACETIMEDB_FIELD("b", SpacetimeDb::CoreType::U8, false, false)
+      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   58 |             })
+      |             ~~
+   59 |     );
+      |     ~
+../../../sdk/include\spacetimedb/macros.h:287:26: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  287 |             FIELDS_MACRO(SPACETIMEDB_XX_SERIALIZE_FIELD) \
+      |             ~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\sdk_test.h:50:5: note: expanded from macro 'BYTE_STRUCT_FIELDS'
+   50 |     XX(uint8_t, b, false, false)
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../sdk/include\spacetimedb/macros.h:233:103: note: expanded from macro 'SPACETIMEDB_XX_SERIALIZE_FIELD'
+  233 |         else if constexpr (std::is_same_v<CPP_TYPE, ::spacetimedb::sdk::Timestamp>) { value.FIELD_NAME.bsatn_serialize(writer); } \
+      |                                                                                       ~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~
+In file included from sdk_test.cpp:1:
+.\sdk_test.h:51:5: error: no member named 'bsatn' in namespace 'SpacetimeDb'; did you mean simply 'bsatn'?
+../../../sdk/include\spacetimedb/macros.h:287:26: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  287 |             FIELDS_MACRO(SPACETIMEDB_XX_SERIALIZE_FIELD) \
+      |                          ^
+.\sdk_test.h:50:5: note: expanded from macro 'BYTE_STRUCT_FIELDS'
+   50 |     XX(uint8_t, b, false, false)
+      |     ^
+../../../sdk/include\spacetimedb/macros.h:237:13: note: expanded from macro 'SPACETIMEDB_XX_SERIALIZE_FIELD'
+  237 |             ::SpacetimeDb::bsatn::serialize(writer, value.FIELD_NAME); \
+      |             ^
+.\sdk_test.h:51:5: note: 'bsatn' declared here
+../../../sdk/include\spacetimedb/macros.h:282:39: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  282 |     namespace SpacetimeDb { namespace bsatn { \
+      |                                       ^
+In file included from sdk_test.cpp:1:
+.\sdk_test.h:51:5: error: no matching function for call to 'serialize'
+   51 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   52 |         sdk_test_cpp::ByteStruct,
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~
+   53 |         ByteStruct,
+      |         ~~~~~~~~~~~
+   54 |         "ByteStruct",
+      |         ~~~~~~~~~~~~~
+   55 |         BYTE_STRUCT_FIELDS,
+      |         ~~~~~~~~~~~~~~~~~~~
+   56 |         ({
+      |         ~~
+   57 |             SPACETIMEDB_FIELD("b", SpacetimeDb::CoreType::U8, false, false)
+      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   58 |             })
+      |             ~~
+   59 |     );
+      |     ~
+../../../sdk/include\spacetimedb/macros.h:287:26: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  287 |             FIELDS_MACRO(SPACETIMEDB_XX_SERIALIZE_FIELD) \
+      |             ~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\sdk_test.h:50:5: note: expanded from macro 'BYTE_STRUCT_FIELDS'
+   50 |     XX(uint8_t, b, false, false)
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../sdk/include\spacetimedb/macros.h:237:28: note: expanded from macro 'SPACETIMEDB_XX_SERIALIZE_FIELD'
+  237 |             ::SpacetimeDb::bsatn::serialize(writer, value.FIELD_NAME); \
+      |                            ^~~~~~~~~~~~~~~~
+.\sdk_test.h:20:5: note: candidate function not viable: no known conversion from 'const uint8_t' (aka 'const unsigned char') to 'const sdk_test_cpp::SimpleEnum' for 2nd argument
+   20 |     SPACETIMEDB_TYPE_ENUM(
+      |     ^~~~~~~~~~~~~~~~~~~~~~
+   21 |         sdk_test_cpp::SimpleEnum,
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~
+   22 |         SimpleEnum,
+      |         ~~~~~~~~~~~
+   23 |         "SimpleEnum",
+      |         ~~~~~~~~~~~~~
+   24 |         ({
+      |         ~~
+   25 |             SPACETIMEDB_ENUM_VARIANT("Zero"),
+      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   26 |             SPACETIMEDB_ENUM_VARIANT("One"),
+      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   27 |             SPACETIMEDB_ENUM_VARIANT("Two")
+      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   28 |             })
+      |             ~~
+   29 |     );
+      |     ~
+../../../sdk/include\spacetimedb/macros.h:80:21: note: expanded from macro 'SPACETIMEDB_TYPE_ENUM'
+   80 |         inline void serialize(::bsatn::Writer& writer, const CppEnumName& value) { \
+      |                     ^                                  ~~~~~~~~~~~~~~~~~~~~~~~~
+.\sdk_test.h:36:5: note: candidate function not viable: no known conversion from 'const uint8_t' (aka 'const unsigned char') to 'const sdk_test_cpp::UnitStruct' for 2nd argument
+   36 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   37 |         sdk_test_cpp::UnitStruct,
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~
+   38 |         UnitStruct,
+      |         ~~~~~~~~~~~
+   39 |         "UnitStruct",
+      |         ~~~~~~~~~~~~~
+   40 |         UNIT_STRUCT_FIELDS,
+      |         ~~~~~~~~~~~~~~~~~~~
+   41 |         ({ /* No fields */ })
+      |         ~~~~~~~~~~~~~~~~~~~~~
+   42 |     );
+      |     ~
+../../../sdk/include\spacetimedb/macros.h:286:21: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  286 |         inline void serialize(::bsatn::Writer& writer, const CppTypeName& value) { \
+      |                     ^                                  ~~~~~~~~~~~~~~~~~~~~~~~~
+.\sdk_test.h:51:5: note: candidate function not viable: no known conversion from 'const uint8_t' (aka 'const unsigned char') to 'const sdk_test_cpp::ByteStruct' for 2nd argument
+   51 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   52 |         sdk_test_cpp::ByteStruct,
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~
+   53 |         ByteStruct,
+      |         ~~~~~~~~~~~
+   54 |         "ByteStruct",
+      |         ~~~~~~~~~~~~~
+   55 |         BYTE_STRUCT_FIELDS,
+      |         ~~~~~~~~~~~~~~~~~~~
+   56 |         ({
+      |         ~~
+   57 |             SPACETIMEDB_FIELD("b", SpacetimeDb::CoreType::U8, false, false)
+      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   58 |             })
+      |             ~~
+   59 |     );
+      |     ~
+../../../sdk/include\spacetimedb/macros.h:286:21: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  286 |         inline void serialize(::bsatn::Writer& writer, const CppTypeName& value) { \
+      |                     ^                                  ~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from sdk_test.cpp:1:
+.\sdk_test.h:51:5: error: assigning to 'uint8_t' (aka 'unsigned char') from incompatible type 'std::optional<unsigned char>'
+   51 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   52 |         sdk_test_cpp::ByteStruct,
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~
+   53 |         ByteStruct,
+      |         ~~~~~~~~~~~
+   54 |         "ByteStruct",
+      |         ~~~~~~~~~~~~~
+   55 |         BYTE_STRUCT_FIELDS,
+      |         ~~~~~~~~~~~~~~~~~~~
+   56 |         ({
+      |         ~~
+   57 |             SPACETIMEDB_FIELD("b", SpacetimeDb::CoreType::U8, false, false)
+      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   58 |             })
+      |             ~~
+   59 |     );
+      |     ~
+../../../sdk/include\spacetimedb/macros.h:292:26: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  292 |             FIELDS_MACRO(SPACETIMEDB_XX_DESERIALIZE_FIELD) \
+      |             ~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\sdk_test.h:50:5: note: expanded from macro 'BYTE_STRUCT_FIELDS'
+   50 |     XX(uint8_t, b, false, false)
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../sdk/include\spacetimedb/macros.h:243:33: note: expanded from macro 'SPACETIMEDB_XX_DESERIALIZE_FIELD'
+  243 |         obj.FIELD_NAME = reader.read_optional<CPP_TYPE>(); \
+      |                          ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from sdk_test.cpp:1:
+.\sdk_test.h:51:5: error: assigning to 'uint8_t' (aka 'unsigned char') from incompatible type 'std::vector<unsigned char>'
+   51 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   52 |         sdk_test_cpp::ByteStruct,
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~
+   53 |         ByteStruct,
+      |         ~~~~~~~~~~~
+   54 |         "ByteStruct",
+      |         ~~~~~~~~~~~~~
+   55 |         BYTE_STRUCT_FIELDS,
+      |         ~~~~~~~~~~~~~~~~~~~
+   56 |         ({
+      |         ~~
+   57 |             SPACETIMEDB_FIELD("b", SpacetimeDb::CoreType::U8, false, false)
+      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   58 |             })
+      |             ~~
+   59 |     );
+      |     ~
+../../../sdk/include\spacetimedb/macros.h:292:26: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  292 |             FIELDS_MACRO(SPACETIMEDB_XX_DESERIALIZE_FIELD) \
+      |             ~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\sdk_test.h:50:5: note: expanded from macro 'BYTE_STRUCT_FIELDS'
+   50 |     XX(uint8_t, b, false, false)
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../sdk/include\spacetimedb/macros.h:245:26: note: expanded from macro 'SPACETIMEDB_XX_DESERIALIZE_FIELD'
+  245 |         obj.FIELD_NAME = reader.read_vector<CPP_TYPE>(); \
+      |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from sdk_test.cpp:1:
+.\sdk_test.h:51:5: error: assigning to 'uint8_t' (aka 'unsigned char') from incompatible type 'std::string' (aka 'basic_string<char>')
+   51 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   52 |         sdk_test_cpp::ByteStruct,
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~
+   53 |         ByteStruct,
+      |         ~~~~~~~~~~~
+   54 |         "ByteStruct",
+      |         ~~~~~~~~~~~~~
+   55 |         BYTE_STRUCT_FIELDS,
+      |         ~~~~~~~~~~~~~~~~~~~
+   56 |         ({
+      |         ~~
+   57 |             SPACETIMEDB_FIELD("b", SpacetimeDb::CoreType::U8, false, false)
+      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   58 |             })
+      |             ~~
+   59 |     );
+      |     ~
+../../../sdk/include\spacetimedb/macros.h:292:26: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  292 |             FIELDS_MACRO(SPACETIMEDB_XX_DESERIALIZE_FIELD) \
+      |             ~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\sdk_test.h:50:5: note: expanded from macro 'BYTE_STRUCT_FIELDS'
+   50 |     XX(uint8_t, b, false, false)
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../sdk/include\spacetimedb/macros.h:258:86: note: expanded from macro 'SPACETIMEDB_XX_DESERIALIZE_FIELD'
+  258 |         else if constexpr (std::is_same_v<CPP_TYPE, std::string>) { obj.FIELD_NAME = reader.read_string(); } \
+      |                                                                                      ^~~~~~~~~~~~~~~~~~~~
+In file included from sdk_test.cpp:1:
+.\sdk_test.h:51:5: error: member reference base type 'uint8_t' (aka 'unsigned char') is not a structure or union
+   51 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   52 |         sdk_test_cpp::ByteStruct,
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~
+   53 |         ByteStruct,
+      |         ~~~~~~~~~~~
+   54 |         "ByteStruct",
+      |         ~~~~~~~~~~~~~
+   55 |         BYTE_STRUCT_FIELDS,
+      |         ~~~~~~~~~~~~~~~~~~~
+   56 |         ({
+      |         ~~
+   57 |             SPACETIMEDB_FIELD("b", SpacetimeDb::CoreType::U8, false, false)
+      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   58 |             })
+      |             ~~
+   59 |     );
+      |     ~
+../../../sdk/include\spacetimedb/macros.h:292:26: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  292 |             FIELDS_MACRO(SPACETIMEDB_XX_DESERIALIZE_FIELD) \
+      |             ~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\sdk_test.h:50:5: note: expanded from macro 'BYTE_STRUCT_FIELDS'
+   50 |     XX(uint8_t, b, false, false)
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../sdk/include\spacetimedb/macros.h:260:100: note: expanded from macro 'SPACETIMEDB_XX_DESERIALIZE_FIELD'
+  260 |         else if constexpr (std::is_same_v<CPP_TYPE, ::spacetimedb::sdk::Identity>) { obj.FIELD_NAME.bsatn_deserialize(reader); } \
+      |                                                                                      ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+In file included from sdk_test.cpp:1:
+.\sdk_test.h:51:5: error: member reference base type 'uint8_t' (aka 'unsigned char') is not a structure or union
+   51 |     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   52 |         sdk_test_cpp::ByteStruct,
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~
+   53 |         ByteStruct,
+      |         ~~~~~~~~~~~
+   54 |         "ByteStruct",
+      |         ~~~~~~~~~~~~~
+   55 |         BYTE_STRUCT_FIELDS,
+      |         ~~~~~~~~~~~~~~~~~~~
+   56 |         ({
+      |         ~~
+   57 |             SPACETIMEDB_FIELD("b", SpacetimeDb::CoreType::U8, false, false)
+      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   58 |             })
+      |             ~~
+   59 |     );
+      |     ~
+../../../sdk/include\spacetimedb/macros.h:292:26: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  292 |             FIELDS_MACRO(SPACETIMEDB_XX_DESERIALIZE_FIELD) \
+      |             ~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\sdk_test.h:50:5: note: expanded from macro 'BYTE_STRUCT_FIELDS'
+   50 |     XX(uint8_t, b, false, false)
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../../../sdk/include\spacetimedb/macros.h:261:101: note: expanded from macro 'SPACETIMEDB_XX_DESERIALIZE_FIELD'
+  261 |         else if constexpr (std::is_same_v<CPP_TYPE, ::spacetimedb::sdk::Timestamp>) { obj.FIELD_NAME.bsatn_deserialize(reader); } \
+      |                                                                                       ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+In file included from sdk_test.cpp:1:
+.\sdk_test.h:51:5: error: no function template matches function template specialization 'deserialize'
+../../../sdk/include\spacetimedb/macros.h:300:28: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  300 |         inline CppTypeName deserialize<CppTypeName>(::bsatn::Reader& reader) { \
+      |                            ^
+In file included from sdk_test.cpp:1:
+.\sdk_test.h:51:5: error: no member named 'bsatn' in namespace 'SpacetimeDb'; did you mean simply 'bsatn'?
+../../../sdk/include\spacetimedb/macros.h:301:20: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  301 |             return ::SpacetimeDb::bsatn::deserialize_##CppCleanName(reader); \
+      |                    ^
+.\sdk_test.h:51:5: note: 'bsatn' declared here
+../../../sdk/include\spacetimedb/macros.h:298:15: note: expanded from macro 'SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS'
+  298 |     namespace bsatn { \
+      |               ^
+fatal error: too many errors emitted, stopping now [-ferror-limit=]
+20 errors generated.
+emcc: error: ''C:/Users/ludvi/emsdk/upstream/bin\clang.exe' -target wasm32-unknown-emscripten -fignore-exceptions -mllvm -combiner-global-alias-analysis=false -mllvm -enable-emscripten-sjlj -mllvm -disable-lsr '--sysroot=C:\Users\ludvi\emsdk\upstream\emscripten\cache\sysroot' -DEMSCRIPTEN -Xclang '-iwithsysroot/include\fakesdl' -Xclang '-iwithsysroot/include\compat' -std=c++20 -I../../../sdk/include -c sdk_test.cpp -o 'C:\Users\ludvi\AppData\Local\Temp\emscripten_temp_c4ghxw3i\sdk_test_0.o'' failed (returned 1)

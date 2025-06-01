@@ -8,8 +8,9 @@
 // For this regeneration, I'll assume the SDK headers are structured to be included like this:
 #include <spacetimedb/sdk/spacetimedb_sdk_types.h>
 #include <spacetimedb/bsatn/bsatn.h> // Assuming bsatn.h is under spacetimedb/bsatn path
-#include <spacetimedb/sdk/spacetimedb_sdk_table_registry.h>
+// #include <spacetimedb/sdk/spacetimedb_sdk_table_registry.h> // Removed as per plan
 #include <spacetimedb/sdk/reducer_context.h>
+#include <spacetimedb/macros.h> // Added as per plan
 
 #include <string>
 #include <vector> // Though not directly used in KeyValue, often useful
@@ -26,25 +27,40 @@ const uint8_t LOG_LEVEL_DEBUG = 4;
 const uint8_t LOG_LEVEL_TRACE = 5;
 
 
-struct KeyValue : public spacetimedb::sdk::bsatn::BsatnSerializable {
-    std::string key_str;   // Primary Key
+struct KeyValue { // Removed inheritance from BsatnSerializable
+    uint64_t id;           // New auto-incrementing PK
+    std::string key_str;   // Now a unique key, not PK
     std::string value_str;
 
     // Default constructor
     KeyValue() = default;
 
     // Constructor for convenience
-    KeyValue(std::string k, std::string v) : key_str(std::move(k)), value_str(std::move(v)) {}
+    KeyValue(std::string k, std::string v) : id(0), key_str(std::move(k)), value_str(std::move(v)) {}
 
-    // BsatnSerializable interface
-    void bsatn_serialize(spacetimedb::sdk::bsatn::bsatn_writer& writer) const override;
-    void bsatn_deserialize(spacetimedb::sdk::bsatn::bsatn_reader& reader) override;
+    // bsatn_serialize and bsatn_deserialize removed
 
     // Optional: Comparison operator for potential use in tests or other logic
     bool operator==(const KeyValue& other) const {
-        return key_str == other.key_str && value_str == other.value_str;
+        return id == other.id && key_str == other.key_str && value_str == other.value_str;
     }
 };
+
+#define KEY_VALUE_FIELDS(XX) \
+    XX(uint64_t, id, false, false) \
+    XX(std::string, key_str, false, false) \
+    XX(std::string, value_str, false, false)
+
+SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+    spacetimedb_quickstart::KeyValue,
+    "KeyValue",
+    KEY_VALUE_FIELDS,
+    {
+        SPACETIMEDB_FIELD("id", SpacetimeDb::CoreType::U64, false /* IsUniqueBool */, true /* IsAutoIncBool */),
+        SPACETIMEDB_FIELD("key_str", SpacetimeDb::CoreType::String, true /* IsUniqueBool */, false /* IsAutoIncBool */),
+        SPACETIMEDB_FIELD("value_str", SpacetimeDb::CoreType::String, false /* IsUniqueBool */, false /* IsAutoIncBool */)
+    }
+);
 
 // Reducer function declarations
 void kv_put(spacetimedb::sdk::ReducerContext& ctx, const std::string& key, const std::string& value);
