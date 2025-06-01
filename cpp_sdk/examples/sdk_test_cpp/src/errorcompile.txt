@@ -3,23 +3,80 @@ In file included from .\sdk_test.h:5:
 In file included from ../../../sdk/include\spacetimedb/macros.h:4:
 In file included from ../../../sdk/include\spacetimedb/internal/module_schema.h:4:
 In file included from ../../../sdk/include\spacetimedb/bsatn/reader.h:14:
-../../../sdk/include\spacetimedb/sdk/spacetimedb_sdk_types.h:48:23: error: member access into incomplete type '::SpacetimeDb::bsatn::Writer'
-   48 |                 writer.write_bytes_raw(this->value.data(), this->value.size());
-      |                       ^
-../../../sdk/include\spacetimedb/sdk/spacetimedb_sdk_types.h:8:15: note: forward declaration of 'SpacetimeDb::bsatn::Writer'
-    8 |         class Writer;
+../../../sdk/include\spacetimedb/sdk/spacetimedb_sdk_types.h:143:20: error: 'write_bytes_raw' is a private member of 'SpacetimeDb::bsatn::Writer'
+  143 |             writer.write_bytes_raw(this->value.data(), this->value.size());
+      |                    ^
+../../../sdk/include\spacetimedb/bsatn/writer.h:99:14: note: declared private here
+   99 |         void write_bytes_raw(const void* data, size_t size);
+      |              ^
+In file included from sdk_test.cpp:1:
+In file included from .\sdk_test.h:5:
+In file included from ../../../sdk/include\spacetimedb/macros.h:4:
+In file included from ../../../sdk/include\spacetimedb/internal/module_schema.h:4:
+In file included from ../../../sdk/include\spacetimedb/bsatn/reader.h:14:
+../../../sdk/include\spacetimedb/sdk/spacetimedb_sdk_types.h:146:50: error: member access into incomplete type '::SpacetimeDb::bsatn::Reader'
+  146 |             std::vector<std::byte> bytes = reader.read_bytes(IDENTITY_SIZE);
+      |                                                  ^
+../../../sdk/include\spacetimedb/sdk/spacetimedb_sdk_types.h:7:15: note: forward declaration of 'SpacetimeDb::bsatn::Reader'
+    7 |         class Reader;
       |               ^
-../../../sdk/include\spacetimedb/sdk/spacetimedb_sdk_types.h:74:23: error: member access into incomplete type '::SpacetimeDb::bsatn::Writer'
-   74 |                 writer.write_u64_le(this->ms_since_epoch); // Using ms_since_epoch as per struct def
-      |                       ^
-../../../sdk/include\spacetimedb/sdk/spacetimedb_sdk_types.h:8:15: note: forward declaration of 'SpacetimeDb::bsatn::Writer'
-    8 |         class Writer;
+../../../sdk/include\spacetimedb/sdk/spacetimedb_sdk_types.h:161:42: error: member access into incomplete type '::SpacetimeDb::bsatn::Reader'
+  161 |             this->ms_since_epoch = reader.read_u64_le();
+      |                                          ^
+../../../sdk/include\spacetimedb/sdk/spacetimedb_sdk_types.h:7:15: note: forward declaration of 'SpacetimeDb::bsatn::Reader'
+    7 |         class Reader;
       |               ^
-../../../sdk/include\spacetimedb/sdk/spacetimedb_sdk_types.h:118:23: error: member access into incomplete type '::SpacetimeDb::bsatn::Writer'
-  118 |                 writer.write_bytes(std::vector<std::byte>(id_bytes.begin(), id_bytes.end()));
-      |                       ^
-../../../sdk/include\spacetimedb/sdk/spacetimedb_sdk_types.h:8:15: note: forward declaration of 'SpacetimeDb::bsatn::Writer'
-    8 |         class Writer;
+../../../sdk/include\spacetimedb/sdk/spacetimedb_sdk_types.h:169:44: error: member access into incomplete type '::SpacetimeDb::bsatn::Reader'
+  169 |             this->timestamp_micros = reader.read_u64_le();
+      |                                            ^
+../../../sdk/include\spacetimedb/sdk/spacetimedb_sdk_types.h:7:15: note: forward declaration of 'SpacetimeDb::bsatn::Reader'
+    7 |         class Reader;
+      |               ^
+../../../sdk/include\spacetimedb/sdk/spacetimedb_sdk_types.h:184:57: error: member access into incomplete type '::SpacetimeDb::bsatn::Reader'
+  184 |             std::vector<std::byte> id_bytes_vec = reader.read_bytes(sizeof(this->id));
+      |                                                         ^
+../../../sdk/include\spacetimedb/sdk/spacetimedb_sdk_types.h:7:15: note: forward declaration of 'SpacetimeDb::bsatn::Reader'
+    7 |         class Reader;
+      |               ^
+../../../sdk/include\spacetimedb/sdk/spacetimedb_sdk_types.h:201:39: error: member access into incomplete type '::SpacetimeDb::bsatn::Reader'
+  201 |             this->nanoseconds = reader.read_i64_le();
+      |                                       ^
+../../../sdk/include\spacetimedb/sdk/spacetimedb_sdk_types.h:7:15: note: forward declaration of 'SpacetimeDb::bsatn::Reader'
+    7 |         class Reader;
+      |               ^
+../../../sdk/include\spacetimedb/sdk/spacetimedb_sdk_types.h:211:20: error: 'write_bytes_raw' is a private member of 'SpacetimeDb::bsatn::Writer'
+  211 |             writer.write_bytes_raw(this->data.data(), sizeof(this->data)); // Fallback
+      |                    ^
+../../../sdk/include\spacetimedb/bsatn/writer.h:99:14: note: declared private here
+   99 |         void write_bytes_raw(const void* data, size_t size);
+      |              ^
+In file included from sdk_test.cpp:1:
+In file included from .\sdk_test.h:5:
+In file included from ../../../sdk/include\spacetimedb/macros.h:4:
+In file included from ../../../sdk/include\spacetimedb/internal/module_schema.h:4:
+In file included from ../../../sdk/include\spacetimedb/bsatn/reader.h:14:
+../../../sdk/include\spacetimedb/sdk/spacetimedb_sdk_types.h:217:50: error: member access into incomplete type '::SpacetimeDb::bsatn::Reader'
+  217 |             std::vector<std::byte> bytes = reader.read_bytes(sizeof(this->data));
+      |                                                  ^
+../../../sdk/include\spacetimedb/sdk/spacetimedb_sdk_types.h:7:15: note: forward declaration of 'SpacetimeDb::bsatn::Reader'
+    7 |         class Reader;
+      |               ^
+../../../sdk/include\spacetimedb/sdk/spacetimedb_sdk_types.h:229:20: error: 'write_bytes_raw' is a private member of 'SpacetimeDb::bsatn::Writer'
+  229 |             writer.write_bytes_raw(this->data.data(), sizeof(this->data)); // Fallback
+      |                    ^
+../../../sdk/include\spacetimedb/bsatn/writer.h:99:14: note: declared private here
+   99 |         void write_bytes_raw(const void* data, size_t size);
+      |              ^
+In file included from sdk_test.cpp:1:
+In file included from .\sdk_test.h:5:
+In file included from ../../../sdk/include\spacetimedb/macros.h:4:
+In file included from ../../../sdk/include\spacetimedb/internal/module_schema.h:4:
+In file included from ../../../sdk/include\spacetimedb/bsatn/reader.h:14:
+../../../sdk/include\spacetimedb/sdk/spacetimedb_sdk_types.h:234:50: error: member access into incomplete type '::SpacetimeDb::bsatn::Reader'
+  234 |             std::vector<std::byte> bytes = reader.read_bytes(sizeof(this->data));
+      |                                                  ^
+../../../sdk/include\spacetimedb/sdk/spacetimedb_sdk_types.h:7:15: note: forward declaration of 'SpacetimeDb::bsatn::Reader'
+    7 |         class Reader;
       |               ^
 In file included from sdk_test.cpp:1:
 In file included from .\sdk_test.h:5:
@@ -68,20 +125,5 @@ In file included from .\sdk_test.h:5:
 ../../../sdk/include\spacetimedb/macros.h:311:27: error: expected unqualified-id
   311 | END_COMMENT_BLOCK_STRUCT* /
       |                           ^
-In file included from sdk_test.cpp:1:
-In file included from .\sdk_test.h:5:
-In file included from ../../../sdk/include\spacetimedb/macros.h:6:
-../../../sdk/include\spacetimedb/bsatn/writer.h:119:27: error: static assertion failed due to requirement '!std::is_class_v<std::string>': No generic bsatn::serialize for arbitrary classes/pointers. Provide a specific overload or specialization for T, or ensure it's an enum.
-  119 |             static_assert(!std::is_class_v<T> && !std::is_pointer_v<T>,
-      |                           ^~~~~~~~~~~~~~~~~~~
-../../../sdk/include\spacetimedb/bsatn/writer.h:57:37: note: in instantiation of function template specialization 'SpacetimeDb::bsatn::serialize<std::string>' requested here
-   57 |                 SpacetimeDb::bsatn::serialize(*this, item); // Use the generic free serialize
-      |                                     ^
-../../../sdk/include\spacetimedb/bsatn/writer.h:159:11: note: in instantiation of function template specialization 'SpacetimeDb::bsatn::Writer::write_vector<std::string>' requested here
-  159 |         w.write_vector(vec); // Calls the member function
-      |           ^
-sdk_test.cpp:20:35: note: in instantiation of function template specialization 'SpacetimeDb::bsatn::serialize<std::string>' requested here
-   20 |             ::SpacetimeDb::bsatn::serialize(writer, arg);
-      |                                   ^
-2 warnings and 17 errors generated.
-emcc: error: ''C:/Users/ludvi/emsdk/upstream/bin\clang.exe' -target wasm32-unknown-emscripten -fignore-exceptions -mllvm -combiner-global-alias-analysis=false -mllvm -enable-emscripten-sjlj -mllvm -disable-lsr '--sysroot=C:\Users\ludvi\emsdk\upstream\emscripten\cache\sysroot' -DEMSCRIPTEN -Xclang '-iwithsysroot/include\fakesdl' -Xclang '-iwithsysroot/include\compat' -std=c++20 -I../../../sdk/include -ferror-limit=500 -c sdk_test.cpp -o 'C:\Users\ludvi\AppData\Local\Temp\emscripten_temp_4d8b75hm\sdk_test_0.o'' failed (returned 1)
+2 warnings and 23 errors generated.
+emcc: error: ''C:/Users/ludvi/emsdk/upstream/bin\clang.exe' -target wasm32-unknown-emscripten -fignore-exceptions -mllvm -combiner-global-alias-analysis=false -mllvm -enable-emscripten-sjlj -mllvm -disable-lsr '--sysroot=C:\Users\ludvi\emsdk\upstream\emscripten\cache\sysroot' -DEMSCRIPTEN -Xclang '-iwithsysroot/include\fakesdl' -Xclang '-iwithsysroot/include\compat' -std=c++20 -I../../../sdk/include -ferror-limit=500 -c sdk_test.cpp -o 'C:\Users\ludvi\AppData\Local\Temp\emscripten_temp_l_6mq8vy\sdk_test_0.o'' failed (returned 1)

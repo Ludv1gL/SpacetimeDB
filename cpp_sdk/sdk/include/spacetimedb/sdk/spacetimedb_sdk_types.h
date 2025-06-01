@@ -37,16 +37,7 @@ namespace SpacetimeDb {
 
 
             // BSATN Serialization methods (duck-typed, or inherit BsatnSerializable)
-            void bsatn_serialize(::SpacetimeDb::bsatn::Writer& writer) const {
-                // Assuming Writer has a method like write_bytes_raw or similar for fixed-size arrays
-                // If writer.write_bytes expects std::vector<std::byte>, a conversion is needed:
-                // const std::byte* bytes_ptr = reinterpret_cast<const std::byte*>(this->value.data());
-                // writer.write_bytes(std::vector<std::byte>(bytes_ptr, bytes_ptr + this->value.size()));
-                // For now, let's assume a direct write method or that write_bytes can handle it.
-                // Based on writer.h, it has write_bytes(const std::vector<std::byte>& value)
-                // and write_bytes_raw(const void* data, size_t size). Let's use write_bytes_raw.
-                writer.write_bytes_raw(this->value.data(), this->value.size());
-            }
+            void bsatn_serialize(::SpacetimeDb::bsatn::Writer& writer) const; // Declaration only
             void bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader);
 
         private:
@@ -70,9 +61,7 @@ namespace SpacetimeDb {
             bool operator>=(const Timestamp& other) const;
 
             // BSATN Serialization methods
-            void bsatn_serialize(::SpacetimeDb::bsatn::Writer& writer) const {
-                writer.write_u64_le(this->ms_since_epoch); // Using ms_since_epoch as per struct def
-            }
+            void bsatn_serialize(::SpacetimeDb::bsatn::Writer& writer) const; // Declaration only
             void bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader);
 
         private:
@@ -102,21 +91,7 @@ namespace SpacetimeDb {
 
             ConnectionId(uint64_t val = 0) : id(val) {}
 
-            void bsatn_serialize(::SpacetimeDb::bsatn::Writer& writer) const {
-                // The request was writer.write_bytes(this->value);
-                // Assuming this->value refers to this->id which is uint64_t.
-                // writer.write_bytes expects const std::vector<std::byte>&.
-                // So, we must convert uint64_t to std::vector<std::byte>.
-                // This is unusual; writer.write_u64_le(this->id) would be more direct.
-                // Adhering to 'write_bytes' requirement:
-                std::array<std::byte, sizeof(this->id)> id_bytes;
-                uint64_t n = this->id; // Assuming little-endian for now, matching write_u64_le
-                for (size_t i = 0; i < sizeof(this->id); ++i) {
-                    id_bytes[i] = static_cast<std::byte>(n & 0xFF);
-                    n >>= 8;
-                }
-                writer.write_bytes(std::vector<std::byte>(id_bytes.begin(), id_bytes.end()));
-            }
+            void bsatn_serialize(::SpacetimeDb::bsatn::Writer& writer) const; // Declaration only
             void bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader);
             bool operator==(const ConnectionId& other) const { return id == other.id; }
             bool operator<(const ConnectionId& other) const { return id < other.id; } // For map keys
@@ -156,6 +131,117 @@ namespace SpacetimeDb {
         };
     } // namespace sdk
 } // namespace SpacetimeDb
+
+#include "spacetimedb/bsatn/writer.h" // Full definition for Writer
+#include "spacetimedb/bsatn/reader.h" // Full definition for Reader
+
+namespace SpacetimeDb {
+    namespace sdk {
+
+        // Identity
+        inline void Identity::bsatn_serialize(::SpacetimeDb::bsatn::Writer& writer) const {
+            writer.write_bytes_raw(this->value.data(), this->value.size());
+        }
+        inline void Identity::bsatn_deserialize(::SpacetimeDb::bsatn::Reader& reader) {
+            std::vector<std::byte> bytes = reader.read_bytes(IDENTITY_SIZE);
+            if (bytes.size() == IDENTITY_SIZE) {
+                std::copy(bytes.begin(), bytes.end(), reinterpret_cast<std::byte*>(this->value.data()));
+            }
+            else {
+                // Consider a more robust error handling strategy for your application
+                throw std::runtime_error("Failed to read enough bytes for Identity");
+            }
+        }
+
+        // Timestamp
+        inline void Timestamp::bsatn_serialize(::SpacetimeDb::bsatn::Writer& writer) const {
+            writer.write_u64_le(this->ms_since_epoch);
+        }
+        inline void Timestamp::bsatn_deserialize(::SpacetimeDb::bsatn::Reader& reader) {
+            this->ms_since_epoch = reader.read_u64_le();
+        }
+
+        // ScheduleAt
+        inline void ScheduleAt::bsatn_serialize(::SpacetimeDb::bsatn::Writer& writer) const {
+            writer.write_u64_le(this->timestamp_micros);
+        }
+        inline void ScheduleAt::bsatn_deserialize(::SpacetimeDb::bsatn::Reader& reader) {
+            this->timestamp_micros = reader.read_u64_le();
+        }
+
+        // ConnectionId
+        inline void ConnectionId::bsatn_serialize(::SpacetimeDb::bsatn::Writer& writer) const {
+            // Converting uint64_t to a byte array for write_bytes, little-endian.
+            std::array<std::byte, sizeof(this->id)> id_bytes;
+            uint64_t n = this->id;
+            for (size_t i = 0; i < sizeof(this->id); ++i) {
+                id_bytes[i] = static_cast<std::byte>(n & 0xFF);
+                n >>= 8;
+            }
+            writer.write_bytes(std::vector<std::byte>(id_bytes.begin(), id_bytes.end()));
+        }
+        inline void ConnectionId::bsatn_deserialize(::SpacetimeDb::bsatn::Reader& reader) {
+            std::vector<std::byte> id_bytes_vec = reader.read_bytes(sizeof(this->id));
+            if (id_bytes_vec.size() == sizeof(this->id)) {
+                this->id = 0; // Assuming little-endian
+                for (size_t i = 0; i < sizeof(this->id); ++i) {
+                    this->id |= static_cast<uint64_t>(static_cast<unsigned char>(id_bytes_vec[i])) << (i * 8);
+                }
+            }
+            else {
+                throw std::runtime_error("Failed to read enough bytes for ConnectionId");
+            }
+        }
+
+        // TimeDuration
+        inline void TimeDuration::bsatn_serialize(::SpacetimeDb::bsatn::Writer& writer) const {
+            writer.write_i64_le(this->nanoseconds);
+        }
+        inline void TimeDuration::bsatn_deserialize(::SpacetimeDb::bsatn::Reader& reader) {
+            this->nanoseconds = reader.read_i64_le();
+        }
+
+        // u256_placeholder
+        inline void u256_placeholder::bsatn_serialize(::SpacetimeDb::bsatn::Writer& writer) const {
+            // Assuming writer has a method to write raw bytes for fixed-size arrays,
+            // or u256_placeholder has a .data() and .size() like Identity for write_bytes_raw.
+            // Based on writer.h, write_u256_le exists. Let's use that if available,
+            // otherwise, write_bytes_raw is a fallback.
+            // writer.write_u256_le(*this); // If Writer has this method
+            writer.write_bytes_raw(this->data.data(), sizeof(this->data)); // Fallback
+        }
+        inline void u256_placeholder::bsatn_deserialize(::SpacetimeDb::bsatn::Reader& reader) {
+            // Similar to serialize, assuming reader.read_u256_le() or fallback
+            // *this = reader.read_u256_le(); // If Reader has this method
+            // Fallback:
+            std::vector<std::byte> bytes = reader.read_bytes(sizeof(this->data));
+            if (bytes.size() == sizeof(this->data)) {
+                std::copy(bytes.begin(), bytes.end(), reinterpret_cast<std::byte*>(this->data.data()));
+            }
+            else {
+                throw std::runtime_error("Failed to read enough bytes for u256_placeholder");
+            }
+        }
+
+        // i256_placeholder
+        inline void i256_placeholder::bsatn_serialize(::SpacetimeDb::bsatn::Writer& writer) const {
+            // writer.write_i256_le(*this); // If Writer has this method
+            writer.write_bytes_raw(this->data.data(), sizeof(this->data)); // Fallback
+        }
+        inline void i256_placeholder::bsatn_deserialize(::SpacetimeDb::bsatn::Reader& reader) {
+            // *this = reader.read_i256_le(); // If Reader has this method
+            // Fallback:
+            std::vector<std::byte> bytes = reader.read_bytes(sizeof(this->data));
+            if (bytes.size() == sizeof(this->data)) {
+                std::copy(bytes.begin(), bytes.end(), reinterpret_cast<std::byte*>(this->data.data()));
+            }
+            else {
+                throw std::runtime_error("Failed to read enough bytes for i256_placeholder");
+            }
+        }
+
+    }
+} // namespace SpacetimeDb::sdk
 
 namespace SpacetimeDb {
     namespace bsatn {

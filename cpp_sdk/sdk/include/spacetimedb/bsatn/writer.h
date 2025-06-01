@@ -16,6 +16,32 @@ namespace SpacetimeDb::bsatn {
     // Forward declare the generic free function template for serialization
     template<typename T> void serialize(class Writer& w, const T& value);
 
+    // Explicit overloads for primitives and common types
+    inline void serialize(Writer& w, bool value);
+    inline void serialize(Writer& w, uint8_t value);
+    inline void serialize(Writer& w, uint16_t value);
+    inline void serialize(Writer& w, uint32_t value);
+    inline void serialize(Writer& w, uint64_t value);
+    inline void serialize(Writer& w, const SpacetimeDb::Types::uint128_t_placeholder& value);
+    inline void serialize(Writer& w, const SpacetimeDb::sdk::u256_placeholder& value);
+    inline void serialize(Writer& w, int8_t value);
+    inline void serialize(Writer& w, int16_t value);
+    inline void serialize(Writer& w, int32_t value);
+    inline void serialize(Writer& w, int64_t value);
+    inline void serialize(Writer& w, const SpacetimeDb::Types::int128_t_placeholder& value);
+    inline void serialize(Writer& w, const SpacetimeDb::sdk::i256_placeholder& value);
+    inline void serialize(Writer& w, float value);
+    inline void serialize(Writer& w, double value);
+    inline void serialize(Writer& w, const std::string& value);
+    inline void serialize(Writer& w, const std::vector<std::byte>& value);
+
+    // Overloads for optionals and vectors that call Writer member functions
+    template<typename T>
+    inline void serialize(Writer& w, const std::optional<T>& opt_value);
+
+    template<typename T>
+    inline void serialize(Writer& w, const std::vector<T>& vec);
+
     class Writer {
     public:
         Writer() = default;
@@ -129,36 +155,6 @@ namespace SpacetimeDb::bsatn {
     // For consistency with macros that generate `SpacetimeDB::bsatn::serialize`, these should also be in that namespace.
     // However, bsatn::Writer is in `bsatn`. This implies `SpacetimeDB::bsatn` for generated code.
     // Let's assume this file defines the core `bsatn::` namespace functions.
-
-    inline void serialize(Writer& w, bool value) { w.write_bool(value); }
-    inline void serialize(Writer& w, uint8_t value) { w.write_u8(value); }
-    inline void serialize(Writer& w, uint16_t value) { w.write_u16_le(value); }
-    inline void serialize(Writer& w, uint32_t value) { w.write_u32_le(value); }
-    inline void serialize(Writer& w, uint64_t value) { w.write_u64_le(value); }
-    inline void serialize(Writer& w, const SpacetimeDb::Types::uint128_t_placeholder& value) { w.write_u128_le(value); }
-    inline void serialize(Writer& w, const SpacetimeDb::sdk::u256_placeholder& value) { w.write_u256_le(value); }
-    inline void serialize(Writer& w, int8_t value) { w.write_i8(value); }
-    inline void serialize(Writer& w, int16_t value) { w.write_i16_le(value); }
-    inline void serialize(Writer& w, int32_t value) { w.write_i32_le(value); }
-    inline void serialize(Writer& w, int64_t value) { w.write_i64_le(value); }
-    inline void serialize(Writer& w, const SpacetimeDb::Types::int128_t_placeholder& value) { w.write_i128_le(value); }
-    inline void serialize(Writer& w, const SpacetimeDb::sdk::i256_placeholder& value) { w.write_i256_le(value); }
-    inline void serialize(Writer& w, float value) { w.write_f32_le(value); }
-    inline void serialize(Writer& w, double value) { w.write_f64_le(value); }
-    inline void serialize(Writer& w, const std::string& value) { w.write_string(value); }
-    inline void serialize(Writer& w, const std::vector<std::byte>& value) { w.write_bytes(value); }
-
-    // Serialize for optionals and vectors - these call the member functions
-    template<typename T>
-    inline void serialize(Writer& w, const std::optional<T>& opt_value) {
-        w.write_optional(opt_value); // Calls the member function
-    }
-
-    template<typename T>
-    inline void serialize(Writer& w, const std::vector<T>& vec) {
-        w.write_vector(vec); // Calls the member function
-    }
-
 
 } // namespace SpacetimeDb::bsatn
 
