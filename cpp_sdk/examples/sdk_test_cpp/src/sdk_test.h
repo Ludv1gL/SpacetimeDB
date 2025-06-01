@@ -94,13 +94,13 @@ namespace sdk_test_cpp {
         uint16_t b;
         uint32_t c;
         uint64_t d;
-        ::SpacetimeDb::bsatn::uint128_placeholder e; // Corrected type
+        ::SpacetimeDb::Types::uint128_t_placeholder e; // Corrected type
         ::SpacetimeDb::sdk::u256_placeholder f; // Corrected type
         int8_t g;
         int16_t h;
         int32_t i;
         int64_t j;
-        ::SpacetimeDb::bsatn::int128_placeholder k; // Corrected type
+        ::SpacetimeDb::Types::int128_t_placeholder k; // Corrected type
         ::SpacetimeDb::sdk::i256_placeholder l; // Corrected type
         bool m;
         float n;
@@ -113,25 +113,25 @@ namespace sdk_test_cpp {
     };
 
 #define EVERY_PRIMITIVE_STRUCT_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint8_t, a, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint16_t, b, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint32_t, c, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint64_t, d, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::SpacetimeDb::bsatn::uint128_placeholder, e, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::SpacetimeDb::sdk::u256_placeholder, f, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int8_t, g, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int16_t, h, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int32_t, i, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int64_t, j, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::SpacetimeDb::bsatn::int128_placeholder, k, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::SpacetimeDb::sdk::i256_placeholder, l, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, bool, m, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, float, n, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, double, o, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, std::string, p, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, SpacetimeDb::sdk::Identity, q, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, SpacetimeDb::sdk::ConnectionId, r, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, SpacetimeDb::sdk::Timestamp, s, false, false); \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint8_t, a, false, false) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint16_t, b, false, false) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint32_t, c, false, false) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint64_t, d, false, false) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::SpacetimeDb::Types::uint128_t_placeholder, e, false, false) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::SpacetimeDb::sdk::u256_placeholder, f, false, false) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int8_t, g, false, false) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int16_t, h, false, false) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int32_t, i, false, false) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int64_t, j, false, false) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::SpacetimeDb::Types::int128_t_placeholder, k, false, false) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::SpacetimeDb::sdk::i256_placeholder, l, false, false) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, bool, m, false, false) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, float, n, false, false) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, double, o, false, false) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, std::string, p, false, false) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, SpacetimeDb::sdk::Identity, q, false, false) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, SpacetimeDb::sdk::ConnectionId, r, false, false) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, SpacetimeDb::sdk::Timestamp, s, false, false) \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, SpacetimeDb::sdk::TimeDuration, t, false, false)
 
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
@@ -167,13 +167,13 @@ namespace sdk_test_cpp {
         std::vector<uint16_t> b;
         std::vector<uint32_t> c;
         std::vector<uint64_t> d;
-        std::vector<::SpacetimeDb::bsatn::uint128_placeholder> e;
+        std::vector<::SpacetimeDb::Types::uint128_t_placeholder> e;
         std::vector<::SpacetimeDb::sdk::u256_placeholder> f;
         std::vector<int8_t> g;
         std::vector<int16_t> h;
         std::vector<int32_t> i;
         std::vector<int64_t> j;
-        std::vector<::SpacetimeDb::bsatn::int128_placeholder> k;
+        std::vector<::SpacetimeDb::Types::int128_t_placeholder> k;
         std::vector<::SpacetimeDb::sdk::i256_placeholder> l;
         std::vector<bool> m;
         std::vector<float> n;
@@ -186,25 +186,25 @@ namespace sdk_test_cpp {
     };
 
 #define EVERY_VEC_STRUCT_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint8_t, a, false, true); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint16_t, b, false, true); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint32_t, c, false, true); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint64_t, d, false, true); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::SpacetimeDb::bsatn::uint128_placeholder, e, false, true); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::SpacetimeDb::sdk::u256_placeholder, f, false, true); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int8_t, g, false, true); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int16_t, h, false, true); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int32_t, i, false, true); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int64_t, j, false, true); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::SpacetimeDb::bsatn::int128_placeholder, k, false, true); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::SpacetimeDb::sdk::i256_placeholder, l, false, true); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, bool, m, false, true); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, float, n, false, true); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, double, o, false, true); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, std::string, p, false, true); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, SpacetimeDb::sdk::Identity, q, false, true); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, SpacetimeDb::sdk::ConnectionId, r, false, true); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, SpacetimeDb::sdk::Timestamp, s, false, true); \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint8_t, a, false, true) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint16_t, b, false, true) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint32_t, c, false, true) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint64_t, d, false, true) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::SpacetimeDb::Types::uint128_t_placeholder, e, false, true) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::SpacetimeDb::sdk::u256_placeholder, f, false, true) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int8_t, g, false, true) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int16_t, h, false, true) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int32_t, i, false, true) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int64_t, j, false, true) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::SpacetimeDb::Types::int128_t_placeholder, k, false, true) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::SpacetimeDb::sdk::i256_placeholder, l, false, true) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, bool, m, false, true) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, float, n, false, true) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, double, o, false, true) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, std::string, p, false, true) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, SpacetimeDb::sdk::Identity, q, false, true) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, SpacetimeDb::sdk::ConnectionId, r, false, true) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, SpacetimeDb::sdk::Timestamp, s, false, true) \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, SpacetimeDb::sdk::TimeDuration, t, false, true)
 
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
@@ -267,8 +267,8 @@ namespace sdk_test_cpp {
     struct EnumWithPayload {
         sdk_test_cpp::EnumWithPayloadTag tag;
         std::variant<
-            uint8_t, uint16_t, uint32_t, uint64_t, ::SpacetimeDb::bsatn::uint128_placeholder, ::SpacetimeDb::sdk::u256_placeholder,
-            int8_t, int16_t, int32_t, int64_t, ::SpacetimeDb::bsatn::int128_placeholder, ::SpacetimeDb::sdk::i256_placeholder,
+            uint8_t, uint16_t, uint32_t, uint64_t, ::SpacetimeDb::Types::uint128_t_placeholder, ::SpacetimeDb::sdk::u256_placeholder,
+            int8_t, int16_t, int32_t, int64_t, ::SpacetimeDb::Types::int128_t_placeholder, ::SpacetimeDb::sdk::i256_placeholder,
             bool, float, double, std::string, SpacetimeDb::sdk::Identity, SpacetimeDb::sdk::ConnectionId,
             SpacetimeDb::sdk::Timestamp, std::vector<uint8_t>, std::vector<int32_t>,
             std::vector<std::string>, std::vector<SimpleEnum>
@@ -304,7 +304,7 @@ namespace sdk_test_cpp {
 
 
 #define ENUM_WITH_PAYLOAD_FIELDS(XX) \
-    XX(sdk_test_cpp::EnumWithPayloadTag, tag, false, false); \
+    XX(sdk_test_cpp::EnumWithPayloadTag, tag, false, false) \
     XX(std::vector<uint8_t>, payload_bytes_for_schema, false, false) // Placeholder for schema
 
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
@@ -363,9 +363,9 @@ namespace sdk_test_cpp {
 
     // OneU128
     struct OneU128Row {
-        ::SpacetimeDb::bsatn::uint128_placeholder n;
+        ::SpacetimeDb::Types::uint128_t_placeholder n;
     };
-#define ONE_U128_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::SpacetimeDb::bsatn::uint128_placeholder, n, false, false)
+#define ONE_U128_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::SpacetimeDb::Types::uint128_t_placeholder, n, false, false)
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::OneU128Row, sdk_test_cpp_OneU128Row, "OneU128Row", ONE_U128_ROW_FIELDS,
         ({ SPACETIMEDB_FIELD("n", ::SpacetimeDb::CoreType::U128, false, false) })
@@ -423,9 +423,9 @@ namespace sdk_test_cpp {
 
     // OneI128
     struct OneI128Row {
-        ::SpacetimeDb::bsatn::int128_placeholder n;
+        ::SpacetimeDb::Types::int128_t_placeholder n;
     };
-#define ONE_I128_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::SpacetimeDb::bsatn::int128_placeholder, n, false, false)
+#define ONE_I128_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::SpacetimeDb::Types::int128_t_placeholder, n, false, false)
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::OneI128Row, sdk_test_cpp_OneI128Row, "OneI128Row", ONE_I128_ROW_FIELDS,
         ({ SPACETIMEDB_FIELD("n", ::SpacetimeDb::CoreType::I128, false, false) })
@@ -615,8 +615,8 @@ namespace sdk_test_cpp {
         int32_t data;
     };
 #define UNIQUE_U8_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint64_t, row_id, false, true); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint8_t, n, true, false); \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint64_t, row_id, false, true) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint8_t, n, true, false) \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int32_t, data, false, false)
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::UniqueU8Row, sdk_test_cpp_UniqueU8Row, "UniqueU8Row", UNIQUE_U8_ROW_FIELDS,
@@ -634,8 +634,8 @@ namespace sdk_test_cpp {
         int32_t data;
     };
 #define UNIQUE_STRING_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint64_t, row_id, false, true); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, std::string, s, true, false); \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint64_t, row_id, false, true) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, std::string, s, true, false) \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int32_t, data, false, false)
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::UniqueStringRow, sdk_test_cpp_UniqueStringRow, "UniqueStringRow", UNIQUE_STRING_ROW_FIELDS,
@@ -653,8 +653,8 @@ namespace sdk_test_cpp {
         int32_t data;
     };
 #define UNIQUE_IDENTITY_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint64_t, row_id, false, true); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, SpacetimeDb::sdk::Identity, i, true, false); \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint64_t, row_id, false, true) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, SpacetimeDb::sdk::Identity, i, true, false) \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int32_t, data, false, false)
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::UniqueIdentityRow, sdk_test_cpp_UniqueIdentityRow, "UniqueIdentityRow", UNIQUE_IDENTITY_ROW_FIELDS,
@@ -672,8 +672,8 @@ namespace sdk_test_cpp {
         int32_t data;
     };
 #define UNIQUE_CONNECTION_ID_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint64_t, row_id, false, true); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, SpacetimeDb::sdk::ConnectionId, c, true, false); \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint64_t, row_id, false, true) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, SpacetimeDb::sdk::ConnectionId, c, true, false) \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int32_t, data, false, false)
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::UniqueConnectionIdRow, sdk_test_cpp_UniqueConnectionIdRow, "UniqueConnectionIdRow", UNIQUE_CONNECTION_ID_ROW_FIELDS,
@@ -696,13 +696,13 @@ namespace sdk_test_cpp {
         uint16_t b;
         uint32_t c;
         uint64_t d;
-        ::SpacetimeDb::bsatn::uint128_placeholder e;
+        ::SpacetimeDb::Types::uint128_t_placeholder e;
         ::SpacetimeDb::sdk::u256_placeholder f;
         int8_t g;
         int16_t h;
         int32_t i;
         int64_t j;
-        ::SpacetimeDb::bsatn::int128_placeholder k;
+        ::SpacetimeDb::Types::int128_t_placeholder k;
         ::SpacetimeDb::sdk::i256_placeholder l;
         bool m;
         float n;
@@ -727,38 +727,38 @@ namespace sdk_test_cpp {
     };
 
 #define LARGE_TABLE_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint64_t, row_id, false, true); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint8_t, a, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint16_t, b, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint32_t, c, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint64_t, d, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::SpacetimeDb::bsatn::uint128_placeholder, e, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::SpacetimeDb::sdk::u256_placeholder, f, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int8_t, g, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int16_t, h, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int32_t, i, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int64_t, j, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::SpacetimeDb::bsatn::int128_placeholder, k, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::SpacetimeDb::sdk::i256_placeholder, l, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, bool, m, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, float, n, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, double, o, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, std::string, p, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, SpacetimeDb::sdk::Identity, q, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, SpacetimeDb::sdk::ConnectionId, r, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, SpacetimeDb::sdk::Timestamp, s, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, SpacetimeDb::sdk::TimeDuration, t, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint8_t, va, false, true); /* Vector of u8 */ \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, std::string, vp, false, true); /* Vector of string */ \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, sdk_test_cpp::EveryPrimitiveStruct, vs, false, true); /* Vector of EveryPrimitiveStruct */ \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int32_t, oi, true, false); /* Optional i32 */ \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, std::string, os, true, false); /* Optional string */ \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, sdk_test_cpp::EveryPrimitiveStruct, oes, true, false); /* Optional EveryPrimitiveStruct */ \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, sdk_test_cpp::SimpleEnum, en, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, sdk_test_cpp::EnumWithPayload, ewp, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, sdk_test_cpp::UnitStruct, us, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, sdk_test_cpp::ByteStruct, bs, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, sdk_test_cpp::EveryPrimitiveStruct, eps, false, false); \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint64_t, row_id, false, true) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint8_t, a, false, false) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint16_t, b, false, false) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint32_t, c, false, false) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint64_t, d, false, false) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::SpacetimeDb::Types::uint128_t_placeholder, e, false, false) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::SpacetimeDb::sdk::u256_placeholder, f, false, false) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int8_t, g, false, false) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int16_t, h, false, false) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int32_t, i, false, false) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int64_t, j, false, false) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::SpacetimeDb::Types::int128_t_placeholder, k, false, false) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::SpacetimeDb::sdk::i256_placeholder, l, false, false) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, bool, m, false, false) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, float, n, false, false) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, double, o, false, false) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, std::string, p, false, false) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, SpacetimeDb::sdk::Identity, q, false, false) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, SpacetimeDb::sdk::ConnectionId, r, false, false) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, SpacetimeDb::sdk::Timestamp, s, false, false) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, SpacetimeDb::sdk::TimeDuration, t, false, false) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint8_t, va, false, true) /* Vector of u8 */ \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, std::string, vp, false, true) /* Vector of string */ \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, sdk_test_cpp::EveryPrimitiveStruct, vs, false, true) /* Vector of EveryPrimitiveStruct */ \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int32_t, oi, true, false) /* Optional i32 */ \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, std::string, os, true, false) /* Optional string */ \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, sdk_test_cpp::EveryPrimitiveStruct, oes, true, false) /* Optional EveryPrimitiveStruct */ \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, sdk_test_cpp::SimpleEnum, en, false, false) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, sdk_test_cpp::EnumWithPayload, ewp, false, false) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, sdk_test_cpp::UnitStruct, us, false, false) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, sdk_test_cpp::ByteStruct, bs, false, false) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, sdk_test_cpp::EveryPrimitiveStruct, eps, false, false) \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, sdk_test_cpp::EveryVecStruct, evs, false, false)
 
 
@@ -808,8 +808,8 @@ namespace sdk_test_cpp {
         VecU8Row b;
     };
 #define TABLE_HOLDS_TABLE_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint64_t, row_id, false, true); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, sdk_test_cpp::OneU8Row, a, false, false); \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint64_t, row_id, false, true) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, sdk_test_cpp::OneU8Row, a, false, false) \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, sdk_test_cpp::VecU8Row, b, false, false)
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::TableHoldsTableRow, sdk_test_cpp_TableHoldsTableRow, "TableHoldsTableRow", TABLE_HOLDS_TABLE_ROW_FIELDS,
@@ -827,8 +827,8 @@ namespace sdk_test_cpp {
         std::string text;
     };
 #define SCHEDULED_TABLE_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint64_t, scheduled_id, false, true); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, SpacetimeDb::sdk::ScheduleAt, scheduled_at, false, false); \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint64_t, scheduled_id, false, true) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, SpacetimeDb::sdk::ScheduleAt, scheduled_at, false, false) \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, std::string, text, false, false)
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::ScheduledTableRow, sdk_test_cpp_ScheduledTableRow, "ScheduledTableRow", SCHEDULED_TABLE_ROW_FIELDS,
@@ -845,7 +845,7 @@ namespace sdk_test_cpp {
         uint32_t player_id;
     };
 #define INDEXED_TABLE_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint64_t, row_id, false, true); \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint64_t, row_id, false, true) \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint32_t, player_id, false, false)
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::IndexedTableRow, sdk_test_cpp_IndexedTableRow, "IndexedTableRow", INDEXED_TABLE_ROW_FIELDS,
@@ -862,8 +862,8 @@ namespace sdk_test_cpp {
         float player_snazz;
     };
 #define INDEXED_TABLE_2_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint64_t, row_id, false, true); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint32_t, player_id, false, false); \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint64_t, row_id, false, true) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint32_t, player_id, false, false) \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, float, player_snazz, false, false)
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::IndexedTable2Row, sdk_test_cpp_IndexedTable2Row, "IndexedTable2Row", INDEXED_TABLE_2_ROW_FIELDS,
@@ -881,8 +881,8 @@ namespace sdk_test_cpp {
         int32_t data;
     };
 #define BTREE_U32_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint64_t, row_id, false, true); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint32_t, n, false, false); \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint64_t, row_id, false, true) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint32_t, n, false, false) \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int32_t, data, false, false)
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::BTreeU32Row, sdk_test_cpp_BTreeU32Row, "BTreeU32Row", BTREE_U32_ROW_FIELDS,
@@ -899,7 +899,7 @@ namespace sdk_test_cpp {
         std::string name;
     };
 #define USERS_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, SpacetimeDb::sdk::Identity, identity, false, false); \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, SpacetimeDb::sdk::Identity, identity, false, false) \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, std::string, name, false, false)
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::UsersRow, sdk_test_cpp_UsersRow, "UsersRow", USERS_ROW_FIELDS,
@@ -915,7 +915,7 @@ namespace sdk_test_cpp {
         SimpleEnum n;
     };
 #define INDEXED_SIMPLE_ENUM_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint64_t, row_id, false, true); \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint64_t, row_id, false, true) \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, sdk_test_cpp::SimpleEnum, n, false, false)
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::IndexedSimpleEnumRow, sdk_test_cpp_IndexedSimpleEnumRow, "IndexedSimpleEnumRow", INDEXED_SIMPLE_ENUM_ROW_FIELDS,
@@ -937,7 +937,7 @@ namespace sdk_test_cpp {
         int32_t data;
     };
 #define PK_U8_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint8_t, n, false, false); \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint8_t, n, false, false) \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int32_t, data, false, false)
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::PkU8Row, sdk_test_cpp_PkU8Row, "PkU8Row", PK_U8_ROW_FIELDS,
@@ -953,7 +953,7 @@ namespace sdk_test_cpp {
         int32_t data;
     };
 #define PK_STRING_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, std::string, s, false, false); \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, std::string, s, false, false) \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int32_t, data, false, false)
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::PkStringRow, sdk_test_cpp_PkStringRow, "PkStringRow", PK_STRING_ROW_FIELDS,
@@ -969,7 +969,7 @@ namespace sdk_test_cpp {
         int32_t data;
     };
 #define PK_IDENTITY_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, SpacetimeDb::sdk::Identity, i, false, false); \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, SpacetimeDb::sdk::Identity, i, false, false) \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int32_t, data, false, false)
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::PkIdentityRow, sdk_test_cpp_PkIdentityRow, "PkIdentityRow", PK_IDENTITY_ROW_FIELDS,
@@ -985,7 +985,7 @@ namespace sdk_test_cpp {
         int32_t data;
     };
 #define PK_SIMPLE_ENUM_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, sdk_test_cpp::SimpleEnum, e, false, false); \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, sdk_test_cpp::SimpleEnum, e, false, false) \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int32_t, data, false, false)
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::PkSimpleEnumRow, sdk_test_cpp_PkSimpleEnumRow, "PkSimpleEnumRow", PK_SIMPLE_ENUM_ROW_FIELDS,
@@ -1004,8 +1004,8 @@ namespace sdk_test_cpp {
         int32_t data;
     };
 #define PK_U32_TWO_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint32_t, a, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint32_t, b, false, false); \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint32_t, a, false, false) \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint32_t, b, false, false) \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int32_t, data, false, false)
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::PkU32TwoRow, sdk_test_cpp_PkU32TwoRow, "PkU32TwoRow", PK_U32_TWO_ROW_FIELDS,

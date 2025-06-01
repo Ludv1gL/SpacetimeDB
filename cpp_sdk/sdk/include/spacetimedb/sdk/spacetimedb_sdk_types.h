@@ -1,25 +1,28 @@
 #ifndef SPACETIMEDB_SDK_TYPES_H
 #define SPACETIMEDB_SDK_TYPES_H
 
+namespace SpacetimeDb {
+    namespace bsatn {
+        class Reader;
+        class Writer;
+    }
+}
+
 #include <cstdint>
 #include <vector>
 #include <string>
 #include <array>
 #include <chrono> // For Timestamp::current()
 #include <stdexcept> // For std::runtime_error in Identity deserialization
-#include "spacetimedb/bsatn/reader.h"
-#include "spacetimedb/bsatn/writer.h"
-
-// Include actual definitions for Reader and Writer
-#include "../bsatn/reader.h" // Adjusted path assuming bsatn is sibling to sdk directory
-#include "../bsatn/writer.h" // Adjusted path
+#include "spacetimedb/bsatn/reader.h" // Full definition for Reader
+#include "spacetimedb/bsatn/writer.h" // Full definition for Writer
 
 // Forward declarations from bsatn.h - needed for BsatnSerializable usage
 namespace SpacetimeDb {
 
     namespace bsatn {
-        // class Writer; // Full definition included above
-        // class Reader; // Full definition included above
+        // class Writer; // Forward declared above, full definition included
+        // class Reader; // Forward declared above, full definition included
         class BsatnSerializable; // Ensure BsatnSerializable itself is forward-declared or included if it's a base
     } // namespace bsatn
 } // namespace SpacetimeDb

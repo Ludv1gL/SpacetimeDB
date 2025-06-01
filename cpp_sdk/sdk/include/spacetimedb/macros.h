@@ -127,15 +127,20 @@ inline ::SpacetimeDb::FieldDefinition SPACETIMEDB_FIELD_INTERNAL(const char* nam
         static SPACETIMEDB_PASTE(Register, SanitizedCppTypeName) SPACETIMEDB_PASTE(register_, SPACETIMEDB_PASTE(SanitizedCppTypeName, _instance)); \
     }} /* SpacetimeDb::ModuleRegistration */ \
 namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
-    /* Forward declaration of the concrete deserialization function */ \
-    /* Ensure CppTypeName is fully qualified or this is within a context where CppTypeName is known */ \
-    inline void serialize(::SpacetimeDb::bsatn::Writer& writer, const CppTypeName& value) { \
+    // Note: The following serialize/deserialize specializations depend on the
+    // primary `SpacetimeDb::bsatn::deserialize` template being declared,
+    // which is achieved by including "spacetimedb/bsatn/reader.h" prior to this macro's usage.
+/* Forward declaration of the concrete deserialization function */ \
+/* Ensure CppTypeName is fully qualified or this is within a context where CppTypeName is known */ \
+inline void serialize(::SpacetimeDb::bsatn::Writer& writer, const CppTypeName& value) {
+    \
         writer.write_u8(static_cast<uint8_t>(value)); \
-    } \
-    template<> \
-    inline CppTypeName deserialize<CppTypeName>(::SpacetimeDb::bsatn::Reader& reader) { \
-        uint8_t val = reader.read_u8(); \
-        return static_cast<CppTypeName>(val); \
+} \
+template<> \
+inline CppTypeName deserialize<CppTypeName>(::SpacetimeDb::bsatn::Reader& reader) {
+        \
+            uint8_t val = reader.read_u8(); \
+            return static_cast<CppTypeName>(val); \
     } \
 }
 
@@ -283,16 +288,21 @@ inline ::SpacetimeDb::ReducerParameterDefinition SPACETIMEDB_REDUCER_PARAM_INTER
         static SPACETIMEDB_PASTE(Register, SanitizedCppTypeName) SPACETIMEDB_PASTE(register_, SPACETIMEDB_PASTE(SanitizedCppTypeName, _instance)); \
     }} /* SpacetimeDb::ModuleRegistration */ \
 namespace SpacetimeDb::bsatn { /* Functions in SpacetimeDb::bsatn namespace */ \
-    /* Forward declaration for the struct's deserialize function */ \
-    /* CppTypeName needs to be fully qualified if this is not in its namespace, or use ADL */ \
-    inline void serialize(::SpacetimeDb::bsatn::Writer& writer, const CppTypeName& value) { \
+    // Note: The following serialize/deserialize specializations depend on the
+// primary `SpacetimeDb::bsatn::deserialize` template being declared,
+// which is achieved by including "spacetimedb/bsatn/reader.h" prior to this macro's usage.
+/* Forward declaration for the struct's deserialize function */ \
+/* CppTypeName needs to be fully qualified if this is not in its namespace, or use ADL */ \
+inline void serialize(::SpacetimeDb::bsatn::Writer& writer, const CppTypeName& value) {
+    \
         FIELDS_MACRO(SPACETIMEDB_XX_SERIALIZE_FIELD, writer, value); \
-    } \
-    template<> \
-    inline CppTypeName deserialize<CppTypeName>(::SpacetimeDb::bsatn::Reader& reader) { \
-        CppTypeName obj{}; \
-        FIELDS_MACRO(SPACETIMEDB_XX_DESERIALIZE_FIELD, reader, obj); \
-        return obj; \
+} \
+template<> \
+inline CppTypeName deserialize<CppTypeName>(::SpacetimeDb::bsatn::Reader& reader) {
+        \
+            CppTypeName obj{}; \
+            FIELDS_MACRO(SPACETIMEDB_XX_DESERIALIZE_FIELD, reader, obj); \
+            return obj; \
     } \
 }
 

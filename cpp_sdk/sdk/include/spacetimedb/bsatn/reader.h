@@ -41,14 +41,14 @@ namespace SpacetimeDb::bsatn {
         uint16_t read_u16_le();
         uint32_t read_u32_le();
         uint64_t read_u64_le();
-        SpacetimeDb::bsatn::uint128_placeholder read_u128_le(); // Corrected namespace
+        SpacetimeDb::Types::uint128_t_placeholder read_u128_le(); // Corrected namespace
         SpacetimeDb::sdk::u256_placeholder read_u256_le(); // Declaration
 
         int8_t read_i8();
         int16_t read_i16_le();
         int32_t read_i32_le();
         int64_t read_i64_le();
-        SpacetimeDb::bsatn::int128_placeholder read_i128_le(); // Corrected namespace
+        SpacetimeDb::Types::int128_t_placeholder read_i128_le(); // Corrected namespace
         SpacetimeDb::sdk::i256_placeholder read_i256_le(); // Declaration
 
         float read_f32_le();
