@@ -1,12 +1,24 @@
 #ifndef SDK_TEST_H
 #define SDK_TEST_H
 
+// Moved SDK and standard includes to global scope
 #include <spacetimedb/macros.h>
-#include <spacetimedb/sdk/spacetimedb_sdk_types.h> // For Identity, Timestamp (though not used yet)
+#include <spacetimedb/sdk/spacetimedb_sdk_types.h>
 #include <string>
 #include <vector>
-#include <variant> // For EnumWithPayload later
-#include <cstdint> // For uint8_t etc.
+#include <variant>
+#include <cstdint>
+#include <optional> // Added this as it's used for std::optional
+
+// The bsatn reader/writer includes are needed for the EnumWithPayload manual bsatn specialization
+// and potentially for other generated bsatn functions if they are not fully encapsulated by macros.h
+// macros.h includes reader/writer, and spacetimedb_sdk_types.h also includes them.
+// So, they should be available. The key is that their own namespace definitions are handled correctly.
+
+// Forward declaration for SpacetimeDb::bsatn::Reader/Writer if needed at global scope by this file directly
+// However, macros.h and spacetimedb_sdk_types.h should make them available.
+// Let's ensure they are not re-declared if already brought in by SpacetimeDB headers.
+// The SpacetimeDB headers should provide these.
 
 // Test types outside namespace
 enum class GlobalSimpleEnum : uint8_t {
@@ -1084,19 +1096,18 @@ namespace sdk_test_cpp {
         // A better approach would be to register "std::optional<int32_t>" as a type, then use that.
         // Or, if the schema system implies element type from C++ type in X-Macro:
         // { SPACETIMEDB_FIELD_OPTIONAL("value", ::SpacetimeDb::CoreType::I32, false, false) } -> This seems more plausible.
-})
-);
+    );
 
 
-// OptionVecOptionI32Row
-struct OptionVecOptionI32Row {
-    std::optional<VecOptionI32> v;
-};
+    // OptionVecOptionI32Row
+    struct OptionVecOptionI32Row {
+        std::optional<VecOptionI32> v;
+    };
 #define OPTION_VEC_OPTION_I32_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) ACTION(WRITER_OR_READER, VALUE_OR_OBJ, sdk_test_cpp::VecOptionI32, v, true, false)
-SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
-    sdk_test_cpp::OptionVecOptionI32Row, sdk_test_cpp_OptionVecOptionI32Row, "OptionVecOptionI32Row", OPTION_VEC_OPTION_I32_ROW_FIELDS,
-    ({ SPACETIMEDB_FIELD_CUSTOM_OPTIONAL("v", "VecOptionI32", false, false) }) // Custom types don't use ::SpacetimeDb::CoreType directly in schema
-);
+    SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
+        sdk_test_cpp::OptionVecOptionI32Row, sdk_test_cpp_OptionVecOptionI32Row, "OptionVecOptionI32Row", OPTION_VEC_OPTION_I32_ROW_FIELDS,
+        ({ SPACETIMEDB_FIELD_CUSTOM_OPTIONAL("v", "VecOptionI32", false, false) }) // Custom types don't use ::SpacetimeDb::CoreType directly in schema
+    );
 
 
 } // namespace sdk_test_cpp

@@ -27,81 +27,81 @@ namespace sdk_test_cpp {
 
         // Deserialize the value based on the tag
         switch (this->tag) {
-        case EnumWithPayloadTag::TagU8:
+        case sdk_test_cpp::EnumWithPayloadTag::TagU8:
             this->value = reader.read_u8();
             break;
-        case EnumWithPayloadTag::TagU16:
+        case sdk_test_cpp::EnumWithPayloadTag::TagU16:
             this->value = reader.read_u16_le();
             break;
-        case EnumWithPayloadTag::TagU32:
+        case sdk_test_cpp::EnumWithPayloadTag::TagU32:
             this->value = reader.read_u32_le();
             break;
-        case EnumWithPayloadTag::TagU64:
+        case sdk_test_cpp::EnumWithPayloadTag::TagU64:
             this->value = reader.read_u64_le();
             break;
-        case EnumWithPayloadTag::TagU128:
+        case sdk_test_cpp::EnumWithPayloadTag::TagU128:
             // Note: EnumWithPayload in sdk_test.h uses ::SpacetimeDb::bsatn::uint128_placeholder,
             // which was changed to ::SpacetimeDb::Types::uint128_t_placeholder.
             // Reader::read_u128_le() returns ::SpacetimeDb::Types::uint128_t_placeholder.
             this->value = reader.read_u128_le();
             break;
-        case EnumWithPayloadTag::TagU256:
+        case sdk_test_cpp::EnumWithPayloadTag::TagU256:
             // Note: EnumWithPayload in sdk_test.h uses ::SpacetimeDb::sdk::u256_placeholder.
             // Reader::read_u256_le() returns ::SpacetimeDb::sdk::u256_placeholder.
             this->value = reader.read_u256_le();
             break;
-        case EnumWithPayloadTag::TagI8:
+        case sdk_test_cpp::EnumWithPayloadTag::TagI8:
             this->value = reader.read_i8();
             break;
-        case EnumWithPayloadTag::TagI16:
+        case sdk_test_cpp::EnumWithPayloadTag::TagI16:
             this->value = reader.read_i16_le();
             break;
-        case EnumWithPayloadTag::TagI32:
+        case sdk_test_cpp::EnumWithPayloadTag::TagI32:
             this->value = reader.read_i32_le();
             break;
-        case EnumWithPayloadTag::TagI64:
+        case sdk_test_cpp::EnumWithPayloadTag::TagI64:
             this->value = reader.read_i64_le();
             break;
-        case EnumWithPayloadTag::TagI128:
+        case sdk_test_cpp::EnumWithPayloadTag::TagI128:
             // Similar to U128, type is ::SpacetimeDb::Types::int128_t_placeholder
             this->value = reader.read_i128_le();
             break;
-        case EnumWithPayloadTag::TagI256:
+        case sdk_test_cpp::EnumWithPayloadTag::TagI256:
             // Similar to U256, type is ::SpacetimeDb::sdk::i256_placeholder
             this->value = reader.read_i256_le();
             break;
-        case EnumWithPayloadTag::TagBool:
+        case sdk_test_cpp::EnumWithPayloadTag::TagBool:
             this->value = reader.read_bool();
             break;
-        case EnumWithPayloadTag::TagF32:
+        case sdk_test_cpp::EnumWithPayloadTag::TagF32:
             this->value = reader.read_f32_le();
             break;
-        case EnumWithPayloadTag::TagF64:
+        case sdk_test_cpp::EnumWithPayloadTag::TagF64:
             this->value = reader.read_f64_le();
             break;
-        case EnumWithPayloadTag::TagStr:
+        case sdk_test_cpp::EnumWithPayloadTag::TagStr:
             this->value = reader.read_string();
             break;
-        case EnumWithPayloadTag::TagIdentity:
+        case sdk_test_cpp::EnumWithPayloadTag::TagIdentity:
             this->value = ::SpacetimeDb::bsatn::deserialize<SpacetimeDb::sdk::Identity>(reader);
             break;
-        case EnumWithPayloadTag::TagConnectionId:
+        case sdk_test_cpp::EnumWithPayloadTag::TagConnectionId:
             this->value = ::SpacetimeDb::bsatn::deserialize<SpacetimeDb::sdk::ConnectionId>(reader);
             break;
-        case EnumWithPayloadTag::TagTimestamp:
+        case sdk_test_cpp::EnumWithPayloadTag::TagTimestamp:
             this->value = ::SpacetimeDb::bsatn::deserialize<SpacetimeDb::sdk::Timestamp>(reader);
             break;
-        case EnumWithPayloadTag::TagBytes: // std::vector<uint8_t>
+        case sdk_test_cpp::EnumWithPayloadTag::TagBytes: // std::vector<uint8_t>
             // EnumWithPayload variant type is std::vector<uint8_t>
             this->value = reader.read_vector<uint8_t>();
             break;
-        case EnumWithPayloadTag::TagInts: // std::vector<int32_t>
+        case sdk_test_cpp::EnumWithPayloadTag::TagInts: // std::vector<int32_t>
             this->value = reader.read_vector<int32_t>();
             break;
-        case EnumWithPayloadTag::TagStrings: // std::vector<std::string>
+        case sdk_test_cpp::EnumWithPayloadTag::TagStrings: // std::vector<std::string>
             this->value = reader.read_vector<std::string>();
             break;
-        case EnumWithPayloadTag::TagSimpleEnums: // std::vector<SimpleEnum>
+        case sdk_test_cpp::EnumWithPayloadTag::TagSimpleEnums: // std::vector<SimpleEnum>
             this->value = reader.read_vector<sdk_test_cpp::SimpleEnum>();
             break;
         default:

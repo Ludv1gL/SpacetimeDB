@@ -1,32 +1,23 @@
 #ifndef SPACETIMEDB_SDK_TYPES_H
 #define SPACETIMEDB_SDK_TYPES_H
 
+// Global forward declarations
 namespace SpacetimeDb {
     namespace bsatn {
         class Reader;
         class Writer;
-    }
-}
+    } // namespace bsatn
+} // namespace SpacetimeDb
 
+#include "spacetimedb/bsatn/uint128_placeholder.h" // For uint128_t_placeholder
 #include <cstdint>
 #include <vector>
 #include <string>
 #include <array>
-#include <chrono> // For Timestamp::current()
-#include <stdexcept> // For std::runtime_error in Identity deserialization
-#include "spacetimedb/bsatn/reader.h" // Full definition for Reader
-#include "spacetimedb/bsatn/writer.h" // Full definition for Writer
-
-// Forward declarations from bsatn.h - needed for BsatnSerializable usage
-namespace SpacetimeDb {
-
-    namespace bsatn {
-        // class Writer; // Forward declared above, full definition included
-        // class Reader; // Forward declared above, full definition included
-        class BsatnSerializable; // Ensure BsatnSerializable itself is forward-declared or included if it's a base
-    } // namespace bsatn
-} // namespace SpacetimeDb
-
+#include <chrono>
+#include <stdexcept>
+// Removed: #include "spacetimedb/bsatn/reader.h" from top
+// Removed: #include "spacetimedb/bsatn/writer.h" from top
 
 namespace SpacetimeDb {
     namespace sdk {
@@ -133,13 +124,13 @@ namespace SpacetimeDb {
         };
 
         // Basic Placeholders for u256/i256 - to be fully integrated later
+        // Note: The prompt mentions uint128_placeholder.h, but the types here are u256/i256.
+        // Assuming these placeholders are what's intended to be used with reader/writer from bsatn.
         struct u256_placeholder {
             std::array<uint64_t, 4> data; // Example internal representation
             u256_placeholder() { data.fill(0); }
-            // Add basic bsatn_serialize/deserialize stubs if needed for immediate compilation,
-            // or leave for subsequent steps. For now, just the struct.
-            void bsatn_serialize(SpacetimeDb::bsatn::Writer& writer) const { writer.write_u256_le(*this); }
-            void bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader) { *this = reader.read_u256_le(); }
+            void bsatn_serialize(SpacetimeDb::bsatn::Writer& writer) const; // Declaration only
+            void bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader);   // Declaration only
             bool operator==(const u256_placeholder& other) const { return data == other.data; }
             bool operator<(const u256_placeholder& other) const { return data < other.data; } // For map keys
         };
@@ -147,13 +138,30 @@ namespace SpacetimeDb {
         struct i256_placeholder {
             std::array<uint64_t, 4> data; // Example internal representation (sign bit would be in data[3])
             i256_placeholder() { data.fill(0); }
-            // Add basic bsatn_serialize/deserialize stubs
-            void bsatn_serialize(SpacetimeDb::bsatn::Writer& writer) const { writer.write_i256_le(*this); }
-            void bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader) { *this = reader.read_i256_le(); }
+            void bsatn_serialize(SpacetimeDb::bsatn::Writer& writer) const; // Declaration only
+            void bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader);   // Declaration only
             bool operator==(const i256_placeholder& other) const { return data == other.data; }
             bool operator<(const i256_placeholder& other) const { return data < other.data; } // For map keys
         };
     } // namespace sdk
 } // namespace SpacetimeDb
+
+// Full includes for Reader/Writer for inline method implementations
+// These are now included after all SDK types are defined.
+#include "spacetimedb/bsatn/reader.h"
+#include "spacetimedb/bsatn/writer.h"
+
+// Definitions for u256_placeholder and i256_placeholder bsatn methods
+// These need the full Reader/Writer definitions.
+namespace SpacetimeDb {
+    namespace sdk {
+        inline void u256_placeholder::bsatn_serialize(SpacetimeDb::bsatn::Writer& writer) const { writer.write_u256_le(*this); }
+        inline void u256_placeholder::bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader) { *this = reader.read_u256_le(); }
+
+        inline void i256_placeholder::bsatn_serialize(SpacetimeDb::bsatn::Writer& writer) const { writer.write_i256_le(*this); }
+        inline void i256_placeholder::bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader) { *this = reader.read_i256_le(); }
+    } // namespace sdk
+} // namespace SpacetimeDb
+
 
 #endif // SPACETIMEDB_SDK_TYPES_H
