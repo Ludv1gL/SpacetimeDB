@@ -82,9 +82,9 @@ namespace sdk_test_cpp {
             })
     );
 
-    // Forward declare SpacetimeDB SDK types if not fully included or for clarity
+    // Forward declare SpacetimeDb SDK types if not fully included or for clarity
     // For this example, we assume spacetimedb_sdk_types.h provides these if they are structs:
-    // namespace spacetimedb { namespace sdk {
+    // namespace SpacetimeDb { namespace sdk {
     //     struct u128; struct i128; struct u256; struct i256;
     //     struct Identity; struct ConnectionId; struct Timestamp; struct TimeDuration;
     // }}
@@ -94,22 +94,22 @@ namespace sdk_test_cpp {
         uint16_t b;
         uint32_t c;
         uint64_t d;
-        ::SpacetimeDB::Types::uint128_t_placeholder e; // Corrected type
-        ::spacetimedb::sdk::u256_placeholder f; // Corrected type
+        ::SpacetimeDb::bsatn::uint128_placeholder e; // Corrected type
+        ::SpacetimeDb::sdk::u256_placeholder f; // Corrected type
         int8_t g;
         int16_t h;
         int32_t i;
         int64_t j;
-        ::SpacetimeDB::Types::int128_t_placeholder k; // Corrected type
-        ::spacetimedb::sdk::i256_placeholder l; // Corrected type
+        ::SpacetimeDb::bsatn::int128_placeholder k; // Corrected type
+        ::SpacetimeDb::sdk::i256_placeholder l; // Corrected type
         bool m;
         float n;
         double o;
         std::string p;
-        spacetimedb::sdk::Identity q;
-        spacetimedb::sdk::ConnectionId r; // Assuming this is a type from spacetimedb_sdk_types.h
-        spacetimedb::sdk::Timestamp s;
-        spacetimedb::sdk::TimeDuration t; // Assuming this is a type from spacetimedb_sdk_types.h
+        SpacetimeDb::sdk::Identity q;
+        SpacetimeDb::sdk::ConnectionId r; // Assuming this is a type from spacetimedb_sdk_types.h
+        SpacetimeDb::sdk::Timestamp s;
+        SpacetimeDb::sdk::TimeDuration t; // Assuming this is a type from spacetimedb_sdk_types.h
     };
 
 #define EVERY_PRIMITIVE_STRUCT_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) \
@@ -117,44 +117,44 @@ namespace sdk_test_cpp {
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint16_t, b, false, false); \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint32_t, c, false, false); \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint64_t, d, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::SpacetimeDB::Types::uint128_t_placeholder, e, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::spacetimedb::sdk::u256_placeholder, f, false, false); \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::SpacetimeDb::bsatn::uint128_placeholder, e, false, false); \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::SpacetimeDb::sdk::u256_placeholder, f, false, false); \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int8_t, g, false, false); \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int16_t, h, false, false); \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int32_t, i, false, false); \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int64_t, j, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::SpacetimeDB::Types::int128_t_placeholder, k, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::spacetimedb::sdk::i256_placeholder, l, false, false); \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::SpacetimeDb::bsatn::int128_placeholder, k, false, false); \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::SpacetimeDb::sdk::i256_placeholder, l, false, false); \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, bool, m, false, false); \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, float, n, false, false); \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, double, o, false, false); \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, std::string, p, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, spacetimedb::sdk::Identity, q, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, spacetimedb::sdk::ConnectionId, r, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, spacetimedb::sdk::Timestamp, s, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, spacetimedb::sdk::TimeDuration, t, false, false)
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, SpacetimeDb::sdk::Identity, q, false, false); \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, SpacetimeDb::sdk::ConnectionId, r, false, false); \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, SpacetimeDb::sdk::Timestamp, s, false, false); \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, SpacetimeDb::sdk::TimeDuration, t, false, false)
 
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::EveryPrimitiveStruct, sdk_test_cpp_EveryPrimitiveStruct,
         "EveryPrimitiveStruct",
         EVERY_PRIMITIVE_STRUCT_FIELDS,
         ({
-            SPACETIMEDB_FIELD("a", ::SpacetimeDB::CoreType::U8, false, false),
-            SPACETIMEDB_FIELD("b", ::SpacetimeDB::CoreType::U16, false, false),
-            SPACETIMEDB_FIELD("c", ::SpacetimeDB::CoreType::U32, false, false),
-            SPACETIMEDB_FIELD("d", ::SpacetimeDB::CoreType::U64, false, false),
-            SPACETIMEDB_FIELD("e", ::SpacetimeDB::CoreType::U128, false, false),
-            SPACETIMEDB_FIELD("f", ::SpacetimeDB::CoreType::U256, false, false),
-            SPACETIMEDB_FIELD("g", ::SpacetimeDB::CoreType::I8, false, false),
-            SPACETIMEDB_FIELD("h", ::SpacetimeDB::CoreType::I16, false, false),
-            SPACETIMEDB_FIELD("i", ::SpacetimeDB::CoreType::I32, false, false),
-            SPACETIMEDB_FIELD("j", ::SpacetimeDB::CoreType::I64, false, false),
-            SPACETIMEDB_FIELD("k", ::SpacetimeDB::CoreType::I128, false, false),
-            SPACETIMEDB_FIELD("l", ::SpacetimeDB::CoreType::I256, false, false),
-            SPACETIMEDB_FIELD("m", ::SpacetimeDB::CoreType::Bool, false, false),
-            SPACETIMEDB_FIELD("n", ::SpacetimeDB::CoreType::F32, false, false),
-            SPACETIMEDB_FIELD("o", ::SpacetimeDB::CoreType::F64, false, false),
-            SPACETIMEDB_FIELD("p", ::SpacetimeDB::CoreType::String, false, false),
+            SPACETIMEDB_FIELD("a", ::SpacetimeDb::CoreType::U8, false, false),
+            SPACETIMEDB_FIELD("b", ::SpacetimeDb::CoreType::U16, false, false),
+            SPACETIMEDB_FIELD("c", ::SpacetimeDb::CoreType::U32, false, false),
+            SPACETIMEDB_FIELD("d", ::SpacetimeDb::CoreType::U64, false, false),
+            SPACETIMEDB_FIELD("e", ::SpacetimeDb::CoreType::U128, false, false),
+            SPACETIMEDB_FIELD("f", ::SpacetimeDb::CoreType::U256, false, false),
+            SPACETIMEDB_FIELD("g", ::SpacetimeDb::CoreType::I8, false, false),
+            SPACETIMEDB_FIELD("h", ::SpacetimeDb::CoreType::I16, false, false),
+            SPACETIMEDB_FIELD("i", ::SpacetimeDb::CoreType::I32, false, false),
+            SPACETIMEDB_FIELD("j", ::SpacetimeDb::CoreType::I64, false, false),
+            SPACETIMEDB_FIELD("k", ::SpacetimeDb::CoreType::I128, false, false),
+            SPACETIMEDB_FIELD("l", ::SpacetimeDb::CoreType::I256, false, false),
+            SPACETIMEDB_FIELD("m", ::SpacetimeDb::CoreType::Bool, false, false),
+            SPACETIMEDB_FIELD("n", ::SpacetimeDb::CoreType::F32, false, false),
+            SPACETIMEDB_FIELD("o", ::SpacetimeDb::CoreType::F64, false, false),
+            SPACETIMEDB_FIELD("p", ::SpacetimeDb::CoreType::String, false, false),
             SPACETIMEDB_FIELD_CUSTOM("q", "Identity", false, false),
             SPACETIMEDB_FIELD_CUSTOM("r", "ConnectionId", false, false), // Assuming ConnectionId is a registered struct
             SPACETIMEDB_FIELD_CUSTOM("s", "Timestamp", false, false),
@@ -167,22 +167,22 @@ namespace sdk_test_cpp {
         std::vector<uint16_t> b;
         std::vector<uint32_t> c;
         std::vector<uint64_t> d;
-        std::vector<::SpacetimeDB::Types::uint128_t_placeholder> e;
-        std::vector<::spacetimedb::sdk::u256_placeholder> f;
+        std::vector<::SpacetimeDb::bsatn::uint128_placeholder> e;
+        std::vector<::SpacetimeDb::sdk::u256_placeholder> f;
         std::vector<int8_t> g;
         std::vector<int16_t> h;
         std::vector<int32_t> i;
         std::vector<int64_t> j;
-        std::vector<::SpacetimeDB::Types::int128_t_placeholder> k;
-        std::vector<::spacetimedb::sdk::i256_placeholder> l;
+        std::vector<::SpacetimeDb::bsatn::int128_placeholder> k;
+        std::vector<::SpacetimeDb::sdk::i256_placeholder> l;
         std::vector<bool> m;
         std::vector<float> n;
         std::vector<double> o;
         std::vector<std::string> p;
-        std::vector<spacetimedb::sdk::Identity> q;
-        std::vector<spacetimedb::sdk::ConnectionId> r;
-        std::vector<spacetimedb::sdk::Timestamp> s;
-        std::vector<spacetimedb::sdk::TimeDuration> t;
+        std::vector<SpacetimeDb::sdk::Identity> q;
+        std::vector<SpacetimeDb::sdk::ConnectionId> r;
+        std::vector<SpacetimeDb::sdk::Timestamp> s;
+        std::vector<SpacetimeDb::sdk::TimeDuration> t;
     };
 
 #define EVERY_VEC_STRUCT_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) \
@@ -190,44 +190,44 @@ namespace sdk_test_cpp {
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint16_t, b, false, true); \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint32_t, c, false, true); \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint64_t, d, false, true); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::SpacetimeDB::Types::uint128_t_placeholder, e, false, true); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::spacetimedb::sdk::u256_placeholder, f, false, true); \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::SpacetimeDb::bsatn::uint128_placeholder, e, false, true); \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::SpacetimeDb::sdk::u256_placeholder, f, false, true); \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int8_t, g, false, true); \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int16_t, h, false, true); \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int32_t, i, false, true); \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int64_t, j, false, true); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::SpacetimeDB::Types::int128_t_placeholder, k, false, true); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::spacetimedb::sdk::i256_placeholder, l, false, true); \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::SpacetimeDb::bsatn::int128_placeholder, k, false, true); \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::SpacetimeDb::sdk::i256_placeholder, l, false, true); \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, bool, m, false, true); \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, float, n, false, true); \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, double, o, false, true); \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, std::string, p, false, true); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, spacetimedb::sdk::Identity, q, false, true); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, spacetimedb::sdk::ConnectionId, r, false, true); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, spacetimedb::sdk::Timestamp, s, false, true); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, spacetimedb::sdk::TimeDuration, t, false, true)
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, SpacetimeDb::sdk::Identity, q, false, true); \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, SpacetimeDb::sdk::ConnectionId, r, false, true); \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, SpacetimeDb::sdk::Timestamp, s, false, true); \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, SpacetimeDb::sdk::TimeDuration, t, false, true)
 
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::EveryVecStruct, sdk_test_cpp_EveryVecStruct,
         "EveryVecStruct",
         EVERY_VEC_STRUCT_FIELDS,
         ({ // Schema describes element types. Vector nature is implicit in C++ type + X-Macro IS_VECTOR flag.
-            SPACETIMEDB_FIELD("a", ::SpacetimeDB::CoreType::U8, false, false),
-            SPACETIMEDB_FIELD("b", ::SpacetimeDB::CoreType::U16, false, false),
-            SPACETIMEDB_FIELD("c", ::SpacetimeDB::CoreType::U32, false, false),
-            SPACETIMEDB_FIELD("d", ::SpacetimeDB::CoreType::U64, false, false),
-            SPACETIMEDB_FIELD("e", ::SpacetimeDB::CoreType::U128, false, false),
-            SPACETIMEDB_FIELD("f", ::SpacetimeDB::CoreType::U256, false, false),
-            SPACETIMEDB_FIELD("g", ::SpacetimeDB::CoreType::I8, false, false),
-            SPACETIMEDB_FIELD("h", ::SpacetimeDB::CoreType::I16, false, false),
-            SPACETIMEDB_FIELD("i", ::SpacetimeDB::CoreType::I32, false, false),
-            SPACETIMEDB_FIELD("j", ::SpacetimeDB::CoreType::I64, false, false),
-            SPACETIMEDB_FIELD("k", ::SpacetimeDB::CoreType::I128, false, false),
-            SPACETIMEDB_FIELD("l", ::SpacetimeDB::CoreType::I256, false, false),
-            SPACETIMEDB_FIELD("m", ::SpacetimeDB::CoreType::Bool, false, false),
-            SPACETIMEDB_FIELD("n", ::SpacetimeDB::CoreType::F32, false, false),
-            SPACETIMEDB_FIELD("o", ::SpacetimeDB::CoreType::F64, false, false),
-            SPACETIMEDB_FIELD("p", ::SpacetimeDB::CoreType::String, false, false),
+            SPACETIMEDB_FIELD("a", ::SpacetimeDb::CoreType::U8, false, false),
+            SPACETIMEDB_FIELD("b", ::SpacetimeDb::CoreType::U16, false, false),
+            SPACETIMEDB_FIELD("c", ::SpacetimeDb::CoreType::U32, false, false),
+            SPACETIMEDB_FIELD("d", ::SpacetimeDb::CoreType::U64, false, false),
+            SPACETIMEDB_FIELD("e", ::SpacetimeDb::CoreType::U128, false, false),
+            SPACETIMEDB_FIELD("f", ::SpacetimeDb::CoreType::U256, false, false),
+            SPACETIMEDB_FIELD("g", ::SpacetimeDb::CoreType::I8, false, false),
+            SPACETIMEDB_FIELD("h", ::SpacetimeDb::CoreType::I16, false, false),
+            SPACETIMEDB_FIELD("i", ::SpacetimeDb::CoreType::I32, false, false),
+            SPACETIMEDB_FIELD("j", ::SpacetimeDb::CoreType::I64, false, false),
+            SPACETIMEDB_FIELD("k", ::SpacetimeDb::CoreType::I128, false, false),
+            SPACETIMEDB_FIELD("l", ::SpacetimeDb::CoreType::I256, false, false),
+            SPACETIMEDB_FIELD("m", ::SpacetimeDb::CoreType::Bool, false, false),
+            SPACETIMEDB_FIELD("n", ::SpacetimeDb::CoreType::F32, false, false),
+            SPACETIMEDB_FIELD("o", ::SpacetimeDb::CoreType::F64, false, false),
+            SPACETIMEDB_FIELD("p", ::SpacetimeDb::CoreType::String, false, false),
             SPACETIMEDB_FIELD_CUSTOM("q", "Identity", false, false),
             SPACETIMEDB_FIELD_CUSTOM("r", "ConnectionId", false, false),
             SPACETIMEDB_FIELD_CUSTOM("s", "Timestamp", false, false),
@@ -247,36 +247,36 @@ namespace sdk_test_cpp {
     };
 
     // Manual BSATN for EnumWithPayloadTag
-    inline void serialize(::bsatn::Writer& writer, const EnumWithPayloadTag& value) {
+    inline void serialize(::SpacetimeDb::bsatn::Writer& writer, const EnumWithPayloadTag& value) {
         writer.write_u8(static_cast<uint8_t>(value));
     }
-    inline EnumWithPayloadTag deserialize_EnumWithPayloadTag(::bsatn::Reader& reader) {
+    inline EnumWithPayloadTag deserialize_EnumWithPayloadTag(::SpacetimeDb::bsatn::Reader& reader) {
         return static_cast<EnumWithPayloadTag>(reader.read_u8());
     }
 } // namespace sdk_test_cpp
 
 // Specialization for bsatn::deserialize must be in bsatn namespace
-namespace SpacetimeDB::bsatn {
+namespace SpacetimeDb::bsatn {
     template<>
-    inline sdk_test_cpp::EnumWithPayloadTag deserialize<sdk_test_cpp::EnumWithPayloadTag>(::SpacetimeDB::bsatn::Reader& reader) {
+    inline sdk_test_cpp::EnumWithPayloadTag deserialize<sdk_test_cpp::EnumWithPayloadTag>(::SpacetimeDb::bsatn::Reader& reader) {
         return sdk_test_cpp::deserialize_EnumWithPayloadTag(reader);
     }
-} // namespace SpacetimeDB::bsatn
+} // namespace SpacetimeDb::bsatn
 
 namespace sdk_test_cpp {
     struct EnumWithPayload {
         sdk_test_cpp::EnumWithPayloadTag tag;
         std::variant<
-            uint8_t, uint16_t, uint32_t, uint64_t, ::SpacetimeDB::Types::uint128_t_placeholder, ::spacetimedb::sdk::u256_placeholder,
-            int8_t, int16_t, int32_t, int64_t, ::SpacetimeDB::Types::int128_t_placeholder, ::spacetimedb::sdk::i256_placeholder,
-            bool, float, double, std::string, spacetimedb::sdk::Identity, spacetimedb::sdk::ConnectionId,
-            spacetimedb::sdk::Timestamp, std::vector<uint8_t>, std::vector<int32_t>,
+            uint8_t, uint16_t, uint32_t, uint64_t, ::SpacetimeDb::bsatn::uint128_placeholder, ::SpacetimeDb::sdk::u256_placeholder,
+            int8_t, int16_t, int32_t, int64_t, ::SpacetimeDb::bsatn::int128_placeholder, ::SpacetimeDb::sdk::i256_placeholder,
+            bool, float, double, std::string, SpacetimeDb::sdk::Identity, SpacetimeDb::sdk::ConnectionId,
+            SpacetimeDb::sdk::Timestamp, std::vector<uint8_t>, std::vector<int32_t>,
             std::vector<std::string>, std::vector<SimpleEnum>
         > value;
 
         // Manual BSATN methods (declarations)
-        void bsatn_serialize(::bsatn::Writer& writer) const;
-        void bsatn_deserialize(::bsatn::Reader& reader);
+        void bsatn_serialize(::SpacetimeDb::bsatn::Writer& writer) const;
+        void bsatn_deserialize(::SpacetimeDb::bsatn::Reader& reader);
     };
 
 
@@ -313,7 +313,7 @@ namespace sdk_test_cpp {
         ENUM_WITH_PAYLOAD_FIELDS,
         ({
             SPACETIMEDB_FIELD_CUSTOM("tag", "EnumWithPayloadTag", false, false),
-            SPACETIMEDB_FIELD("payload_bytes_for_schema", ::SpacetimeDB::CoreType::Bytes, false, false)
+            SPACETIMEDB_FIELD("payload_bytes_for_schema", ::SpacetimeDb::CoreType::Bytes, false, false)
             })
     );
 
@@ -328,7 +328,7 @@ namespace sdk_test_cpp {
 #define ONE_U8_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint8_t, n, false, false)
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::OneU8Row, sdk_test_cpp_OneU8Row, "OneU8Row", ONE_U8_ROW_FIELDS,
-        ({ SPACETIMEDB_FIELD("n", ::SpacetimeDB::CoreType::U8, false, false) })
+        ({ SPACETIMEDB_FIELD("n", ::SpacetimeDb::CoreType::U8, false, false) })
     );
 
     // OneU16
@@ -338,7 +338,7 @@ namespace sdk_test_cpp {
 #define ONE_U16_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint16_t, n, false, false)
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::OneU16Row, sdk_test_cpp_OneU16Row, "OneU16Row", ONE_U16_ROW_FIELDS,
-        ({ SPACETIMEDB_FIELD("n", ::SpacetimeDB::CoreType::U16, false, false) })
+        ({ SPACETIMEDB_FIELD("n", ::SpacetimeDb::CoreType::U16, false, false) })
     );
 
     // OneU32
@@ -348,7 +348,7 @@ namespace sdk_test_cpp {
 #define ONE_U32_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint32_t, n, false, false)
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::OneU32Row, sdk_test_cpp_OneU32Row, "OneU32Row", ONE_U32_ROW_FIELDS,
-        ({ SPACETIMEDB_FIELD("n", ::SpacetimeDB::CoreType::U32, false, false) })
+        ({ SPACETIMEDB_FIELD("n", ::SpacetimeDb::CoreType::U32, false, false) })
     );
 
     // OneU64
@@ -358,27 +358,27 @@ namespace sdk_test_cpp {
 #define ONE_U64_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint64_t, n, false, false)
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::OneU64Row, sdk_test_cpp_OneU64Row, "OneU64Row", ONE_U64_ROW_FIELDS,
-        ({ SPACETIMEDB_FIELD("n", ::SpacetimeDB::CoreType::U64, false, false) })
+        ({ SPACETIMEDB_FIELD("n", ::SpacetimeDb::CoreType::U64, false, false) })
     );
 
     // OneU128
     struct OneU128Row {
-        ::SpacetimeDB::Types::uint128_t_placeholder n;
+        ::SpacetimeDb::bsatn::uint128_placeholder n;
     };
-#define ONE_U128_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::SpacetimeDB::Types::uint128_t_placeholder, n, false, false)
+#define ONE_U128_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::SpacetimeDb::bsatn::uint128_placeholder, n, false, false)
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::OneU128Row, sdk_test_cpp_OneU128Row, "OneU128Row", ONE_U128_ROW_FIELDS,
-        ({ SPACETIMEDB_FIELD("n", ::SpacetimeDB::CoreType::U128, false, false) })
+        ({ SPACETIMEDB_FIELD("n", ::SpacetimeDb::CoreType::U128, false, false) })
     );
 
     // OneU256
     struct OneU256Row {
-        ::spacetimedb::sdk::u256_placeholder n;
+        ::SpacetimeDb::sdk::u256_placeholder n;
     };
-#define ONE_U256_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::spacetimedb::sdk::u256_placeholder, n, false, false)
+#define ONE_U256_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::SpacetimeDb::sdk::u256_placeholder, n, false, false)
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::OneU256Row, sdk_test_cpp_OneU256Row, "OneU256Row", ONE_U256_ROW_FIELDS,
-        ({ SPACETIMEDB_FIELD("n", ::SpacetimeDB::CoreType::U256, false, false) })
+        ({ SPACETIMEDB_FIELD("n", ::SpacetimeDb::CoreType::U256, false, false) })
     );
 
     // OneI8
@@ -388,7 +388,7 @@ namespace sdk_test_cpp {
 #define ONE_I8_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int8_t, n, false, false)
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::OneI8Row, sdk_test_cpp_OneI8Row, "OneI8Row", ONE_I8_ROW_FIELDS,
-        ({ SPACETIMEDB_FIELD("n", ::SpacetimeDB::CoreType::I8, false, false) })
+        ({ SPACETIMEDB_FIELD("n", ::SpacetimeDb::CoreType::I8, false, false) })
     );
 
     // OneI16
@@ -398,7 +398,7 @@ namespace sdk_test_cpp {
 #define ONE_I16_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int16_t, n, false, false)
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::OneI16Row, sdk_test_cpp_OneI16Row, "OneI16Row", ONE_I16_ROW_FIELDS,
-        ({ SPACETIMEDB_FIELD("n", ::SpacetimeDB::CoreType::I16, false, false) })
+        ({ SPACETIMEDB_FIELD("n", ::SpacetimeDb::CoreType::I16, false, false) })
     );
 
     // OneI32
@@ -408,7 +408,7 @@ namespace sdk_test_cpp {
 #define ONE_I32_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int32_t, n, false, false)
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::OneI32Row, sdk_test_cpp_OneI32Row, "OneI32Row", ONE_I32_ROW_FIELDS,
-        ({ SPACETIMEDB_FIELD("n", ::SpacetimeDB::CoreType::I32, false, false) })
+        ({ SPACETIMEDB_FIELD("n", ::SpacetimeDb::CoreType::I32, false, false) })
     );
 
     // OneI64
@@ -418,27 +418,27 @@ namespace sdk_test_cpp {
 #define ONE_I64_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int64_t, n, false, false)
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::OneI64Row, sdk_test_cpp_OneI64Row, "OneI64Row", ONE_I64_ROW_FIELDS,
-        ({ SPACETIMEDB_FIELD("n", ::SpacetimeDB::CoreType::I64, false, false) })
+        ({ SPACETIMEDB_FIELD("n", ::SpacetimeDb::CoreType::I64, false, false) })
     );
 
     // OneI128
     struct OneI128Row {
-        ::SpacetimeDB::Types::int128_t_placeholder n;
+        ::SpacetimeDb::bsatn::int128_placeholder n;
     };
-#define ONE_I128_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::SpacetimeDB::Types::int128_t_placeholder, n, false, false)
+#define ONE_I128_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::SpacetimeDb::bsatn::int128_placeholder, n, false, false)
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::OneI128Row, sdk_test_cpp_OneI128Row, "OneI128Row", ONE_I128_ROW_FIELDS,
-        ({ SPACETIMEDB_FIELD("n", ::SpacetimeDB::CoreType::I128, false, false) })
+        ({ SPACETIMEDB_FIELD("n", ::SpacetimeDb::CoreType::I128, false, false) })
     );
 
     // OneI256
     struct OneI256Row {
-        ::spacetimedb::sdk::i256_placeholder n;
+        ::SpacetimeDb::sdk::i256_placeholder n;
     };
-#define ONE_I256_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::spacetimedb::sdk::i256_placeholder, n, false, false)
+#define ONE_I256_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::SpacetimeDb::sdk::i256_placeholder, n, false, false)
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::OneI256Row, sdk_test_cpp_OneI256Row, "OneI256Row", ONE_I256_ROW_FIELDS,
-        ({ SPACETIMEDB_FIELD("n", ::SpacetimeDB::CoreType::I256, false, false) })
+        ({ SPACETIMEDB_FIELD("n", ::SpacetimeDb::CoreType::I256, false, false) })
     );
 
     // OneBool
@@ -448,7 +448,7 @@ namespace sdk_test_cpp {
 #define ONE_BOOL_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) ACTION(WRITER_OR_READER, VALUE_OR_OBJ, bool, n, false, false)
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::OneBoolRow, sdk_test_cpp_OneBoolRow, "OneBoolRow", ONE_BOOL_ROW_FIELDS,
-        ({ SPACETIMEDB_FIELD("n", ::SpacetimeDB::CoreType::Bool, false, false) })
+        ({ SPACETIMEDB_FIELD("n", ::SpacetimeDb::CoreType::Bool, false, false) })
     );
 
     // OneF32
@@ -458,7 +458,7 @@ namespace sdk_test_cpp {
 #define ONE_F32_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) ACTION(WRITER_OR_READER, VALUE_OR_OBJ, float, n, false, false)
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::OneF32Row, sdk_test_cpp_OneF32Row, "OneF32Row", ONE_F32_ROW_FIELDS,
-        ({ SPACETIMEDB_FIELD("n", ::SpacetimeDB::CoreType::F32, false, false) })
+        ({ SPACETIMEDB_FIELD("n", ::SpacetimeDb::CoreType::F32, false, false) })
     );
 
     // OneF64
@@ -468,7 +468,7 @@ namespace sdk_test_cpp {
 #define ONE_F64_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) ACTION(WRITER_OR_READER, VALUE_OR_OBJ, double, n, false, false)
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::OneF64Row, sdk_test_cpp_OneF64Row, "OneF64Row", ONE_F64_ROW_FIELDS,
-        ({ SPACETIMEDB_FIELD("n", ::SpacetimeDB::CoreType::F64, false, false) })
+        ({ SPACETIMEDB_FIELD("n", ::SpacetimeDb::CoreType::F64, false, false) })
     );
 
     // OneString
@@ -478,14 +478,14 @@ namespace sdk_test_cpp {
 #define ONE_STRING_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) ACTION(WRITER_OR_READER, VALUE_OR_OBJ, std::string, n, false, false)
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::OneStringRow, sdk_test_cpp_OneStringRow, "OneStringRow", ONE_STRING_ROW_FIELDS,
-        ({ SPACETIMEDB_FIELD("n", ::SpacetimeDB::CoreType::String, false, false) })
+        ({ SPACETIMEDB_FIELD("n", ::SpacetimeDb::CoreType::String, false, false) })
     );
 
     // OneIdentity
     struct OneIdentityRow {
-        spacetimedb::sdk::Identity n;
+        SpacetimeDb::sdk::Identity n;
     };
-#define ONE_IDENTITY_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) ACTION(WRITER_OR_READER, VALUE_OR_OBJ, spacetimedb::sdk::Identity, n, false, false)
+#define ONE_IDENTITY_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) ACTION(WRITER_OR_READER, VALUE_OR_OBJ, SpacetimeDb::sdk::Identity, n, false, false)
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::OneIdentityRow, sdk_test_cpp_OneIdentityRow, "OneIdentityRow", ONE_IDENTITY_ROW_FIELDS,
         ({ SPACETIMEDB_FIELD_CUSTOM("n", "Identity", false, false) })
@@ -493,9 +493,9 @@ namespace sdk_test_cpp {
 
     // OneConnectionId
     struct OneConnectionIdRow {
-        spacetimedb::sdk::ConnectionId n;
+        SpacetimeDb::sdk::ConnectionId n;
     };
-#define ONE_CONNECTION_ID_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) ACTION(WRITER_OR_READER, VALUE_OR_OBJ, spacetimedb::sdk::ConnectionId, n, false, false)
+#define ONE_CONNECTION_ID_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) ACTION(WRITER_OR_READER, VALUE_OR_OBJ, SpacetimeDb::sdk::ConnectionId, n, false, false)
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::OneConnectionIdRow, sdk_test_cpp_OneConnectionIdRow, "OneConnectionIdRow", ONE_CONNECTION_ID_ROW_FIELDS,
         ({ SPACETIMEDB_FIELD_CUSTOM("n", "ConnectionId", false, false) }) // Assuming ConnectionId is registered type
@@ -503,9 +503,9 @@ namespace sdk_test_cpp {
 
     // OneTimestamp
     struct OneTimestampRow {
-        spacetimedb::sdk::Timestamp n;
+        SpacetimeDb::sdk::Timestamp n;
     };
-#define ONE_TIMESTAMP_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) ACTION(WRITER_OR_READER, VALUE_OR_OBJ, spacetimedb::sdk::Timestamp, n, false, false)
+#define ONE_TIMESTAMP_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) ACTION(WRITER_OR_READER, VALUE_OR_OBJ, SpacetimeDb::sdk::Timestamp, n, false, false)
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::OneTimestampRow, sdk_test_cpp_OneTimestampRow, "OneTimestampRow", ONE_TIMESTAMP_ROW_FIELDS,
         ({ SPACETIMEDB_FIELD_CUSTOM("n", "Timestamp", false, false) })
@@ -580,14 +580,14 @@ namespace sdk_test_cpp {
     struct VecU8Row { std::vector<uint8_t> n; };
 #define VEC_U8_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint8_t, n, false, true)
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(sdk_test_cpp::VecU8Row, sdk_test_cpp_VecU8Row, "VecU8Row", VEC_U8_ROW_FIELDS,
-        ({ SPACETIMEDB_FIELD("n", SpacetimeDB::CoreType::U8, false, false) }) // Schema for element type
+        ({ SPACETIMEDB_FIELD("n", ::SpacetimeDb::CoreType::U8, false, false) }) // Schema for element type
     );
 
     // VecString
     struct VecStringRow { std::vector<std::string> n; };
 #define VEC_STRING_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) ACTION(WRITER_OR_READER, VALUE_OR_OBJ, std::string, n, false, true)
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(sdk_test_cpp::VecStringRow, sdk_test_cpp_VecStringRow, "VecStringRow", VEC_STRING_ROW_FIELDS,
-        ({ SPACETIMEDB_FIELD("n", SpacetimeDB::CoreType::String, false, false) })
+        ({ SPACETIMEDB_FIELD("n", ::SpacetimeDb::CoreType::String, false, false) })
     );
 
     // VecSimpleEnum
@@ -621,9 +621,9 @@ namespace sdk_test_cpp {
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::UniqueU8Row, sdk_test_cpp_UniqueU8Row, "UniqueU8Row", UNIQUE_U8_ROW_FIELDS,
         ({
-            SPACETIMEDB_FIELD("row_id", SpacetimeDB::CoreType::U64, false, true),
-            SPACETIMEDB_FIELD("n", SpacetimeDB::CoreType::U8, true, false),
-            SPACETIMEDB_FIELD("data", SpacetimeDB::CoreType::I32, false, false)
+            SPACETIMEDB_FIELD("row_id", ::SpacetimeDb::CoreType::U64, false, true),
+            SPACETIMEDB_FIELD("n", ::SpacetimeDb::CoreType::U8, true, false),
+            SPACETIMEDB_FIELD("data", ::SpacetimeDb::CoreType::I32, false, false)
             })
     );
 
@@ -640,47 +640,47 @@ namespace sdk_test_cpp {
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::UniqueStringRow, sdk_test_cpp_UniqueStringRow, "UniqueStringRow", UNIQUE_STRING_ROW_FIELDS,
         ({
-            SPACETIMEDB_FIELD("row_id", SpacetimeDB::CoreType::U64, false, true),
-            SPACETIMEDB_FIELD("s", SpacetimeDB::CoreType::String, true, false),
-            SPACETIMEDB_FIELD("data", SpacetimeDB::CoreType::I32, false, false)
+            SPACETIMEDB_FIELD("row_id", ::SpacetimeDb::CoreType::U64, false, true),
+            SPACETIMEDB_FIELD("s", ::SpacetimeDb::CoreType::String, true, false),
+            SPACETIMEDB_FIELD("data", ::SpacetimeDb::CoreType::I32, false, false)
             })
     );
 
     // UniqueIdentityRow
     struct UniqueIdentityRow {
         uint64_t row_id;
-        spacetimedb::sdk::Identity i;
+        SpacetimeDb::sdk::Identity i;
         int32_t data;
     };
 #define UNIQUE_IDENTITY_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint64_t, row_id, false, true); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, spacetimedb::sdk::Identity, i, true, false); \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, SpacetimeDb::sdk::Identity, i, true, false); \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int32_t, data, false, false)
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::UniqueIdentityRow, sdk_test_cpp_UniqueIdentityRow, "UniqueIdentityRow", UNIQUE_IDENTITY_ROW_FIELDS,
         ({
-            SPACETIMEDB_FIELD("row_id", SpacetimeDB::CoreType::U64, false, true),
+            SPACETIMEDB_FIELD("row_id", ::SpacetimeDb::CoreType::U64, false, true),
             SPACETIMEDB_FIELD_CUSTOM("i", "Identity", true, false),
-            SPACETIMEDB_FIELD("data", SpacetimeDB::CoreType::I32, false, false)
+            SPACETIMEDB_FIELD("data", ::SpacetimeDb::CoreType::I32, false, false)
             })
     );
 
     // UniqueConnectionIdRow
     struct UniqueConnectionIdRow {
         uint64_t row_id;
-        spacetimedb::sdk::ConnectionId c; // Assuming ConnectionId is a distinct type
+        SpacetimeDb::sdk::ConnectionId c; // Assuming ConnectionId is a distinct type
         int32_t data;
     };
 #define UNIQUE_CONNECTION_ID_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint64_t, row_id, false, true); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, spacetimedb::sdk::ConnectionId, c, true, false); \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, SpacetimeDb::sdk::ConnectionId, c, true, false); \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int32_t, data, false, false)
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::UniqueConnectionIdRow, sdk_test_cpp_UniqueConnectionIdRow, "UniqueConnectionIdRow", UNIQUE_CONNECTION_ID_ROW_FIELDS,
         ({
-            SPACETIMEDB_FIELD("row_id", SpacetimeDB::CoreType::U64, false, true),
+            SPACETIMEDB_FIELD("row_id", ::SpacetimeDb::CoreType::U64, false, true),
             SPACETIMEDB_FIELD_CUSTOM("c", "ConnectionId", true, false), // Assuming ConnectionId is registered as "ConnectionId"
-            SPACETIMEDB_FIELD("data", SpacetimeDB::CoreType::I32, false, false)
+            SPACETIMEDB_FIELD("data", ::SpacetimeDb::CoreType::I32, false, false)
             })
     );
 
@@ -696,22 +696,22 @@ namespace sdk_test_cpp {
         uint16_t b;
         uint32_t c;
         uint64_t d;
-        ::SpacetimeDB::Types::uint128_t_placeholder e;
-        ::spacetimedb::sdk::u256_placeholder f;
+        ::SpacetimeDb::bsatn::uint128_placeholder e;
+        ::SpacetimeDb::sdk::u256_placeholder f;
         int8_t g;
         int16_t h;
         int32_t i;
         int64_t j;
-        ::SpacetimeDB::Types::int128_t_placeholder k;
-        ::spacetimedb::sdk::i256_placeholder l;
+        ::SpacetimeDb::bsatn::int128_placeholder k;
+        ::SpacetimeDb::sdk::i256_placeholder l;
         bool m;
         float n;
         double o;
         std::string p;
-        spacetimedb::sdk::Identity q;
-        spacetimedb::sdk::ConnectionId r;
-        spacetimedb::sdk::Timestamp s;
-        spacetimedb::sdk::TimeDuration t;
+        SpacetimeDb::sdk::Identity q;
+        SpacetimeDb::sdk::ConnectionId r;
+        SpacetimeDb::sdk::Timestamp s;
+        SpacetimeDb::sdk::TimeDuration t;
         std::vector<uint8_t> va;
         std::vector<std::string> vp;
         std::vector<EveryPrimitiveStruct> vs;
@@ -732,22 +732,22 @@ namespace sdk_test_cpp {
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint16_t, b, false, false); \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint32_t, c, false, false); \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint64_t, d, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::SpacetimeDB::Types::uint128_t_placeholder, e, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::spacetimedb::sdk::u256_placeholder, f, false, false); \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::SpacetimeDb::bsatn::uint128_placeholder, e, false, false); \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::SpacetimeDb::sdk::u256_placeholder, f, false, false); \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int8_t, g, false, false); \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int16_t, h, false, false); \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int32_t, i, false, false); \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int64_t, j, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::SpacetimeDB::Types::int128_t_placeholder, k, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::spacetimedb::sdk::i256_placeholder, l, false, false); \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::SpacetimeDb::bsatn::int128_placeholder, k, false, false); \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, ::SpacetimeDb::sdk::i256_placeholder, l, false, false); \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, bool, m, false, false); \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, float, n, false, false); \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, double, o, false, false); \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, std::string, p, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, spacetimedb::sdk::Identity, q, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, spacetimedb::sdk::ConnectionId, r, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, spacetimedb::sdk::Timestamp, s, false, false); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, spacetimedb::sdk::TimeDuration, t, false, false); \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, SpacetimeDb::sdk::Identity, q, false, false); \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, SpacetimeDb::sdk::ConnectionId, r, false, false); \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, SpacetimeDb::sdk::Timestamp, s, false, false); \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, SpacetimeDb::sdk::TimeDuration, t, false, false); \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint8_t, va, false, true); /* Vector of u8 */ \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, std::string, vp, false, true); /* Vector of string */ \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, sdk_test_cpp::EveryPrimitiveStruct, vs, false, true); /* Vector of EveryPrimitiveStruct */ \
@@ -765,32 +765,32 @@ namespace sdk_test_cpp {
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::LargeTableRow, sdk_test_cpp_LargeTableRow, "LargeTableRow", LARGE_TABLE_ROW_FIELDS,
         ({
-            SPACETIMEDB_FIELD("row_id", SpacetimeDB::CoreType::U64, false, true),
-            SPACETIMEDB_FIELD("a", SpacetimeDB::CoreType::U8, false, false),
-            SPACETIMEDB_FIELD("b", SpacetimeDB::CoreType::U16, false, false),
-            SPACETIMEDB_FIELD("c", SpacetimeDB::CoreType::U32, false, false),
-            SPACETIMEDB_FIELD("d", SpacetimeDB::CoreType::U64, false, false),
-            SPACETIMEDB_FIELD("e", SpacetimeDB::CoreType::U128, false, false),
-            SPACETIMEDB_FIELD("f", SpacetimeDB::CoreType::U256, false, false),
-            SPACETIMEDB_FIELD("g", SpacetimeDB::CoreType::I8, false, false),
-            SPACETIMEDB_FIELD("h", SpacetimeDB::CoreType::I16, false, false),
-            SPACETIMEDB_FIELD("i", SpacetimeDB::CoreType::I32, false, false),
-            SPACETIMEDB_FIELD("j", SpacetimeDB::CoreType::I64, false, false),
-            SPACETIMEDB_FIELD("k", SpacetimeDB::CoreType::I128, false, false),
-            SPACETIMEDB_FIELD("l", SpacetimeDB::CoreType::I256, false, false),
-            SPACETIMEDB_FIELD("m", SpacetimeDB::CoreType::Bool, false, false),
-            SPACETIMEDB_FIELD("n", SpacetimeDB::CoreType::F32, false, false),
-            SPACETIMEDB_FIELD("o", SpacetimeDB::CoreType::F64, false, false),
-            SPACETIMEDB_FIELD("p", SpacetimeDB::CoreType::String, false, false),
+            SPACETIMEDB_FIELD("row_id", ::SpacetimeDb::CoreType::U64, false, true),
+            SPACETIMEDB_FIELD("a", ::SpacetimeDb::CoreType::U8, false, false),
+            SPACETIMEDB_FIELD("b", ::SpacetimeDb::CoreType::U16, false, false),
+            SPACETIMEDB_FIELD("c", ::SpacetimeDb::CoreType::U32, false, false),
+            SPACETIMEDB_FIELD("d", ::SpacetimeDb::CoreType::U64, false, false),
+            SPACETIMEDB_FIELD("e", ::SpacetimeDb::CoreType::U128, false, false),
+            SPACETIMEDB_FIELD("f", ::SpacetimeDb::CoreType::U256, false, false),
+            SPACETIMEDB_FIELD("g", ::SpacetimeDb::CoreType::I8, false, false),
+            SPACETIMEDB_FIELD("h", ::SpacetimeDb::CoreType::I16, false, false),
+            SPACETIMEDB_FIELD("i", ::SpacetimeDb::CoreType::I32, false, false),
+            SPACETIMEDB_FIELD("j", ::SpacetimeDb::CoreType::I64, false, false),
+            SPACETIMEDB_FIELD("k", ::SpacetimeDb::CoreType::I128, false, false),
+            SPACETIMEDB_FIELD("l", ::SpacetimeDb::CoreType::I256, false, false),
+            SPACETIMEDB_FIELD("m", ::SpacetimeDb::CoreType::Bool, false, false),
+            SPACETIMEDB_FIELD("n", ::SpacetimeDb::CoreType::F32, false, false),
+            SPACETIMEDB_FIELD("o", ::SpacetimeDb::CoreType::F64, false, false),
+            SPACETIMEDB_FIELD("p", ::SpacetimeDb::CoreType::String, false, false),
             SPACETIMEDB_FIELD_CUSTOM("q", "Identity", false, false),
             SPACETIMEDB_FIELD_CUSTOM("r", "ConnectionId", false, false),
             SPACETIMEDB_FIELD_CUSTOM("s", "Timestamp", false, false),
             SPACETIMEDB_FIELD_CUSTOM("t", "TimeDuration", false, false),
-            SPACETIMEDB_FIELD("va", SpacetimeDB::CoreType::U8, false, false), // Schema for element type
-            SPACETIMEDB_FIELD("vp", SpacetimeDB::CoreType::String, false, false), // Schema for element type
+            SPACETIMEDB_FIELD("va", ::SpacetimeDb::CoreType::U8, false, false), // Schema for element type
+            SPACETIMEDB_FIELD("vp", ::SpacetimeDb::CoreType::String, false, false), // Schema for element type
             SPACETIMEDB_FIELD_CUSTOM("vs", "EveryPrimitiveStruct", false, false), // Schema for element type
-            SPACETIMEDB_FIELD_OPTIONAL("oi", SpacetimeDB::CoreType::I32, false, false),
-            SPACETIMEDB_FIELD_OPTIONAL("os", SpacetimeDB::CoreType::String, false, false),
+            SPACETIMEDB_FIELD_OPTIONAL("oi", ::SpacetimeDb::CoreType::I32, false, false),
+            SPACETIMEDB_FIELD_OPTIONAL("os", ::SpacetimeDb::CoreType::String, false, false),
             SPACETIMEDB_FIELD_CUSTOM_OPTIONAL("oes", "EveryPrimitiveStruct", false, false),
             SPACETIMEDB_FIELD_CUSTOM("en", "SimpleEnum", false, false),
             SPACETIMEDB_FIELD_CUSTOM("ewp", "EnumWithPayload", false, false),
@@ -814,7 +814,7 @@ namespace sdk_test_cpp {
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::TableHoldsTableRow, sdk_test_cpp_TableHoldsTableRow, "TableHoldsTableRow", TABLE_HOLDS_TABLE_ROW_FIELDS,
         ({
-            SPACETIMEDB_FIELD("row_id", SpacetimeDB::CoreType::U64, false, true),
+            SPACETIMEDB_FIELD("row_id", ::SpacetimeDb::CoreType::U64, false, true),
             SPACETIMEDB_FIELD_CUSTOM("a", "OneU8Row", false, false),
             SPACETIMEDB_FIELD_CUSTOM("b", "VecU8Row", false, false)
             })
@@ -823,19 +823,19 @@ namespace sdk_test_cpp {
     // ScheduledTableRow
     struct ScheduledTableRow {
         uint64_t scheduled_id; // PK
-        spacetimedb::sdk::ScheduleAt scheduled_at;
+        SpacetimeDb::sdk::ScheduleAt scheduled_at;
         std::string text;
     };
 #define SCHEDULED_TABLE_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, uint64_t, scheduled_id, false, true); \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, spacetimedb::sdk::ScheduleAt, scheduled_at, false, false); \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, SpacetimeDb::sdk::ScheduleAt, scheduled_at, false, false); \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, std::string, text, false, false)
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::ScheduledTableRow, sdk_test_cpp_ScheduledTableRow, "ScheduledTableRow", SCHEDULED_TABLE_ROW_FIELDS,
         ({
-            SPACETIMEDB_FIELD("scheduled_id", SpacetimeDB::CoreType::U64, false, true),
+            SPACETIMEDB_FIELD("scheduled_id", ::SpacetimeDb::CoreType::U64, false, true),
             SPACETIMEDB_FIELD_CUSTOM("scheduled_at", "ScheduleAt", false, false), // Assuming ScheduleAt is registered
-            SPACETIMEDB_FIELD("text", SpacetimeDB::CoreType::String, false, false)
+            SPACETIMEDB_FIELD("text", ::SpacetimeDb::CoreType::String, false, false)
             })
     );
 
@@ -850,8 +850,8 @@ namespace sdk_test_cpp {
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::IndexedTableRow, sdk_test_cpp_IndexedTableRow, "IndexedTableRow", INDEXED_TABLE_ROW_FIELDS,
         ({
-            SPACETIMEDB_FIELD("row_id", SpacetimeDB::CoreType::U64, false, true),
-            SPACETIMEDB_FIELD("player_id", SpacetimeDB::CoreType::U32, false, false)
+            SPACETIMEDB_FIELD("row_id", ::SpacetimeDb::CoreType::U64, false, true),
+            SPACETIMEDB_FIELD("player_id", ::SpacetimeDb::CoreType::U32, false, false)
             })
     );
 
@@ -868,9 +868,9 @@ namespace sdk_test_cpp {
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::IndexedTable2Row, sdk_test_cpp_IndexedTable2Row, "IndexedTable2Row", INDEXED_TABLE_2_ROW_FIELDS,
         ({
-            SPACETIMEDB_FIELD("row_id", SpacetimeDB::CoreType::U64, false, true),
-            SPACETIMEDB_FIELD("player_id", SpacetimeDB::CoreType::U32, false, false),
-            SPACETIMEDB_FIELD("player_snazz", SpacetimeDB::CoreType::F32, false, false)
+            SPACETIMEDB_FIELD("row_id", ::SpacetimeDb::CoreType::U64, false, true),
+            SPACETIMEDB_FIELD("player_id", ::SpacetimeDb::CoreType::U32, false, false),
+            SPACETIMEDB_FIELD("player_snazz", ::SpacetimeDb::CoreType::F32, false, false)
             })
     );
 
@@ -887,25 +887,25 @@ namespace sdk_test_cpp {
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::BTreeU32Row, sdk_test_cpp_BTreeU32Row, "BTreeU32Row", BTREE_U32_ROW_FIELDS,
         ({
-            SPACETIMEDB_FIELD("row_id", SpacetimeDB::CoreType::U64, false, true),
-            SPACETIMEDB_FIELD("n", SpacetimeDB::CoreType::U32, false, false), // Not marked unique here, index will be separate
-            SPACETIMEDB_FIELD("data", SpacetimeDB::CoreType::I32, false, false)
+            SPACETIMEDB_FIELD("row_id", ::SpacetimeDb::CoreType::U64, false, true),
+            SPACETIMEDB_FIELD("n", ::SpacetimeDb::CoreType::U32, false, false), // Not marked unique here, index will be separate
+            SPACETIMEDB_FIELD("data", ::SpacetimeDb::CoreType::I32, false, false)
             })
     );
 
     // UsersRow
     struct UsersRow {
-        spacetimedb::sdk::Identity identity; // PK
+        SpacetimeDb::sdk::Identity identity; // PK
         std::string name;
     };
 #define USERS_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, spacetimedb::sdk::Identity, identity, false, false); \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, SpacetimeDb::sdk::Identity, identity, false, false); \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, std::string, name, false, false)
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::UsersRow, sdk_test_cpp_UsersRow, "UsersRow", USERS_ROW_FIELDS,
         ({
             SPACETIMEDB_FIELD_CUSTOM("identity", "Identity", false, false),
-            SPACETIMEDB_FIELD("name", SpacetimeDB::CoreType::String, false, false)
+            SPACETIMEDB_FIELD("name", ::SpacetimeDb::CoreType::String, false, false)
             })
     );
 
@@ -920,7 +920,7 @@ namespace sdk_test_cpp {
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::IndexedSimpleEnumRow, sdk_test_cpp_IndexedSimpleEnumRow, "IndexedSimpleEnumRow", INDEXED_SIMPLE_ENUM_ROW_FIELDS,
         ({
-            SPACETIMEDB_FIELD("row_id", SpacetimeDb::CoreType::U64, false, true),
+            SPACETIMEDB_FIELD("row_id", ::SpacetimeDb::CoreType::U64, false, true),
             SPACETIMEDB_FIELD_CUSTOM("n", "SimpleEnum", false, false)
             })
     );
@@ -942,8 +942,8 @@ namespace sdk_test_cpp {
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::PkU8Row, sdk_test_cpp_PkU8Row, "PkU8Row", PK_U8_ROW_FIELDS,
         ({
-            SPACETIMEDB_FIELD("n", SpacetimeDB::CoreType::U8, false, false), // Uniqueness implied by PK usage
-            SPACETIMEDB_FIELD("data", SpacetimeDB::CoreType::I32, false, false)
+            SPACETIMEDB_FIELD("n", ::SpacetimeDb::CoreType::U8, false, false), // Uniqueness implied by PK usage
+            SPACETIMEDB_FIELD("data", ::SpacetimeDb::CoreType::I32, false, false)
             })
     );
 
@@ -958,24 +958,24 @@ namespace sdk_test_cpp {
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::PkStringRow, sdk_test_cpp_PkStringRow, "PkStringRow", PK_STRING_ROW_FIELDS,
         ({
-            SPACETIMEDB_FIELD("s", SpacetimeDB::CoreType::String, false, false),
-            SPACETIMEDB_FIELD("data", SpacetimeDB::CoreType::I32, false, false)
+            SPACETIMEDB_FIELD("s", ::SpacetimeDb::CoreType::String, false, false),
+            SPACETIMEDB_FIELD("data", ::SpacetimeDb::CoreType::I32, false, false)
             })
     );
 
     // PkIdentityRow
     struct PkIdentityRow {
-        spacetimedb::sdk::Identity i;
+        SpacetimeDb::sdk::Identity i;
         int32_t data;
     };
 #define PK_IDENTITY_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) \
-    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, spacetimedb::sdk::Identity, i, false, false); \
+    ACTION(WRITER_OR_READER, VALUE_OR_OBJ, SpacetimeDb::sdk::Identity, i, false, false); \
     ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int32_t, data, false, false)
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::PkIdentityRow, sdk_test_cpp_PkIdentityRow, "PkIdentityRow", PK_IDENTITY_ROW_FIELDS,
         ({
             SPACETIMEDB_FIELD_CUSTOM("i", "Identity", false, false),
-            SPACETIMEDB_FIELD("data", SpacetimeDB::CoreType::I32, false, false)
+            SPACETIMEDB_FIELD("data", ::SpacetimeDb::CoreType::I32, false, false)
             })
     );
 
@@ -991,7 +991,7 @@ namespace sdk_test_cpp {
         sdk_test_cpp::PkSimpleEnumRow, sdk_test_cpp_PkSimpleEnumRow, "PkSimpleEnumRow", PK_SIMPLE_ENUM_ROW_FIELDS,
         ({
             SPACETIMEDB_FIELD_CUSTOM("e", "SimpleEnum", false, false),
-            SPACETIMEDB_FIELD("data", SpacetimeDB::CoreType::I32, false, false)
+            SPACETIMEDB_FIELD("data", ::SpacetimeDb::CoreType::I32, false, false)
             })
     );
 
@@ -1010,9 +1010,9 @@ namespace sdk_test_cpp {
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::PkU32TwoRow, sdk_test_cpp_PkU32TwoRow, "PkU32TwoRow", PK_U32_TWO_ROW_FIELDS,
         ({
-            SPACETIMEDB_FIELD("a", SpacetimeDB::CoreType::U32, false, false),
-            SPACETIMEDB_FIELD("b", SpacetimeDB::CoreType::U32, false, false), // Not marked unique here
-            SPACETIMEDB_FIELD("data", SpacetimeDB::CoreType::I32, false, false)
+            SPACETIMEDB_FIELD("a", ::SpacetimeDb::CoreType::U32, false, false),
+            SPACETIMEDB_FIELD("b", ::SpacetimeDb::CoreType::U32, false, false), // Not marked unique here
+            SPACETIMEDB_FIELD("data", ::SpacetimeDb::CoreType::I32, false, false)
             })
     );
 
@@ -1026,35 +1026,35 @@ namespace sdk_test_cpp {
     struct OptionI32Row { std::optional<int32_t> n; };
 #define OPTION_I32_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) ACTION(WRITER_OR_READER, VALUE_OR_OBJ, int32_t, n, true, false)
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(sdk_test_cpp::OptionI32Row, sdk_test_cpp_OptionI32Row, "OptionI32Row", OPTION_I32_ROW_FIELDS,
-        ({ SPACETIMEDB_FIELD_OPTIONAL("n", SpacetimeDB::CoreType::I32, false, false) })
+        ({ SPACETIMEDB_FIELD_OPTIONAL("n", ::SpacetimeDb::CoreType::I32, false, false) })
     );
 
     // OptionString
     struct OptionStringRow { std::optional<std::string> n; };
 #define OPTION_STRING_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) ACTION(WRITER_OR_READER, VALUE_OR_OBJ, std::string, n, true, false)
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(sdk_test_cpp::OptionStringRow, sdk_test_cpp_OptionStringRow, "OptionStringRow", OPTION_STRING_ROW_FIELDS,
-        ({ SPACETIMEDB_FIELD_OPTIONAL("n", SpacetimeDB::CoreType::String, false, false) })
+        ({ SPACETIMEDB_FIELD_OPTIONAL("n", ::SpacetimeDb::CoreType::String, false, false) })
     );
 
     // OptionIdentity
-    struct OptionIdentityRow { std::optional<spacetimedb::sdk::Identity> n; };
-#define OPTION_IDENTITY_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) ACTION(WRITER_OR_READER, VALUE_OR_OBJ, spacetimedb::sdk::Identity, n, true, false)
+    struct OptionIdentityRow { std::optional<SpacetimeDb::sdk::Identity> n; };
+#define OPTION_IDENTITY_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) ACTION(WRITER_OR_READER, VALUE_OR_OBJ, SpacetimeDb::sdk::Identity, n, true, false)
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(sdk_test_cpp::OptionIdentityRow, sdk_test_cpp_OptionIdentityRow, "OptionIdentityRow", OPTION_IDENTITY_ROW_FIELDS,
-        ({ SPACETIMEDB_FIELD_CUSTOM_OPTIONAL("n", "Identity", false, false) }) // Custom types don't use ::SpacetimeDB::CoreType directly in schema
+        ({ SPACETIMEDB_FIELD_CUSTOM_OPTIONAL("n", "Identity", false, false) }) // Custom types don't use ::SpacetimeDb::CoreType directly in schema
     );
 
     // OptionSimpleEnum
     struct OptionSimpleEnumRow { std::optional<SimpleEnum> n; };
 #define OPTION_SIMPLE_ENUM_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) ACTION(WRITER_OR_READER, VALUE_OR_OBJ, sdk_test_cpp::SimpleEnum, n, true, false)
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(sdk_test_cpp::OptionSimpleEnumRow, sdk_test_cpp_OptionSimpleEnumRow, "OptionSimpleEnumRow", OPTION_SIMPLE_ENUM_ROW_FIELDS,
-        ({ SPACETIMEDB_FIELD_CUSTOM_OPTIONAL("n", "SimpleEnum", false, false) }) // Custom types don't use ::SpacetimeDB::CoreType directly in schema
+        ({ SPACETIMEDB_FIELD_CUSTOM_OPTIONAL("n", "SimpleEnum", false, false) }) // Custom types don't use ::SpacetimeDb::CoreType directly in schema
     );
 
     // OptionEveryPrimitiveStruct
     struct OptionEveryPrimitiveStructRow { std::optional<EveryPrimitiveStruct> s; };
 #define OPTION_EVERY_PRIMITIVE_STRUCT_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) ACTION(WRITER_OR_READER, VALUE_OR_OBJ, sdk_test_cpp::EveryPrimitiveStruct, s, true, false)
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(sdk_test_cpp::OptionEveryPrimitiveStructRow, sdk_test_cpp_OptionEveryPrimitiveStructRow, "OptionEveryPrimitiveStructRow", OPTION_EVERY_PRIMITIVE_STRUCT_ROW_FIELDS,
-        ({ SPACETIMEDB_FIELD_CUSTOM_OPTIONAL("s", "EveryPrimitiveStruct", false, false) }) // Custom types don't use ::SpacetimeDB::CoreType directly in schema
+        ({ SPACETIMEDB_FIELD_CUSTOM_OPTIONAL("s", "EveryPrimitiveStruct", false, false) }) // Custom types don't use ::SpacetimeDb::CoreType directly in schema
     );
 
     // Intermediate type for OptionVecOptionI32Row
@@ -1078,12 +1078,12 @@ namespace sdk_test_cpp {
         // This assumes that the schema system can infer that "value" is a vector of optional I32s.
         // A more explicit schema might be needed if FieldDefinition supported optionality of vector elements.
         // For now, we register the element type as optional I32.
-        ({ SPACETIMEDB_FIELD_OPTIONAL("value_element", ::SpacetimeDB::CoreType::I32, false, false) })
+        ({ SPACETIMEDB_FIELD_OPTIONAL("value_element", ::SpacetimeDb::CoreType::I32, false, false) })
         // The field name in schema "value_element" is a placeholder, as the actual field is "value".
         // This highlights a current limitation in representing schemas for vectors of complex/optional types.
         // A better approach would be to register "std::optional<int32_t>" as a type, then use that.
         // Or, if the schema system implies element type from C++ type in X-Macro:
-        // { SPACETIMEDB_FIELD_OPTIONAL("value", SpacetimeDB::CoreType::I32, false, false) } -> This seems more plausible.
+        // { SPACETIMEDB_FIELD_OPTIONAL("value", ::SpacetimeDb::CoreType::I32, false, false) } -> This seems more plausible.
 })
 );
 
@@ -1095,7 +1095,7 @@ struct OptionVecOptionI32Row {
 #define OPTION_VEC_OPTION_I32_ROW_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ) ACTION(WRITER_OR_READER, VALUE_OR_OBJ, sdk_test_cpp::VecOptionI32, v, true, false)
 SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
     sdk_test_cpp::OptionVecOptionI32Row, sdk_test_cpp_OptionVecOptionI32Row, "OptionVecOptionI32Row", OPTION_VEC_OPTION_I32_ROW_FIELDS,
-    ({ SPACETIMEDB_FIELD_CUSTOM_OPTIONAL("v", "VecOptionI32", false, false) }) // Custom types don't use ::SpacetimeDB::CoreType directly in schema
+    ({ SPACETIMEDB_FIELD_CUSTOM_OPTIONAL("v", "VecOptionI32", false, false) }) // Custom types don't use ::SpacetimeDb::CoreType directly in schema
 );
 
 

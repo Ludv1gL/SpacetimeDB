@@ -15,17 +15,17 @@
 #include "../bsatn/writer.h" // Adjusted path
 
 // Forward declarations from bsatn.h - needed for BsatnSerializable usage
-namespace SpacetimeDB {
+namespace SpacetimeDb {
 
     namespace bsatn {
         // class Writer; // Full definition included above
         // class Reader; // Full definition included above
         class BsatnSerializable; // Ensure BsatnSerializable itself is forward-declared or included if it's a base
     } // namespace bsatn
-} // namespace SpacetimeDB
+} // namespace SpacetimeDb
 
 
-namespace SpacetimeDB {
+namespace SpacetimeDb {
     namespace sdk {
 
         const size_t IDENTITY_SIZE = 32;
@@ -45,8 +45,8 @@ namespace SpacetimeDB {
 
 
             // BSATN Serialization methods (duck-typed, or inherit BsatnSerializable)
-            void bsatn_serialize(SpacetimeDB::bsatn::Writer& writer) const;
-            void bsatn_deserialize(SpacetimeDB::bsatn::Reader& reader);
+            void bsatn_serialize(SpacetimeDb::bsatn::Writer& writer) const;
+            void bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader);
 
         private:
             std::array<uint8_t, IDENTITY_SIZE> value;
@@ -69,8 +69,8 @@ namespace SpacetimeDB {
             bool operator>=(const Timestamp& other) const;
 
             // BSATN Serialization methods
-            void bsatn_serialize(SpacetimeDB::bsatn::Writer& writer) const;
-            void bsatn_deserialize(SpacetimeDB::bsatn::Reader& reader);
+            void bsatn_serialize(SpacetimeDb::bsatn::Writer& writer) const;
+            void bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader);
 
         private:
             uint64_t ms_since_epoch;
@@ -84,10 +84,10 @@ namespace SpacetimeDB {
             explicit ScheduleAt(uint64_t ts_micros) : timestamp_micros(ts_micros) {}
 
             // BSATN Serialization methods
-            void bsatn_serialize(SpacetimeDB::bsatn::Writer& writer) const {
+            void bsatn_serialize(SpacetimeDb::bsatn::Writer& writer) const {
                 writer.write_u64_le(timestamp_micros); // Assuming write_u64_le for consistency
             }
-            void bsatn_deserialize(SpacetimeDB::bsatn::Reader& reader) {
+            void bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader) {
                 timestamp_micros = reader.read_u64_le(); // Assuming read_u64_le for consistency
             }
 
@@ -103,10 +103,10 @@ namespace SpacetimeDB {
 
             ConnectionId(uint64_t val = 0) : id(val) {}
 
-            void bsatn_serialize(SpacetimeDB::bsatn::Writer& writer) const {
+            void bsatn_serialize(SpacetimeDb::bsatn::Writer& writer) const {
                 writer.write_u64_le(id);
             }
-            void bsatn_deserialize(SpacetimeDB::bsatn::Reader& reader) {
+            void bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader) {
                 id = reader.read_u64_le();
             }
             bool operator==(const ConnectionId& other) const { return id == other.id; }
@@ -119,10 +119,10 @@ namespace SpacetimeDB {
 
             TimeDuration(int64_t val = 0) : nanoseconds(val) {}
 
-            void bsatn_serialize(SpacetimeDB::bsatn::Writer& writer) const {
+            void bsatn_serialize(SpacetimeDb::bsatn::Writer& writer) const {
                 writer.write_i64_le(nanoseconds);
             }
-            void bsatn_deserialize(SpacetimeDB::bsatn::Reader& reader) {
+            void bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader) {
                 nanoseconds = reader.read_i64_le();
             }
             bool operator==(const TimeDuration& other) const { return nanoseconds == other.nanoseconds; }
@@ -135,8 +135,8 @@ namespace SpacetimeDB {
             u256_placeholder() { data.fill(0); }
             // Add basic bsatn_serialize/deserialize stubs if needed for immediate compilation,
             // or leave for subsequent steps. For now, just the struct.
-            void bsatn_serialize(SpacetimeDB::bsatn::Writer& writer) const { writer.write_u256_le(*this); }
-            void bsatn_deserialize(SpacetimeDB::bsatn::Reader& reader) { *this = reader.read_u256_le(); }
+            void bsatn_serialize(SpacetimeDb::bsatn::Writer& writer) const { writer.write_u256_le(*this); }
+            void bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader) { *this = reader.read_u256_le(); }
             bool operator==(const u256_placeholder& other) const { return data == other.data; }
             bool operator<(const u256_placeholder& other) const { return data < other.data; } // For map keys
         };
@@ -145,12 +145,12 @@ namespace SpacetimeDB {
             std::array<uint64_t, 4> data; // Example internal representation (sign bit would be in data[3])
             i256_placeholder() { data.fill(0); }
             // Add basic bsatn_serialize/deserialize stubs
-            void bsatn_serialize(SpacetimeDB::bsatn::Writer& writer) const { writer.write_i256_le(*this); }
-            void bsatn_deserialize(SpacetimeDB::bsatn::Reader& reader) { *this = reader.read_i256_le(); }
+            void bsatn_serialize(SpacetimeDb::bsatn::Writer& writer) const { writer.write_i256_le(*this); }
+            void bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader) { *this = reader.read_i256_le(); }
             bool operator==(const i256_placeholder& other) const { return data == other.data; }
             bool operator<(const i256_placeholder& other) const { return data < other.data; } // For map keys
         };
     } // namespace sdk
-} // namespace SpacetimeDB
+} // namespace SpacetimeDb
 
 #endif // SPACETIMEDB_SDK_TYPES_H

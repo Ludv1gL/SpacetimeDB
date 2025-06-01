@@ -5,10 +5,10 @@
 #include <string>
 #include <cstdint>
 #include <stdexcept> // For std::runtime_error
-#include <optional>
+#include <optional>  // Ensure std::optional is available
 #include <functional>
 #include <span> // For std::span (C++20)
-#include <type_traits> // For std::is_enum
+#include <type_traits> // For std::is_enum, std::is_same_v, std::true_type, std::false_type
 #include <cstring> // For memcpy
 #include "uint128_placeholder.h" // Assumes this is in the same directory or accessible via include paths
 #include "spacetimedb/sdk/spacetimedb_sdk_types.h" // For u256_placeholder, i256_placeholder
@@ -17,13 +17,18 @@
 // E.g. MyStruct deserialize_MyStruct(bsatn::Reader& reader);
 // This is now typically handled by template specializations of bsatn::deserialize<T>
 
-namespace SpacetimeDB::bsatn {
+namespace SpacetimeDb::bsatn {
 
     // Forward declaration of Reader class
     class Reader;
 
     // Forward declare the generic deserialize template used by Reader's methods
     template<typename T> T deserialize(Reader& r);
+
+    // Helper trait to check if a type is std::optional
+    template<typename> struct is_std_optional : std::false_type {};
+    template<typename T> struct is_std_optional<std::optional<T>> : std::true_type {};
+    template<typename T> constexpr bool is_std_optional_v = is_std_optional<T>::value;
 
     class Reader {
     public:
@@ -36,15 +41,15 @@ namespace SpacetimeDB::bsatn {
         uint16_t read_u16_le();
         uint32_t read_u32_le();
         uint64_t read_u64_le();
-        SpacetimeDB::Types::uint128_t_placeholder read_u128_le();
-        SpacetimeDB::sdk::u256_placeholder read_u256_le();
+        SpacetimeDb::bsatn::uint128_placeholder read_u128_le(); // Corrected namespace
+        SpacetimeDb::sdk::u256_placeholder read_u256_le(); // Declaration
 
         int8_t read_i8();
         int16_t read_i16_le();
         int32_t read_i32_le();
         int64_t read_i64_le();
-        SpacetimeDB::Types::int128_t_placeholder read_i128_le();
-        SpacetimeDB::sdk::i256_placeholder read_i256_le();
+        SpacetimeDb::bsatn::int128_placeholder read_i128_le(); // Corrected namespace
+        SpacetimeDb::sdk::i256_placeholder read_i256_le(); // Declaration
 
         float read_f32_le();
         double read_f64_le();
@@ -54,6 +59,10 @@ namespace SpacetimeDB::bsatn {
 
         template<typename T>
         std::optional<T> read_optional() {
+            // This function will now correctly use the modified generic deserialize below
+            // which handles std::optional<T> passed to read_vector, for example.
+            // Or, if T is not optional, it will call deserialize<T> which might then call
+            // the optional handling logic if T itself is std::optional<U>.
             uint8_t tag = read_u8();
             if (tag == 0) {
                 return std::nullopt;
@@ -61,7 +70,7 @@ namespace SpacetimeDB::bsatn {
             else if (tag == 1) {
                 return deserialize<T>(*this);
             }
-            throw std::runtime_error("Invalid tag for optional type: " + std::to_string(tag));
+            throw std::runtime_error("Invalid tag for optional type in Reader::read_optional(): " + std::to_string(tag));
         }
 
         template<typename T>
@@ -73,7 +82,7 @@ namespace SpacetimeDB::bsatn {
             }
             vec.reserve(count);
             for (uint32_t i = 0; i < count; ++i) {
-                vec.push_back(deserialize<T>(*this));
+                vec.push_back(deserialize<T>(*this)); // This deserialize call is the key
             }
             return vec;
         }
@@ -90,54 +99,65 @@ namespace SpacetimeDB::bsatn {
 
         static const uint32_t max_string_length_sanity_check = 1024 * 1024 * 10;
         static const uint32_t max_vector_elements_sanity_check = 1024 * 1024;
+    }; // End of class Reader definition
 
-    public:
-        // Inline implementations for 256-bit types
-        inline SpacetimeDB::sdk::u256_placeholder read_u256_le() {
-            SpacetimeDB::sdk::u256_placeholder val;
-            ensure_bytes(sizeof(val.data)); // Assuming data is std::array<uint64_t, 4>
-            memcpy(val.data.data(), current_ptr, sizeof(val.data));
-            current_ptr += sizeof(val.data);
-            // TODO: Handle endianness if necessary for each uint64_t component
-            return val;
-        }
+    // Moved inline definitions for 256-bit types
+    inline SpacetimeDb::sdk::u256_placeholder Reader::read_u256_le() {
+        SpacetimeDb::sdk::u256_placeholder val;
+        ensure_bytes(sizeof(val.data)); // Assuming data is std::array<uint64_t, 4>
+        memcpy(val.data.data(), current_ptr, sizeof(val.data));
+        current_ptr += sizeof(val.data);
+        // TODO: Handle endianness if necessary for each uint64_t component
+        return val;
+    }
 
-        inline SpacetimeDB::sdk::i256_placeholder read_i256_le() {
-            SpacetimeDB::sdk::i256_placeholder val;
-            ensure_bytes(sizeof(val.data));
-            memcpy(val.data.data(), current_ptr, sizeof(val.data));
-            current_ptr += sizeof(val.data);
-            // TODO: Handle endianness
-            return val;
-        }
-    };
+    inline SpacetimeDb::sdk::i256_placeholder Reader::read_i256_le() {
+        SpacetimeDb::sdk::i256_placeholder val;
+        ensure_bytes(sizeof(val.data));
+        memcpy(val.data.data(), current_ptr, sizeof(val.data));
+        current_ptr += sizeof(val.data);
+        // TODO: Handle endianness
+        return val;
+    }
 
-    // Definition of the generic deserialize template (relies on specializations)
-    // This should be in bsatn_lib.h from codegen, or a similar central place.
-        // For now, to make this header self-contained for what it needs:
+    // Helper to give better compile errors if no specialization is found (optional)
+    // This must be declared before its use in the generic deserialize template.
+    template<typename T> T deserialize_specialized(Reader& r);
+
+
+    // Definition of the generic deserialize template (relies on specializations or further overloads)
     template<typename T>
     T deserialize(Reader& r) {
-        // This generic version should ideally static_assert(false, "No bsatn::deserialize specialization for this type T")
-        // or rely on specific deserialize_TypeName functions being specialized for bsatn::deserialize<TypeName>.
-        // The SDK macros will generate:
-        //   TypeName deserialize_TypeName(bsatn::Reader&);
-        //   template<> inline TypeName bsatn::deserialize<TypeName>(bsatn::Reader& r) { return deserialize_TypeName(r); }
-        // Primitives also get specializations.
-
-        // If T is an enum class, read u8 and cast (this is a common case)
         if constexpr (std::is_enum_v<T>) {
             return static_cast<T>(r.read_u8()); // Assumes underlying type is compatible with u8 or cast is valid
         }
+        else if constexpr (is_std_optional_v<T>) {
+            using InnerType = typename T::value_type; // T is std::optional<InnerType>
+            uint8_t tag = r.read_u8();
+            if (tag == 0) {
+                return T(std::nullopt); // Construct std::optional<InnerType> from nullopt
+            }
+            else if (tag == 1) {
+                return T(deserialize<InnerType>(r)); // Construct std::optional<InnerType> from deserialized InnerType
+            }
+            throw std::runtime_error("Invalid tag for optional type in deserialize: " + std::to_string(tag));
+        }
+        // Removed the direct `else` to allow other `else if` conditions or a final `else` for other types.
+        // Fallback for other types (non-enum, non-optional) that require specialized handling.
+        // This matches the previous structure where other types fall back to deserialize_specialized.
         else {
-            // This will fail to compile if no specialization is found for T, which is good.
-            // To provide a better error, a static_assert can be used with a helper trait.
-            // For now, rely on linker/compiler errors if a specialization is missing.
             return deserialize_specialized<T>(r); // Placeholder for actual mechanism if not direct specialization
         }
     }
-    // Helper to give better compile errors if no specialization is found (optional)
-    template<typename T> T deserialize_specialized(Reader& r);
 
-} // namespace SpacetimeDB::bsatn
+    // Definition for deserialize_specialized (if needed, or could be specialized elsewhere)
+    // For now, this remains a declaration as in the original file.
+    // template<typename T> T deserialize_specialized(Reader& r) {
+    //    static_assert(sizeof(T) == 0, "Missing specialization for bsatn::deserialize_specialized or direct bsatn::deserialize overload.");
+    //    return T{}; // Should not be reached if static_assert works.
+    // }
+
+
+} // namespace SpacetimeDb::bsatn
 
 #endif // SPACETIMEDB_BSATN_READER_H
