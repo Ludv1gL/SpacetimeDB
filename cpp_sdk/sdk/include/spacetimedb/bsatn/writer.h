@@ -11,7 +11,7 @@
 #include "uint128_placeholder.h" // Assumes this is in the same directory or accessible via include paths
 #include "spacetimedb/sdk/spacetimedb_sdk_types.h" // For u256_placeholder, i256_placeholder
 
-namespace bsatn {
+namespace SpacetimeDB::bsatn {
 
     // Forward declare the generic free function template for serialization
     template<typename T> void serialize(class Writer& w, const T& value);
@@ -26,14 +26,14 @@ namespace bsatn {
         void write_u32_le(uint32_t value);
         void write_u64_le(uint64_t value);
         void write_u128_le(const SpacetimeDB::Types::uint128_t_placeholder& value);
-        void write_u256_le(const spacetimedb::sdk::u256_placeholder& value);
+        void write_u256_le(const SpacetimeDB::sdk::u256_placeholder& value);
 
         void write_i8(int8_t value);
         void write_i16_le(int16_t value);
         void write_i32_le(int32_t value);
         void write_i64_le(int64_t value);
         void write_i128_le(const SpacetimeDB::Types::int128_t_placeholder& value);
-        void write_i256_le(const spacetimedb::sdk::i256_placeholder& value);
+        void write_i256_le(const SpacetimeDB::sdk::i256_placeholder& value);
 
         void write_f32_le(float value);
         void write_f64_le(double value);
@@ -41,31 +41,31 @@ namespace bsatn {
         void write_string(const std::string& value);
         void write_bytes(const std::vector<std::byte>& value);
 
-        template<typename T> // Removed Func, will use bsatn::serialize(w, T_val)
+        template<typename T> // Removed Func, will use SpacetimeDB::bsatn::serialize(w, T_val)
         void write_optional(const std::optional<T>& opt_value) { // Renamed from write_optional(Func)
             if (opt_value.has_value()) {
                 write_u8(1);
-                bsatn::serialize(*this, *opt_value); // Use the generic free serialize
+                SpacetimeDB::bsatn::serialize(*this, *opt_value); // Use the generic free serialize
             }
             else {
                 write_u8(0);
             }
         }
 
-        template<typename T> // Removed Func, will use bsatn::serialize(w, T_val)
+        template<typename T> // Removed Func, will use SpacetimeDB::bsatn::serialize(w, T_val)
         void write_vector(const std::vector<T>& vec) { // Renamed from write_vector(Func)
             write_u32_le(static_cast<uint32_t>(vec.size()));
             for (const auto& item : vec) {
-                bsatn::serialize(*this, item); // Use the generic free serialize
+                SpacetimeDB::bsatn::serialize(*this, item); // Use the generic free serialize
             }
         }
 
         void write_vector_byte(const std::vector<std::byte>& vec); // Specific version for vector of bytes
 
-        // Generic serialize member function (calls the free template function bsatn::serialize<T>)
+        // Generic serialize member function (calls the free template function SpacetimeDB::bsatn::serialize<T>)
         template<typename T>
         void serialize_member(const T& value) { // Renamed to avoid conflict with free function
-            bsatn::serialize(*this, value);
+            SpacetimeDB::bsatn::serialize(*this, value);
         }
 
         const std::vector<std::byte>& get_buffer() const;
@@ -77,12 +77,12 @@ namespace bsatn {
 
     public:
         // Inline implementations for 256-bit types
-        inline void write_u256_le(const spacetimedb::sdk::u256_placeholder& value) {
+        inline void write_u256_le(const SpacetimeDB::sdk::u256_placeholder& value) {
             // TODO: Handle endianness if necessary for each uint64_t component
             write_bytes_raw(value.data.data(), sizeof(value.data));
         }
 
-        inline void write_i256_le(const spacetimedb::sdk::i256_placeholder& value) {
+        inline void write_i256_le(const SpacetimeDB::sdk::i256_placeholder& value) {
             // TODO: Handle endianness
             write_bytes_raw(value.data.data(), sizeof(value.data));
         }
@@ -138,13 +138,13 @@ namespace bsatn {
     inline void serialize(Writer& w, uint32_t value) { w.write_u32_le(value); }
     inline void serialize(Writer& w, uint64_t value) { w.write_u64_le(value); }
     inline void serialize(Writer& w, const SpacetimeDB::Types::uint128_t_placeholder& value) { w.write_u128_le(value); }
-    inline void serialize(Writer& w, const spacetimedb::sdk::u256_placeholder& value) { w.write_u256_le(value); }
+    inline void serialize(Writer& w, const SpacetimeDB::sdk::u256_placeholder& value) { w.write_u256_le(value); }
     inline void serialize(Writer& w, int8_t value) { w.write_i8(value); }
     inline void serialize(Writer& w, int16_t value) { w.write_i16_le(value); }
     inline void serialize(Writer& w, int32_t value) { w.write_i32_le(value); }
     inline void serialize(Writer& w, int64_t value) { w.write_i64_le(value); }
     inline void serialize(Writer& w, const SpacetimeDB::Types::int128_t_placeholder& value) { w.write_i128_le(value); }
-    inline void serialize(Writer& w, const spacetimedb::sdk::i256_placeholder& value) { w.write_i256_le(value); }
+    inline void serialize(Writer& w, const SpacetimeDB::sdk::i256_placeholder& value) { w.write_i256_le(value); }
     inline void serialize(Writer& w, float value) { w.write_f32_le(value); }
     inline void serialize(Writer& w, double value) { w.write_f64_le(value); }
     inline void serialize(Writer& w, const std::string& value) { w.write_string(value); }
@@ -162,6 +162,6 @@ namespace bsatn {
     }
 
 
-} // namespace bsatn
+} // namespace SpacetimeDB::bsatn
 
 #endif // SPACETIMEDB_BSATN_WRITER_H

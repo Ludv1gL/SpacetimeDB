@@ -17,7 +17,7 @@
 // E.g. MyStruct deserialize_MyStruct(bsatn::Reader& reader);
 // This is now typically handled by template specializations of bsatn::deserialize<T>
 
-namespace bsatn {
+namespace SpacetimeDB::bsatn {
 
     // Forward declaration of Reader class
     class Reader;
@@ -37,14 +37,14 @@ namespace bsatn {
         uint32_t read_u32_le();
         uint64_t read_u64_le();
         SpacetimeDB::Types::uint128_t_placeholder read_u128_le();
-        spacetimedb::sdk::u256_placeholder read_u256_le();
+        SpacetimeDB::sdk::u256_placeholder read_u256_le();
 
         int8_t read_i8();
         int16_t read_i16_le();
         int32_t read_i32_le();
         int64_t read_i64_le();
         SpacetimeDB::Types::int128_t_placeholder read_i128_le();
-        spacetimedb::sdk::i256_placeholder read_i256_le();
+        SpacetimeDB::sdk::i256_placeholder read_i256_le();
 
         float read_f32_le();
         double read_f64_le();
@@ -92,16 +92,9 @@ namespace bsatn {
         static const uint32_t max_vector_elements_sanity_check = 1024 * 1024;
 
     public:
-        void ensure_bytes(size_t count) {
-            if (static_cast<size_t>(end_ptr - current_ptr) < count) {
-                throw std::runtime_error("Attempt to read past end of buffer.");
-            }
-        }
-
-    public:
         // Inline implementations for 256-bit types
-        inline spacetimedb::sdk::u256_placeholder read_u256_le() {
-            spacetimedb::sdk::u256_placeholder val;
+        inline SpacetimeDB::sdk::u256_placeholder read_u256_le() {
+            SpacetimeDB::sdk::u256_placeholder val;
             ensure_bytes(sizeof(val.data)); // Assuming data is std::array<uint64_t, 4>
             memcpy(val.data.data(), current_ptr, sizeof(val.data));
             current_ptr += sizeof(val.data);
@@ -109,8 +102,8 @@ namespace bsatn {
             return val;
         }
 
-        inline spacetimedb::sdk::i256_placeholder read_i256_le() {
-            spacetimedb::sdk::i256_placeholder val;
+        inline SpacetimeDB::sdk::i256_placeholder read_i256_le() {
+            SpacetimeDB::sdk::i256_placeholder val;
             ensure_bytes(sizeof(val.data));
             memcpy(val.data.data(), current_ptr, sizeof(val.data));
             current_ptr += sizeof(val.data);
@@ -145,6 +138,6 @@ namespace bsatn {
     // Helper to give better compile errors if no specialization is found (optional)
     template<typename T> T deserialize_specialized(Reader& r);
 
-} // namespace bsatn
+} // namespace SpacetimeDB::bsatn
 
 #endif // SPACETIMEDB_BSATN_READER_H
