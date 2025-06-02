@@ -2,6 +2,45 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Project Overview
+
+SpacetimeDB is a revolutionary database that merges database and application server functionality into one system. Instead of the traditional architecture (database → app server → clients), SpacetimeDB lets you write your entire backend as "modules" that run **inside** the database. Clients connect directly to the database via WebSocket for real-time updates.
+
+### What Makes SpacetimeDB Unique
+
+- **Module-Based Architecture**: Application logic is compiled to WebAssembly (WASM) and runs inside the database
+- **Memory-First Design**: All active data is held in memory for microsecond latency with Write-Ahead-Log (WAL) persistence
+- **Real-time Synchronization**: Built-in subscription system automatically syncs changes to connected clients
+- **Direct Client Connections**: Clients connect directly to the database via WebSocket, no intermediate servers needed
+- **Tagline**: "Multiplayer at the speed of light" - optimized for real-time applications like games, chat, and collaboration tools
+
+## Development Environment
+
+### WebAssembly Tools
+
+```bash
+# Check Emscripten compiler (for C++ modules)
+emcc --version  # Should show version 4.0.9 or later
+
+# Check WASM object dump tool
+wasm-objdump --version  # Should show version 1.0.34 or later
+```
+
+### Local SpacetimeDB Server
+
+A SpacetimeDB server is running locally and can be accessed using the `spacetime` CLI:
+
+```bash
+# Check server status
+spacetime server status
+
+# List databases
+spacetime list
+
+# Connect to a database
+spacetime sql <database-name>
+```
+
 ## SpacetimeDB Development Commands
 
 ### Building
@@ -88,8 +127,6 @@ spacetime sql <module-name> "SELECT * FROM table_name"
 
 ## High-Level Architecture
 
-SpacetimeDB is a unique database system where application logic runs inside the database as "modules". This eliminates the need for separate application servers.
-
 ### Core Components
 
 1. **Module System**: Applications are compiled to WebAssembly and run inside the database
@@ -143,6 +180,18 @@ Key C++ SDK components:
 3. **Automatic Client Sync**: Subscriptions handle real-time updates without manual coding
 4. **Memory-First Storage**: All active data in memory with WAL for persistence
 
+### Language Support
+
+**Server-Side Module SDKs** (for writing modules):
+- **Rust**: Native support with macros (`#[spacetimedb::table]`, `#[spacetimedb::reducer]`)
+- **C#**: Full .NET support with attributes (`[SpacetimeDB.Table]`, `[SpacetimeDB.Reducer]`)
+- **C++**: Header-only SDK, compiles via Emscripten (requires `emcc`)
+
+**Client-Side SDKs** (for connecting to SpacetimeDB):
+- **Rust**: Async WebSocket client with automatic caching
+- **TypeScript/JavaScript**: Generated via codegen, WebSocket-based real-time subscriptions
+- **C#**: Unity-compatible for game development
+
 ### Development Tips
 
 - When modifying table storage, check `crates/table/` for the low-level implementation
@@ -151,6 +200,8 @@ Key C++ SDK components:
 - SQL parsing and execution is in `crates/core/src/sql/`
 - WASM module loading uses wasmtime (see `module_host.rs`)
 - C++ modules require Emscripten and must match the module name in both CMakeLists.txt and Cargo.toml
+- Real-time subscription system is in `crates/core/src/subscription/`
+- BSATN (Binary Spacetime Algebraic Type Notation) serialization is in `crates/sats/`
 
 ### Testing Strategy
 
@@ -158,3 +209,13 @@ Key C++ SDK components:
 - Integration tests: Python smoketests in `/smoketests/` test full server functionality
 - Module tests: Example modules in `/modules/` serve as both examples and tests
 - SQL compatibility: `sqltest` crate runs standard SQL test suites
+
+## Key Technologies & Dependencies
+
+- **Runtime**: Rust-based core with `tokio` async runtime
+- **WASM Execution**: `wasmtime` for sandboxed module execution
+- **Networking**: `axum` for HTTP server, `tokio-tungstenite` for WebSocket
+- **Serialization**: Custom BSATN (Binary Spacetime Algebraic Type Notation) format
+- **Storage**: Custom memory-mapped table storage with B-tree indexes
+- **Metrics**: Prometheus integration for monitoring
+- **Security**: JWT-based authentication system
