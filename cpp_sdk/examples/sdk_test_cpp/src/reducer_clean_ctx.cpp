@@ -43,62 +43,32 @@ SPACETIMEDB_MODULE(
     SPACETIMEDB_TABLE(OneU8, another_u8, false) // Private table
 )
 
-/**
- * Insert a single value into the public table.
- * 
- * @param ctx Database context with type-safe table access
- * @param n Value to insert
- */
+// Insert a single value into the public table
 SPACETIMEDB_REDUCER(insert_one_u8, ReducerContext ctx, uint8_t n) {
     OneU8 row{n};
     ctx.db.one_u8().insert(row);
 }
 
-/**
- * Insert a single value into the private table.
- * 
- * @param ctx Database context
- * @param n Value to insert
- */
+// Insert a single value into the private table
 SPACETIMEDB_REDUCER(insert_another_u8, ReducerContext ctx, uint8_t n) {
     OneU8 row{n};
     ctx.db.another_u8().insert(row);
 }
 
-/**
- * Initialize the database with default values.
- * This reducer has no parameters beyond the context.
- * 
- * @param ctx Database context
- */
+// Initialize the database with default values
 SPACETIMEDB_REDUCER(init_db, ReducerContext ctx) {
     log("Database initialized!");
     ctx.db.one_u8().insert({42});
     ctx.db.another_u8().insert({100});
 }
 
-/**
- * Insert a value with an offset calculation.
- * Demonstrates multi-parameter reducers.
- * 
- * @param ctx Database context
- * @param n Base value
- * @param offset Offset to add to the base value
- */
+// Insert a value with an offset calculation
 SPACETIMEDB_REDUCER(insert_with_offset, ReducerContext ctx, uint8_t n, uint8_t offset) {
     OneU8 row{static_cast<uint8_t>(n + offset)};
     ctx.db.one_u8().insert(row);
 }
 
-/**
- * Insert a range of values with a specified step.
- * Demonstrates loops and complex logic in reducers.
- * 
- * @param ctx Database context
- * @param start Starting value (inclusive)
- * @param end Ending value (inclusive)
- * @param step Step size for the range
- */
+// Insert a range of values with a specified step
 SPACETIMEDB_REDUCER(insert_range, ReducerContext ctx, uint8_t start, uint8_t end, uint8_t step) {
     for (uint8_t i = start; i <= end; i += step) {
         OneU8 row{i};
