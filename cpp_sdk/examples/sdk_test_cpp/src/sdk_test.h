@@ -300,9 +300,9 @@ namespace sdk_test_cpp {
         }));
 
 
-#define ENUM_WITH_PAYLOAD_FIELDS(XX) \
-    XX(sdk_test_cpp::EnumWithPayloadTag, tag, false, false) \
-    XX(std::vector<uint8_t>, payload_bytes_for_schema, false, false) // Placeholder for schema
+// Note: EnumWithPayload has custom bsatn_serialize/deserialize methods, so this macro is not actually used
+// But it needs to be defined for the SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS macro to compile
+#define ENUM_WITH_PAYLOAD_FIELDS(ACTION, WRITER_OR_READER, VALUE_OR_OBJ)
 
     SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
         sdk_test_cpp::EnumWithPayload, sdk_test_cpp_EnumWithPayload,

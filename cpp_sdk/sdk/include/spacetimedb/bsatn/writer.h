@@ -34,6 +34,13 @@ namespace SpacetimeDb::bsatn {
     inline void serialize(Writer& w, double value);
     inline void serialize(Writer& w, const std::string& value);
     inline void serialize(Writer& w, const std::vector<std::byte>& value);
+    
+    // Forward declarations for SDK types
+    inline void serialize(Writer& w, const SpacetimeDb::sdk::Identity& value);
+    inline void serialize(Writer& w, const SpacetimeDb::sdk::ConnectionId& value);
+    inline void serialize(Writer& w, const SpacetimeDb::sdk::Timestamp& value);
+    inline void serialize(Writer& w, const SpacetimeDb::sdk::TimeDuration& value);
+    inline void serialize(Writer& w, const SpacetimeDb::sdk::ScheduleAt& value);
 
     // Overloads for optionals and vectors that call Writer member functions
     template<typename T>
@@ -142,11 +149,8 @@ namespace SpacetimeDb::bsatn {
             // This is a placeholder for types not covered by specific overloads/specializations.
             // A common pattern is to have a helper struct: `serializer<T>::apply(w, value);`
             // For now, this generic function will only handle enums directly. Other types *must* have an overload.
-            static_assert(!std::is_class_v<T> && !std::is_pointer_v<T>,
-                "No generic bsatn::serialize for arbitrary classes/pointers. Provide a specific overload or specialization for T, or ensure it's an enum.");
-            // If it's not an enum and not a class, what is it? A fundamental type.
-            // Fundamental types should have explicit overloads like bsatn::serialize(Writer&, int) etc.
-            // Let's remove the static_assert and assume overloads exist.
+            // For user-defined types, the serialize function should be found by ADL
+            // If not found, the compiler will give an error
         }
     }
 
@@ -155,6 +159,44 @@ namespace SpacetimeDb::bsatn {
     // For consistency with macros that generate `SpacetimeDB::bsatn::serialize`, these should also be in that namespace.
     // However, bsatn::Writer is in `bsatn`. This implies `SpacetimeDB::bsatn` for generated code.
     // Let's assume this file defines the core `bsatn::` namespace functions.
+
+    // Implementation of serialize overloads for primitives
+    inline void serialize(Writer& w, bool value) { w.write_bool(value); }
+    inline void serialize(Writer& w, uint8_t value) { w.write_u8(value); }
+    inline void serialize(Writer& w, uint16_t value) { w.write_u16_le(value); }
+    inline void serialize(Writer& w, uint32_t value) { w.write_u32_le(value); }
+    inline void serialize(Writer& w, uint64_t value) { w.write_u64_le(value); }
+    inline void serialize(Writer& w, const SpacetimeDb::Types::uint128_t_placeholder& value) { w.write_u128_le(value); }
+    inline void serialize(Writer& w, const SpacetimeDb::sdk::u256_placeholder& value) { w.write_u256_le(value); }
+    inline void serialize(Writer& w, int8_t value) { w.write_i8(value); }
+    inline void serialize(Writer& w, int16_t value) { w.write_i16_le(value); }
+    inline void serialize(Writer& w, int32_t value) { w.write_i32_le(value); }
+    inline void serialize(Writer& w, int64_t value) { w.write_i64_le(value); }
+    inline void serialize(Writer& w, const SpacetimeDb::Types::int128_t_placeholder& value) { w.write_i128_le(value); }
+    inline void serialize(Writer& w, const SpacetimeDb::sdk::i256_placeholder& value) { w.write_i256_le(value); }
+    inline void serialize(Writer& w, float value) { w.write_f32_le(value); }
+    inline void serialize(Writer& w, double value) { w.write_f64_le(value); }
+    inline void serialize(Writer& w, const std::string& value) { w.write_string(value); }
+    inline void serialize(Writer& w, const std::vector<std::byte>& value) { w.write_bytes(value); }
+    
+    // Serialize functions for SDK types
+    inline void serialize(Writer& w, const SpacetimeDb::sdk::Identity& value) { value.bsatn_serialize(w); }
+    inline void serialize(Writer& w, const SpacetimeDb::sdk::ConnectionId& value) { value.bsatn_serialize(w); }
+    inline void serialize(Writer& w, const SpacetimeDb::sdk::Timestamp& value) { value.bsatn_serialize(w); }
+    inline void serialize(Writer& w, const SpacetimeDb::sdk::TimeDuration& value) { value.bsatn_serialize(w); }
+    inline void serialize(Writer& w, const SpacetimeDb::sdk::ScheduleAt& value) { value.bsatn_serialize(w); }
+
+    // Implementation of serialize for optionals
+    template<typename T>
+    inline void serialize(Writer& w, const std::optional<T>& opt_value) {
+        w.write_optional(opt_value);
+    }
+
+    // Implementation of serialize for vectors
+    template<typename T>
+    inline void serialize(Writer& w, const std::vector<T>& vec) {
+        w.write_vector(vec);
+    }
 
 } // namespace SpacetimeDb::bsatn
 

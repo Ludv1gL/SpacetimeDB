@@ -52,7 +52,7 @@ struct KeyValue { // Removed inheritance from BsatnSerializable
     XX(std::string, value_str, false, false)
 
 SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
-    spacetimedb_quickstart::KeyValue,
+    spacetimedb_quickstart::KeyValue, spacetimedb_quickstart_KeyValue,
     "KeyValue",
     KEY_VALUE_FIELDS,
     {

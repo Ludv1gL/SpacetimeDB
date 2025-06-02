@@ -30,6 +30,11 @@ namespace SpacetimeDb::bsatn {
     template<typename T> struct is_std_optional<std::optional<T>> : std::true_type {};
     template<typename T> constexpr bool is_std_optional_v = is_std_optional<T>::value;
 
+    // Helper trait to check if a type is std::vector
+    template<typename> struct is_std_vector : std::false_type {};
+    template<typename T> struct is_std_vector<std::vector<T>> : std::true_type {};
+    template<typename T> constexpr bool is_std_vector_v = is_std_vector<T>::value;
+
     class Reader {
     public:
         // Constructors
@@ -124,9 +129,19 @@ namespace SpacetimeDb::bsatn {
     // Helper to give better compile errors if no specialization is found (optional)
     // This must be declared before its use in the generic deserialize template.
     template<typename T> T deserialize_specialized(Reader& r);
+    
+    // Forward declaration for user-defined types
+    // User structs will define this as a non-template overload
+    template<typename T>
+    inline T deserialize_user_defined(Reader& r, T*) {
+        // This will be called only if no specific overload exists
+        static_assert(sizeof(T) == 0, "No deserialize function found for this type");
+        return T{};
+    }
 
 
-    // Definition of the generic deserialize template (relies on specializations or further overloads)
+    // Generic deserialize template - only handles special cases
+    // All other types must have explicit specializations
     template<typename T>
     T deserialize(Reader& r) {
         if constexpr (std::is_enum_v<T>) {
@@ -143,11 +158,13 @@ namespace SpacetimeDb::bsatn {
             }
             throw std::runtime_error("Invalid tag for optional type in deserialize: " + std::to_string(tag));
         }
-        // Removed the direct `else` to allow other `else if` conditions or a final `else` for other types.
-        // Fallback for other types (non-enum, non-optional) that require specialized handling.
-        // This matches the previous structure where other types fall back to deserialize_specialized.
+        else if constexpr (is_std_vector_v<T>) {
+            using InnerType = typename T::value_type;
+            return r.read_vector<InnerType>();
+        }
         else {
-            return deserialize_specialized<T>(r); // Placeholder for actual mechanism if not direct specialization
+            // Try ADL lookup for spacetimedb_deserialize function
+            return spacetimedb_deserialize(r, static_cast<T*>(nullptr));
         }
     }
 
@@ -157,6 +174,52 @@ namespace SpacetimeDb::bsatn {
     //    static_assert(sizeof(T) == 0, "Missing specialization for bsatn::deserialize_specialized or direct bsatn::deserialize overload.");
     //    return T{}; // Should not be reached if static_assert works.
     // }
+
+    // Explicit specializations for primitive types
+    template<> inline bool deserialize<bool>(Reader& r) { return r.read_bool(); }
+    template<> inline uint8_t deserialize<uint8_t>(Reader& r) { return r.read_u8(); }
+    template<> inline uint16_t deserialize<uint16_t>(Reader& r) { return r.read_u16_le(); }
+    template<> inline uint32_t deserialize<uint32_t>(Reader& r) { return r.read_u32_le(); }
+    template<> inline uint64_t deserialize<uint64_t>(Reader& r) { return r.read_u64_le(); }
+    template<> inline SpacetimeDb::Types::uint128_t_placeholder deserialize<SpacetimeDb::Types::uint128_t_placeholder>(Reader& r) { return r.read_u128_le(); }
+    template<> inline SpacetimeDb::sdk::u256_placeholder deserialize<SpacetimeDb::sdk::u256_placeholder>(Reader& r) { return r.read_u256_le(); }
+    template<> inline int8_t deserialize<int8_t>(Reader& r) { return r.read_i8(); }
+    template<> inline int16_t deserialize<int16_t>(Reader& r) { return r.read_i16_le(); }
+    template<> inline int32_t deserialize<int32_t>(Reader& r) { return r.read_i32_le(); }
+    template<> inline int64_t deserialize<int64_t>(Reader& r) { return r.read_i64_le(); }
+    template<> inline SpacetimeDb::Types::int128_t_placeholder deserialize<SpacetimeDb::Types::int128_t_placeholder>(Reader& r) { return r.read_i128_le(); }
+    template<> inline SpacetimeDb::sdk::i256_placeholder deserialize<SpacetimeDb::sdk::i256_placeholder>(Reader& r) { return r.read_i256_le(); }
+    template<> inline float deserialize<float>(Reader& r) { return r.read_f32_le(); }
+    template<> inline double deserialize<double>(Reader& r) { return r.read_f64_le(); }
+    template<> inline std::string deserialize<std::string>(Reader& r) { return r.read_string(); }
+    template<> inline std::vector<std::byte> deserialize<std::vector<std::byte>>(Reader& r) { return r.read_bytes(); }
+    
+    // Specializations for SDK types
+    template<> inline SpacetimeDb::sdk::Identity deserialize<SpacetimeDb::sdk::Identity>(Reader& r) { 
+        SpacetimeDb::sdk::Identity val;
+        val.bsatn_deserialize(r);
+        return val;
+    }
+    template<> inline SpacetimeDb::sdk::ConnectionId deserialize<SpacetimeDb::sdk::ConnectionId>(Reader& r) { 
+        SpacetimeDb::sdk::ConnectionId val;
+        val.bsatn_deserialize(r);
+        return val;
+    }
+    template<> inline SpacetimeDb::sdk::Timestamp deserialize<SpacetimeDb::sdk::Timestamp>(Reader& r) { 
+        SpacetimeDb::sdk::Timestamp val;
+        val.bsatn_deserialize(r);
+        return val;
+    }
+    template<> inline SpacetimeDb::sdk::TimeDuration deserialize<SpacetimeDb::sdk::TimeDuration>(Reader& r) { 
+        SpacetimeDb::sdk::TimeDuration val;
+        val.bsatn_deserialize(r);
+        return val;
+    }
+    template<> inline SpacetimeDb::sdk::ScheduleAt deserialize<SpacetimeDb::sdk::ScheduleAt>(Reader& r) { 
+        SpacetimeDb::sdk::ScheduleAt val;
+        val.bsatn_deserialize(r);
+        return val;
+    }
 
 
 } // namespace SpacetimeDb::bsatn
