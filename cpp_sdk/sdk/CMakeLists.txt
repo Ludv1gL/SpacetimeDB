@@ -16,6 +16,7 @@ set(SDK_SOURCES
     src/database.cpp
     src/logging.cpp
     src/module_def_builder.cpp
+    src/raw_module_def_v9.cpp
     src/reducer_context.cpp
     src/sdk/logging.cpp
     src/spacetime_module_abi.cpp
