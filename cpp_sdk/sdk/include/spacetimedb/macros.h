@@ -79,17 +79,7 @@ inline ::SpacetimeDb::FieldDefinition SPACETIMEDB_FIELD_INTERNAL(const char* nam
 #define SPACETIMEDB_ENUM_VARIANT(VariantNameStr) \
     ::SpacetimeDb::EnumVariantDefinition{VariantNameStr}
 
-// Diagnostic pragmas to ensure preceding macros are seen
-#ifdef SPACETIMEDB_XX_SERIALIZE_FIELD
-#pragma message "DEBUG_MACRO: SPACETIMEDB_XX_SERIALIZE_FIELD is defined before SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS"
-#else
-#pragma message "DEBUG_MACRO: SPACETIMEDB_XX_SERIALIZE_FIELD is NOT defined before SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS"
-#endif
-#ifdef SPACETIMEDB_XX_DESERIALIZE_FIELD
-#pragma message "DEBUG_MACRO: SPACETIMEDB_XX_DESERIALIZE_FIELD is defined before SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS"
-#else
-#pragma message "DEBUG_MACRO: SPACETIMEDB_XX_DESERIALIZE_FIELD is NOT defined before SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS"
-#endif
+// Diagnostic pragmas removed - macros are working correctly
 
 #define SPACETIMEDB_TYPE_ENUM(_actual_cpp_type_name_, SanitizedCppTypeName, SpacetimeDbEnumNameStr, VariantsInitializerList) \
     namespace SpacetimeDb { namespace ModuleRegistration { \
