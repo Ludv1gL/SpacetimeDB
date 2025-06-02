@@ -7,11 +7,39 @@ This directory contains the comprehensive test implementation for the SpacetimeD
 ```
 sdk_test_cpp/
 ├── src/
-│   ├── sdk_test.h      # Complete type definitions (52 table types, enums, structs)
-│   ├── sdk_test.cpp    # Main implementation file (currently ~25% complete)
-│   └── archive/        # Historical iteration files for reference
-├── CMakeLists.txt      # Build configuration
-└── README.md           # This file
+│   ├── reducer_clean_ctx.cpp # Canonical example using spacetimedb_easy.h (RECOMMENDED)
+│   ├── sdk_test.h            # Complete type definitions (52 table types, enums, structs)
+│   ├── sdk_test.cpp          # Main implementation file (currently ~25% complete)
+│   └── [other examples...]   # Historical iteration files for reference
+├── CMakeLists.txt            # Build configuration
+└── README.md                 # This file
+```
+
+## Quick Start: Clean Syntax Example
+
+For new C++ SpacetimeDB modules, use the clean syntax demonstrated in `reducer_clean_ctx.cpp`:
+
+```cpp
+#include <spacetimedb/spacetimedb_easy.h>
+using namespace spacetimedb;
+
+struct OneU8 { uint8_t n; };
+
+SPACETIMEDB_MODULE(
+    SPACETIMEDB_TABLE(OneU8, one_u8, true)
+    SPACETIMEDB_TABLE(OneU8, another_u8, false)
+)
+
+SPACETIMEDB_REDUCER(insert_one_u8, ReducerContext ctx, uint8_t n) {
+    OneU8 row{n};
+    ctx.db.one_u8().insert(row);
+}
+```
+
+**Build and test:**
+```bash
+emcc -std=c++20 -s STANDALONE_WASM=1 -s FILESYSTEM=0 -s DISABLE_EXCEPTION_CATCHING=1 -O2 -Wl,--no-entry -I../../sdk/include -o module.wasm src/reducer_clean_ctx.cpp
+spacetime publish --bin-path module.wasm my-database
 ```
 
 ## Current Implementation Status
