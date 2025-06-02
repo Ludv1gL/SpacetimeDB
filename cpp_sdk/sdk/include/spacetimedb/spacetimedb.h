@@ -447,21 +447,31 @@ struct ReducerRegistrar {
     }
 };
 
-// Specialization for single byte argument
-template<>
-struct ReducerRegistrar<void (*)(spacetimedb::ReducerContext, spacetimedb::byte)> {
-    static void register_func(const char* name, void (*func)(spacetimedb::ReducerContext, spacetimedb::byte)) {
+// General specialization for any reducer signature
+template<typename... Args>
+struct ReducerRegistrar<void (*)(spacetimedb::ReducerContext, Args...)> {
+    static void register_func(const char* name, void (*func)(spacetimedb::ReducerContext, Args...)) {
         register_reducer_impl(name, func);
     }
 };
 
-// Reducer macro - can be placed BEFORE or AFTER function definition
-#define SPACETIMEDB_REDUCER(func_name) \
+// Original reducer macro - place before function definition
+#define SPACETIMEDB_REDUCER_DECL(func_name) \
     void func_name(spacetimedb::ReducerContext, spacetimedb::byte); \
     extern "C" __attribute__((export_name("__preinit__30_reducer_" #func_name))) \
     void _preinit_register_reducer_##func_name() { \
         ReducerRegistrar<decltype(&func_name)>::register_func(#func_name, func_name); \
     }
+
+// New cleaner syntax - combines declaration and definition
+// Usage: SPACETIMEDB_REDUCER(my_func, ReducerContext ctx, uint8_t n) { ... }
+#define SPACETIMEDB_REDUCER(func_name, ...) \
+    void func_name(__VA_ARGS__); \
+    extern "C" __attribute__((export_name("__preinit__30_reducer_" #func_name))) \
+    void _preinit_register_reducer_##func_name() { \
+        ReducerRegistrar<decltype(&func_name)>::register_func(#func_name, func_name); \
+    } \
+    void func_name(__VA_ARGS__)
 
 // Module exports implementation  
 inline void spacetimedb_write_module_def(uint32_t sink) {
