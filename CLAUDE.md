@@ -58,8 +58,11 @@ cargo build -p <crate-name>
 cargo build --target wasm32-unknown-unknown
 
 # Build C++ modules (requires Emscripten)
-# Direct compilation with emcc
-emcc -std=c++20 <source.cpp> -I<path-to-sdk>/cpp_sdk/sdk/include -s STANDALONE_WASM=1 -Wl,--no-entry -o <module_name>.wasm -ferror-limit=500
+# Direct compilation with emcc - IMPORTANT: Use these exact flags to avoid WASI imports
+emcc -std=c++20 -s STANDALONE_WASM=1 -s FILESYSTEM=0 -s DISABLE_EXCEPTION_CATCHING=1 -O2 -Wl,--no-entry -o <module_name>.wasm <source.cpp>
+
+# Alternative: Include SDK headers if needed
+emcc -std=c++20 <source.cpp> -I<path-to-sdk>/cpp_sdk/sdk/include -s STANDALONE_WASM=1 -s FILESYSTEM=0 -s DISABLE_EXCEPTION_CATCHING=1 -O2 -Wl,--no-entry -o <module_name>.wasm
 
 # Using CMake (recommended)
 cmake -B build -S . -DCMAKE_TOOLCHAIN_FILE=<spacetimedb>/cpp_sdk/toolchains/wasm_toolchain.cmake
@@ -91,6 +94,17 @@ dotnet test crates/bindings-csharp
 
 # Run SQL tests
 cargo test -p sqltest
+
+# C++ SDK Integration Testing
+# Test C++ module schema output against expected schema
+cd cpp_sdk/examples/sdk_test_cpp
+emcc -std=c++20 -s STANDALONE_WASM=1 -s FILESYSTEM=0 -s DISABLE_EXCEPTION_CATCHING=1 -O2 -Wl,--no-entry -o sdk_test.wasm src/sdk_test.cpp
+spacetime publish --bin-path sdk_test.wasm sdk-test-validation
+spacetime describe sdk-test-validation --json > actual-output.json
+diff actual-output.json ../../tests/sdk-test-desc.json  # Should match exactly
+
+# The file cpp_sdk/tests/sdk-test-desc.json contains the expected schema output 
+# for a fully implemented sdk_test.cpp with all tables, reducers, and types
 ```
 
 ### Code Quality
@@ -172,6 +186,18 @@ Key C++ SDK components:
 - `SPACETIMEDB_REDUCER`: Export functions as reducers
 - `Database` class: Global database access
 - `Table<T>` template: Type-safe table operations
+
+**C++ SDK Testing & Validation**:
+- `cpp_sdk/tests/sdk-test-desc.json`: Expected schema output for complete sdk_test.cpp implementation
+- After publishing a C++ module, use `spacetime describe <database> --json` to get actual schema
+- For validation: `diff actual-output.json cpp_sdk/tests/sdk-test-desc.json` should match exactly
+- This ensures all tables, reducers, and types are properly registered and match expected schema
+
+**Critical Compilation Flags** (to avoid WASI import errors):
+- `-s STANDALONE_WASM=1`: Creates standalone WASM without WASI dependencies
+- `-s FILESYSTEM=0`: Disables filesystem support (prevents `fd_close` errors)  
+- `-s DISABLE_EXCEPTION_CATCHING=1`: Removes exception handling that can pull in WASI
+- `-Wl,--no-entry`: No main entry point (required for SpacetimeDB modules)
 
 ### Key Design Patterns
 
