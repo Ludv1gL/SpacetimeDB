@@ -13,6 +13,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 include_directories(../../../sdk/include)
 
 add_executable(sdk_test_cpp src/sdk_test.cpp src/sdk_test.h)
+add_executable(minimal_sdk_test src/minimal_sdk_test.cpp)
 
 # Link against SpacetimeDB module library (illustrative name)
 # target_link_libraries(sdk_test_cpp PRIVATE SpacetimeDB::Module)
