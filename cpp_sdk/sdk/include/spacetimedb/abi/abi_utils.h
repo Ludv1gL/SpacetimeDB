@@ -9,6 +9,12 @@
 #include <stdexcept> // For std::runtime_error
 #include <cstddef>   // For std::byte (C++17)
 
+// Forward declare the corrected ABI function
+extern "C" {
+    __attribute__((import_module("spacetime_10.0"), import_name("bytes_sink_write")))
+    uint16_t bytes_sink_write(::BytesSink sink, const uint8_t* buffer_ptr, size_t* buffer_len_ptr);
+}
+
 namespace SpacetimeDB {
 namespace Abi {
 namespace Utils {
@@ -16,9 +22,10 @@ namespace Utils {
 // Helper to write data to a BytesSink.
 // Throws std::runtime_error on host error.
 inline void write_bytes_to_sink(::BytesSink sink_handle, const unsigned char* data, uint32_t len) {
-    ::Status status = ::_bytes_sink_write(sink_handle, data, len);
-    if (status.inner != 0) { // Assuming 0 is OK from common_defs.h convention
-        throw std::runtime_error("Host failed to write to BytesSink, status: " + std::to_string(status.inner));
+    size_t buffer_len = len;
+    uint16_t status = bytes_sink_write(sink_handle, data, &buffer_len);
+    if (status != 0) {
+        throw std::runtime_error("Host failed to write to BytesSink, status: " + std::to_string(status));
     }
 }
 
