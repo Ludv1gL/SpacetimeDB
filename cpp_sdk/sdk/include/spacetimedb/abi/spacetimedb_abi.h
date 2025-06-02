@@ -14,7 +14,7 @@ extern "C" {
 
 // Logging
 // As per docs: "Calls to the function cannot fail irrespective of memory access violations." -> void return
-__attribute__((import_module("spacetime"), import_name("_console_log")))
+__attribute__((import_module("spacetime_10.0"), import_name("_console_log")))
 void _console_log(
     uint8_t level,
     const uint8_t *target,
@@ -28,7 +28,7 @@ void _console_log(
 
 // Buffer handling
 // _buffer_alloc: Returns Buffer directly.
-__attribute__((import_module("spacetime"), import_name("_buffer_alloc")))
+__attribute__((import_module("spacetime_10.0"), import_name("_buffer_alloc")))
 Buffer _buffer_alloc(
     const uint8_t *data,
     size_t data_len
@@ -37,7 +37,7 @@ Buffer _buffer_alloc(
 // _buffer_consume: Documented as void, but text implies error states.
 // Assuming uint16_t for error code consistency with other fallible functions.
 // "Returns an error if the buffer does not exist or on any memory access violations associated with (ptr, len)."
-__attribute__((import_module("spacetime"), import_name("_buffer_consume")))
+__attribute__((import_module("spacetime_10.0"), import_name("_buffer_consume")))
 uint16_t _buffer_consume(
     Buffer bufh, // Taken by value, implies consumption
     uint8_t *into, // out-parameter for the data
@@ -46,7 +46,7 @@ uint16_t _buffer_consume(
 
 // _buffer_len: Returns size_t directly.
 // "Traps if the buffer does not exist." -> No error code, direct return or trap.
-__attribute__((import_module("spacetime"), import_name("_buffer_len")))
+__attribute__((import_module("spacetime_10.0"), import_name("_buffer_len")))
 size_t _buffer_len(
     Buffer bufh // Taken by value, but it's a query
 );
@@ -56,7 +56,7 @@ size_t _buffer_len(
 // _schedule_reducer: Documented as void, but text implies error states.
 // Assuming uint16_t for error code consistency.
 // "Errors on any memory access violations, if ... does not point to valid UTF-8, or if the time delay exceeds..."
-__attribute__((import_module("spacetime"), import_name("_schedule_reducer")))
+__attribute__((import_module("spacetime_10.0"), import_name("_schedule_reducer")))
 uint16_t _schedule_reducer(
     const uint8_t *name,
     size_t name_len,
@@ -68,14 +68,14 @@ uint16_t _schedule_reducer(
 
 // _cancel_reducer: Documented as void, but text implies error states.
 // Assuming uint16_t for error code consistency if cancellation can fail (e.g., ID not found).
-__attribute__((import_module("spacetime"), import_name("_cancel_reducer")))
+__attribute__((import_module("spacetime_10.0"), import_name("_cancel_reducer")))
 uint16_t _cancel_reducer(
     uint64_t id
 );
 
 
 // Altering tables
-__attribute__((import_module("spacetime"), import_name("_create_index")))
+__attribute__((import_module("spacetime_10.0"), import_name("_create_index")))
 uint16_t _create_index(
     const uint8_t *index_name,
     size_t index_name_len,
@@ -87,14 +87,14 @@ uint16_t _create_index(
 
 
 // Inserting and deleting rows
-__attribute__((import_module("spacetime"), import_name("_insert")))
+__attribute__((import_module("spacetime_10.0"), import_name("_insert")))
 uint16_t _insert(
     uint32_t table_id,
     uint8_t *row_bsatn_ptr, // in-out: host can modify this (e.g., for auto-inc PK)
     size_t row_bsatn_len
 );
 
-__attribute__((import_module("spacetime"), import_name("_delete_by_col_eq")))
+__attribute__((import_module("spacetime_10.0"), import_name("_delete_by_col_eq")))
 uint16_t _delete_by_col_eq(
     uint32_t table_id,
     uint32_t col_id,
@@ -105,14 +105,14 @@ uint16_t _delete_by_col_eq(
 
 
 // Querying tables
-__attribute__((import_module("spacetime"), import_name("_get_table_id")))
+__attribute__((import_module("spacetime_10.0"), import_name("_get_table_id")))
 uint16_t _get_table_id(
     const uint8_t *name_ptr,
     size_t name_len,
     uint32_t *out_table_id_ptr // out-parameter
 );
 
-__attribute__((import_module("spacetime"), import_name("_iter_by_col_eq")))
+__attribute__((import_module("spacetime_10.0"), import_name("_iter_by_col_eq")))
 uint16_t _iter_by_col_eq(
     uint32_t table_id,
     uint32_t col_id,
@@ -121,24 +121,24 @@ uint16_t _iter_by_col_eq(
     Buffer *out_buffer_ptr_with_rows // out-parameter for the buffer of concatenated rows
 );
 
-__attribute__((import_module("spacetime"), import_name("_iter_drop")))
+__attribute__((import_module("spacetime_10.0"), import_name("_iter_drop")))
 uint16_t _iter_drop(
     BufferIter iter_handle // Taken by value, implies consumption
 );
 
-__attribute__((import_module("spacetime"), import_name("_iter_next")))
+__attribute__((import_module("spacetime_10.0"), import_name("_iter_next")))
 uint16_t _iter_next(
     BufferIter iter_handle,
     Buffer *out_row_data_buf_ptr // out-parameter for the next row buffer
 );
 
-__attribute__((import_module("spacetime"), import_name("_iter_start")))
+__attribute__((import_module("spacetime_10.0"), import_name("_iter_start")))
 uint16_t _iter_start(
     uint32_t table_id,
     BufferIter *out_iter_ptr // out-parameter
 );
 
-__attribute__((import_module("spacetime"), import_name("_iter_start_filtered")))
+__attribute__((import_module("spacetime_10.0"), import_name("_iter_start_filtered")))
 uint16_t _iter_start_filtered(
     uint32_t table_id,
     const uint8_t *filter_bsatn_ptr,
@@ -151,33 +151,33 @@ uint16_t _iter_start_filtered(
 // Based on common/bindings.c style, assuming "spacetime" module
 // These might need different import_name if already defined by host with other names.
 
-__attribute__((import_module("spacetime"), import_name("_bytes_sink_create")))
+__attribute__((import_module("spacetime_10.0"), import_name("_bytes_sink_create")))
 BytesSink _bytes_sink_create();
 
-__attribute__((import_module("spacetime"), import_name("_bytes_sink_done")))
+__attribute__((import_module("spacetime_10.0"), import_name("_bytes_sink_done")))
 void _bytes_sink_done(BytesSink sink_handle);
 
-__attribute__((import_module("spacetime"), import_name("_bytes_sink_write")))
-Status _bytes_sink_write(BytesSink sink_handle, const uint8_t* data_ptr, uint32_t data_len);
+__attribute__((import_module("spacetime_10.0"), import_name("bytes_sink_write")))
+uint16_t bytes_sink_write(BytesSink sink_handle, const uint8_t* buffer_ptr, size_t* buffer_len_ptr);
 
-__attribute__((import_module("spacetime"), import_name("_bytes_sink_get_written_count")))
+__attribute__((import_module("spacetime_10.0"), import_name("_bytes_sink_get_written_count")))
 uint32_t _bytes_sink_get_written_count(BytesSink sink_handle);
 
 
-__attribute__((import_module("spacetime"), import_name("_bytes_source_create_from_bytes")))
+__attribute__((import_module("spacetime_10.0"), import_name("_bytes_source_create_from_bytes")))
 BytesSource _bytes_source_create_from_bytes(const uint8_t* data_ptr, uint32_t data_len);
 
-__attribute__((import_module("spacetime"), import_name("_bytes_source_create_from_sink_bytes")))
+__attribute__((import_module("spacetime_10.0"), import_name("_bytes_source_create_from_sink_bytes")))
 BytesSource _bytes_source_create_from_sink_bytes(BytesSink sink_handle);
 
-__attribute__((import_module("spacetime"), import_name("_bytes_source_done")))
+__attribute__((import_module("spacetime_10.0"), import_name("_bytes_source_done")))
 void _bytes_source_done(BytesSource source_handle);
 
 // Returns actual number of bytes read into buffer_ptr
-__attribute__((import_module("spacetime"), import_name("_bytes_source_read")))
+__attribute__((import_module("spacetime_10.0"), import_name("_bytes_source_read")))
 uint32_t _bytes_source_read(BytesSource source_handle, uint8_t* buffer_ptr, uint32_t buffer_len);
 
-__attribute__((import_module("spacetime"), import_name("_bytes_source_get_remaining_count")))
+__attribute__((import_module("spacetime_10.0"), import_name("_bytes_source_get_remaining_count")))
 uint32_t _bytes_source_get_remaining_count(BytesSource source_handle);
 
 
@@ -185,7 +185,7 @@ uint32_t _bytes_source_get_remaining_count(BytesSource source_handle);
 // The existing _console_log has a different signature.
 // We need one that matches: IMPORT void log_message(LogLevel level, String message_str);
 // This means the host must provide `_log_message_abi` or similar.
-__attribute__((import_module("spacetime"), import_name("_log_message_abi")))
+__attribute__((import_module("spacetime_10.0"), import_name("_log_message_abi")))
 void _log_message_abi(LogLevel level, const uint8_t* message_ptr, uint32_t message_len);
 
 // Update table functions to use Status from common_defs.h

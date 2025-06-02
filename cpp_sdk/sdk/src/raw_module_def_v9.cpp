@@ -1,6 +1,7 @@
 #include "spacetimedb/internal/raw_module_def_v9.h"
 #include "spacetimedb/internal/module_schema.h"
 #include "spacetimedb/bsatn/writer.h"
+#include <iostream>
 
 namespace SpacetimeDb {
     namespace Internal {
@@ -24,8 +25,7 @@ namespace SpacetimeDb {
 
         // Serialize Typespace (simplified for now)
         void serialize(SpacetimeDb::bsatn::Writer& writer, const Typespace& ts) {
-            // For now, serialize as empty vector
-            // TODO: Implement proper typespace serialization
+            // Typespace is a vector of AlgebraicType - serialize as empty vector for now
             writer.write_u32_le(0); // Empty vector length
         }
 
@@ -116,12 +116,29 @@ namespace SpacetimeDb {
             // Get the user schema
             const SpacetimeDb::ModuleSchema& schema = SpacetimeDb::ModuleSchema::instance();
             
+            // Debug: Print what we found in the schema
+            std::cerr << "DEBUG: ModuleSchema contains:" << std::endl;
+            std::cerr << "  Tables: " << schema.tables.size() << std::endl;
+            for (const auto& [name, table] : schema.tables) {
+                std::cerr << "    Table: " << name << " (spacetime_name: " << table.spacetime_name << ")" << std::endl;
+            }
+            std::cerr << "  Reducers: " << schema.reducers.size() << std::endl;
+            for (const auto& [name, reducer] : schema.reducers) {
+                std::cerr << "    Reducer: " << name << " (spacetime_name: " << reducer.spacetime_name << ")" << std::endl;
+            }
+            std::cerr << "  Types: " << schema.types.size() << std::endl;
+            for (const auto& [name, type] : schema.types) {
+                std::cerr << "    Type: " << name << " (spacetime_name: " << type.spacetime_db_name << ")" << std::endl;
+            }
+            
             // Build the raw module definition
             RawModuleDef raw_def = build_raw_module_def_v9(schema);
             
             // Serialize to BSATN
             SpacetimeDb::bsatn::Writer writer;
             serialize(writer, raw_def);
+            
+            std::cerr << "DEBUG: Serialized module def to " << writer.get_buffer().size() << " bytes" << std::endl;
             
             return writer.take_buffer();
         }

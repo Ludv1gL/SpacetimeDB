@@ -108,4 +108,3 @@ extern "C" {
 void spacetimedb_sdk_wasi_shims_placeholder() {
     // std::cout << "WASI shims placeholder linked." << std::endl;
 }
-```

@@ -4,10 +4,11 @@
 
 // Minimal RawModuleDef implementation
 extern "C" {
-    // Host ABI function that we need to call
-    void _bytes_sink_write(uint32_t sink, const uint8_t* data, uint32_t len);
+    // Host ABI function that we need to call - note the correct import module and function name
+    __attribute__((import_module("spacetime_10.0"), import_name("bytes_sink_write")))
+    uint16_t bytes_sink_write(uint32_t sink, const uint8_t* buffer_ptr, size_t* buffer_len_ptr);
     
-    // Our module export
+    // Required module exports
     void __describe_module__(uint32_t sink) {
         // Create minimal RawModuleDef::V9 with empty contents
         std::vector<uint8_t> data;
@@ -35,6 +36,20 @@ extern "C" {
         data.push_back(0); data.push_back(0); data.push_back(0); data.push_back(0); // u32 length = 0
         
         // Write to sink
-        _bytes_sink_write(sink, data.data(), data.size());
+        size_t len = data.size();
+        bytes_sink_write(sink, data.data(), &len);
+    }
+    
+    // Required reducer function (even if empty)
+    int16_t __call_reducer__(
+        uint32_t id,
+        uint64_t sender_0, uint64_t sender_1, uint64_t sender_2, uint64_t sender_3,
+        uint64_t conn_id_0, uint64_t conn_id_1,
+        uint64_t timestamp, 
+        uint32_t args_source, 
+        uint32_t error_sink
+    ) {
+        // No reducers in minimal test, just return success
+        return 0;
     }
 }
