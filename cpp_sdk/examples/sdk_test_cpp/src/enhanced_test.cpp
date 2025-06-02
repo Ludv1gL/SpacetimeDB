@@ -22,13 +22,6 @@ extern "C" {
     __attribute__((import_module("spacetime_10.0"), import_name("table_id_from_name")))
     uint16_t table_id_from_name(const uint8_t* name, uint32_t name_len, uint32_t* out);
     
-    // Import table operations
-    __attribute__((import_module("spacetime_10.0"), import_name("table_insert")))
-    uint16_t table_insert(uint32_t table_id, const uint8_t* row_ptr, size_t* row_len_ptr);
-    
-    __attribute__((import_module("spacetime_10.0"), import_name("table_scan")))
-    uint32_t table_scan(uint32_t table_id, uint8_t* filter_ptr, uint32_t filter_len);
-    
     // Helper function to create BSATN module definition
     void create_module_definition(uint8_t* buffer, size_t* len) {
         // Create RawModuleDef::V9 with one table and one reducer
@@ -140,15 +133,13 @@ extern "C" {
         );
         
         if (status == 0) {
-            // Create a simple row to insert (id=1, data=42)
-            uint8_t row_data[] = {
-                1, 0, 0, 0,     // id = 1 (U32 little endian)
-                42, 0, 0, 0     // data = 42 (U32 little endian)
-            };
-            size_t row_len = sizeof(row_data);
-            
-            // Insert row into table
-            table_insert(table_id, row_data, &row_len);
+            console_log(
+                1, // info level
+                (const uint8_t*)"", 0,
+                (const uint8_t*)filename, 17,
+                140, // line number
+                (const uint8_t*)"Got table ID successfully", 26
+            );
         }
         
         return 0; // success
