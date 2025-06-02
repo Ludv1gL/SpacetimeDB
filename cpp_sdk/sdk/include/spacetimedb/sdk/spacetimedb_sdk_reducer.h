@@ -40,28 +40,31 @@ void _spacetimedb_sdk_init() {
 
 // Template helper to deserialize a single argument
 template<typename T>
-T deserialize_reducer_arg(bsatn::bsatn_reader& reader) {
+T deserialize_reducer_arg(SpacetimeDb::bsatn::Reader& reader) {
     T arg; // Requires T to be default-constructible for non-primitive cases
     if constexpr (std::is_same_v<T, bool>) return reader.read_bool();
     else if constexpr (std::is_same_v<T, uint8_t>) return reader.read_u8();
-    else if constexpr (std::is_same_v<T, uint16_t>) return reader.read_u16();
-    else if constexpr (std::is_same_v<T, uint32_t>) return reader.read_u32();
-    else if constexpr (std::is_same_v<T, uint64_t>) return reader.read_u64();
+    else if constexpr (std::is_same_v<T, uint16_t>) return reader.read_u16_le();
+    else if constexpr (std::is_same_v<T, uint32_t>) return reader.read_u32_le();
+    else if constexpr (std::is_same_v<T, uint64_t>) return reader.read_u64_le();
     else if constexpr (std::is_same_v<T, int8_t>) return reader.read_i8();
-    else if constexpr (std::is_same_v<T, int16_t>) return reader.read_i16();
-    else if constexpr (std::is_same_v<T, int32_t>) return reader.read_i32();
-    else if constexpr (std::is_same_v<T, int64_t>) return reader.read_i64();
-    else if constexpr (std::is_same_v<T, float>) return reader.read_f32();
-    else if constexpr (std::is_same_v<T, double>) return reader.read_f64();
+    else if constexpr (std::is_same_v<T, int16_t>) return reader.read_i16_le();
+    else if constexpr (std::is_same_v<T, int32_t>) return reader.read_i32_le();
+    else if constexpr (std::is_same_v<T, int64_t>) return reader.read_i64_le();
+    else if constexpr (std::is_same_v<T, float>) return reader.read_f32_le();
+    else if constexpr (std::is_same_v<T, double>) return reader.read_f64_le();
     else if constexpr (std::is_same_v<T, std::string>) return reader.read_string();
-    else if constexpr (std::is_same_v<T, std::vector<uint8_t>>) return reader.read_bytes();
-    else if constexpr (std::is_same_v<T, spacetimedb::sdk::Identity>) {
+    else if constexpr (std::is_same_v<T, std::vector<uint8_t>>) {
+        auto bytes_vec = reader.read_bytes();
+        return std::vector<uint8_t>(reinterpret_cast<const uint8_t*>(bytes_vec.data()),
+                                   reinterpret_cast<const uint8_t*>(bytes_vec.data()) + bytes_vec.size());
+    }
+    else if constexpr (std::is_same_v<T, SpacetimeDb::sdk::Identity>) {
         arg.bsatn_deserialize(reader); return arg;
-    } else if constexpr (std::is_same_v<T, spacetimedb::sdk::Timestamp>) {
+    } else if constexpr (std::is_same_v<T, SpacetimeDb::sdk::Timestamp>) {
         arg.bsatn_deserialize(reader); return arg;
     }
-    else if constexpr (std::is_base_of_v<bsatn::BsatnSerializable, T> ||
-                       requires(T& t, bsatn::bsatn_reader& r) { t.bsatn_deserialize(r); }) {
+    else if constexpr (requires(T& t, SpacetimeDb::bsatn::Reader& r) { t.bsatn_deserialize(r); }) {
         arg.bsatn_deserialize(reader);
         return arg;
     } else {
@@ -73,12 +76,12 @@ T deserialize_reducer_arg(bsatn::bsatn_reader& reader) {
 // Helper to deserialize all arguments into a tuple
 // Ensure types are cleaned (remove ref and cv-qualifiers) before tuple_element_t
 template<typename... Args, std::size_t... Is>
-std::tuple<Args...> deserialize_all_args_impl(bsatn::bsatn_reader& reader, std::index_sequence<Is...>) {
+std::tuple<Args...> deserialize_all_args_impl(SpacetimeDb::bsatn::Reader& reader, std::index_sequence<Is...>) {
     return std::make_tuple(deserialize_reducer_arg<std::remove_cv_t<std::remove_reference_t<std::tuple_element_t<Is, std::tuple<Args...>>>>>(reader)...);
 }
 
 template<typename... Args>
-std::tuple<Args...> deserialize_all_args(bsatn::bsatn_reader& reader) {
+std::tuple<Args...> deserialize_all_args(SpacetimeDb::bsatn::Reader& reader) {
     return deserialize_all_args_impl<Args...>(reader, std::index_sequence_for<Args...>{});
 }
 
@@ -93,10 +96,10 @@ std::tuple<Args...> deserialize_all_args(bsatn::bsatn_reader& reader) {
             return 100; /* Distinct error code for uninitialized SDK */ \
         } \
         try { \
-            spacetimedb::bsatn::bsatn_reader reader(args_data, args_len); \
-            spacetimedb::sdk::Identity sender; \
+            SpacetimeDb::bsatn::Reader reader(reinterpret_cast<const std::byte*>(args_data), args_len); \
+            SpacetimeDb::sdk::Identity sender; \
             sender.bsatn_deserialize(reader); \
-            spacetimedb::sdk::Timestamp timestamp; \
+            SpacetimeDb::sdk::Timestamp timestamp; \
             timestamp.bsatn_deserialize(reader); \
             spacetimedb::sdk::ReducerContext ctx(sender, timestamp, *spacetimedb::sdk::global_db_instance_ptr_for_reducers); \
             using UserArgsTuple = std::tuple<__VA_ARGS__>; \

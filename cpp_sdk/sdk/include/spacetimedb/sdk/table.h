@@ -133,7 +133,7 @@ private:
         }
 
         try {
-            bsatn::bsatn_reader reader(temp_buffer.data(), temp_buffer.size());
+            SpacetimeDb::bsatn::Reader reader(reinterpret_cast<const std::byte*>(temp_buffer.data()), temp_buffer.size());
             current_row_.bsatn_deserialize(reader);
             is_valid_ = true;
         } catch (const std::exception& e) {
@@ -152,26 +152,25 @@ template<typename T>
 class Table {
 public:
     explicit Table(uint32_t table_id) : table_id_(table_id) {
-        static_assert(std::is_base_of_v<bsatn::BsatnSerializable, T> ||
-                      (requires(T& t, bsatn::bsatn_writer& w) { t.bsatn_serialize(w); } &&
-                       requires(T& t, bsatn::bsatn_reader& r) { t.bsatn_deserialize(r); }),
-                      "Table type T must implement BsatnSerializable or provide bsatn_serialize/bsatn_deserialize methods.");
+        static_assert(requires(T& t, SpacetimeDb::bsatn::Writer& w) { t.bsatn_serialize(w); } &&
+                      requires(T& t, SpacetimeDb::bsatn::Reader& r) { t.bsatn_deserialize(r); },
+                      "Table type T must provide bsatn_serialize/bsatn_deserialize methods.");
     }
 
     void insert(T& row_data) {
-        bsatn::bsatn_writer writer;
+        SpacetimeDb::bsatn::Writer writer;
         row_data.bsatn_serialize(writer);
 
-        std::vector<uint8_t> buffer_vec = writer.move_buffer();
+        std::vector<std::byte>&& buffer_vec = writer.take_buffer();
 
-        uint16_t error_code = _insert(table_id_, buffer_vec.data(), buffer_vec.size());
+        uint16_t error_code = _insert(table_id_, const_cast<uint8_t*>(reinterpret_cast<const uint8_t*>(buffer_vec.data())), buffer_vec.size());
 
         if (error_code != 0) {
             throw std::runtime_error("Table::insert: _insert ABI call failed with code " + std::to_string(error_code));
         }
 
         try {
-            bsatn::bsatn_reader reader(buffer_vec.data(), buffer_vec.size());
+            SpacetimeDb::bsatn::Reader reader(buffer_vec.data(), buffer_vec.size());
             row_data.bsatn_deserialize(reader);
         } catch (const std::exception& e) {
             throw std::runtime_error(std::string("Table::insert: BSATN deserialization after insert failed: ") + e.what());
@@ -182,31 +181,31 @@ public:
     uint32_t delete_by_col_eq(uint32_t column_index, const ValueType& value_to_match) {
         static_assert(
             (std::is_arithmetic_v<ValueType> || std::is_same_v<ValueType, bool> || std::is_same_v<ValueType, std::string>) ||
-            (std::is_base_of_v<bsatn::BsatnSerializable, ValueType> || requires(const ValueType& v, bsatn::bsatn_writer& w) { v.bsatn_serialize(w); }),
+            requires(const ValueType& v, SpacetimeDb::bsatn::Writer& w) { v.bsatn_serialize(w); },
             "ValueType for delete_by_col_eq must be a supported primitive, std::string, or implement bsatn_serialize."
         );
 
-        bsatn::bsatn_writer writer;
+        SpacetimeDb::bsatn::Writer writer;
         if constexpr (std::is_same_v<ValueType, bool>) writer.write_bool(value_to_match);
         else if constexpr (std::is_same_v<ValueType, uint8_t>) writer.write_u8(value_to_match);
-        else if constexpr (std::is_same_v<ValueType, uint16_t>) writer.write_u16(value_to_match);
-        else if constexpr (std::is_same_v<ValueType, uint32_t>) writer.write_u32(value_to_match);
-        else if constexpr (std::is_same_v<ValueType, uint64_t>) writer.write_u64(value_to_match);
+        else if constexpr (std::is_same_v<ValueType, uint16_t>) writer.write_u16_le(value_to_match);
+        else if constexpr (std::is_same_v<ValueType, uint32_t>) writer.write_u32_le(value_to_match);
+        else if constexpr (std::is_same_v<ValueType, uint64_t>) writer.write_u64_le(value_to_match);
         else if constexpr (std::is_same_v<ValueType, int8_t>) writer.write_i8(value_to_match);
-        else if constexpr (std::is_same_v<ValueType, int16_t>) writer.write_i16(value_to_match);
-        else if constexpr (std::is_same_v<ValueType, int32_t>) writer.write_i32(value_to_match);
-        else if constexpr (std::is_same_v<ValueType, int64_t>) writer.write_i64(value_to_match);
-        else if constexpr (std::is_same_v<ValueType, float>) writer.write_f32(value_to_match);
-        else if constexpr (std::is_same_v<ValueType, double>) writer.write_f64(value_to_match);
+        else if constexpr (std::is_same_v<ValueType, int16_t>) writer.write_i16_le(value_to_match);
+        else if constexpr (std::is_same_v<ValueType, int32_t>) writer.write_i32_le(value_to_match);
+        else if constexpr (std::is_same_v<ValueType, int64_t>) writer.write_i64_le(value_to_match);
+        else if constexpr (std::is_same_v<ValueType, float>) writer.write_f32_le(value_to_match);
+        else if constexpr (std::is_same_v<ValueType, double>) writer.write_f64_le(value_to_match);
         else if constexpr (std::is_same_v<ValueType, std::string>) writer.write_string(value_to_match);
         else {
             value_to_match.bsatn_serialize(writer);
         }
 
-        std::vector<uint8_t> value_buffer_vec = writer.move_buffer();
+        std::vector<std::byte>&& value_buffer_vec = writer.take_buffer();
         uint32_t deleted_count = 0;
 
-        uint16_t error_code = _delete_by_col_eq(table_id_, column_index, value_buffer_vec.data(), value_buffer_vec.size(), &deleted_count);
+        uint16_t error_code = _delete_by_col_eq(table_id_, column_index, reinterpret_cast<const uint8_t*>(value_buffer_vec.data()), value_buffer_vec.size(), &deleted_count);
 
         if (error_code != 0) {
             throw std::runtime_error("Table::delete_by_col_eq: _delete_by_col_eq ABI call failed with code " + std::to_string(error_code));
@@ -227,31 +226,31 @@ public:
     std::vector<T> find_by_col_eq(uint32_t column_index, const ValueType& value_to_match) {
          static_assert(
             (std::is_arithmetic_v<ValueType> || std::is_same_v<ValueType, bool> || std::is_same_v<ValueType, std::string>) ||
-            (std::is_base_of_v<bsatn::BsatnSerializable, ValueType> || requires(const ValueType& v, bsatn::bsatn_writer& w) { v.bsatn_serialize(w); }),
+            requires(const ValueType& v, SpacetimeDb::bsatn::Writer& w) { v.bsatn_serialize(w); },
             "ValueType for find_by_col_eq must be a supported primitive, std::string, or implement bsatn_serialize."
         );
 
-        bsatn::bsatn_writer writer;
+        SpacetimeDb::bsatn::Writer writer;
         if constexpr (std::is_same_v<ValueType, bool>) writer.write_bool(value_to_match);
         else if constexpr (std::is_same_v<ValueType, uint8_t>) writer.write_u8(value_to_match);
-        else if constexpr (std::is_same_v<ValueType, uint16_t>) writer.write_u16(value_to_match);
-        else if constexpr (std::is_same_v<ValueType, uint32_t>) writer.write_u32(value_to_match);
-        else if constexpr (std::is_same_v<ValueType, uint64_t>) writer.write_u64(value_to_match);
+        else if constexpr (std::is_same_v<ValueType, uint16_t>) writer.write_u16_le(value_to_match);
+        else if constexpr (std::is_same_v<ValueType, uint32_t>) writer.write_u32_le(value_to_match);
+        else if constexpr (std::is_same_v<ValueType, uint64_t>) writer.write_u64_le(value_to_match);
         else if constexpr (std::is_same_v<ValueType, int8_t>) writer.write_i8(value_to_match);
-        else if constexpr (std::is_same_v<ValueType, int16_t>) writer.write_i16(value_to_match);
-        else if constexpr (std::is_same_v<ValueType, int32_t>) writer.write_i32(value_to_match);
-        else if constexpr (std::is_same_v<ValueType, int64_t>) writer.write_i64(value_to_match);
-        else if constexpr (std::is_same_v<ValueType, float>) writer.write_f32(value_to_match);
-        else if constexpr (std::is_same_v<ValueType, double>) writer.write_f64(value_to_match);
+        else if constexpr (std::is_same_v<ValueType, int16_t>) writer.write_i16_le(value_to_match);
+        else if constexpr (std::is_same_v<ValueType, int32_t>) writer.write_i32_le(value_to_match);
+        else if constexpr (std::is_same_v<ValueType, int64_t>) writer.write_i64_le(value_to_match);
+        else if constexpr (std::is_same_v<ValueType, float>) writer.write_f32_le(value_to_match);
+        else if constexpr (std::is_same_v<ValueType, double>) writer.write_f64_le(value_to_match);
         else if constexpr (std::is_same_v<ValueType, std::string>) writer.write_string(value_to_match);
         else {
             value_to_match.bsatn_serialize(writer);
         }
 
-        std::vector<uint8_t> value_buffer_vec = writer.move_buffer();
+        std::vector<std::byte>&& value_buffer_vec = writer.take_buffer();
         Buffer result_buffer_handle = 0;
 
-        uint16_t error_code = _iter_by_col_eq(table_id_, column_index, value_buffer_vec.data(), value_buffer_vec.size(), &result_buffer_handle);
+        uint16_t error_code = _iter_by_col_eq(table_id_, column_index, reinterpret_cast<const uint8_t*>(value_buffer_vec.data()), value_buffer_vec.size(), &result_buffer_handle);
 
         if (error_code != 0) {
             throw std::runtime_error("Table::find_by_col_eq: _iter_by_col_eq ABI call failed with code " + std::to_string(error_code));
@@ -272,9 +271,9 @@ public:
         }
 
         if (len > 0) {
-            bsatn::bsatn_reader reader(concatenated_rows_buffer.data(), concatenated_rows_buffer.size());
+            SpacetimeDb::bsatn::Reader reader(reinterpret_cast<const std::byte*>(concatenated_rows_buffer.data()), concatenated_rows_buffer.size());
             try {
-                while(!reader.eof()) {
+                while(!reader.is_eos()) {
                     T row_data;
                     row_data.bsatn_deserialize(reader);
                     results.push_back(std::move(row_data));

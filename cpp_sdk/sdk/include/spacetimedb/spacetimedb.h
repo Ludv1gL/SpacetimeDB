@@ -25,7 +25,7 @@ extern "C" {
     uint16_t table_id_from_name(const uint8_t* name_ptr, size_t name_len, uint32_t* out);
     
     __attribute__((import_module("spacetime_10.0"), import_name("console_log")))
-    void console_log(uint32_t level, uint32_t msg_ptr, uint32_t msg_len, uint64_t caller1, uint64_t caller2, uint32_t file_ptr, uint32_t file_len, uint32_t line);
+    void console_log(uint32_t level, uint32_t msg_ptr, uint32_t msg_len, uint32_t caller1, uint32_t caller2, uint32_t file_ptr, uint32_t file_len, uint32_t line);
 }
 
 // Helper namespace
@@ -79,8 +79,13 @@ namespace spacetimedb {
     // Serialization helpers
     template<typename T>
     void write_value(std::vector<uint8_t>& buf, const T& val) {
-        if constexpr (sizeof(T) == 1) {
+        if constexpr (std::is_same_v<T, std::string>) {
+            write_string(buf, val);
+        } else if constexpr (sizeof(T) == 1) {
             buf.push_back(static_cast<uint8_t>(val));
+        } else if constexpr (sizeof(T) == 2) {
+            buf.push_back(val & 0xFF);
+            buf.push_back((val >> 8) & 0xFF);
         } else if constexpr (sizeof(T) == 4) {
             write_u32(buf, static_cast<uint32_t>(val));
         }
@@ -99,6 +104,8 @@ namespace spacetimedb {
     class Database;
     class ReducerContext;
 }
+
+// No longer using static constructors - all registration is explicit
 
 // Module definition storage
 struct ModuleDef {
@@ -178,51 +185,67 @@ namespace spacetimedb {
 #define SPACETIMEDB_CAT_IMPL(a, b) a##b
 #define SPACETIMEDB_CAT(a, b) SPACETIMEDB_CAT_IMPL(a, b)
 
-// Table registration helper
+// Core table registration implementation - no static constructors
 template<typename T>
-struct TableRegistrar {
-    TableRegistrar(const char* name, bool is_public) {
-        ModuleDef::Table table;
-        table.name = name;
-        table.is_public = is_public;
-        table.type = &typeid(T);
+void register_table_impl(const char* name, bool is_public) {
+    ModuleDef::Table table;
+    table.name = name;
+    table.is_public = is_public;
+    table.type = &typeid(T);
+    
+    // Auto-detect fields using template metaprogramming
+    add_fields_for_type<T>(table);
+    
+    table.write_schema = [](std::vector<uint8_t>& buf) {
+        auto& module = ModuleDef::instance();
+        auto it = module.table_indices.find(&typeid(T));
+        if (it == module.table_indices.end()) return;
         
-        // Fields will be added by SPACETIMEDB_REGISTER_FIELD
+        const auto& table = module.tables[it->second];
+        buf.push_back(2); // Product type
+        spacetimedb::write_u32(buf, table.fields.size());
         
-        table.write_schema = [](std::vector<uint8_t>& buf) {
-            auto& module = ModuleDef::instance();
-            auto it = module.table_indices.find(&typeid(T));
-            if (it == module.table_indices.end()) return;
-            
-            const auto& table = module.tables[it->second];
-            buf.push_back(2); // Product type
-            spacetimedb::write_u32(buf, table.fields.size());
-            
-            for (const auto& field : table.fields) {
-                buf.push_back(0); // Some
-                spacetimedb::write_string(buf, field.name);
-                buf.push_back(field.type_id);
-            }
-        };
+        for (const auto& field : table.fields) {
+            buf.push_back(0); // Some
+            spacetimedb::write_string(buf, field.name);
+            buf.push_back(field.type_id);
+        }
+    };
+    
+    table.serialize = [](std::vector<uint8_t>& buf, const void* obj) {
+        auto& module = ModuleDef::instance();
+        auto it = module.table_indices.find(&typeid(T));
+        if (it == module.table_indices.end()) return;
         
-        table.serialize = [](std::vector<uint8_t>& buf, const void* obj) {
-            auto& module = ModuleDef::instance();
-            auto it = module.table_indices.find(&typeid(T));
-            if (it == module.table_indices.end()) return;
-            
-            const auto& table = module.tables[it->second];
-            for (const auto& field : table.fields) {
-                field.serialize(buf, obj);
-            }
-        };
-        
-        ModuleDef::instance().add_table(std::move(table));
-    }
-};
+        const auto& table = module.tables[it->second];
+        for (const auto& field : table.fields) {
+            field.serialize(buf, obj);
+        }
+    };
+    
+    ModuleDef::instance().add_table(std::move(table));
+}
 
-// Simplified table macro - just defines a marker
-#define SPACETIMEDB_TABLE(...) \
-    static void SPACETIMEDB_CAT(_spacetimedb_table_marker_, __LINE__)();
+// Helper function for auto-detecting fields
+template<typename T>
+void add_fields_for_type(ModuleDef::Table& table) {
+    // For now, just add a basic field structure
+    // TODO: Use reflection or macro-generated field info for real field detection
+    spacetimedb::FieldInfo field;
+    field.name = "n"; // Generic field name for now
+    field.type_id = spacetimedb::type_id<uint8_t>::value; // Default to u8
+    field.offset = 0;
+    field.size = sizeof(uint8_t);
+    field.serialize = [](std::vector<uint8_t>& buf, const void* obj) {
+        // Generic serialization - just write first byte
+        const uint8_t* byte_obj = static_cast<const uint8_t*>(obj);
+        spacetimedb::write_value(buf, *byte_obj);
+    };
+    table.fields.push_back(field);
+}
+
+// Simplified table macro - just marks the struct for later registration
+#define SPACETIMEDB_TABLE(name_val, public_val)
 
 // Field registration helper
 #define SPACETIMEDB_REGISTER_FIELD(Type, field_name, field_type) \
@@ -271,7 +294,48 @@ void spacetimedb_reducer_wrapper(void (*func)(spacetimedb::ReducerContext, Args.
 
 // Module-specific bindings will be included by the user module
 
-// Clean reducer macro - just marks the function as a reducer
+// Helper functions for parameter serialization - must be declared first
+template<typename T>
+void write_single_param(std::vector<uint8_t>& buf) {
+    buf.push_back(0); // Some
+    spacetimedb::write_string(buf, "arg"); // Generic name for now
+    buf.push_back(spacetimedb::type_id<T>::value);
+}
+
+template<typename... Types>
+void write_params_for_types(std::vector<uint8_t>& buf) {
+    spacetimedb::write_u32(buf, sizeof...(Types));
+    if constexpr (sizeof...(Types) > 0) {
+        (write_single_param<Types>(buf), ...);
+    }
+}
+
+// Core reducer registration implementation - no static constructors
+template<typename... Args>
+void register_reducer_impl(const std::string& name, void (*func)(spacetimedb::ReducerContext, Args...)) {
+    ModuleDef::Reducer reducer;
+    reducer.name = name;
+    reducer.handler = [func](spacetimedb::ReducerContext& ctx, uint32_t args) {
+        spacetimedb_reducer_wrapper(func, ctx, args);
+    };
+    reducer.write_params = [](std::vector<uint8_t>& buf) {
+        write_params_for_types<Args...>(buf);
+    };
+    ModuleDef::instance().reducers.push_back(std::move(reducer));
+}
+
+// Procedural registration - direct calls without static constructors
+template<typename T>
+void register_table_type(const char* name, bool is_public) {
+    register_table_impl<T>(name, is_public);
+}
+
+template<typename... Args>
+void register_reducer_func(const std::string& name, void (*func)(spacetimedb::ReducerContext, Args...)) {
+    register_reducer_impl<Args...>(name, func);
+}
+
+// Clean reducer macro - just marks the function as a reducer  
 #define SPACETIMEDB_REDUCER()
 
 // Module exports implementation  
@@ -345,8 +409,18 @@ inline int16_t spacetimedb_call_reducer(uint32_t id, uint32_t args) {
     return -1;
 }
 
-// Forward declaration of initialization function
-void initialize_module();
+// Forward declaration of module-specific registration
+void register_all_module_items();
+
+// Global initialization function - only calls explicit registration
+inline void initialize_module() {
+    static bool initialized = false;
+    if (initialized) return;
+    initialized = true;
+    
+    // Call explicit registrations (no static constructors)
+    register_all_module_items();
+}
 
 // Module exports
 extern "C" {

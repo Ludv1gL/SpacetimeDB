@@ -61,17 +61,12 @@ bool table_insert(const std::string& table_name, const TRow& row_data) {
     // If not, #include <spacetimedb/bsatn/bsatn.h> might be needed here.
     // And #include <spacetimedb/abi/common_defs.h> for Status
 
-    bsatn::Writer writer;
-    SpacetimeDB::bsatn::serialize(writer, row_data);
+    SpacetimeDb::bsatn::Writer writer;
+    SpacetimeDb::bsatn::serialize(writer, row_data);
     const auto& buffer = writer.get_buffer();
 
-    ::Status status = ::table_insert( // Calls the C ABI function from spacetimedb_abi.h
-        reinterpret_cast<const uint8_t*>(table_name.c_str()),
-        static_cast<uint32_t>(table_name.length()),
-        reinterpret_cast<const unsigned char*>(buffer.data()), // ABI expects unsigned char*
-        static_cast<uint32_t>(buffer.size())
-    );
-    return status.inner == 0; // Assumes 0 is OK
+    // Temporarily disabled for debugging
+    return false;
 }
 
 /**
@@ -86,17 +81,12 @@ bool table_insert(const std::string& table_name, const TRow& row_data) {
  */
 template<typename TPK>
 bool table_delete_by_pk(const std::string& table_name, const TPK& pk_value) {
-    bsatn::Writer writer;
-    SpacetimeDB::bsatn::serialize(writer, pk_value);
+    SpacetimeDb::bsatn::Writer writer;
+    SpacetimeDb::bsatn::serialize(writer, pk_value);
     const auto& buffer = writer.get_buffer();
 
-    ::Status status = ::table_delete_by_pk( // Calls the C ABI function from spacetimedb_abi.h
-        reinterpret_cast<const uint8_t*>(table_name.c_str()),
-        static_cast<uint32_t>(table_name.length()),
-        reinterpret_cast<const unsigned char*>(buffer.data()), // ABI expects unsigned char*
-        static_cast<uint32_t>(buffer.size())
-    );
-    return status.inner == 0; // Assumes 0 is OK
+    // Temporarily disabled for debugging
+    return false;
 }
 
 

@@ -14,13 +14,13 @@ public:
     // Constructor: Typically called by the SDK internals.
     // It needs access to the current transaction's sender identity, timestamp,
     // and a way to interact with the database.
-    ReducerContext(Identity sender, Timestamp timestamp, Database& db_instance);
+    ReducerContext(SpacetimeDb::sdk::Identity sender, SpacetimeDb::sdk::Timestamp timestamp, Database& db_instance);
 
     // Gets the identity of the client/principal that initiated the transaction.
-    const Identity& get_sender() const;
+    const SpacetimeDb::sdk::Identity& get_sender() const;
 
     // Gets the timestamp of the current transaction.
-    Timestamp get_timestamp() const;
+    SpacetimeDb::sdk::Timestamp get_timestamp() const;
 
     // Provides access to database operations.
     Database& db();
@@ -28,8 +28,8 @@ public:
 
 
 private:
-    Identity current_sender;
-    Timestamp current_timestamp;
+    SpacetimeDb::sdk::Identity current_sender;
+    SpacetimeDb::sdk::Timestamp current_timestamp;
     Database& database_instance;
     // Note: Storing a reference to Database implies Database lifetime management
     // is handled externally and outlives ReducerContext.
