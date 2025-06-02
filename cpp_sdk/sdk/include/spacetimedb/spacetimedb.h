@@ -275,11 +275,34 @@ struct RegistrationQueue {
 #define SPACETIMEDB_EXTRACT_NAME(name_val, public_val) name_val
 #define SPACETIMEDB_EXTRACT_PUBLIC(name_val, public_val) public_val
 
-// Table macro - place AFTER struct definition
+// Template to store table metadata for types
+template<typename T>
+struct TableMetadata {
+    static const char* name;
+    static bool is_public;
+    static bool registered;
+};
+
+// Default values
+template<typename T>
+const char* TableMetadata<T>::name = nullptr;
+template<typename T>
+bool TableMetadata<T>::is_public = false;
+template<typename T>
+bool TableMetadata<T>::registered = false;
+
+// Table macro - can be placed BEFORE struct definition!
 #define SPACETIMEDB_TABLE(type_name, name_val, public_val) \
+    struct type_name; \
+    template<> const char* TableMetadata<type_name>::name = name_val; \
+    template<> bool TableMetadata<type_name>::is_public = public_val; \
+    template<> bool TableMetadata<type_name>::registered = false; \
     extern "C" __attribute__((export_name("__preinit__20_table_" #type_name))) \
     void _preinit_register_table_##type_name() { \
-        register_table_impl<type_name>(name_val, public_val); \
+        if (!TableMetadata<type_name>::registered) { \
+            TableMetadata<type_name>::registered = true; \
+            register_table_impl<type_name>(TableMetadata<type_name>::name, TableMetadata<type_name>::is_public); \
+        } \
     }
 
 // Field registration helper
@@ -406,11 +429,38 @@ void register_reducer_func(const std::string& name, void (*func)(spacetimedb::Re
         }(); \
     }
 
-// Reducer macro - place AFTER function definition
+// Template to store reducer metadata
+template<void (*Func)(spacetimedb::ReducerContext, ...)>
+struct ReducerMetadata {
+    static const char* name;
+    static bool registered;
+};
+
+// This approach won't work because we can't have variadic function pointers in templates
+// Let's use a different approach with function type deduction
+
+// Reducer registration that will be called after function is defined
+template<typename FuncType>
+struct ReducerRegistrar {
+    static void register_func(const char* name, FuncType func) {
+        // This will be specialized based on the function signature
+    }
+};
+
+// Specialization for single byte argument
+template<>
+struct ReducerRegistrar<void (*)(spacetimedb::ReducerContext, spacetimedb::byte)> {
+    static void register_func(const char* name, void (*func)(spacetimedb::ReducerContext, spacetimedb::byte)) {
+        register_reducer_impl(name, func);
+    }
+};
+
+// Reducer macro - can be placed BEFORE or AFTER function definition
 #define SPACETIMEDB_REDUCER(func_name) \
+    void func_name(spacetimedb::ReducerContext, spacetimedb::byte); \
     extern "C" __attribute__((export_name("__preinit__30_reducer_" #func_name))) \
     void _preinit_register_reducer_##func_name() { \
-        register_reducer_impl(#func_name, func_name); \
+        ReducerRegistrar<decltype(&func_name)>::register_func(#func_name, func_name); \
     }
 
 // Module exports implementation  
