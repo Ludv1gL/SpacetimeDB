@@ -1,0 +1,6 @@
+/home/ludvi/stdbfork/SpacetimeDB/cpp_sdk/examples/quickstart_cpp_kv/build/CMakeFiles/kvstore_module.dir
+/home/ludvi/stdbfork/SpacetimeDB/cpp_sdk/examples/quickstart_cpp_kv/build/CMakeFiles/edit_cache.dir
+/home/ludvi/stdbfork/SpacetimeDB/cpp_sdk/examples/quickstart_cpp_kv/build/CMakeFiles/rebuild_cache.dir
+/home/ludvi/stdbfork/SpacetimeDB/cpp_sdk/examples/quickstart_cpp_kv/build/sdk_build/CMakeFiles/spacetimedb_cpp_sdk.dir
+/home/ludvi/stdbfork/SpacetimeDB/cpp_sdk/examples/quickstart_cpp_kv/build/sdk_build/CMakeFiles/edit_cache.dir
+/home/ludvi/stdbfork/SpacetimeDB/cpp_sdk/examples/quickstart_cpp_kv/build/sdk_build/CMakeFiles/rebuild_cache.dir

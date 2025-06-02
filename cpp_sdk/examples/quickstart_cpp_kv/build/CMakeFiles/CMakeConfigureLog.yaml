@@ -4,173 +4,186 @@ events:
   -
     kind: "message-v1"
     backtrace:
-      - "C:/Program Files/CMake/share/cmake-4.0/Modules/CMakeDetermineSystem.cmake:200 (message)"
+      - "/usr/share/cmake-3.28/Modules/CMakeDetermineSystem.cmake:228 (message)"
       - "CMakeLists.txt:2 (project)"
     message: |
       The target system is: Emscripten -  - wasm32
-      The host system is: Windows - 10.0.26100 - AMD64
+      The host system is: Linux - 6.6.87.1-microsoft-standard-WSL2 - x86_64
   -
     kind: "message-v1"
     backtrace:
-      - "C:/Program Files/CMake/share/cmake-4.0/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
-      - "C:/Program Files/CMake/share/cmake-4.0/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
-      - "C:/Program Files/CMake/share/cmake-4.0/Modules/CMakeDetermineCXXCompiler.cmake:126 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "/usr/share/cmake-3.28/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "/usr/share/cmake-3.28/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "/usr/share/cmake-3.28/Modules/CMakeDetermineCXXCompiler.cmake:126 (CMAKE_DETERMINE_COMPILER_ID)"
       - "CMakeLists.txt:2 (project)"
     message: |
       Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
-      Compiler: C:/Users/ludvi/emsdk/upstream/emscripten/em++ 
+      Compiler: /home/ludvi/emsdk/upstream/emscripten/em++ 
       Build flags: -O2;-s;SIDE_MODULE=1;-s;STRICT=1;--no-entry;-Wall;-Wextra
       Id flags:  
       
       The output was:
       0
-      MSBuild version 17.13.19+0d9f5a35a for .NET Framework
-      Build started 2025-06-01 14:23:43.
-      
-      Project "C:\\Users\\ludvi\\stdbfork\\SpacetimeDB\\cpp_sdk\\examples\\quickstart_cpp_kv\\build\\CMakeFiles\\4.0.2\\CompilerIdCXX\\CompilerIdCXX.vcxproj" on node 1 (default targets).
-      PrepareForBuild:
-        Creating directory "Debug\\".
-        Structured output is enabled. The formatting of compiler diagnostics will reflect the error hierarchy. See https://aka.ms/cpp/structured-output for more details.
-        Creating directory "Debug\\CompilerIdCXX.tlog\\".
-      InitializeBuildStatus:
-        Creating "Debug\\CompilerIdCXX.tlog\\unsuccessfulbuild" because "AlwaysCreate" was specified.
-        Touching "Debug\\CompilerIdCXX.tlog\\unsuccessfulbuild".
-      ClCompile:
-        C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\CL.exe /c /nologo /W0 /WX- /diagnostics:column /Od /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\\\" /Fd"Debug\\vc143.pdb" /external:W0 /Gd /TP /FC /errorReport:queue CMakeCXXCompilerId.cpp
-        CMakeCXXCompilerId.cpp
-      Link:
-        C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:".\\CompilerIdCXX.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:".\\CompilerIdCXX.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:".\\CompilerIdCXX.lib" /MACHINE:X64 Debug\\CMakeCXXCompilerId.obj
-        CompilerIdCXX.vcxproj -> C:\\Users\\ludvi\\stdbfork\\SpacetimeDB\\cpp_sdk\\examples\\quickstart_cpp_kv\\build\\CMakeFiles\\4.0.2\\CompilerIdCXX\\CompilerIdCXX.exe
-      PostBuildEvent:
-        for %%i in (cl.exe) do @echo CMAKE_CXX_COMPILER=%%~$PATH:i
-        :VCEnd
-        CMAKE_CXX_COMPILER=C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe
-      FinalizeBuildStatus:
-        Deleting file "Debug\\CompilerIdCXX.tlog\\unsuccessfulbuild".
-        Touching "Debug\\CompilerIdCXX.tlog\\CompilerIdCXX.lastbuildstate".
-      Done Building Project "C:\\Users\\ludvi\\stdbfork\\SpacetimeDB\\cpp_sdk\\examples\\quickstart_cpp_kv\\build\\CMakeFiles\\4.0.2\\CompilerIdCXX\\CompilerIdCXX.vcxproj" (default targets).
-      
-      Build succeeded.
-          0 Warning(s)
-          0 Error(s)
-      
-      Time Elapsed 00:00:00.65
       
       
-      Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CompilerIdCXX.exe"
+      Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "a.out.wasm"
       
-      Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CompilerIdCXX.vcxproj"
-      
-      The CXX compiler identification is MSVC, found in:
-        C:/Users/ludvi/stdbfork/SpacetimeDB/cpp_sdk/examples/quickstart_cpp_kv/build/CMakeFiles/4.0.2/CompilerIdCXX/CompilerIdCXX.exe
+      The CXX compiler identification is Clang, found in:
+        /home/ludvi/stdbfork/SpacetimeDB/cpp_sdk/examples/quickstart_cpp_kv/build/CMakeFiles/3.28.3/CompilerIdCXX/a.out.wasm
       
   -
     kind: "try_compile-v1"
     backtrace:
-      - "C:/Program Files/CMake/share/cmake-4.0/Modules/CMakeDetermineCompilerABI.cmake:83 (try_compile)"
-      - "C:/Program Files/CMake/share/cmake-4.0/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "/usr/share/cmake-3.28/Modules/CMakeDetermineCompilerABI.cmake:57 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
       - "CMakeLists.txt:2 (project)"
     checks:
       - "Detecting CXX compiler ABI info"
     directories:
-      source: "C:/Users/ludvi/stdbfork/SpacetimeDB/cpp_sdk/examples/quickstart_cpp_kv/build/CMakeFiles/CMakeScratch/TryCompile-w7zxub"
-      binary: "C:/Users/ludvi/stdbfork/SpacetimeDB/cpp_sdk/examples/quickstart_cpp_kv/build/CMakeFiles/CMakeScratch/TryCompile-w7zxub"
+      source: "/home/ludvi/stdbfork/SpacetimeDB/cpp_sdk/examples/quickstart_cpp_kv/build/CMakeFiles/CMakeScratch/TryCompile-vJq47k"
+      binary: "/home/ludvi/stdbfork/SpacetimeDB/cpp_sdk/examples/quickstart_cpp_kv/build/CMakeFiles/CMakeScratch/TryCompile-vJq47k"
     cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS-NOTFOUND"
       CMAKE_CXX_FLAGS: "-O2 -s SIDE_MODULE=1 -s STRICT=1 --no-entry -Wall -Wextra"
-      CMAKE_CXX_FLAGS_DEBUG: ""
-      CMAKE_CXX_SCAN_FOR_MODULES: "OFF"
+      CMAKE_CXX_FLAGS_DEBUG: "-g"
       CMAKE_EXE_LINKER_FLAGS: ""
     buildResult:
       variable: "CMAKE_CXX_ABI_COMPILED"
       cached: true
       stdout: |
-        Change Dir: 'C:/Users/ludvi/stdbfork/SpacetimeDB/cpp_sdk/examples/quickstart_cpp_kv/build/CMakeFiles/CMakeScratch/TryCompile-w7zxub'
+        Change Dir: '/home/ludvi/stdbfork/SpacetimeDB/cpp_sdk/examples/quickstart_cpp_kv/build/CMakeFiles/CMakeScratch/TryCompile-vJq47k'
         
-        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_5ad37.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
-        MSBuild version 17.13.19+0d9f5a35a for .NET Framework
-        Build started 2025-06-01 14:23:44.
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_8ae59/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_8ae59.dir/build.make CMakeFiles/cmTC_8ae59.dir/build
+        gmake[1]: Entering directory '/home/ludvi/stdbfork/SpacetimeDB/cpp_sdk/examples/quickstart_cpp_kv/build/CMakeFiles/CMakeScratch/TryCompile-vJq47k'
+        Building CXX object CMakeFiles/cmTC_8ae59.dir/CMakeCXXCompilerABI.cpp.obj
+        /home/ludvi/emsdk/upstream/emscripten/em++   -O2 -s SIDE_MODULE=1 -s STRICT=1 --no-entry -Wall -Wextra    -v -MD -MT CMakeFiles/cmTC_8ae59.dir/CMakeCXXCompilerABI.cpp.obj -MF CMakeFiles/cmTC_8ae59.dir/CMakeCXXCompilerABI.cpp.obj.d -o CMakeFiles/cmTC_8ae59.dir/CMakeCXXCompilerABI.cpp.obj -c /usr/share/cmake-3.28/Modules/CMakeCXXCompilerABI.cpp
+         "/home/ludvi/emsdk/upstream/bin/clang++" -target wasm32-unknown-emscripten -fignore-exceptions -fPIC -fvisibility=default -mllvm -combiner-global-alias-analysis=false -mllvm -enable-emscripten-sjlj -mllvm -disable-lsr --sysroot=/home/ludvi/emsdk/upstream/emscripten/cache/sysroot -Xclang -iwithsysroot/include/fakesdl -Xclang -iwithsysroot/include/compat -O2 -Wall -Wextra -v -MD -MT CMakeFiles/cmTC_8ae59.dir/CMakeCXXCompilerABI.cpp.obj -MF CMakeFiles/cmTC_8ae59.dir/CMakeCXXCompilerABI.cpp.obj.d -oCMakeFiles/cmTC_8ae59.dir/CMakeCXXCompilerABI.cpp.obj -c /usr/share/cmake-3.28/Modules/CMakeCXXCompilerABI.cpp
+        clang version 21.0.0git (https:/github.com/llvm/llvm-project 2f05451198e2f222ec66cec4892ada0509519290)
+        Target: wasm32-unknown-emscripten
+        Thread model: posix
+        InstalledDir: /home/ludvi/emsdk/upstream/bin
+         (in-process)
+         "/home/ludvi/emsdk/upstream/bin/clang-21" -cc1 -triple wasm32-unknown-emscripten -emit-obj -disable-free -clear-ast-before-backend -disable-llvm-verifier -discard-value-names -main-file-name CMakeCXXCompilerABI.cpp -mrelocation-model pic -pic-level 2 -mframe-pointer=none -ffp-contract=on -fno-rounding-math -mconstructor-aliases -target-feature +mutable-globals -target-cpu generic -debugger-tuning=gdb -fdebug-compilation-dir=/home/ludvi/stdbfork/SpacetimeDB/cpp_sdk/examples/quickstart_cpp_kv/build/CMakeFiles/CMakeScratch/TryCompile-vJq47k -v -fcoverage-compilation-dir=/home/ludvi/stdbfork/SpacetimeDB/cpp_sdk/examples/quickstart_cpp_kv/build/CMakeFiles/CMakeScratch/TryCompile-vJq47k -resource-dir /home/ludvi/emsdk/upstream/lib/clang/21 -dependency-file CMakeFiles/cmTC_8ae59.dir/CMakeCXXCompilerABI.cpp.obj.d -MT CMakeFiles/cmTC_8ae59.dir/CMakeCXXCompilerABI.cpp.obj -sys-header-deps -isysroot /home/ludvi/emsdk/upstream/emscripten/cache/sysroot -internal-isystem /home/ludvi/emsdk/upstream/emscripten/cache/sysroot/include/wasm32-emscripten/c++/v1 -internal-isystem /home/ludvi/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1 -internal-isystem /home/ludvi/emsdk/upstream/lib/clang/21/include -internal-isystem /home/ludvi/emsdk/upstream/emscripten/cache/sysroot/include/wasm32-emscripten -internal-isystem /home/ludvi/emsdk/upstream/emscripten/cache/sysroot/include -O2 -Wall -Wextra -fdeprecated-macro -ferror-limit 19 -fvisibility=default -fgnuc-version=4.2.1 -fskip-odr-check-in-gmf -fcxx-exceptions -fignore-exceptions -fexceptions -vectorize-loops -vectorize-slp -iwithsysroot/include/fakesdl -iwithsysroot/include/compat -mllvm -combiner-global-alias-analysis=false -mllvm -enable-emscripten-sjlj -mllvm -disable-lsr -o CMakeFiles/cmTC_8ae59.dir/CMakeCXXCompilerABI.cpp.obj -x c++ /usr/share/cmake-3.28/Modules/CMakeCXXCompilerABI.cpp
+        clang -cc1 version 21.0.0git based upon LLVM 21.0.0git default target x86_64-unknown-linux-gnu
+        ignoring nonexistent directory "/home/ludvi/emsdk/upstream/emscripten/cache/sysroot/include/wasm32-emscripten/c++/v1"
+        ignoring nonexistent directory "/home/ludvi/emsdk/upstream/emscripten/cache/sysroot/include/wasm32-emscripten"
+        #include "..." search starts here:
+        #include <...> search starts here:
+         /home/ludvi/emsdk/upstream/emscripten/cache/sysroot/include/fakesdl
+         /home/ludvi/emsdk/upstream/emscripten/cache/sysroot/include/compat
+         /home/ludvi/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1
+         /home/ludvi/emsdk/upstream/lib/clang/21/include
+         /home/ludvi/emsdk/upstream/emscripten/cache/sysroot/include
+        End of search list.
+        Linking CXX executable cmTC_8ae59
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_8ae59.dir/link.txt --verbose=1
+        /home/ludvi/emsdk/upstream/emscripten/em++ -O2 -s SIDE_MODULE=1 -s STRICT=1 --no-entry -Wall -Wextra   -v CMakeFiles/cmTC_8ae59.dir/CMakeCXXCompilerABI.cpp.obj -o cmTC_8ae59 
+         /home/ludvi/emsdk/upstream/bin/clang --version
+         /home/ludvi/emsdk/upstream/bin/wasm-ld -o cmTC_8ae59 CMakeFiles/cmTC_8ae59.dir/CMakeCXXCompilerABI.cpp.obj -L/home/ludvi/emsdk/upstream/emscripten/cache/sysroot/lib/wasm32-emscripten/pic -L/home/ludvi/emsdk/upstream/emscripten/src/lib --fatal-warnings -mllvm -combiner-global-alias-analysis=false -mllvm -enable-emscripten-sjlj -mllvm -disable-lsr --import-memory --strip-debug --export=__wasm_call_ctors --export-if-defined=__start_em_asm --export-if-defined=__stop_em_asm --export-if-defined=__start_em_lib_deps --export-if-defined=__stop_em_lib_deps --export-if-defined=__start_em_js --export-if-defined=__stop_em_js --export-if-defined=__wasm_apply_data_relocs --experimental-pic --unresolved-symbols=import-dynamic -shared --no-export-dynamic
+         /home/ludvi/emsdk/upstream/bin/wasm-ld -o cmTC_8ae59 --whole-archive CMakeFiles/cmTC_8ae59.dir/CMakeCXXCompilerABI.cpp.obj -L/home/ludvi/emsdk/upstream/emscripten/cache/sysroot/lib/wasm32-emscripten/pic -L/home/ludvi/emsdk/upstream/emscripten/src/lib --no-whole-archive --fatal-warnings -mllvm -combiner-global-alias-analysis=false -mllvm -enable-emscripten-sjlj -mllvm -disable-lsr --import-memory --strip-debug --export-dynamic --export=__wasm_call_ctors --export-if-defined=__start_em_asm --export-if-defined=__stop_em_asm --export-if-defined=__start_em_lib_deps --export-if-defined=__stop_em_lib_deps --export-if-defined=__start_em_js --export-if-defined=__stop_em_js --export-if-defined=__wasm_apply_data_relocs --experimental-pic --unresolved-symbols=import-dynamic -shared
+         /home/ludvi/emsdk/upstream/bin/llvm-objcopy cmTC_8ae59 cmTC_8ae59 '--remove-section=.debug*' --remove-section=producers --remove-section=name
+         /home/ludvi/emsdk/upstream/bin/wasm-opt --strip-target-features --post-emscripten --pass-arg=post-emscripten-side-module -O2 --low-memory-unused --pass-arg=directize-initial-contents-immutable cmTC_8ae59 -o cmTC_8ae59 --mvp-features --enable-bulk-memory --enable-bulk-memory-opt --enable-call-indirect-overlong --enable-multivalue --enable-mutable-globals --enable-nontrapping-float-to-int --enable-reference-types --enable-sign-ext
+         /home/ludvi/emsdk/upstream/bin/wasm-opt --strip-target-features --post-emscripten --pass-arg=post-emscripten-side-module -O2 --low-memory-unused --pass-arg=directize-initial-contents-immutable cmTC_8ae59 -o cmTC_8ae59 --mvp-features --enable-bulk-memory --enable-bulk-memory-opt --enable-call-indirect-overlong --enable-multivalue --enable-mutable-globals --enable-nontrapping-float-to-int --enable-reference-types --enable-sign-ext
+        gmake[1]: Leaving directory '/home/ludvi/stdbfork/SpacetimeDB/cpp_sdk/examples/quickstart_cpp_kv/build/CMakeFiles/CMakeScratch/TryCompile-vJq47k'
         
-        Project "C:\\Users\\ludvi\\stdbfork\\SpacetimeDB\\cpp_sdk\\examples\\quickstart_cpp_kv\\build\\CMakeFiles\\CMakeScratch\\TryCompile-w7zxub\\cmTC_5ad37.vcxproj" on node 1 (default targets).
-        PrepareForBuild:
-          Creating directory "cmTC_5ad37.dir\\Debug\\".
-          Structured output is enabled. The formatting of compiler diagnostics will reflect the error hierarchy. See https://aka.ms/cpp/structured-output for more details.
-          Creating directory "C:\\Users\\ludvi\\stdbfork\\SpacetimeDB\\cpp_sdk\\examples\\quickstart_cpp_kv\\build\\CMakeFiles\\CMakeScratch\\TryCompile-w7zxub\\Debug\\".
-          Creating directory "cmTC_5ad37.dir\\Debug\\cmTC_5ad37.tlog\\".
-        InitializeBuildStatus:
-          Creating "cmTC_5ad37.dir\\Debug\\cmTC_5ad37.tlog\\unsuccessfulbuild" because "AlwaysCreate" was specified.
-          Touching "cmTC_5ad37.dir\\Debug\\cmTC_5ad37.tlog\\unsuccessfulbuild".
-        ClCompile:
-          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\CL.exe /c /Wall /WX- /diagnostics:column /O2 /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_5ad37.dir\\Debug\\\\" /Fd"cmTC_5ad37.dir\\Debug\\vc143.pdb" /external:W4 /Gd /TP /errorReport:queue  -s SIDE_MODULE=1 -s STRICT=1 --no-entry -Wextra "C:\\Program Files\\CMake\\share\\cmake-4.0\\Modules\\CMakeCXXCompilerABI.cpp"
-          Microsoft (R) C/C++ Optimizing Compiler Version 19.38.33145 for x64
-          Copyright (C) Microsoft Corporation.  All rights reserved.
-          cl /c /Wall /WX- /diagnostics:column /O2 /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_5ad37.dir\\Debug\\\\" /Fd"cmTC_5ad37.dir\\Debug\\vc143.pdb" /external:W4 /Gd /TP /errorReport:queue  -s SIDE_MODULE=1 -s STRICT=1 --no-entry -Wextra "C:\\Program Files\\CMake\\share\\cmake-4.0\\Modules\\CMakeCXXCompilerABI.cpp"
-        cl : command line  error D8021: invalid numeric argument '/Wextra' [C:\\Users\\ludvi\\stdbfork\\SpacetimeDB\\cpp_sdk\\examples\\quickstart_cpp_kv\\build\\CMakeFiles\\CMakeScratch\\TryCompile-w7zxub\\cmTC_5ad37.vcxproj]
-        Done Building Project "C:\\Users\\ludvi\\stdbfork\\SpacetimeDB\\cpp_sdk\\examples\\quickstart_cpp_kv\\build\\CMakeFiles\\CMakeScratch\\TryCompile-w7zxub\\cmTC_5ad37.vcxproj" (default targets) -- FAILED.
-        
-        Build FAILED.
-        
-        "C:\\Users\\ludvi\\stdbfork\\SpacetimeDB\\cpp_sdk\\examples\\quickstart_cpp_kv\\build\\CMakeFiles\\CMakeScratch\\TryCompile-w7zxub\\cmTC_5ad37.vcxproj" (default target) (1) ->
-        (ClCompile target) -> 
-          cl : command line  error D8021: invalid numeric argument '/Wextra' [C:\\Users\\ludvi\\stdbfork\\SpacetimeDB\\cpp_sdk\\examples\\quickstart_cpp_kv\\build\\CMakeFiles\\CMakeScratch\\TryCompile-w7zxub\\cmTC_5ad37.vcxproj]
-        
-            0 Warning(s)
-            1 Error(s)
-        
-        Time Elapsed 00:00:00.20
-        
-      exitCode: 1
+      exitCode: 0
   -
-    kind: "try_compile-v1"
+    kind: "message-v1"
     backtrace:
-      - "C:/Program Files/CMake/share/cmake-4.0/Modules/CMakeTestCXXCompiler.cmake:56 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/CMakeDetermineCompilerABI.cmake:127 (message)"
+      - "/usr/share/cmake-3.28/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
       - "CMakeLists.txt:2 (project)"
-    checks:
-      - "Check for working CXX compiler: C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.38.33130/bin/Hostx64/x64/cl.exe"
-    directories:
-      source: "C:/Users/ludvi/stdbfork/SpacetimeDB/cpp_sdk/examples/quickstart_cpp_kv/build/CMakeFiles/CMakeScratch/TryCompile-xl8cur"
-      binary: "C:/Users/ludvi/stdbfork/SpacetimeDB/cpp_sdk/examples/quickstart_cpp_kv/build/CMakeFiles/CMakeScratch/TryCompile-xl8cur"
-    cmakeVariables:
-      CMAKE_CXX_FLAGS: "-O2 -s SIDE_MODULE=1 -s STRICT=1 --no-entry -Wall -Wextra"
-      CMAKE_CXX_FLAGS_DEBUG: ""
-      CMAKE_CXX_SCAN_FOR_MODULES: "OFF"
-      CMAKE_EXE_LINKER_FLAGS: ""
-    buildResult:
-      variable: "CMAKE_CXX_COMPILER_WORKS"
-      cached: true
-      stdout: |
-        Change Dir: 'C:/Users/ludvi/stdbfork/SpacetimeDB/cpp_sdk/examples/quickstart_cpp_kv/build/CMakeFiles/CMakeScratch/TryCompile-xl8cur'
-        
-        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_cbb83.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
-        MSBuild version 17.13.19+0d9f5a35a for .NET Framework
-        Build started 2025-06-01 14:23:45.
-        
-        Project "C:\\Users\\ludvi\\stdbfork\\SpacetimeDB\\cpp_sdk\\examples\\quickstart_cpp_kv\\build\\CMakeFiles\\CMakeScratch\\TryCompile-xl8cur\\cmTC_cbb83.vcxproj" on node 1 (default targets).
-        PrepareForBuild:
-          Creating directory "cmTC_cbb83.dir\\Debug\\".
-          Structured output is enabled. The formatting of compiler diagnostics will reflect the error hierarchy. See https://aka.ms/cpp/structured-output for more details.
-          Creating directory "C:\\Users\\ludvi\\stdbfork\\SpacetimeDB\\cpp_sdk\\examples\\quickstart_cpp_kv\\build\\CMakeFiles\\CMakeScratch\\TryCompile-xl8cur\\Debug\\".
-          Creating directory "cmTC_cbb83.dir\\Debug\\cmTC_cbb83.tlog\\".
-        InitializeBuildStatus:
-          Creating "cmTC_cbb83.dir\\Debug\\cmTC_cbb83.tlog\\unsuccessfulbuild" because "AlwaysCreate" was specified.
-          Touching "cmTC_cbb83.dir\\Debug\\cmTC_cbb83.tlog\\unsuccessfulbuild".
-        ClCompile:
-          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\CL.exe /c /Wall /WX- /diagnostics:column /O2 /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_cbb83.dir\\Debug\\\\" /Fd"cmTC_cbb83.dir\\Debug\\vc143.pdb" /external:W4 /Gd /TP /errorReport:queue  -s SIDE_MODULE=1 -s STRICT=1 --no-entry -Wextra "C:\\Users\\ludvi\\stdbfork\\SpacetimeDB\\cpp_sdk\\examples\\quickstart_cpp_kv\\build\\CMakeFiles\\CMakeScratch\\TryCompile-xl8cur\\testCXXCompiler.cxx"
-          Microsoft (R) C/C++ Optimizing Compiler Version 19.38.33145 for x64
-          Copyright (C) Microsoft Corporation.  All rights reserved.
-          cl /c /Wall /WX- /diagnostics:column /O2 /D _MBCS /D "CMAKE_INTDIR=\\"Debug\\"" /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_cbb83.dir\\Debug\\\\" /Fd"cmTC_cbb83.dir\\Debug\\vc143.pdb" /external:W4 /Gd /TP /errorReport:queue  -s SIDE_MODULE=1 -s STRICT=1 --no-entry -Wextra "C:\\Users\\ludvi\\stdbfork\\SpacetimeDB\\cpp_sdk\\examples\\quickstart_cpp_kv\\build\\CMakeFiles\\CMakeScratch\\TryCompile-xl8cur\\testCXXCompiler.cxx"
-        cl : command line  error D8021: invalid numeric argument '/Wextra' [C:\\Users\\ludvi\\stdbfork\\SpacetimeDB\\cpp_sdk\\examples\\quickstart_cpp_kv\\build\\CMakeFiles\\CMakeScratch\\TryCompile-xl8cur\\cmTC_cbb83.vcxproj]
-        Done Building Project "C:\\Users\\ludvi\\stdbfork\\SpacetimeDB\\cpp_sdk\\examples\\quickstart_cpp_kv\\build\\CMakeFiles\\CMakeScratch\\TryCompile-xl8cur\\cmTC_cbb83.vcxproj" (default targets) -- FAILED.
-        
-        Build FAILED.
-        
-        "C:\\Users\\ludvi\\stdbfork\\SpacetimeDB\\cpp_sdk\\examples\\quickstart_cpp_kv\\build\\CMakeFiles\\CMakeScratch\\TryCompile-xl8cur\\cmTC_cbb83.vcxproj" (default target) (1) ->
-        (ClCompile target) -> 
-          cl : command line  error D8021: invalid numeric argument '/Wextra' [C:\\Users\\ludvi\\stdbfork\\SpacetimeDB\\cpp_sdk\\examples\\quickstart_cpp_kv\\build\\CMakeFiles\\CMakeScratch\\TryCompile-xl8cur\\cmTC_cbb83.vcxproj]
-        
-            0 Warning(s)
-            1 Error(s)
-        
-        Time Elapsed 00:00:00.19
-        
-      exitCode: 1
+    message: |
+      Parsed CXX implicit include dir info: rv=done
+        found start of include info
+        found start of implicit include info
+          add: [/home/ludvi/emsdk/upstream/emscripten/cache/sysroot/include/fakesdl]
+          add: [/home/ludvi/emsdk/upstream/emscripten/cache/sysroot/include/compat]
+          add: [/home/ludvi/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1]
+          add: [/home/ludvi/emsdk/upstream/lib/clang/21/include]
+          add: [/home/ludvi/emsdk/upstream/emscripten/cache/sysroot/include]
+        end of search list found
+        collapse include dir [/home/ludvi/emsdk/upstream/emscripten/cache/sysroot/include/fakesdl] ==> [/home/ludvi/emsdk/upstream/emscripten/cache/sysroot/include/fakesdl]
+        collapse include dir [/home/ludvi/emsdk/upstream/emscripten/cache/sysroot/include/compat] ==> [/home/ludvi/emsdk/upstream/emscripten/cache/sysroot/include/compat]
+        collapse include dir [/home/ludvi/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1] ==> [/home/ludvi/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1]
+        collapse include dir [/home/ludvi/emsdk/upstream/lib/clang/21/include] ==> [/home/ludvi/emsdk/upstream/lib/clang/21/include]
+        collapse include dir [/home/ludvi/emsdk/upstream/emscripten/cache/sysroot/include] ==> [/home/ludvi/emsdk/upstream/emscripten/cache/sysroot/include]
+        implicit include dirs: [/home/ludvi/emsdk/upstream/emscripten/cache/sysroot/include/fakesdl;/home/ludvi/emsdk/upstream/emscripten/cache/sysroot/include/compat;/home/ludvi/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1;/home/ludvi/emsdk/upstream/lib/clang/21/include;/home/ludvi/emsdk/upstream/emscripten/cache/sysroot/include]
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/CMakeDetermineCompilerABI.cmake:159 (message)"
+      - "/usr/share/cmake-3.28/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      Parsed CXX implicit link information:
+        link line regex: [^( *|.*[/\\])(ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
+        ignore line: [Change Dir: '/home/ludvi/stdbfork/SpacetimeDB/cpp_sdk/examples/quickstart_cpp_kv/build/CMakeFiles/CMakeScratch/TryCompile-vJq47k']
+        ignore line: []
+        ignore line: [Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_8ae59/fast]
+        ignore line: [/usr/bin/gmake  -f CMakeFiles/cmTC_8ae59.dir/build.make CMakeFiles/cmTC_8ae59.dir/build]
+        ignore line: [gmake[1]: Entering directory '/home/ludvi/stdbfork/SpacetimeDB/cpp_sdk/examples/quickstart_cpp_kv/build/CMakeFiles/CMakeScratch/TryCompile-vJq47k']
+        ignore line: [Building CXX object CMakeFiles/cmTC_8ae59.dir/CMakeCXXCompilerABI.cpp.obj]
+        ignore line: [/home/ludvi/emsdk/upstream/emscripten/em++   -O2 -s SIDE_MODULE=1 -s STRICT=1 --no-entry -Wall -Wextra    -v -MD -MT CMakeFiles/cmTC_8ae59.dir/CMakeCXXCompilerABI.cpp.obj -MF CMakeFiles/cmTC_8ae59.dir/CMakeCXXCompilerABI.cpp.obj.d -o CMakeFiles/cmTC_8ae59.dir/CMakeCXXCompilerABI.cpp.obj -c /usr/share/cmake-3.28/Modules/CMakeCXXCompilerABI.cpp]
+        ignore line: [ "/home/ludvi/emsdk/upstream/bin/clang++" -target wasm32-unknown-emscripten -fignore-exceptions -fPIC -fvisibility=default -mllvm -combiner-global-alias-analysis=false -mllvm -enable-emscripten-sjlj -mllvm -disable-lsr --sysroot=/home/ludvi/emsdk/upstream/emscripten/cache/sysroot -Xclang -iwithsysroot/include/fakesdl -Xclang -iwithsysroot/include/compat -O2 -Wall -Wextra -v -MD -MT CMakeFiles/cmTC_8ae59.dir/CMakeCXXCompilerABI.cpp.obj -MF CMakeFiles/cmTC_8ae59.dir/CMakeCXXCompilerABI.cpp.obj.d -oCMakeFiles/cmTC_8ae59.dir/CMakeCXXCompilerABI.cpp.obj -c /usr/share/cmake-3.28/Modules/CMakeCXXCompilerABI.cpp]
+        ignore line: [clang version 21.0.0git (https:/github.com/llvm/llvm-project 2f05451198e2f222ec66cec4892ada0509519290)]
+        ignore line: [Target: wasm32-unknown-emscripten]
+        ignore line: [Thread model: posix]
+        ignore line: [InstalledDir: /home/ludvi/emsdk/upstream/bin]
+        ignore line: [ (in-process)]
+        ignore line: [ "/home/ludvi/emsdk/upstream/bin/clang-21" -cc1 -triple wasm32-unknown-emscripten -emit-obj -disable-free -clear-ast-before-backend -disable-llvm-verifier -discard-value-names -main-file-name CMakeCXXCompilerABI.cpp -mrelocation-model pic -pic-level 2 -mframe-pointer=none -ffp-contract=on -fno-rounding-math -mconstructor-aliases -target-feature +mutable-globals -target-cpu generic -debugger-tuning=gdb -fdebug-compilation-dir=/home/ludvi/stdbfork/SpacetimeDB/cpp_sdk/examples/quickstart_cpp_kv/build/CMakeFiles/CMakeScratch/TryCompile-vJq47k -v -fcoverage-compilation-dir=/home/ludvi/stdbfork/SpacetimeDB/cpp_sdk/examples/quickstart_cpp_kv/build/CMakeFiles/CMakeScratch/TryCompile-vJq47k -resource-dir /home/ludvi/emsdk/upstream/lib/clang/21 -dependency-file CMakeFiles/cmTC_8ae59.dir/CMakeCXXCompilerABI.cpp.obj.d -MT CMakeFiles/cmTC_8ae59.dir/CMakeCXXCompilerABI.cpp.obj -sys-header-deps -isysroot /home/ludvi/emsdk/upstream/emscripten/cache/sysroot -internal-isystem /home/ludvi/emsdk/upstream/emscripten/cache/sysroot/include/wasm32-emscripten/c++/v1 -internal-isystem /home/ludvi/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1 -internal-isystem /home/ludvi/emsdk/upstream/lib/clang/21/include -internal-isystem /home/ludvi/emsdk/upstream/emscripten/cache/sysroot/include/wasm32-emscripten -internal-isystem /home/ludvi/emsdk/upstream/emscripten/cache/sysroot/include -O2 -Wall -Wextra -fdeprecated-macro -ferror-limit 19 -fvisibility=default -fgnuc-version=4.2.1 -fskip-odr-check-in-gmf -fcxx-exceptions -fignore-exceptions -fexceptions -vectorize-loops -vectorize-slp -iwithsysroot/include/fakesdl -iwithsysroot/include/compat -mllvm -combiner-global-alias-analysis=false -mllvm -enable-emscripten-sjlj -mllvm -disable-lsr -o CMakeFiles/cmTC_8ae59.dir/CMakeCXXCompilerABI.cpp.obj -x c++ /usr/share/cmake-3.28/Modules/CMakeCXXCompilerABI.cpp]
+        ignore line: [clang -cc1 version 21.0.0git based upon LLVM 21.0.0git default target x86_64-unknown-linux-gnu]
+        ignore line: [ignoring nonexistent directory "/home/ludvi/emsdk/upstream/emscripten/cache/sysroot/include/wasm32-emscripten/c++/v1"]
+        ignore line: [ignoring nonexistent directory "/home/ludvi/emsdk/upstream/emscripten/cache/sysroot/include/wasm32-emscripten"]
+        ignore line: [#include "..." search starts here:]
+        ignore line: [#include <...> search starts here:]
+        ignore line: [ /home/ludvi/emsdk/upstream/emscripten/cache/sysroot/include/fakesdl]
+        ignore line: [ /home/ludvi/emsdk/upstream/emscripten/cache/sysroot/include/compat]
+        ignore line: [ /home/ludvi/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1]
+        ignore line: [ /home/ludvi/emsdk/upstream/lib/clang/21/include]
+        ignore line: [ /home/ludvi/emsdk/upstream/emscripten/cache/sysroot/include]
+        ignore line: [End of search list.]
+        ignore line: [Linking CXX executable cmTC_8ae59]
+        ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_8ae59.dir/link.txt --verbose=1]
+        ignore line: [/home/ludvi/emsdk/upstream/emscripten/em++ -O2 -s SIDE_MODULE=1 -s STRICT=1 --no-entry -Wall -Wextra   -v CMakeFiles/cmTC_8ae59.dir/CMakeCXXCompilerABI.cpp.obj -o cmTC_8ae59 ]
+        ignore line: [ /home/ludvi/emsdk/upstream/bin/clang --version]
+        link line: [ /home/ludvi/emsdk/upstream/bin/wasm-ld -o cmTC_8ae59 CMakeFiles/cmTC_8ae59.dir/CMakeCXXCompilerABI.cpp.obj -L/home/ludvi/emsdk/upstream/emscripten/cache/sysroot/lib/wasm32-emscripten/pic -L/home/ludvi/emsdk/upstream/emscripten/src/lib --fatal-warnings -mllvm -combiner-global-alias-analysis=false -mllvm -enable-emscripten-sjlj -mllvm -disable-lsr --import-memory --strip-debug --export=__wasm_call_ctors --export-if-defined=__start_em_asm --export-if-defined=__stop_em_asm --export-if-defined=__start_em_lib_deps --export-if-defined=__stop_em_lib_deps --export-if-defined=__start_em_js --export-if-defined=__stop_em_js --export-if-defined=__wasm_apply_data_relocs --experimental-pic --unresolved-symbols=import-dynamic -shared --no-export-dynamic]
+          arg [/home/ludvi/emsdk/upstream/bin/wasm-ld] ==> ignore
+          arg [-o] ==> ignore
+          arg [cmTC_8ae59] ==> ignore
+          arg [CMakeFiles/cmTC_8ae59.dir/CMakeCXXCompilerABI.cpp.obj] ==> ignore
+          arg [-L/home/ludvi/emsdk/upstream/emscripten/cache/sysroot/lib/wasm32-emscripten/pic] ==> dir [/home/ludvi/emsdk/upstream/emscripten/cache/sysroot/lib/wasm32-emscripten/pic]
+          arg [-L/home/ludvi/emsdk/upstream/emscripten/src/lib] ==> dir [/home/ludvi/emsdk/upstream/emscripten/src/lib]
+          arg [--fatal-warnings] ==> ignore
+          arg [-mllvm] ==> ignore
+          arg [-combiner-global-alias-analysis=false] ==> ignore
+          arg [-mllvm] ==> ignore
+          arg [-enable-emscripten-sjlj] ==> ignore
+          arg [-mllvm] ==> ignore
+          arg [-disable-lsr] ==> ignore
+          arg [--import-memory] ==> ignore
+          arg [--strip-debug] ==> ignore
+          arg [--export=__wasm_call_ctors] ==> ignore
+          arg [--export-if-defined=__start_em_asm] ==> ignore
+          arg [--export-if-defined=__stop_em_asm] ==> ignore
+          arg [--export-if-defined=__start_em_lib_deps] ==> ignore
+          arg [--export-if-defined=__stop_em_lib_deps] ==> ignore
+          arg [--export-if-defined=__start_em_js] ==> ignore
+          arg [--export-if-defined=__stop_em_js] ==> ignore
+          arg [--export-if-defined=__wasm_apply_data_relocs] ==> ignore
+          arg [--experimental-pic] ==> ignore
+          arg [--unresolved-symbols=import-dynamic] ==> ignore
+          arg [-shared] ==> ignore
+          arg [--no-export-dynamic] ==> ignore
+        collapse library dir [/home/ludvi/emsdk/upstream/emscripten/cache/sysroot/lib/wasm32-emscripten/pic] ==> [/home/ludvi/emsdk/upstream/emscripten/cache/sysroot/lib/wasm32-emscripten/pic]
+        collapse library dir [/home/ludvi/emsdk/upstream/emscripten/src/lib] ==> [/home/ludvi/emsdk/upstream/emscripten/src/lib]
+        implicit libs: []
+        implicit objs: []
+        implicit dirs: [/home/ludvi/emsdk/upstream/emscripten/cache/sysroot/lib/wasm32-emscripten/pic;/home/ludvi/emsdk/upstream/emscripten/src/lib]
+        implicit fwks: []
+      
+      
 ...

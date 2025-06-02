@@ -1,0 +1,1 @@
+/home/ludvi/emsdk/upstream/emscripten/em++ -O2 -s SIDE_MODULE=1 -s STRICT=1 --no-entry -Wall -Wextra CMakeFiles/kvstore_module.dir/src/kv_store.cpp.obj -o /home/ludvi/stdbfork/SpacetimeDB/cpp_sdk/examples/quickstart_cpp_kv/target/wasm32-unknown-unknown/release/kvstore_module.wasm  sdk_build/libspacetimedb_cpp_sdk.a 

@@ -1,0 +1,2 @@
+# Empty dependencies file for spacetimedb_cpp_sdk.
+# This may be replaced when dependencies are built.

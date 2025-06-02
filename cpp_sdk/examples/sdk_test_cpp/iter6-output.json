@@ -1,0 +1,43 @@
+{
+  "typespace": {
+    "types": [
+      {
+        "Product": {
+          "elements": [
+            {
+              "name": {
+                "some": "n"
+              },
+              "algebraic_type": {
+                "U8": []
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "tables": [
+    {
+      "name": "one_u8",
+      "product_type_ref": 0,
+      "primary_key": [],
+      "indexes": [],
+      "constraints": [],
+      "sequences": [],
+      "schedule": {
+        "none": []
+      },
+      "table_type": {
+        "System": []
+      },
+      "table_access": {
+        "Public": []
+      }
+    }
+  ],
+  "reducers": [],
+  "types": [],
+  "misc_exports": [],
+  "row_level_security": []
+}
