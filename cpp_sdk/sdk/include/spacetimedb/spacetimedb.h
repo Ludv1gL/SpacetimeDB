@@ -339,14 +339,47 @@ bool TableMetadata<T>::registered = false;
     SPACETIMEDB_REGISTER_TABLE(Type, name, is_public) \
     __VA_ARGS__
 
+// Helper to read arguments in sequence
+template<typename T>
+T read_arg(uint32_t& source) {
+    if constexpr (std::is_same_v<T, uint8_t>) {
+        return spacetimedb::read_u8(source);
+    } else if constexpr (std::is_same_v<T, uint16_t>) {
+        uint8_t buf[2];
+        size_t len = 2;
+        bytes_source_read(source, buf, &len);
+        return buf[0] | (buf[1] << 8);
+    } else if constexpr (std::is_same_v<T, uint32_t>) {
+        return spacetimedb::read_u32(source);
+    } else if constexpr (std::is_same_v<T, std::string>) {
+        uint32_t len = spacetimedb::read_u32(source);
+        std::string result;
+        result.resize(len);
+        size_t actual_len = len;
+        bytes_source_read(source, reinterpret_cast<uint8_t*>(result.data()), &actual_len);
+        return result;
+    }
+    return T{};
+}
+
 // Reducer wrapper function
 template<typename... Args>
 void spacetimedb_reducer_wrapper(void (*func)(spacetimedb::ReducerContext, Args...), 
                                 spacetimedb::ReducerContext& ctx, uint32_t args_source) {
-    // For now, handle single byte argument
-    if constexpr (sizeof...(Args) == 1) {
-        spacetimedb::byte arg = spacetimedb::read_u8(args_source);
+    if constexpr (sizeof...(Args) == 0) {
+        func(ctx);
+    } else if constexpr (sizeof...(Args) == 1) {
+        auto arg = read_arg<Args...>(args_source);
         func(ctx, arg);
+    } else if constexpr (sizeof...(Args) == 2) {
+        auto arg1 = read_arg<std::tuple_element_t<0, std::tuple<Args...>>>(args_source);
+        auto arg2 = read_arg<std::tuple_element_t<1, std::tuple<Args...>>>(args_source);
+        func(ctx, arg1, arg2);
+    } else if constexpr (sizeof...(Args) == 3) {
+        auto arg1 = read_arg<std::tuple_element_t<0, std::tuple<Args...>>>(args_source);
+        auto arg2 = read_arg<std::tuple_element_t<1, std::tuple<Args...>>>(args_source);
+        auto arg3 = read_arg<std::tuple_element_t<2, std::tuple<Args...>>>(args_source);
+        func(ctx, arg1, arg2, arg3);
     }
 }
 
