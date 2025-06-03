@@ -22,6 +22,7 @@
 #include "traits.h"              // Serialization traits and interfaces
 #include "type_registry.h"       // Type registry
 #include "sum_type.h"            // Sum types and Option
+#include "bsatn_compat.h"        // Compatibility layer for namespace and type conversions
 
 // The bsatn namespace contains the core Reader and Writer classes,
 // along with global `serialize` overloads for primitives and `deserialize<T>` specializations for primitives.
