@@ -9,11 +9,19 @@
  *          - bsatn::Writer
  *          - Placeholder types for 128-bit integers.
  *          - Generic bsatn::serialize and bsatn::deserialize<T> free function templates and their overloads/specializations.
+ *          - Algebraic type system for type metadata
+ *          - Serialization traits and interfaces
+ *          - Type registry for managing types
+ *          - Sum type support for discriminated unions
  */
 
 #include "reader.h"      // Defines bsatn::Reader
 #include "writer.h"      // Defines bsatn::Writer and primitive bsatn::serialize overloads
 #include "uint128_placeholder.h" // Defines SpacetimeDB::Types::uint128_t_placeholder etc.
+#include "algebraic_type.h"      // Algebraic type system
+#include "traits.h"              // Serialization traits and interfaces
+#include "type_registry.h"       // Type registry
+#include "sum_type.h"            // Sum types and Option
 
 // The bsatn namespace contains the core Reader and Writer classes,
 // along with global `serialize` overloads for primitives and `deserialize<T>` specializations for primitives.
