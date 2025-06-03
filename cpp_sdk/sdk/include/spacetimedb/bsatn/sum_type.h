@@ -85,6 +85,15 @@ public:
         return std::visit(std::forward<Visitor>(visitor), value_);
     }
     
+    // Equality comparison
+    bool operator==(const Sum& other) const {
+        return value_ == other.value_;
+    }
+    
+    bool operator!=(const Sum& other) const {
+        return !(*this == other);
+    }
+    
     // BSATN serialization
     void bsatn_serialize(Writer& writer) const {
         writer.write_u8(tag());
@@ -232,6 +241,17 @@ public:
     
     T& operator*() { return value(); }
     const T& operator*() const { return value(); }
+    
+    // Equality comparison
+    bool operator==(const Option& other) const {
+        if (has_value() != other.has_value()) return false;
+        if (!has_value()) return true;  // Both are None
+        return value() == other.value();
+    }
+    
+    bool operator!=(const Option& other) const {
+        return !(*this == other);
+    }
 };
 
 // Specialization for Option to match SpacetimeDB's encoding
@@ -240,7 +260,7 @@ struct bsatn_traits<Option<T>> {
     static void serialize(Writer& writer, const Option<T>& opt) {
         if (opt.has_value()) {
             writer.write_u8(1);  // Some
-            serialize(writer, opt.value());
+            SpacetimeDb::bsatn::serialize(writer, opt.value());
         } else {
             writer.write_u8(0);  // None
         }
@@ -251,7 +271,7 @@ struct bsatn_traits<Option<T>> {
         if (tag == 0) {
             return Option<T>();  // None
         } else if (tag == 1) {
-            return Option<T>(deserialize<T>(reader));  // Some
+            return Option<T>(SpacetimeDb::bsatn::deserialize<T>(reader));  // Some
         } else {
             throw std::runtime_error("Invalid Option tag: " + std::to_string(tag));
         }

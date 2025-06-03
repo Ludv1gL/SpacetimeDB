@@ -8,6 +8,7 @@
 #include <optional>
 #include <functional>  // Was used for Func, can be removed if Func is removed
 #include <type_traits> // For std::is_enum
+#include <variant> // For std::monostate
 #include "uint128_placeholder.h" // Assumes this is in the same directory or accessible via include paths
 #include "spacetimedb/sdk/spacetimedb_sdk_types.h" // For u256_placeholder, i256_placeholder
 
@@ -34,6 +35,7 @@ namespace SpacetimeDb::bsatn {
     inline void serialize(Writer& w, double value);
     inline void serialize(Writer& w, const std::string& value);
     inline void serialize(Writer& w, const std::vector<std::byte>& value);
+    inline void serialize(Writer& w, std::monostate value);
     
     // Forward declarations for SDK types
     inline void serialize(Writer& w, const SpacetimeDb::sdk::Identity& value);
@@ -120,39 +122,13 @@ namespace SpacetimeDb::bsatn {
     };
 
 
-    // Definition of the generic free function template for serialization.
-    // This is the primary entry point for serializing an object.
-    // It relies on specializations for specific types (primitives, user-defined structs/enums).
+    // Forward declaration for bsatn_traits
     template<typename T>
-    void serialize(Writer& w, const T& value) {
-        // If T is an enum class, cast it to its underlying type (assumed u8 by macros)
-        if constexpr (std::is_enum_v<T>) {
-            w.write_u8(static_cast<uint8_t>(value));
-        }
-        else {
-            // This will fail to compile if no specialization or matching overload of
-            // `serialize(Writer&, const UserType&)` is found for T, which is good.
-            // The SDK macros generate global `SpacetimeDB::bsatn::serialize(Writer&, const UserType&)`
-            // which should be found via ADL if `value` is in that namespace, or if this template
-            // itself is in SpacetimeDB::bsatn.
-            // To ensure it works, let's assume this template is in `bsatn` and generated functions are in `SpacetimeDB::bsatn`.
-            // Or, we rely on ADL.
-            // For now, let's assume this generic serialize calls a specific, potentially overloaded, serialize_internal or similar.
-            // However, the previous Writer::serialize<T> called a free function `serialize(Writer&, const T&)`
-            // So this free function itself IS the one that needs specializations or further overloads.
-            // This primary template can serve as a fallback that static_asserts or gives a clear error.
+    struct bsatn_traits;
 
-            // The macros generate `SpacetimeDB::bsatn::serialize(Writer& writer, const CppTypeName& value)`
-            // So, this generic `bsatn::serialize` will not be called for those.
-            // For primitives, we need explicit `bsatn::serialize(Writer&, const Primitive&)` overloads or specializations.
-
-            // This is a placeholder for types not covered by specific overloads/specializations.
-            // A common pattern is to have a helper struct: `serializer<T>::apply(w, value);`
-            // For now, this generic function will only handle enums directly. Other types *must* have an overload.
-            // For user-defined types, the serialize function should be found by ADL
-            // If not found, the compiler will give an error
-        }
-    }
+    // Primary template for serialize - will be used when no explicit overload exists
+    template<typename T>
+    void serialize(Writer& w, const T& value);
 
     // Explicit overloads for primitives (could also be specializations of the template)
     // These are often provided by a bsatn_lib.h or similar from codegen.
@@ -178,6 +154,7 @@ namespace SpacetimeDb::bsatn {
     inline void serialize(Writer& w, double value) { w.write_f64_le(value); }
     inline void serialize(Writer& w, const std::string& value) { w.write_string(value); }
     inline void serialize(Writer& w, const std::vector<std::byte>& value) { w.write_bytes(value); }
+    inline void serialize(Writer& w, std::monostate) { /* Empty - monostate has no data */ }
     
     // Serialize functions for SDK types
     inline void serialize(Writer& w, const SpacetimeDb::sdk::Identity& value) { value.bsatn_serialize(w); }
@@ -196,6 +173,18 @@ namespace SpacetimeDb::bsatn {
     template<typename T>
     inline void serialize(Writer& w, const std::vector<T>& vec) {
         w.write_vector(vec);
+    }
+
+    // Primary template definition - uses bsatn_traits for user-defined types
+    template<typename T>
+    void serialize(Writer& w, const T& value) {
+        if constexpr (std::is_enum_v<T>) {
+            w.write_u8(static_cast<uint8_t>(value));
+        }
+        else {
+            // Use bsatn_traits for user-defined types
+            bsatn_traits<T>::serialize(w, value);
+        }
     }
 
 } // namespace SpacetimeDb::bsatn

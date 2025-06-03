@@ -10,6 +10,7 @@
 #include <span> // For std::span (C++20)
 #include <type_traits> // For std::is_enum, std::is_same_v, std::true_type, std::false_type
 #include <cstring> // For memcpy
+#include <variant> // For std::monostate
 #include "uint128_placeholder.h" // Assumes this is in the same directory or accessible via include paths
 #include "spacetimedb/sdk/spacetimedb_sdk_types.h" // For u256_placeholder, i256_placeholder
 
@@ -193,6 +194,7 @@ namespace SpacetimeDb::bsatn {
     template<> inline double deserialize<double>(Reader& r) { return r.read_f64_le(); }
     template<> inline std::string deserialize<std::string>(Reader& r) { return r.read_string(); }
     template<> inline std::vector<std::byte> deserialize<std::vector<std::byte>>(Reader& r) { return r.read_bytes(); }
+    template<> inline std::monostate deserialize<std::monostate>(Reader& r) { return std::monostate{}; }
     
     // Specializations for SDK types
     template<> inline SpacetimeDb::sdk::Identity deserialize<SpacetimeDb::sdk::Identity>(Reader& r) { 

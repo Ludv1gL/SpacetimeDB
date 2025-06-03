@@ -96,6 +96,10 @@ namespace SpacetimeDb::bsatn {
         }
     };
     
+    // Forward declaration
+    template<typename T>
+    struct bsatn_traits;
+    
     // ADL helper for custom type deserialization
     // This template will be found via ADL when deserializing custom types
     template<typename T>

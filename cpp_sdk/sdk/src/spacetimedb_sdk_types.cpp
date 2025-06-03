@@ -13,7 +13,10 @@ namespace SpacetimeDb {
 
         // Identity
         void Identity::bsatn_serialize(::SpacetimeDb::bsatn::Writer& writer) const {
-            writer.write_bytes(std::vector<std::byte>(reinterpret_cast<const std::byte*>(this->value.data()), reinterpret_cast<const std::byte*>(this->value.data() + this->value.size())));
+            // Write raw bytes without length prefix for fixed-size Identity
+            for (size_t i = 0; i < this->value.size(); ++i) {
+                writer.write_u8(this->value[i]);
+            }
         }
         void Identity::bsatn_deserialize(::SpacetimeDb::bsatn::Reader& reader) {
             std::vector<std::byte> bytes = reader.read_fixed_bytes(IDENTITY_SIZE);
@@ -44,26 +47,11 @@ namespace SpacetimeDb {
 
         // ConnectionId
         void ConnectionId::bsatn_serialize(::SpacetimeDb::bsatn::Writer& writer) const {
-            // Converting uint64_t to a byte array for write_bytes, little-endian.
-            std::array<std::byte, sizeof(this->id)> id_bytes;
-            uint64_t n = this->id;
-            for (size_t i = 0; i < sizeof(this->id); ++i) {
-                id_bytes[i] = static_cast<std::byte>(n & 0xFF);
-                n >>= 8;
-            }
-            writer.write_bytes(std::vector<std::byte>(id_bytes.begin(), id_bytes.end()));
+            // ConnectionId is just a uint64_t, write it directly
+            writer.write_u64_le(this->id);
         }
         void ConnectionId::bsatn_deserialize(::SpacetimeDb::bsatn::Reader& reader) {
-            std::vector<std::byte> id_bytes_vec = reader.read_fixed_bytes(sizeof(this->id));
-            if (id_bytes_vec.size() == sizeof(this->id)) {
-                this->id = 0; // Assuming little-endian
-                for (size_t i = 0; i < sizeof(this->id); ++i) {
-                    this->id |= static_cast<uint64_t>(static_cast<unsigned char>(id_bytes_vec[i])) << (i * 8);
-                }
-            }
-            else {
-                throw std::runtime_error("Failed to read enough bytes for ConnectionId");
-            }
+            this->id = reader.read_u64_le();
         }
 
         // TimeDuration
@@ -114,20 +102,4 @@ namespace SpacetimeDb {
     } // namespace sdk
 } // namespace SpacetimeDb
 
-namespace SpacetimeDb {
-    namespace bsatn {
-
-        void serialize(Writer& writer, const ::SpacetimeDb::sdk::Identity& value) {
-            value.bsatn_serialize(writer);
-        }
-
-        void serialize(Writer& writer, const ::SpacetimeDb::sdk::ConnectionId& value) {
-            value.bsatn_serialize(writer);
-        }
-
-        void serialize(Writer& writer, const ::SpacetimeDb::sdk::Timestamp& value) {
-            value.bsatn_serialize(writer);
-        }
-
-    } // namespace bsatn
-} // namespace SpacetimeDb
+// Serialize functions are now defined as inline in writer.h to avoid duplicate definitions
