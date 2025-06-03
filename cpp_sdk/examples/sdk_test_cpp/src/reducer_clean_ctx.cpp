@@ -4,10 +4,10 @@
  * This example demonstrates the clean syntax for SpacetimeDB C++ modules using
  * the spacetimedb_easy.h header. It showcases:
  * 
- * - Declaring tables within SPACETIMEDB_MODULE()
+ * - One-time table declaration using X-Macro pattern
+ * - Automatic table registration and accessor generation
  * - Using ReducerContext for type-safe database access
  * - Multi-parameter reducers with custom types
- * - Public and private table declarations
  * 
  * To build:
  *   emcc -std=c++20 -s STANDALONE_WASM=1 -s FILESYSTEM=0 \
@@ -18,22 +18,20 @@
  *   spacetime publish --bin-path module.wasm my-database
  */
 
+// Define all tables in one place using X-Macro pattern
+// Format: X(TypeName, table_name, is_public)
+// This single declaration:
+//   - Forward declares the type
+//   - Registers the table with SpacetimeDB
+//   - Generates the accessor method ctx.db.table_name()
+#define SPACETIMEDB_TABLES_LIST \
+    X(OneU8, one_u8, true) \
+    X(OneU8, another_u8, false)
+
 #include <spacetimedb/spacetimedb_easy.h>
 
 using namespace spacetimedb;
 
-
-
-/**
- * Table declarations.
- * 
- * SPACETIMEDB_TABLE(Type, table_name, is_public)
- * - Type: The C++ struct type for table rows
- * - table_name: The table name (becomes ctx.db.table_name())
- * - is_public: true for public tables, false for private
- */
-SPACETIMEDB_TABLE(OneU8, one_u8, true)      // Public table
-SPACETIMEDB_TABLE(OneU8, another_u8, false) // Private table
 /**
  * Example table row type.
  * This struct will be automatically serialized using BSATN.
@@ -41,6 +39,9 @@ SPACETIMEDB_TABLE(OneU8, another_u8, false) // Private table
 struct OneU8 {
     uint8_t n;
 };
+
+// No need for SPACETIMEDB_TABLE declarations anymore!
+// Tables are automatically registered from the X-macro list above
 // Insert a single value into the public table
 SPACETIMEDB_REDUCER(insert_one_u8, ReducerContext ctx, uint8_t n) {
     OneU8 row{n};
