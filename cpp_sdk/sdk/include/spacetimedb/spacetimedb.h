@@ -42,6 +42,8 @@
 #include "sdk/query_operations.h"  // Advanced queries
 #include "sdk/schema_management.h" // Schema management
 #include "bsatn/traits.h"       // BSATN serialization
+#include "field_registration.h"  // Field registration system
+#include "sdk/spacetimedb_sdk_types.h"  // SDK types (Identity, ConnectionId, etc.)
 
 // =============================================================================
 // ENHANCED LOGGING MACROS
@@ -342,23 +344,34 @@ public:
 
 template<typename T>
 void add_fields_for_type(ModuleDef::Table& table) {
-    // TODO: This is a placeholder implementation that assumes single uint8_t field
-    // C++ lacks reflection, so we need one of:
-    // 1. Macro-based field registration (like SPACETIMEDB_BSATN_STRUCT)
-    // 2. Code generation from schema
-    // 3. Manual field registration
-    // 
-    // For now, this only works with structs that have a single uint8_t field named 'n'
-    FieldInfo field;
-    field.name = "n";
-    field.type_id = type_id<uint8_t>::value;
-    field.offset = 0;
-    field.size = sizeof(uint8_t);
-    field.serialize = [](std::vector<uint8_t>& buf, const void* obj) {
-        const uint8_t* byte_obj = static_cast<const uint8_t*>(obj);
-        write_value(buf, *byte_obj);
-    };
-    table.fields.push_back(field);
+    // Check if fields have been registered for this type
+    auto& descriptors = get_table_descriptors();
+    auto it = descriptors.find(&typeid(T));
+    
+    if (it != descriptors.end()) {
+        // Use registered fields
+        for (const auto& field_desc : it->second.fields) {
+            FieldInfo field;
+            field.name = field_desc.name.c_str();
+            field.type_id = 0;  // Not used with new system
+            field.offset = field_desc.offset;
+            field.size = field_desc.size;
+            field.serialize = field_desc.serialize;
+            table.fields.push_back(field);
+        }
+    } else {
+        // Fallback for unregistered types (single uint8_t field)
+        FieldInfo field;
+        field.name = "n";
+        field.type_id = type_id<uint8_t>::value;
+        field.offset = 0;
+        field.size = sizeof(uint8_t);
+        field.serialize = [](std::vector<uint8_t>& buf, const void* obj) {
+            const uint8_t* byte_obj = static_cast<const uint8_t*>(obj);
+            write_value(buf, *byte_obj);
+        };
+        table.fields.push_back(field);
+    }
 }
 
 template<typename T>
@@ -376,13 +389,31 @@ void register_table_impl(const char* name, bool is_public) {
         if (it == module.table_indices.end()) return;
         
         const auto& table = module.tables[it->second];
-        buf.push_back(2); // Product type
-        write_u32(buf, table.fields.size());
         
-        for (const auto& field : table.fields) {
-            buf.push_back(0); // Some
-            write_string(buf, field.name);
-            buf.push_back(field.type_id);
+        // Check if we have registered field descriptors
+        auto& descriptors = get_table_descriptors();
+        auto desc_it = descriptors.find(&typeid(T));
+        
+        if (desc_it != descriptors.end()) {
+            // Write Product type with proper fields
+            buf.push_back(2); // Product type
+            write_u32(buf, desc_it->second.fields.size());
+            
+            for (const auto& field_desc : desc_it->second.fields) {
+                buf.push_back(0); // Some (field name present) - BSATN Option::Some = 0
+                write_string(buf, field_desc.name);
+                field_desc.write_type(buf);  // Write the AlgebraicType
+            }
+        } else {
+            // Fallback to simple format
+            buf.push_back(2); // Product type
+            write_u32(buf, table.fields.size());
+            
+            for (const auto& field : table.fields) {
+                buf.push_back(0); // Some - BSATN Option::Some = 0
+                write_string(buf, field.name);
+                buf.push_back(field.type_id);
+            }
         }
     };
     
@@ -679,9 +710,40 @@ namespace spacetimedb {
     using DB = ModuleDatabase;
 }
 
+// =============================================================================
+// AUTOMATIC FIELD REGISTRATION MACROS
+// =============================================================================
+
+// Helper macro to register a single field
+#define SPACETIMEDB_AUTO_FIELD(struct_type, field_name, field_type) \
+    { \
+        spacetimedb::FieldDescriptor desc; \
+        desc.name = #field_name; \
+        desc.offset = offsetof(struct_type, field_name); \
+        desc.size = sizeof(field_type); \
+        desc.write_type = [](std::vector<uint8_t>& buf) { \
+            spacetimedb::write_field_type<field_type>(buf); \
+        }; \
+        desc.serialize = [](std::vector<uint8_t>& buf, const void* obj) { \
+            const struct_type* typed_obj = static_cast<const struct_type*>(obj); \
+            spacetimedb::serialize_value(buf, typed_obj->field_name); \
+        }; \
+        spacetimedb::get_table_descriptors()[&typeid(struct_type)].fields.push_back(desc); \
+    }
+
+// Macro to define a struct and automatically register its fields
+#define SPACETIMEDB_STRUCT(struct_name, ...) \
+    struct struct_name { __VA_ARGS__ }; \
+    namespace { \
+        struct struct_name##_field_registrar { \
+            struct_name##_field_registrar(); \
+        }; \
+        static struct_name##_field_registrar struct_name##_field_registrar_instance; \
+    }
+
 // Short-form macros for convenience
 #define STDB_TABLE SPACETIMEDB_TABLE
 #define STDB_REDUCER SPACETIMEDB_REDUCER 
-#define STDB_STRUCT SPACETIMEDB_BSATN_STRUCT
+#define STDB_STRUCT SPACETIMEDB_STRUCT
 
 #endif // SPACETIMEDB_H

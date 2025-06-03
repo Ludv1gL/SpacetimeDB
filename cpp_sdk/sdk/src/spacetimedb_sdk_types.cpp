@@ -10,6 +10,75 @@
 namespace SpacetimeDb {
     namespace sdk {
 
+        // Identity constructors
+        Identity::Identity() {
+            value.fill(0);
+        }
+        
+        Identity::Identity(const std::array<uint8_t, IDENTITY_SIZE>& bytes) : value(bytes) {
+        }
+        
+        const std::array<uint8_t, IDENTITY_SIZE>& Identity::get_bytes() const {
+            return value;
+        }
+        
+        std::string Identity::to_hex_string() const {
+            // TODO: Implement hex string conversion
+            return "placeholder_hex_string";
+        }
+        
+        bool Identity::operator==(const Identity& other) const {
+            return value == other.value;
+        }
+        
+        bool Identity::operator!=(const Identity& other) const {
+            return !(*this == other);
+        }
+        
+        bool Identity::operator<(const Identity& other) const {
+            return value < other.value;
+        }
+
+        // Timestamp constructors
+        Timestamp::Timestamp() : ms_since_epoch(0) {
+        }
+        
+        Timestamp::Timestamp(uint64_t milliseconds_since_epoch) : ms_since_epoch(milliseconds_since_epoch) {
+        }
+        
+        uint64_t Timestamp::as_milliseconds() const {
+            return ms_since_epoch;
+        }
+        
+        Timestamp Timestamp::current() {
+            // TODO: Implement actual current timestamp
+            return Timestamp(0);
+        }
+        
+        bool Timestamp::operator==(const Timestamp& other) const {
+            return ms_since_epoch == other.ms_since_epoch;
+        }
+        
+        bool Timestamp::operator!=(const Timestamp& other) const {
+            return !(*this == other);
+        }
+        
+        bool Timestamp::operator<(const Timestamp& other) const {
+            return ms_since_epoch < other.ms_since_epoch;
+        }
+        
+        bool Timestamp::operator<=(const Timestamp& other) const {
+            return ms_since_epoch <= other.ms_since_epoch;
+        }
+        
+        bool Timestamp::operator>(const Timestamp& other) const {
+            return ms_since_epoch > other.ms_since_epoch;
+        }
+        
+        bool Timestamp::operator>=(const Timestamp& other) const {
+            return ms_since_epoch >= other.ms_since_epoch;
+        }
+
         // Identity
         void Identity::bsatn_serialize(::SpacetimeDb::bsatn::Writer& writer) const {
             // Write raw bytes without length prefix for fixed-size Identity
