@@ -1,6 +1,6 @@
 #include "spacetimedb/internal/raw_module_def_v9.h"
 #include "spacetimedb/internal/module_schema.h"
-#include "spacetimedb/bsatn/writer.h"
+#include "spacetimedb/bsatn_all.h"
 #include <iostream>
 
 namespace SpacetimeDb {

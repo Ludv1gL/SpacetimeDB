@@ -5,7 +5,7 @@
  * Verifies compatibility with C# and Rust implementations
  */
 
-#include <spacetimedb/bsatn/bsatn.h>
+#include <spacetimedb/bsatn_simple.h>
 #include <spacetimedb/sdk/spacetimedb_sdk_types.h>
 #include <iostream>
 #include <cassert>
@@ -25,11 +25,8 @@ constexpr int RANDOM_TEST_COUNT = 100;
 #define TEST(name) if (VERBOSE) std::cout << "  " << #name << "... "; test_##name(); if (VERBOSE) std::cout << "✓\n"
 #define ASSERT_EQ(a, b) assert((a) == (b))
 #define ASSERT_ROUNDTRIP(value) do { \
-    ::SpacetimeDb::bsatn::WriterCompat w; \
-    ::SpacetimeDb::bsatn::serialize(w, value); \
-    auto buf = w.take_uint8_buffer(); \
-    ::SpacetimeDb::bsatn::ReaderCompat r(buf); \
-    auto result = ::SpacetimeDb::bsatn::deserialize<decltype(value)>(r); \
+    auto serialized = ::spacetimedb::bsatn::to_vec(value); \
+    auto result = ::spacetimedb::bsatn::from_vec<decltype(value)>(serialized); \
     ASSERT_EQ(value, result); \
 } while(0)
 
@@ -177,9 +174,7 @@ void test_sum_types() {
 void test_binary_format() {
     // Verify exact binary encoding matches specification
     auto check_encoding = [](auto value, std::initializer_list<uint8_t> expected) {
-        WriterCompat w;
-        serialize(w, value);
-        auto buf = w.take_uint8_buffer();
+        auto buf = ::spacetimedb::bsatn::to_vec(value);
         assert(buf.size() == expected.size());
         assert(std::equal(buf.begin(), buf.end(), expected.begin()));
     };
@@ -205,8 +200,7 @@ void test_error_handling() {
     // Buffer underrun
     try {
         std::vector<uint8_t> small = {1, 2};
-        ReaderCompat r(small);
-        deserialize<uint64_t>(r);
+        ::spacetimedb::bsatn::from_vec<uint64_t>(small);
         assert(false);
     } catch (...) {
         // Expected
@@ -215,8 +209,7 @@ void test_error_handling() {
     // Invalid Option tag
     try {
         std::vector<uint8_t> bad = {99};  // Invalid tag
-        ReaderCompat r(bad);
-        deserialize<Option<int32_t>>(r);
+        ::spacetimedb::bsatn::from_vec<Option<int32_t>>(bad);
         assert(false);
     } catch (...) {
         // Expected

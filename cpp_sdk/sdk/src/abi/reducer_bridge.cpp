@@ -1,8 +1,7 @@
 #include "spacetimedb/abi/spacetime_module_exports.h" // For __call_reducer__ declaration
 #include "spacetimedb/abi/abi_utils.h"           // For SpacetimeDB::Abi::Utils helpers
 #include "spacetimedb/internal/module_schema.h"  // Updated path, For SpacetimeDb::ModuleSchema
-#include "spacetimedb/bsatn/reader.h"            // For bsatn::Reader
-#include "spacetimedb/bsatn/writer.h"            // For bsatn::Writer (to serialize errors)
+#include "spacetimedb/bsatn_all.h"            // For BSATN types
 
 #include <string>
 #include <vector>

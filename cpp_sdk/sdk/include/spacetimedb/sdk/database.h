@@ -5,7 +5,7 @@
 #include <stdexcept> // For std::runtime_error
 #include <spacetimedb/sdk/table.h> // For Table<T>
 #include <spacetimedb/abi/spacetimedb_abi.h> // For ABI function calls
-#include <spacetimedb/bsatn/bsatn.h> // For BsatnSerializable concept (implicitly via Table<T>)
+#include <spacetimedb/bsatn_all.h> // For BSATN serialization
 
 namespace spacetimedb {
 namespace sdk {

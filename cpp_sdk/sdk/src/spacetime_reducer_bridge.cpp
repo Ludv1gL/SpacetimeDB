@@ -1,8 +1,7 @@
 #include "spacetimedb/abi/spacetime_module_exports.h" // For __call_reducer__ declaration
 #include "spacetimedb/abi/abi_utils.h"           // For SpacetimeDB::Abi::Utils helpers
-#include "spacetimedb/spacetime_schema.h"        // For SpacetimeDb::ModuleSchema
-#include "spacetimedb/bsatn/bsatn_reader.h"      // For bsatn::Reader
-#include "spacetimedb/bsatn/bsatn_writer.h"      // For bsatn::Writer (to serialize errors)
+#include "spacetimedb/internal/module_schema.h"  // For SpacetimeDb::ModuleSchema
+#include "spacetimedb/bsatn_all.h"           // For BSATN types
 
 #include <string>
 #include <vector>
@@ -54,7 +53,7 @@ int16_t __call_reducer__(
         std::vector<std::byte> args_bytes = SpacetimeDB::Abi::Utils::read_all_from_source(source_manager.get_handle());
 
         // 2. Create a bsatn::Reader for these bytes
-        bsatn::Reader reader(args_bytes);
+        SpacetimeDb::bsatn::Reader reader(args_bytes);
 
         // 3. Look up the ReducerDefinition
         const auto& schema = SpacetimeDb::ModuleSchema::instance();

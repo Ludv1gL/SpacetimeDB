@@ -1,6 +1,6 @@
 #include "spacetimedb/internal/module_def.h"    // Updated path
 #include "spacetimedb/internal/module_schema.h" // Updated path, For SpacetimeDb::ModuleSchema etc.
-#include "spacetimedb/bsatn/writer.h"           // Explicit include for bsatn::Writer, though module_def.h includes it
+#include "spacetimedb/bsatn_all.h"           // Explicit include for bsatn::Writer, though module_def.h includes it
 
 #include <stdexcept> // For std::runtime_error
 #include <algorithm> // For std::transform (not currently used, but can be useful)

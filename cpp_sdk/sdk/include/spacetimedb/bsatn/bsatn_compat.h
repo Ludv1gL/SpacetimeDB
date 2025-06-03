@@ -135,7 +135,8 @@ namespace spacetimedb {
     using SpacetimeDb::bsatn::Option;
     using SpacetimeDb::bsatn::Sum;
     using SpacetimeDb::bsatn::AlgebraicType;
-    using SpacetimeDb::bsatn::TypeRegistry;
+    // TypeRegistry was renamed to TypeRegistrar
+    // using SpacetimeDb::bsatn::TypeRegistry;
     using SpacetimeDb::bsatn::make_option;
 }
 

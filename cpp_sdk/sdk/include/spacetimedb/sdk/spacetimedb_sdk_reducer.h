@@ -4,7 +4,7 @@
 #include <spacetimedb/sdk/spacetimedb_sdk_types.h>
 #include <spacetimedb/sdk/reducer_context.h>
 #include <spacetimedb/sdk/database.h>
-#include <spacetimedb/bsatn/bsatn.h>
+#include <spacetimedb/bsatn_all.h>
 #include <spacetimedb/abi/spacetimedb_abi.h>
 
 #include <string>

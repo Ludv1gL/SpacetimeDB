@@ -1,7 +1,7 @@
 #ifndef SPACETIMEDB_INTERNAL_RAW_MODULE_DEF_V9_H
 #define SPACETIMEDB_INTERNAL_RAW_MODULE_DEF_V9_H
 
-#include "spacetimedb/bsatn/writer.h"
+#include "spacetimedb/bsatn_all.h"
 #include "spacetimedb/internal/module_schema.h"
 #include <string>
 #include <vector>

@@ -2,8 +2,7 @@
 #define SPACETIMEDB_MACROS_H
 
 #include "spacetimedb/internal/module_schema.h"
-#include "spacetimedb/bsatn/reader.h"
-#include "spacetimedb/bsatn/writer.h"
+#include "spacetimedb/bsatn_all.h"
 
 #include <string>
 #include <vector>

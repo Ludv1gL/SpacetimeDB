@@ -21,11 +21,25 @@ add_executable(test_bsatn
     ${BSATN_SOURCES}
 )
 
+# Refactored implementation test
+add_executable(test_bsatn_refactored
+    test_bsatn_refactored.cpp
+    ${BSATN_SOURCES}
+)
+
+# Existing implementation test
+add_executable(test_bsatn_existing
+    test_bsatn_existing.cpp
+    ${BSATN_SOURCES}
+)
+
 # Enable testing
 enable_testing()
 
 # Add test
 add_test(NAME bsatn_tests COMMAND test_bsatn)
+add_test(NAME bsatn_refactored_tests COMMAND test_bsatn_refactored)
+add_test(NAME bsatn_existing_tests COMMAND test_bsatn_existing)
 
 # Add verbose test variant
 add_test(NAME bsatn_tests_verbose COMMAND test_bsatn -v)
@@ -39,6 +53,16 @@ set_tests_properties(bsatn_tests PROPERTIES
 # Compiler warnings
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
     target_compile_options(test_bsatn PRIVATE
+        -Wall -Wextra -Wpedantic
+        -Wno-unused-parameter
+        -Wno-unused-variable
+    )
+    target_compile_options(test_bsatn_refactored PRIVATE
+        -Wall -Wextra -Wpedantic
+        -Wno-unused-parameter
+        -Wno-unused-variable
+    )
+    target_compile_options(test_bsatn_existing PRIVATE
         -Wall -Wextra -Wpedantic
         -Wno-unused-parameter
         -Wno-unused-variable

@@ -1,6 +1,5 @@
 #include "spacetimedb/sdk/spacetimedb_sdk_types.h"
-#include "spacetimedb/bsatn/reader.h"
-#include "spacetimedb/bsatn/writer.h"
+#include "spacetimedb/bsatn_all.h"
 
 #include <vector>
 #include <array>
@@ -19,9 +18,9 @@ namespace SpacetimeDb {
             }
         }
         void Identity::bsatn_deserialize(::SpacetimeDb::bsatn::Reader& reader) {
-            std::vector<std::byte> bytes = reader.read_fixed_bytes(IDENTITY_SIZE);
+            std::vector<uint8_t> bytes = reader.read_fixed_bytes(IDENTITY_SIZE);
             if (bytes.size() == IDENTITY_SIZE) {
-                std::copy(bytes.begin(), bytes.end(), reinterpret_cast<std::byte*>(this->value.data()));
+                std::copy(bytes.begin(), bytes.end(), this->value.data());
             }
             else {
                 // Consider a more robust error handling strategy for your application
@@ -74,9 +73,9 @@ namespace SpacetimeDb {
             // Similar to serialize, assuming reader.read_u256_le() or fallback
             // *this = reader.read_u256_le(); // If Reader has this method
             // Fallback:
-            std::vector<std::byte> bytes = reader.read_fixed_bytes(sizeof(this->data));
+            std::vector<uint8_t> bytes = reader.read_fixed_bytes(sizeof(this->data));
             if (bytes.size() == sizeof(this->data)) {
-                std::copy(bytes.begin(), bytes.end(), reinterpret_cast<std::byte*>(this->data.data()));
+                std::copy(bytes.begin(), bytes.end(), reinterpret_cast<uint8_t*>(this->data.data()));
             }
             else {
                 throw std::runtime_error("Failed to read enough bytes for u256_placeholder");
@@ -90,9 +89,9 @@ namespace SpacetimeDb {
         void i256_placeholder::bsatn_deserialize(::SpacetimeDb::bsatn::Reader& reader) {
             // *this = reader.read_i256_le(); // If Reader has this method
             // Fallback:
-            std::vector<std::byte> bytes = reader.read_fixed_bytes(sizeof(this->data));
+            std::vector<uint8_t> bytes = reader.read_fixed_bytes(sizeof(this->data));
             if (bytes.size() == sizeof(this->data)) {
-                std::copy(bytes.begin(), bytes.end(), reinterpret_cast<std::byte*>(this->data.data()));
+                std::copy(bytes.begin(), bytes.end(), reinterpret_cast<uint8_t*>(this->data.data()));
             }
             else {
                 throw std::runtime_error("Failed to read enough bytes for i256_placeholder");

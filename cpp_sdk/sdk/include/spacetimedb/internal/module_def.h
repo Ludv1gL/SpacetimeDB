@@ -1,7 +1,7 @@
 #ifndef SPACETIMEDB_INTERNAL_MODULE_DEF_H // Renamed header guard
 #define SPACETIMEDB_INTERNAL_MODULE_DEF_H
 
-#include "spacetimedb/bsatn/writer.h" // For bsatn::Writer
+#include "spacetimedb/bsatn_all.h" // For bsatn::Writer
 #include "spacetimedb/internal/module_schema.h" // For SpacetimeDb::ModuleSchema (used in build_internal_module_def)
 
 #include <string>

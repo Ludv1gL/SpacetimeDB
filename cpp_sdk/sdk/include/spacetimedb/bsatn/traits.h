@@ -5,7 +5,9 @@
 #include "reader.h"
 #include "writer.h"
 #include <type_traits>
+#if __cplusplus >= 202002L
 #include <concepts>
+#endif
 
 namespace SpacetimeDb::bsatn {
 
@@ -19,11 +21,13 @@ class TypeRegistrar;
  * 2. Implementing member functions bsatn_serialize/bsatn_deserialize
  * 3. Having ADL-findable free functions
  */
+#if __cplusplus >= 202002L
 template<typename T>
 concept BsatnSerializable = requires(T t, Writer& w, Reader& r) {
     { serialize(w, t) } -> std::same_as<void>;
     { deserialize<T>(r) } -> std::same_as<T>;
 };
+#endif
 
 /**
  * Primary template for BSATN serialization traits.
@@ -42,14 +46,9 @@ struct bsatn_traits {
     
     // Override this to provide type information
     static AlgebraicType algebraic_type() {
-        if constexpr (requires { algebraic_type_of<T>::get(); }) {
-            return algebraic_type_of<T>::get();
-        } else {
-            static_assert(sizeof(T) == 0, 
-                "No algebraic type information for T. "
-                "Specialize algebraic_type_of<T> or implement "
-                "bsatn_traits<T>::algebraic_type()");
-        }
+        // For now, just throw a runtime error in C++17
+        // In C++20, we'd use requires expression
+        throw std::runtime_error("No algebraic type information available");
     }
 };
 

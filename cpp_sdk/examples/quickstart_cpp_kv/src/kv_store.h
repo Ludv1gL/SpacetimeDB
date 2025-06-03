@@ -7,7 +7,7 @@
 // The user would then #include "spacetimedb/sdk/types.h" etc. if headers are organized under spacetimedb/sdk
 // For this regeneration, I'll assume the SDK headers are structured to be included like this:
 #include <spacetimedb/sdk/spacetimedb_sdk_types.h>
-#include <spacetimedb/bsatn/bsatn.h> // Assuming bsatn.h is under spacetimedb/bsatn path
+#include <spacetimedb/bsatn_all.h> // Assuming bsatn.h is under spacetimedb/bsatn path
 // #include <spacetimedb/sdk/spacetimedb_sdk_table_registry.h> // Removed as per plan
 #include <spacetimedb/sdk/reducer_context.h>
 #include <spacetimedb/macros.h> // Added as per plan

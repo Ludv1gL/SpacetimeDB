@@ -1,7 +1,7 @@
 #ifndef SPACETIMEDB_INTERNAL_MODULE_SCHEMA_H // Renamed header guard
 #define SPACETIMEDB_INTERNAL_MODULE_SCHEMA_H
 
-#include "spacetimedb/bsatn/reader.h" // For bsatn::Reader
+#include "spacetimedb/bsatn_all.h" // For BSATN types
 
 #include <string>
 #include <vector>
