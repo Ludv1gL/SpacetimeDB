@@ -162,6 +162,7 @@ inline uint32_t read_u32(uint32_t source) {
 // -----------------------------------------------------------------------------
 
 template<typename T> struct type_id { static constexpr uint8_t value = 0; };
+template<> struct type_id<bool> { static constexpr uint8_t value = 1; };
 template<> struct type_id<uint8_t> { static constexpr uint8_t value = 7; };
 template<> struct type_id<uint16_t> { static constexpr uint8_t value = 8; };
 template<> struct type_id<uint32_t> { static constexpr uint8_t value = 9; };
@@ -170,7 +171,12 @@ template<> struct type_id<int8_t> { static constexpr uint8_t value = 11; };
 template<> struct type_id<int16_t> { static constexpr uint8_t value = 12; };
 template<> struct type_id<int32_t> { static constexpr uint8_t value = 13; };
 template<> struct type_id<int64_t> { static constexpr uint8_t value = 14; };
+template<> struct type_id<float> { static constexpr uint8_t value = 15; };
+template<> struct type_id<double> { static constexpr uint8_t value = 16; };
 template<> struct type_id<std::string> { static constexpr uint8_t value = 3; };
+// For complex types, we'll use 0 which will need proper handling
+template<typename T> struct type_id<std::vector<T>> { static constexpr uint8_t value = 0; };
+template<typename T> struct type_id<std::optional<T>> { static constexpr uint8_t value = 0; };
 
 // Serialization helper
 template<typename T>
@@ -336,7 +342,13 @@ public:
 
 template<typename T>
 void add_fields_for_type(ModuleDef::Table& table) {
-    // Basic field structure - real implementation would use reflection
+    // TODO: This is a placeholder implementation that assumes single uint8_t field
+    // C++ lacks reflection, so we need one of:
+    // 1. Macro-based field registration (like SPACETIMEDB_BSATN_STRUCT)
+    // 2. Code generation from schema
+    // 3. Manual field registration
+    // 
+    // For now, this only works with structs that have a single uint8_t field named 'n'
     FieldInfo field;
     field.name = "n";
     field.type_id = type_id<uint8_t>::value;
@@ -506,9 +518,9 @@ inline void spacetimedb_write_module_def(uint32_t sink) {
         write_u32(w, 0);  // indexes (empty)
         write_u32(w, 0);  // constraints (empty)
         write_u32(w, 0);  // sequences (empty)
-        w.push_back(1);  // schedule (None)
-        w.push_back(1);  // table_type (User)
-        w.push_back(table.is_public ? 0 : 1);  // access
+        w.push_back(1);  // schedule (Option::None = tag 1)
+        w.push_back(1);  // table_type (TableType::User = 1)
+        w.push_back(table.is_public ? 0 : 1);  // table_access (TableAccess::Public=0, Private=1)
     }
     
     // Reducers
