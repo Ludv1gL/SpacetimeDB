@@ -28,7 +28,7 @@
     X(OneU8, one_u8, true) \
     X(OneU8, another_u8, false)
 
-#include <spacetimedb/spacetimedb_easy.h>
+#include <spacetimedb/spacetimedb.h>
 
 using namespace spacetimedb;
 

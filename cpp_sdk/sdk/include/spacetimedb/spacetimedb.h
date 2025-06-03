@@ -1,6 +1,25 @@
 #ifndef SPACETIMEDB_H
 #define SPACETIMEDB_H
 
+/**
+ * SpacetimeDB C++ SDK - Unified Header
+ * 
+ * This header provides the complete C++ SDK for SpacetimeDB modules.
+ * It combines all functionality into a single, well-organized file.
+ * 
+ * Features:
+ * - Table registration and operations
+ * - Reducer definitions
+ * - Enhanced logging system
+ * - BSATN serialization support
+ * - Error handling
+ * - Advanced query and index management
+ */
+
+// =============================================================================
+// SYSTEM INCLUDES
+// =============================================================================
+
 #include <cstdint>
 #include <cstring>
 #include <vector>
@@ -9,8 +28,49 @@
 #include <map>
 #include <typeinfo>
 #include <tuple>
+#include <stdexcept>
+#include <memory>
+#include <optional>
 
-// Import host functions
+// =============================================================================
+// SDK FEATURE INCLUDES
+// =============================================================================
+
+#include "sdk/logging.h"        // Enhanced logging system
+#include "sdk/exceptions.h"     // Rich error handling
+#include "sdk/index_management.h"  // Index management
+#include "sdk/query_operations.h"  // Advanced queries
+#include "sdk/schema_management.h" // Schema management
+#include "bsatn/traits.h"       // BSATN serialization
+
+// =============================================================================
+// ENHANCED LOGGING MACROS
+// =============================================================================
+
+#ifndef LOG_TRACE
+#define LOG_TRACE(msg) SpacetimeDB::log_trace(msg, __func__, __FILE__, __LINE__)
+#endif
+
+#ifndef LOG_DEBUG  
+#define LOG_DEBUG(msg) SpacetimeDB::log_debug(msg, __func__, __FILE__, __LINE__)
+#endif
+
+#ifndef LOG_INFO
+#define LOG_INFO(msg) SpacetimeDB::log_info(msg, __func__, __FILE__, __LINE__)
+#endif
+
+#ifndef LOG_WARN
+#define LOG_WARN(msg) SpacetimeDB::log_warn(msg, __func__, __FILE__, __LINE__)
+#endif
+
+#ifndef LOG_ERROR
+#define LOG_ERROR(msg) SpacetimeDB::log_error(msg, __func__, __FILE__, __LINE__)
+#endif
+
+// =============================================================================
+// FFI DECLARATIONS - SpacetimeDB Host Interface
+// =============================================================================
+
 extern "C" {
     __attribute__((import_module("spacetime_10.0"), import_name("bytes_sink_write")))
     uint16_t bytes_sink_write(uint32_t sink, const uint8_t* buffer_ptr, size_t* buffer_len_ptr);
@@ -25,95 +85,126 @@ extern "C" {
     uint16_t table_id_from_name(const uint8_t* name_ptr, size_t name_len, uint32_t* out);
     
     __attribute__((import_module("spacetime_10.0"), import_name("console_log")))
-    void console_log(uint32_t level, uint32_t msg_ptr, uint32_t msg_len, uint32_t caller1, uint32_t caller2, uint32_t file_ptr, uint32_t file_len, uint32_t line);
+    void console_log(uint32_t level, uint32_t msg_ptr, uint32_t msg_len, 
+                     uint32_t caller1, uint32_t caller2, uint32_t file_ptr, 
+                     uint32_t file_len, uint32_t line);
 }
 
-// Helper namespace
+// =============================================================================
+// UTILITY MACROS
+// =============================================================================
+
+#define SPACETIMEDB_CAT_IMPL(a, b) a##b
+#define SPACETIMEDB_CAT(a, b) SPACETIMEDB_CAT_IMPL(a, b)
+
+// =============================================================================
+// CORE SPACETIMEDB NAMESPACE
+// =============================================================================
+
 namespace spacetimedb {
-    // Common types
-    using byte = uint8_t;
+
+// -----------------------------------------------------------------------------
+// Type Aliases and Forward Declarations
+// -----------------------------------------------------------------------------
+
+using byte = uint8_t;
+class Database;
+class ReducerContext;
+
+// -----------------------------------------------------------------------------
+// Table Name Registry
+// -----------------------------------------------------------------------------
+
+namespace detail {
+    constexpr size_t MAX_TABLES = 64;
+    inline const char* table_names[MAX_TABLES] = {};
+    inline size_t table_count = 0;
     
-    inline void log(const std::string& msg) {
-        const char* file = __FILE__;
-        console_log(3, (uint32_t)msg.c_str(), msg.length(), 0, 0, (uint32_t)file, strlen(file), __LINE__);
-    }
-    
-    inline void write_u32(std::vector<uint8_t>& buf, uint32_t val) {
-        buf.push_back(val & 0xFF);
-        buf.push_back((val >> 8) & 0xFF);
-        buf.push_back((val >> 16) & 0xFF);
-        buf.push_back((val >> 24) & 0xFF);
-    }
-    
-    inline void write_string(std::vector<uint8_t>& buf, const std::string& str) {
-        write_u32(buf, str.length());
-        for (char c : str) buf.push_back(c);
-    }
-    
-    inline uint8_t read_u8(uint32_t source) {
-        uint8_t val = 0;
-        size_t len = 1;
-        bytes_source_read(source, &val, &len);
-        return val;
-    }
-    
-    inline uint32_t read_u32(uint32_t source) {
-        uint8_t buf[4] = {0};
-        size_t len = 4;
-        bytes_source_read(source, buf, &len);
-        return buf[0] | (buf[1] << 8) | (buf[2] << 16) | (buf[3] << 24);
-    }
-    
-    // Type ID mapping
-    template<typename T> struct type_id { static constexpr uint8_t value = 0; };
-    template<> struct type_id<uint8_t> { static constexpr uint8_t value = 7; };
-    template<> struct type_id<uint16_t> { static constexpr uint8_t value = 8; };
-    template<> struct type_id<uint32_t> { static constexpr uint8_t value = 9; };
-    template<> struct type_id<uint64_t> { static constexpr uint8_t value = 10; };
-    template<> struct type_id<int8_t> { static constexpr uint8_t value = 11; };
-    template<> struct type_id<int16_t> { static constexpr uint8_t value = 12; };
-    template<> struct type_id<int32_t> { static constexpr uint8_t value = 13; };
-    template<> struct type_id<int64_t> { static constexpr uint8_t value = 14; };
-    template<> struct type_id<std::string> { static constexpr uint8_t value = 3; };
-    
-    // Serialization helpers
-    template<typename T>
-    void write_value(std::vector<uint8_t>& buf, const T& val) {
-        if constexpr (std::is_same_v<T, std::string>) {
-            write_string(buf, val);
-        } else if constexpr (sizeof(T) == 1) {
-            buf.push_back(static_cast<uint8_t>(val));
-        } else if constexpr (sizeof(T) == 2) {
-            buf.push_back(val & 0xFF);
-            buf.push_back((val >> 8) & 0xFF);
-        } else if constexpr (sizeof(T) == 4) {
-            write_u32(buf, static_cast<uint32_t>(val));
+    inline void register_table_name(const char* name) {
+        if (table_count < MAX_TABLES) {
+            table_names[table_count++] = name;
         }
     }
-    
-    // Field info for automatic serialization
-    struct FieldInfo {
-        const char* name;
-        uint8_t type_id;
-        size_t offset;
-        size_t size;
-        std::function<void(std::vector<uint8_t>&, const void*)> serialize;
-    };
-    
-    // Forward declarations
-    class Database;
-    class ReducerContext;
 }
 
-// No longer using static constructors - all registration is explicit
+// -----------------------------------------------------------------------------
+// Binary I/O Utilities
+// -----------------------------------------------------------------------------
 
-// Module definition storage
+inline void write_u32(std::vector<uint8_t>& buf, uint32_t val) {
+    buf.push_back(val & 0xFF);
+    buf.push_back((val >> 8) & 0xFF);
+    buf.push_back((val >> 16) & 0xFF);
+    buf.push_back((val >> 24) & 0xFF);
+}
+
+inline void write_string(std::vector<uint8_t>& buf, const std::string& str) {
+    write_u32(buf, str.length());
+    for (char c : str) buf.push_back(c);
+}
+
+inline uint8_t read_u8(uint32_t source) {
+    uint8_t val = 0;
+    size_t len = 1;
+    bytes_source_read(source, &val, &len);
+    return val;
+}
+
+inline uint32_t read_u32(uint32_t source) {
+    uint8_t buf[4] = {0};
+    size_t len = 4;
+    bytes_source_read(source, buf, &len);
+    return buf[0] | (buf[1] << 8) | (buf[2] << 16) | (buf[3] << 24);
+}
+
+// -----------------------------------------------------------------------------
+// Type System (Legacy compatibility)
+// -----------------------------------------------------------------------------
+
+template<typename T> struct type_id { static constexpr uint8_t value = 0; };
+template<> struct type_id<uint8_t> { static constexpr uint8_t value = 7; };
+template<> struct type_id<uint16_t> { static constexpr uint8_t value = 8; };
+template<> struct type_id<uint32_t> { static constexpr uint8_t value = 9; };
+template<> struct type_id<uint64_t> { static constexpr uint8_t value = 10; };
+template<> struct type_id<int8_t> { static constexpr uint8_t value = 11; };
+template<> struct type_id<int16_t> { static constexpr uint8_t value = 12; };
+template<> struct type_id<int32_t> { static constexpr uint8_t value = 13; };
+template<> struct type_id<int64_t> { static constexpr uint8_t value = 14; };
+template<> struct type_id<std::string> { static constexpr uint8_t value = 3; };
+
+// Serialization helper
+template<typename T>
+void write_value(std::vector<uint8_t>& buf, const T& val) {
+    if constexpr (std::is_same_v<T, std::string>) {
+        write_string(buf, val);
+    } else if constexpr (sizeof(T) == 1) {
+        buf.push_back(static_cast<uint8_t>(val));
+    } else if constexpr (sizeof(T) == 2) {
+        buf.push_back(val & 0xFF);
+        buf.push_back((val >> 8) & 0xFF);
+    } else if constexpr (sizeof(T) == 4) {
+        write_u32(buf, static_cast<uint32_t>(val));
+    }
+}
+
+// -----------------------------------------------------------------------------
+// Module Definition System
+// -----------------------------------------------------------------------------
+
+struct FieldInfo {
+    const char* name;
+    uint8_t type_id;
+    size_t offset;
+    size_t size;
+    std::function<void(std::vector<uint8_t>&, const void*)> serialize;
+};
+
 struct ModuleDef {
     struct Table {
         std::string name;
         bool is_public;
         const std::type_info* type;
-        std::vector<spacetimedb::FieldInfo> fields;
+        std::vector<FieldInfo> fields;
         std::function<void(std::vector<uint8_t>&)> write_schema;
         std::function<void(std::vector<uint8_t>&, const void*)> serialize;
     };
@@ -121,7 +212,7 @@ struct ModuleDef {
     struct Reducer {
         std::string name;
         std::function<void(std::vector<uint8_t>&)> write_params;
-        std::function<void(spacetimedb::ReducerContext&, uint32_t)> handler;
+        std::function<void(ReducerContext&, uint32_t)> handler;
     };
     
     std::vector<Table> tables;
@@ -139,16 +230,22 @@ struct ModuleDef {
     }
 };
 
-// Table helper
+} // namespace spacetimedb
+
+// -----------------------------------------------------------------------------
+// Table Handle
+// -----------------------------------------------------------------------------
+
 template<typename T>
 class TableHandle {
-    std::string table_name;
+    std::string table_name_;
+    
 public:
     TableHandle() = default;
-    TableHandle(const std::string& name) : table_name(name) {}
+    explicit TableHandle(const std::string& name) : table_name_(name) {}
     
     void insert(const T& row) {
-        auto& module = ModuleDef::instance();
+        auto& module = spacetimedb::ModuleDef::instance();
         auto it = module.table_indices.find(&typeid(T));
         if (it == module.table_indices.end()) return;
         
@@ -164,34 +261,94 @@ public:
         size_t len = data.size();
         datastore_insert_bsatn(table_id, data.data(), &len);
     }
+    
+    std::string get_table_name() const { return table_name_; }
+};
+
+// -----------------------------------------------------------------------------
+// Database Classes
+// -----------------------------------------------------------------------------
+
+class ModuleDatabaseBase {
+public:
+    template<typename T>
+    TableHandle<T> table(const char* name) {
+        return TableHandle<T>(name);
+    }
+    
+    template<typename T>
+    TableHandle<T> get(const char* table_name) {
+        return table<T>(table_name);
+    }
+    
+    bool has_table(const char* name) const {
+        using namespace spacetimedb::detail;
+        for (size_t i = 0; i < table_count; ++i) {
+            if (table_names[i] && std::strcmp(table_names[i], name) == 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    size_t get_table_count() const {
+        return spacetimedb::detail::table_count;
+    }
+};
+
+// X-Macro pattern support
+#ifndef SPACETIMEDB_TABLES_LIST
+#define SPACETIMEDB_TABLES_LIST
+#endif
+
+// Forward declare types from X-macro list
+#define X(TypeName, table_name, is_public) \
+    struct TypeName;
+SPACETIMEDB_TABLES_LIST
+#undef X
+
+class ModuleDatabase : public ModuleDatabaseBase {
+public:
+    // Generate accessor methods from X-macro list
+    #define X(TypeName, table_name, is_public) \
+        TableHandle<TypeName> table_name() { \
+            return table<TypeName>(#table_name); \
+        }
+    SPACETIMEDB_TABLES_LIST
+    #undef X
 };
 
 namespace spacetimedb {
-    // Database access
-    class Database {
-    public:
-        template<typename T>
-        TableHandle<T> table() {
-            return TableHandle<T>{};
-        }
+
+// -----------------------------------------------------------------------------
+// Reducer Context
+// -----------------------------------------------------------------------------
+
+class ReducerContext {
+public:
+    ModuleDatabase db;
+    ReducerContext() = default;
+};
+
+// -----------------------------------------------------------------------------
+// Table Registration
+// -----------------------------------------------------------------------------
+
+template<typename T>
+void add_fields_for_type(ModuleDef::Table& table) {
+    // Basic field structure - real implementation would use reflection
+    FieldInfo field;
+    field.name = "n";
+    field.type_id = type_id<uint8_t>::value;
+    field.offset = 0;
+    field.size = sizeof(uint8_t);
+    field.serialize = [](std::vector<uint8_t>& buf, const void* obj) {
+        const uint8_t* byte_obj = static_cast<const uint8_t*>(obj);
+        write_value(buf, *byte_obj);
     };
-    
-    // Reducer context - only define if custom context is not being used
-    #ifndef SPACETIMEDB_CUSTOM_REDUCER_CONTEXT
-    class ReducerContext {
-    public:
-        Database db;
-        
-        ReducerContext() = default;
-    };
-    #endif
+    table.fields.push_back(field);
 }
 
-// Macro helpers
-#define SPACETIMEDB_CAT_IMPL(a, b) a##b
-#define SPACETIMEDB_CAT(a, b) SPACETIMEDB_CAT_IMPL(a, b)
-
-// Core table registration implementation - no static constructors
 template<typename T>
 void register_table_impl(const char* name, bool is_public) {
     ModuleDef::Table table;
@@ -199,7 +356,6 @@ void register_table_impl(const char* name, bool is_public) {
     table.is_public = is_public;
     table.type = &typeid(T);
     
-    // Auto-detect fields using template metaprogramming
     add_fields_for_type<T>(table);
     
     table.write_schema = [](std::vector<uint8_t>& buf) {
@@ -209,11 +365,11 @@ void register_table_impl(const char* name, bool is_public) {
         
         const auto& table = module.tables[it->second];
         buf.push_back(2); // Product type
-        spacetimedb::write_u32(buf, table.fields.size());
+        write_u32(buf, table.fields.size());
         
         for (const auto& field : table.fields) {
             buf.push_back(0); // Some
-            spacetimedb::write_string(buf, field.name);
+            write_string(buf, field.name);
             buf.push_back(field.type_id);
         }
     };
@@ -230,135 +386,26 @@ void register_table_impl(const char* name, bool is_public) {
     };
     
     ModuleDef::instance().add_table(std::move(table));
+    detail::register_table_name(name);
 }
 
-// Helper function for auto-detecting fields
-template<typename T>
-void add_fields_for_type(ModuleDef::Table& table) {
-    // For now, just add a basic field structure
-    // TODO: Use reflection or macro-generated field info for real field detection
-    spacetimedb::FieldInfo field;
-    field.name = "n"; // Generic field name for now
-    field.type_id = spacetimedb::type_id<uint8_t>::value; // Default to u8
-    field.offset = 0;
-    field.size = sizeof(uint8_t);
-    field.serialize = [](std::vector<uint8_t>& buf, const void* obj) {
-        // Generic serialization - just write first byte
-        const uint8_t* byte_obj = static_cast<const uint8_t*>(obj);
-        spacetimedb::write_value(buf, *byte_obj);
-    };
-    table.fields.push_back(field);
-}
+// -----------------------------------------------------------------------------
+// Reducer Registration
+// -----------------------------------------------------------------------------
 
-// Auto-registration helper that triggers after struct definition
-#define SPACETIMEDB_AUTO_REGISTER_TABLE(Type, name_val, public_val) \
-    namespace { \
-        static const bool SPACETIMEDB_CAT(_auto_reg_table_, __LINE__) = []() { \
-            register_table_type<Type>(name_val, public_val); \
-            return true; \
-        }(); \
-    }
-
-// Registration queue system for automatic registration
-struct RegistrationQueue {
-    static std::vector<std::function<void()>>& get_queue() {
-        static std::vector<std::function<void()>> queue;
-        return queue;
-    }
-    
-    static void add_registration(std::function<void()> reg) {
-        get_queue().push_back(reg);
-    }
-    
-    static void execute_all() {
-        for (auto& reg : get_queue()) {
-            reg();
-        }
-    }
-};
-
-// Helper macros to extract parameters (simplified for demo)
-#define SPACETIMEDB_EXTRACT_NAME(name_val, public_val) name_val
-#define SPACETIMEDB_EXTRACT_PUBLIC(name_val, public_val) public_val
-
-// Template to store table metadata for types
-template<typename T>
-struct TableMetadata {
-    static const char* name;
-    static bool is_public;
-    static bool registered;
-};
-
-// Default values
-template<typename T>
-const char* TableMetadata<T>::name = nullptr;
-template<typename T>
-bool TableMetadata<T>::is_public = false;
-template<typename T>
-bool TableMetadata<T>::registered = false;
-
-// Table macro - can be placed BEFORE struct definition!
-#define SPACETIMEDB_TABLE(type_name, name_val, public_val) \
-    struct type_name; \
-    template<> const char* TableMetadata<type_name>::name = name_val; \
-    template<> bool TableMetadata<type_name>::is_public = public_val; \
-    template<> bool TableMetadata<type_name>::registered = false; \
-    extern "C" __attribute__((export_name("__preinit__20_table_" #type_name))) \
-    void _preinit_register_table_##type_name() { \
-        if (!TableMetadata<type_name>::registered) { \
-            TableMetadata<type_name>::registered = true; \
-            register_table_impl<type_name>(TableMetadata<type_name>::name, TableMetadata<type_name>::is_public); \
-        } \
-    }
-
-// Field registration helper
-#define SPACETIMEDB_REGISTER_FIELD(Type, field_name, field_type) \
-    namespace { \
-        struct SPACETIMEDB_CAT(_field_reg_, SPACETIMEDB_CAT(field_name, __LINE__)) { \
-            SPACETIMEDB_CAT(_field_reg_, SPACETIMEDB_CAT(field_name, __LINE__))() { \
-                auto& module = ModuleDef::instance(); \
-                auto it = module.table_indices.find(&typeid(Type)); \
-                if (it != module.table_indices.end()) { \
-                    spacetimedb::FieldInfo field; \
-                    field.name = #field_name; \
-                    field.type_id = spacetimedb::type_id<field_type>::value; \
-                    field.offset = offsetof(Type, field_name); \
-                    field.size = sizeof(field_type); \
-                    field.serialize = [](std::vector<uint8_t>& buf, const void* obj) { \
-                        const Type* typed_obj = static_cast<const Type*>(obj); \
-                        spacetimedb::write_value(buf, typed_obj->field_name); \
-                    }; \
-                    module.tables[it->second].fields.push_back(field); \
-                } \
-            } \
-        }; \
-        static SPACETIMEDB_CAT(_field_reg_, SPACETIMEDB_CAT(field_name, __LINE__)) \
-            SPACETIMEDB_CAT(_field_reg_instance_, SPACETIMEDB_CAT(field_name, __LINE__)); \
-    }
-
-// Manual table registration for now
-#define SPACETIMEDB_REGISTER_TABLE(Type, name, is_public) \
-    static TableRegistrar<Type> SPACETIMEDB_CAT(_table_reg_, Type){name, is_public};
-
-// Complete table registration with fields
-#define SPACETIMEDB_REGISTER_TABLE_WITH_FIELDS(Type, name, is_public, ...) \
-    SPACETIMEDB_REGISTER_TABLE(Type, name, is_public) \
-    __VA_ARGS__
-
-// Helper to read arguments in sequence
 template<typename T>
 T read_arg(uint32_t& source) {
     if constexpr (std::is_same_v<T, uint8_t>) {
-        return spacetimedb::read_u8(source);
+        return read_u8(source);
     } else if constexpr (std::is_same_v<T, uint16_t>) {
         uint8_t buf[2];
         size_t len = 2;
         bytes_source_read(source, buf, &len);
         return buf[0] | (buf[1] << 8);
     } else if constexpr (std::is_same_v<T, uint32_t>) {
-        return spacetimedb::read_u32(source);
+        return read_u32(source);
     } else if constexpr (std::is_same_v<T, std::string>) {
-        uint32_t len = spacetimedb::read_u32(source);
+        uint32_t len = read_u32(source);
         std::string result;
         result.resize(len);
         size_t actual_len = len;
@@ -368,10 +415,9 @@ T read_arg(uint32_t& source) {
     return T{};
 }
 
-// Reducer wrapper function
 template<typename... Args>
-void spacetimedb_reducer_wrapper(void (*func)(spacetimedb::ReducerContext, Args...), 
-                                spacetimedb::ReducerContext& ctx, uint32_t args_source) {
+void spacetimedb_reducer_wrapper(void (*func)(ReducerContext, Args...), 
+                                ReducerContext& ctx, uint32_t args_source) {
     if constexpr (sizeof...(Args) == 0) {
         func(ctx);
     } else if constexpr (sizeof...(Args) == 1) {
@@ -389,30 +435,26 @@ void spacetimedb_reducer_wrapper(void (*func)(spacetimedb::ReducerContext, Args.
     }
 }
 
-// Module-specific bindings will be included by the user module
-
-// Helper functions for parameter serialization - must be declared first
 template<typename T>
 void write_single_param(std::vector<uint8_t>& buf) {
     buf.push_back(0); // Some
-    spacetimedb::write_string(buf, "arg"); // Generic name for now
-    buf.push_back(spacetimedb::type_id<T>::value);
+    write_string(buf, "arg");
+    buf.push_back(type_id<T>::value);
 }
 
 template<typename... Types>
 void write_params_for_types(std::vector<uint8_t>& buf) {
-    spacetimedb::write_u32(buf, sizeof...(Types));
+    write_u32(buf, sizeof...(Types));
     if constexpr (sizeof...(Types) > 0) {
         (write_single_param<Types>(buf), ...);
     }
 }
 
-// Core reducer registration implementation - no static constructors
 template<typename... Args>
-void register_reducer_impl(const std::string& name, void (*func)(spacetimedb::ReducerContext, Args...)) {
+void register_reducer_impl(const std::string& name, void (*func)(ReducerContext, Args...)) {
     ModuleDef::Reducer reducer;
     reducer.name = name;
-    reducer.handler = [func](spacetimedb::ReducerContext& ctx, uint32_t args) {
+    reducer.handler = [func](ReducerContext& ctx, uint32_t args) {
         spacetimedb_reducer_wrapper(func, ctx, args);
     };
     reducer.write_params = [](std::vector<uint8_t>& buf) {
@@ -421,7 +463,96 @@ void register_reducer_impl(const std::string& name, void (*func)(spacetimedb::Re
     ModuleDef::instance().reducers.push_back(std::move(reducer));
 }
 
-// Registry for deferred registration - works in WASM
+template<typename FuncType>
+struct ReducerRegistrar {
+    static void register_func(const char* name, FuncType func) {}
+};
+
+template<typename... Args>
+struct ReducerRegistrar<void (*)(ReducerContext, Args...)> {
+    static void register_func(const char* name, void (*func)(ReducerContext, Args...)) {
+        register_reducer_impl(name, func);
+    }
+};
+
+// -----------------------------------------------------------------------------
+// Module Exports
+// -----------------------------------------------------------------------------
+
+inline void spacetimedb_write_module_def(uint32_t sink) {
+    std::vector<uint8_t> w;
+    auto& module = ModuleDef::instance();
+    
+    // RawModuleDef::V9
+    w.push_back(1);
+    
+    // Typespace
+    write_u32(w, module.tables.size());
+    
+    // Write types for each table
+    for (const auto& table : module.tables) {
+        table.write_schema(w);
+    }
+    
+    // Tables
+    write_u32(w, module.tables.size());
+    
+    for (size_t i = 0; i < module.tables.size(); i++) {
+        const auto& table = module.tables[i];
+        
+        write_string(w, table.name);
+        write_u32(w, i);  // product_type_ref
+        write_u32(w, 0);  // primary_key (empty)
+        write_u32(w, 0);  // indexes (empty)
+        write_u32(w, 0);  // constraints (empty)
+        write_u32(w, 0);  // sequences (empty)
+        w.push_back(1);  // schedule (None)
+        w.push_back(1);  // table_type (User)
+        w.push_back(table.is_public ? 0 : 1);  // access
+    }
+    
+    // Reducers
+    write_u32(w, module.reducers.size());
+    
+    for (const auto& reducer : module.reducers) {
+        write_string(w, reducer.name);
+        
+        if (reducer.write_params) {
+            reducer.write_params(w);
+        } else {
+            write_u32(w, 0);
+        }
+        
+        w.push_back(1);  // lifecycle (None)
+    }
+    
+    // Types (empty)
+    write_u32(w, 0);
+    
+    // MiscExports (empty)
+    write_u32(w, 0);
+    
+    // RowLevelSecurity (empty)
+    write_u32(w, 0);
+    
+    size_t len = w.size();
+    bytes_sink_write(sink, w.data(), &len);
+}
+
+inline int16_t spacetimedb_call_reducer(uint32_t id, uint32_t args) {
+    auto& module = ModuleDef::instance();
+    if (id < module.reducers.size()) {
+        ReducerContext ctx;
+        module.reducers[id].handler(ctx, args);
+        return 0;
+    }
+    return -1;
+}
+
+// -----------------------------------------------------------------------------
+// Deferred Registration System
+// -----------------------------------------------------------------------------
+
 struct DeferredRegistry {
     static std::vector<std::function<void()>>& get_table_registrations() {
         static std::vector<std::function<void()>> table_regs;
@@ -443,7 +574,6 @@ struct DeferredRegistry {
     }
 };
 
-// Self-registering table function
 template<typename T>
 void register_table_type(const char* name, bool is_public) {
     DeferredRegistry::get_table_registrations().push_back([=]() {
@@ -451,164 +581,67 @@ void register_table_type(const char* name, bool is_public) {
     });
 }
 
-// Self-registering reducer function
 template<typename... Args>
-void register_reducer_func(const std::string& name, void (*func)(spacetimedb::ReducerContext, Args...)) {
+void register_reducer_func(const std::string& name, void (*func)(ReducerContext, Args...)) {
     DeferredRegistry::get_reducer_registrations().push_back([=]() {
         register_reducer_impl<Args...>(name, func);
     });
 }
 
-// Auto-registration helper for reducers
-#define SPACETIMEDB_AUTO_REGISTER_REDUCER(func_name, func_ptr) \
-    namespace { \
-        static const bool SPACETIMEDB_CAT(_auto_reg_reducer_, __LINE__) = []() { \
-            register_reducer_func(func_name, func_ptr); \
-            return true; \
-        }(); \
-    }
+// -----------------------------------------------------------------------------
+// Module Initialization
+// -----------------------------------------------------------------------------
 
-// Template to store reducer metadata
-template<void (*Func)(spacetimedb::ReducerContext, ...)>
-struct ReducerMetadata {
-    static const char* name;
-    static bool registered;
-};
-
-// This approach won't work because we can't have variadic function pointers in templates
-// Let's use a different approach with function type deduction
-
-// Reducer registration that will be called after function is defined
-template<typename FuncType>
-struct ReducerRegistrar {
-    static void register_func(const char* name, FuncType func) {
-        // This will be specialized based on the function signature
-    }
-};
-
-// General specialization for any reducer signature
-template<typename... Args>
-struct ReducerRegistrar<void (*)(spacetimedb::ReducerContext, Args...)> {
-    static void register_func(const char* name, void (*func)(spacetimedb::ReducerContext, Args...)) {
-        register_reducer_impl(name, func);
-    }
-};
-
-// Original reducer macro - place before function definition
-#define SPACETIMEDB_REDUCER_DECL(func_name) \
-    void func_name(spacetimedb::ReducerContext, spacetimedb::byte); \
-    extern "C" __attribute__((export_name("__preinit__30_reducer_" #func_name))) \
-    void _preinit_register_reducer_##func_name() { \
-        ReducerRegistrar<decltype(&func_name)>::register_func(#func_name, func_name); \
-    }
-
-// New cleaner syntax - combines declaration and definition
-// Usage: SPACETIMEDB_REDUCER(my_func, ReducerContext ctx, uint8_t n) { ... }
-#define SPACETIMEDB_REDUCER(func_name, ...) \
-    void func_name(__VA_ARGS__); \
-    extern "C" __attribute__((export_name("__preinit__30_reducer_" #func_name))) \
-    void _preinit_register_reducer_##func_name() { \
-        ReducerRegistrar<decltype(&func_name)>::register_func(#func_name, func_name); \
-    } \
-    void func_name(__VA_ARGS__)
-
-// Module exports implementation  
-inline void spacetimedb_write_module_def(uint32_t sink) {
-    std::vector<uint8_t> w;
-    auto& module = ModuleDef::instance();
-    
-    // RawModuleDef::V9
-    w.push_back(1);
-    
-    // Typespace
-    spacetimedb::write_u32(w, module.tables.size());
-    
-    // Write types for each table
-    for (const auto& table : module.tables) {
-        table.write_schema(w);
-    }
-    
-    // Tables
-    spacetimedb::write_u32(w, module.tables.size());
-    
-    for (size_t i = 0; i < module.tables.size(); i++) {
-        const auto& table = module.tables[i];
-        
-        spacetimedb::write_string(w, table.name);
-        spacetimedb::write_u32(w, i);  // product_type_ref
-        spacetimedb::write_u32(w, 0);  // primary_key (empty)
-        spacetimedb::write_u32(w, 0);  // indexes (empty)
-        spacetimedb::write_u32(w, 0);  // constraints (empty)
-        spacetimedb::write_u32(w, 0);  // sequences (empty)
-        w.push_back(1);  // schedule (None)
-        w.push_back(1);  // table_type (User)
-        w.push_back(table.is_public ? 0 : 1);  // access
-    }
-    
-    // Reducers
-    spacetimedb::write_u32(w, module.reducers.size());
-    
-    for (const auto& reducer : module.reducers) {
-        spacetimedb::write_string(w, reducer.name);
-        
-        if (reducer.write_params) {
-            reducer.write_params(w);
-        } else {
-            spacetimedb::write_u32(w, 0);
-        }
-        
-        w.push_back(1);  // lifecycle (None)
-    }
-    
-    // Types (empty)
-    spacetimedb::write_u32(w, 0);
-    
-    // MiscExports (empty)
-    spacetimedb::write_u32(w, 0);
-    
-    // RowLevelSecurity (empty)
-    spacetimedb::write_u32(w, 0);
-    
-    size_t len = w.size();
-    bytes_sink_write(sink, w.data(), &len);
-}
-
-// Forward declaration - implementation will be provided by custom context
-inline int16_t spacetimedb_call_reducer(uint32_t id, uint32_t args);
-
-// Variadic macro to register a module with tables and reducers in one line
-#define SPACETIMEDB_REGISTER_MODULE(...) \
-    void register_all_detected_items() { \
-        SPACETIMEDB_REGISTER_MODULE_IMPL(__VA_ARGS__) \
-    }
-
-// Helper macro for registration implementation  
-#define SPACETIMEDB_REGISTER_MODULE_IMPL(...) \
-    /* Register tables and reducers based on what's passed */ \
-    SPACETIMEDB_REGISTER_ITEMS(__VA_ARGS__)
-
-// Macro to register individual items
-#define SPACETIMEDB_REGISTER_ITEMS(table_type, reducer_func) \
-    register_table_impl<table_type>("one_u8", true); \
-    register_reducer_impl(#reducer_func, reducer_func);
-
-// Global initialization function - triggers static registrations
 inline void initialize_module() {
     static bool initialized = false;
     if (initialized) return;
     initialized = true;
     
-    // Static constructors should have already run, but in WASM they might not
-    // So we provide a fallback by executing all deferred registrations
     DeferredRegistry::register_all();
 }
 
-// Module exports
+} // namespace spacetimedb
+
+// =============================================================================
+// REGISTRATION MACROS
+// =============================================================================
+
+// Generate table registration functions from X-macro list
+#define X(TypeName, table_name, is_public) \
+    __attribute__((export_name("__preinit__20_table_" #table_name))) \
+    extern "C" void SPACETIMEDB_CAT(_preinit_register_table_, table_name)() { \
+        spacetimedb::register_table_impl<TypeName>(#table_name, is_public); \
+        spacetimedb::detail::register_table_name(#table_name); \
+    }
+SPACETIMEDB_TABLES_LIST
+#undef X
+
+// Table registration macro
+#define SPACETIMEDB_TABLE(type_name, table_name, is_public) \
+    __attribute__((export_name("__preinit__20_table_" #table_name))) \
+    extern "C" void SPACETIMEDB_CAT(_preinit_register_table_, table_name)() { \
+        spacetimedb::register_table_impl<type_name>(#table_name, is_public); \
+        spacetimedb::detail::register_table_name(#table_name); \
+    }
+
+// Reducer registration macro
+#define SPACETIMEDB_REDUCER(func_name, ...) \
+    void func_name(__VA_ARGS__); \
+    extern "C" __attribute__((export_name("__preinit__30_reducer_" #func_name))) \
+    void _preinit_register_reducer_##func_name() { \
+        spacetimedb::ReducerRegistrar<decltype(&func_name)>::register_func(#func_name, func_name); \
+    } \
+    void func_name(__VA_ARGS__)
+
+// =============================================================================
+// MODULE EXPORTS
+// =============================================================================
+
 extern "C" {
     __attribute__((export_name("__describe_module__")))
     void __describe_module__(uint32_t sink) {
-        initialize_module(); // Ensure initialization happens
-        spacetimedb_write_module_def(sink);
+        spacetimedb::initialize_module();
+        spacetimedb::spacetimedb_write_module_def(sink);
     }
     
     __attribute__((export_name("__call_reducer__")))
@@ -620,9 +653,23 @@ extern "C" {
         uint32_t args_source, 
         uint32_t error_sink
     ) {
-        initialize_module(); // Ensure initialization happens
-        return spacetimedb_call_reducer(id, args_source);
+        spacetimedb::initialize_module();
+        return spacetimedb::spacetimedb_call_reducer(id, args_source);
     }
 }
+
+// =============================================================================
+// CONVENIENCE ALIASES
+// =============================================================================
+
+namespace spacetimedb {
+    using Context = ReducerContext;
+    using DB = ModuleDatabase;
+}
+
+// Short-form macros for convenience
+#define STDB_TABLE SPACETIMEDB_TABLE
+#define STDB_REDUCER SPACETIMEDB_REDUCER 
+#define STDB_STRUCT SPACETIMEDB_BSATN_STRUCT
 
 #endif // SPACETIMEDB_H
