@@ -180,12 +180,31 @@ The C++ SDK (`/cpp_sdk/`) enables writing SpacetimeDB modules in C++:
 - **Toolchain**: `cpp_sdk/toolchains/wasm_toolchain.cmake` - Emscripten configuration
 - **Examples**: `cpp_sdk/examples/` - Reference implementations
 
+**C++ SDK Header Structure** (Fixed as of 2025-01):
+- **spacetimedb.h**: Core functionality with conditional ReducerContext definition
+- **spacetimedb_easy.h**: Clean syntax overlay providing ModuleDatabase with type-safe table methods
+- Uses `SPACETIMEDB_CUSTOM_REDUCER_CONTEXT` flag to avoid redefinition conflicts
+
+**Current Working C++ SDK Syntax**:
+```cpp
+#include <spacetimedb/spacetimedb_easy.h>
+
+struct OneU8 { uint8_t n; };
+
+SPACETIMEDB_TABLE(OneU8, one_u8, true)  // Public table
+SPACETIMEDB_TABLE(OneU8, another_u8, false)  // Private table
+
+SPACETIMEDB_REDUCER(insert_one_u8, ReducerContext ctx, uint8_t n) {
+    OneU8 row{n};
+    ctx.db.one_u8().insert(row);  // Clean type-safe syntax
+}
+```
+
 Key C++ SDK components:
-- `SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS`: Define table row types
-- `SPACETIMEDB_TABLE`: Register tables with the module
-- `SPACETIMEDB_REDUCER`: Export functions as reducers
-- `Database` class: Global database access
-- `Table<T>` template: Type-safe table operations
+- `SPACETIMEDB_TABLE(Type, table_name, is_public)`: Register tables with the module
+- `SPACETIMEDB_REDUCER(name, ReducerContext ctx, ...)`: Export functions as reducers
+- `ModuleDatabase` class: Type-safe database access via `ctx.db.table_name()`
+- `TableHandle<T>` template: Type-safe table operations with string constructor
 
 **C++ SDK Testing & Validation**:
 - `cpp_sdk/tests/sdk-test-desc.json`: Expected schema output for complete sdk_test.cpp implementation
@@ -198,6 +217,12 @@ Key C++ SDK components:
 - `-s FILESYSTEM=0`: Disables filesystem support (prevents `fd_close` errors)  
 - `-s DISABLE_EXCEPTION_CATCHING=1`: Removes exception handling that can pull in WASI
 - `-Wl,--no-entry`: No main entry point (required for SpacetimeDB modules)
+
+**Common C++ SDK Issues & Solutions**:
+- **TableHandle constructor missing**: Fixed by adding `TableHandle(const std::string& name)` constructor
+- **ReducerContext redefinition**: Use `SPACETIMEDB_CUSTOM_REDUCER_CONTEXT` flag and conditional compilation
+- **Module description format errors**: Ensure `__describe_module__` generates correct RawModuleDef V9 format
+- **Header conflicts**: Use spacetimedb_easy.h which properly overrides base header definitions
 
 ### Key Design Patterns
 
@@ -228,6 +253,34 @@ Key C++ SDK components:
 - C++ modules require Emscripten and must match the module name in both CMakeLists.txt and Cargo.toml
 - Real-time subscription system is in `crates/core/src/subscription/`
 - BSATN (Binary Spacetime Algebraic Type Notation) serialization is in `crates/sats/`
+
+### SpacetimeDB Module Description Format (BSATN)
+
+**Important for C++ SDK debugging**: The `__describe_module__` function must generate correct RawModuleDef format:
+
+- **RawModuleDef enum** (from `crates/lib/src/lib.rs`):
+  ```rust
+  pub enum RawModuleDef {
+      V8BackCompat(RawModuleDefV8),  // tag = 0
+      V9(RawModuleDefV9),            // tag = 1
+  }
+  ```
+
+- **Correct V9 format** (tag = 1):
+  ```cpp
+  // C++ __describe_module__ implementation should:
+  buf.push_back(1);  // RawModuleDef::V9 tag
+  // Followed by RawModuleDefV9 structure:
+  // - typespace: Typespace
+  // - tables: Vec<RawTableDefV9>  
+  // - reducers: Vec<RawReducerDefV9>
+  // - types: Vec<RawTypeDefV9>
+  // - misc_exports: Vec<RawMiscModuleExportV9>
+  // - row_level_security: Vec<RawRowLevelSecurityDefV9>
+  ```
+
+- **Common error**: "unknown tag 0x2 for sum type RawModuleDef" means incorrect tag or format
+- **Reference implementation**: Working Rust code in `crates/bindings/src/rt.rs` lines 416-419
 
 ### Testing Strategy
 
