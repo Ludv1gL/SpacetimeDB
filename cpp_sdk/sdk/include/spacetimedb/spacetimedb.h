@@ -142,7 +142,11 @@ struct ModuleDef {
 // Table helper
 template<typename T>
 class TableHandle {
+    std::string table_name;
 public:
+    TableHandle() = default;
+    TableHandle(const std::string& name) : table_name(name) {}
+    
     void insert(const T& row) {
         auto& module = ModuleDef::instance();
         auto it = module.table_indices.find(&typeid(T));
@@ -172,13 +176,15 @@ namespace spacetimedb {
         }
     };
     
-    // Reducer context
+    // Reducer context - only define if custom context is not being used
+    #ifndef SPACETIMEDB_CUSTOM_REDUCER_CONTEXT
     class ReducerContext {
     public:
         Database db;
         
         ReducerContext() = default;
     };
+    #endif
 }
 
 // Macro helpers
@@ -567,15 +573,8 @@ inline void spacetimedb_write_module_def(uint32_t sink) {
     bytes_sink_write(sink, w.data(), &len);
 }
 
-inline int16_t spacetimedb_call_reducer(uint32_t id, uint32_t args) {
-    auto& module = ModuleDef::instance();
-    if (id < module.reducers.size()) {
-        spacetimedb::ReducerContext ctx;
-        module.reducers[id].handler(ctx, args);
-        return 0;
-    }
-    return -1;
-}
+// Forward declaration - implementation will be provided by custom context
+inline int16_t spacetimedb_call_reducer(uint32_t id, uint32_t args);
 
 // Variadic macro to register a module with tables and reducers in one line
 #define SPACETIMEDB_REGISTER_MODULE(...) \

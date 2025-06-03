@@ -31,17 +31,15 @@ struct OneU8 {
 };
 
 /**
- * Module definition with table declarations.
+ * Table declarations.
  * 
  * SPACETIMEDB_TABLE(Type, table_name, is_public)
  * - Type: The C++ struct type for table rows
  * - table_name: The table name (becomes ctx.db.table_name())
  * - is_public: true for public tables, false for private
  */
-SPACETIMEDB_MODULE(
-    SPACETIMEDB_TABLE(OneU8, one_u8, true)      // Public table
-    SPACETIMEDB_TABLE(OneU8, another_u8, false) // Private table
-)
+SPACETIMEDB_TABLE(OneU8, one_u8, true)      // Public table
+SPACETIMEDB_TABLE(OneU8, another_u8, false) // Private table
 
 // Insert a single value into the public table
 SPACETIMEDB_REDUCER(insert_one_u8, ReducerContext ctx, uint8_t n) {
