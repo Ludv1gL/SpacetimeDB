@@ -1,0 +1,61 @@
+//! This script is used to generate the C++ bindings for the `RawModuleDef` type.
+//! Run `cargo run --example regen-cpp-moduledef` to update C++ bindings whenever the module definition changes.
+
+use fs_err as fs;
+use spacetimedb_codegen::{cpp, generate};
+use spacetimedb_lib::{RawModuleDef, RawModuleDefV8};
+use spacetimedb_schema::def::ModuleDef;
+use std::path::Path;
+
+fn main() -> anyhow::Result<()> {
+    let module = RawModuleDefV8::with_builder(|module| {
+        module.add_type::<RawModuleDef>();
+    });
+
+    // Build relative path from the codegen crate to the C++ SDK autogen directory
+    let manifest_dir = env!("CARGO_MANIFEST_DIR");
+    let dir = Path::new(manifest_dir)
+        .parent()
+        .unwrap()
+        .parent()
+        .unwrap()
+        .join("cpp_sdk/sdk/include/spacetimedb/internal/autogen");
+    
+    println!("Target directory path: {}", dir.display());
+
+    // Create the autogen directory if it doesn't exist
+    if dir.exists() {
+        fs::remove_dir_all(&dir)?;
+    }
+    fs::create_dir_all(&dir)?;
+
+    let module: ModuleDef = module.try_into()?;
+    generate(
+        &module,
+        &cpp::Cpp {
+            namespace: "SpacetimeDb::Internal",
+        },
+    )
+    .into_iter()
+    .try_for_each(|(filename, code)| {
+        // Skip anything but raw types (in particular, this will skip global headers we don't need).
+        let Some(filename) = filename.strip_prefix("Types/") else {
+            return Ok(());
+        };
+
+        // For now, skip AlgebraicType and other large BSATN types since we have custom C++ implementations
+        // that are more optimized for the C++ SDK. These can be generated later if needed.
+        if filename == "AlgebraicType.g.h" || filename.starts_with("SumType") || filename.starts_with("ProductType") {
+            return Ok(());
+        }
+
+        // For now, skip type transformations since we need to handle these types properly
+        // TODO: Implement proper AlgebraicType, ProductType, SumType generation
+
+        println!("Generating {}", filename);
+        fs::write(dir.join(filename), code)
+    })?;
+
+    println!("C++ autogen files written to: {}", dir.display());
+    Ok(())
+}

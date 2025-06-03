@@ -10,20 +10,17 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # SDK source files
 set(SDK_SOURCES
     src/abi/module_exports.cpp
-    src/abi/reducer_bridge.cpp
     src/bsatn/reader.cpp
     src/bsatn/writer.cpp
     src/database.cpp
     src/logging.cpp
-    src/module_def_builder.cpp
-    src/raw_module_def_v9.cpp
     src/reducer_context.cpp
     src/sdk/logging.cpp
-    src/spacetime_module_abi.cpp
-    src/spacetime_reducer_bridge.cpp
     src/spacetimedb_sdk_table_registry.cpp
     src/spacetimedb_sdk_types.cpp
     src/wasi_shims.cpp
+    src/internal/Module.cpp
+    src/internal/FFI.cpp
 )
 
 # Create the SDK library

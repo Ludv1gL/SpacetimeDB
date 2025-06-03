@@ -1,6 +1,7 @@
 #include "spacetimedb/abi/spacetime_module_exports.h"
 #include "spacetimedb/abi/abi_utils.h"
-#include "spacetimedb/internal/raw_module_def_v9.h"  // Use new RawModuleDefV9
+#include "spacetimedb/internal/Module.h"  // Use new Module API
+#include "spacetimedb/sdk/database.h"     // For sdk::Timestamp
 
 #include <vector>
 #include <cstddef> // For size_t
@@ -12,39 +13,50 @@
 extern "C" {
 
     void __describe_module__(BytesSink description_sink_handle) {
-        try {
-            // 1. Get the serialized RawModuleDefV9
-            std::vector<uint8_t> module_def_bytes = SpacetimeDb::Internal::get_raw_module_def_v9_bytes();
-
-            // 2. Write it to the sink
-            SpacetimeDB::Abi::Utils::write_vector_to_sink(description_sink_handle, module_def_bytes);
-
-        }
-        catch (const std::exception& e) {
-            std::cerr << "Critical Error in __describe_module__: " << e.what() << std::endl;
-            try {
-                std::string error_msg = "Error generating module description: " + std::string(e.what());
-                // Assuming write_string_to_sink is robust enough or we accept potential nested exception here.
-                SpacetimeDB::Abi::Utils::write_string_to_sink(description_sink_handle, error_msg);
-            }
-            catch (const std::exception& sink_e) {
-                std::cerr << "Additionally, failed to write error to sink in __describe_module__: " << sink_e.what() << std::endl;
-            }
-        }
-        catch (...) {
-            std::cerr << "Critical Unknown Error in __describe_module__." << std::endl;
-            try {
-                std::string error_msg = "Unknown error generating module description.";
-                SpacetimeDB::Abi::Utils::write_string_to_sink(description_sink_handle, error_msg);
-            }
-            catch (...) {
-                // Silent failure to write to sink if error reporting itself fails
-            }
-        }
+        // Convert BytesSink to FFI::BytesSink
+        SpacetimeDb::Internal::FFI::BytesSink sink{description_sink_handle};
+        
+        // Use the new Module API
+        SpacetimeDb::Internal::Module::__describe_module__(sink);
     }
 
-    // __call_reducer__ implementation will be in spacetime_reducer_bridge.cpp (or a similar named file)
-    // and included in the build. If it's also considered part of "module_exports", it could be here too.
-    // For now, keeping it separate as per original plan.
+    int16_t __call_reducer__(
+        uint32_t reducer_id,
+        uint64_t sender_0, uint64_t sender_1, uint64_t sender_2, uint64_t sender_3,
+        uint64_t conn_id_0, uint64_t conn_id_1,
+        uint64_t timestamp_us,
+        BytesSource args,
+        BytesSink error
+    ) {
+        // Convert to FFI types
+        SpacetimeDb::Internal::FFI::BytesSource source{args};
+        SpacetimeDb::Internal::FFI::BytesSink sink{error};
+        
+        // Create timestamp
+        SpacetimeDb::sdk::Timestamp ts;
+        ts.microseconds_since_epoch = timestamp_us;
+        
+        // Call Module's implementation
+        auto result = SpacetimeDb::Internal::Module::__call_reducer__(
+            reducer_id,
+            sender_0, sender_1, sender_2, sender_3,
+            conn_id_0, conn_id_1,
+            ts,
+            source,
+            sink
+        );
+        
+        // Convert Errno to int16_t
+        switch (result) {
+            case SpacetimeDb::Internal::FFI::Errno::OK:
+                return 0;
+            case SpacetimeDb::Internal::FFI::Errno::NO_SUCH_REDUCER:
+                return -1;
+            case SpacetimeDb::Internal::FFI::Errno::HOST_CALL_FAILURE:
+                return -3;
+            default:
+                return -4;
+        }
+    }
 
 } // extern "C"

@@ -1,8 +1,9 @@
 #ifndef SPACETIMEDB_MACROS_H
 #define SPACETIMEDB_MACROS_H
 
-#include "spacetimedb/internal/module_schema.h"
+#include "spacetimedb/internal/Module.h"
 #include "spacetimedb/bsatn_all.h"
+#include "spacetimedb/sdk/reducer_context.h"
 
 #include <string>
 #include <vector>
@@ -19,85 +20,78 @@
 #define SPACETIMEDB_PASTE_IMPL(a, b) a##b
 #define SPACETIMEDB_PASTE(a, b) SPACETIMEDB_PASTE_IMPL(a, b)
 
-#define SPACETIMEDB_PASTE_PREFIX_IMPL(prefix, type) prefix##type
-#define SPACETIMEDB_PASTE_PREFIX(prefix, type) SPACETIMEDB_PASTE_PREFIX_IMPL(prefix, type)
+// --- New Table and Reducer Definition Macros ---
 
-// --- Type Definition Macros ---
-
-/** @internal Basic helper to construct a FieldDefinition for schema registration. */
-inline ::SpacetimeDb::FieldDefinition SPACETIMEDB_FIELD_INTERNAL(const char* name, ::SpacetimeDb::CoreType core_type, const char* user_defined_name, bool is_optional, bool is_unique_field, bool is_auto_inc_field) {
-    ::SpacetimeDb::TypeIdentifier type_id;
-    type_id.core_type = core_type;
-    if (user_defined_name) {
-        type_id.user_defined_name = user_defined_name;
+// Table definition macro using the new Internal API
+#define SPACETIMEDB_TABLE(RowType, table_name, is_public) \
+    class table_name##_TableView : public SpacetimeDb::Internal::ITableView<table_name##_TableView, RowType> { \
+    public: \
+        static SpacetimeDb::Internal::RawTableDefV9 MakeTableDesc(SpacetimeDb::Internal::ITypeRegistrar& registrar) { \
+            SpacetimeDb::Internal::RawTableDefV9 table; \
+            table.name = SPACETIMEDB_STRINGIFY(table_name); \
+            table.table_access = is_public ? SpacetimeDb::Internal::TableAccess::Public : SpacetimeDb::Internal::TableAccess::Private; \
+            table.table_type = SpacetimeDb::Internal::TableType::User; \
+            /* TODO: Generate product type ref from RowType */ \
+            table.product_type_ref = 0; \
+            return table; \
+        } \
+        static uint32_t GetTableId() { \
+            static uint32_t id = 0xFFFFFFFF; \
+            if (id == 0xFFFFFFFF) { \
+                std::string name = SPACETIMEDB_STRINGIFY(table_name); \
+                SpacetimeDb::Internal::FFI::table_id_from_name( \
+                    reinterpret_cast<const uint8_t*>(name.data()), \
+                    name.size(), \
+                    &id \
+                ); \
+            } \
+            return id; \
+        } \
+        static RowType ReadGenFields(bsatn::Reader& reader, const RowType& row) { \
+            /* TODO: Read generated fields */ \
+            return row; \
+        } \
+    }; \
+    namespace { \
+        struct Register_##table_name##_Table { \
+            Register_##table_name##_Table() { \
+                SpacetimeDb::Internal::Module::RegisterTable<RowType, table_name##_TableView>(); \
+            } \
+        }; \
+        static Register_##table_name##_Table register_##table_name##_table_instance; \
     }
-    ::SpacetimeDb::FieldDefinition field_def;
-    field_def.name = name;
-    field_def.type = type_id;
-    field_def.is_optional = is_optional;
-    field_def.is_unique = is_unique_field;
-    field_def.is_auto_increment = is_auto_inc_field;
-    return field_def;
-}
 
-#define SPACETIMEDB_FIELD(FieldNameStr, FieldCoreType, IsUniqueBool, IsAutoIncBool) \
-    ::SPACETIMEDB_FIELD_INTERNAL(FieldNameStr, FieldCoreType, nullptr, false, IsUniqueBool, IsAutoIncBool)
-
-#define SPACETIMEDB_FIELD_OPTIONAL(FieldNameStr, FieldCoreType, IsUniqueBool, IsAutoIncBool) \
-    ::SPACETIMEDB_FIELD_INTERNAL(FieldNameStr, FieldCoreType, nullptr, true, IsUniqueBool, IsAutoIncBool)
-
-#define SPACETIMEDB_FIELD_CUSTOM(FieldNameStr, UserDefinedTypeNameStr, IsUniqueBool, IsAutoIncBool) \
-    ::SPACETIMEDB_FIELD_INTERNAL(FieldNameStr, ::SpacetimeDb::CoreType::UserDefined, UserDefinedTypeNameStr, false, IsUniqueBool, IsAutoIncBool)
-
-#define SPACETIMEDB_FIELD_CUSTOM_OPTIONAL(FieldNameStr, UserDefinedTypeNameStr, IsUniqueBool, IsAutoIncBool) \
-    ::SPACETIMEDB_FIELD_INTERNAL(FieldNameStr, ::SpacetimeDb::CoreType::UserDefined, UserDefinedTypeNameStr, true, IsUniqueBool, IsAutoIncBool)
-
-// Re-typed SPACETIMEDB_XX_SERIALIZE_FIELD
-#define SPACETIMEDB_XX_SERIALIZE_FIELD(WRITER, VALUE_OBJ, CPP_TYPE, FIELD_NAME, IS_OPTIONAL, IS_VECTOR) \
-    serialize((WRITER), (VALUE_OBJ).FIELD_NAME);
-
-// Re-typed SPACETIMEDB_XX_DESERIALIZE_FIELD
-#define SPACETIMEDB_XX_DESERIALIZE_FIELD(READER, VALUE_OBJ, CPP_TYPE, FIELD_NAME, IS_OPTIONAL, IS_VECTOR) \
-    (VALUE_OBJ).FIELD_NAME = deserialize<decltype((VALUE_OBJ).FIELD_NAME)>(READER);
-
-// Schema-only struct registration (no BSATN generation)
-#define SPACETIMEDB_TYPE_STRUCT(CppTypeName, SanitizedCppTypeName, SpacetimeDbTypeNameStr, FieldsInitializerList) \
-    namespace SpacetimeDb { namespace ModuleRegistration { \
-        struct Register##SanitizedCppTypeName { \
-            Register##SanitizedCppTypeName() { \
-                ::SpacetimeDb::ModuleSchema::instance().register_struct_type( \
-                    SPACETIMEDB_STRINGIFY(CppTypeName), \
-                    SpacetimeDbTypeNameStr, \
-                    std::vector< ::SpacetimeDb::FieldDefinition> FieldsInitializerList \
-                ); \
+// Reducer definition macro using the new Internal API
+#define SPACETIMEDB_REDUCER(name, ctx_param, ...) \
+    void name##_impl(SpacetimeDb::sdk::ReducerContext ctx_param, ##__VA_ARGS__); \
+    class name##_Reducer : public SpacetimeDb::Internal::IReducer { \
+    public: \
+        SpacetimeDb::Internal::RawReducerDefV9 MakeReducerDef(SpacetimeDb::Internal::ITypeRegistrar& registrar) override { \
+            SpacetimeDb::Internal::RawReducerDefV9 reducer; \
+            reducer.name = SPACETIMEDB_STRINGIFY(name); \
+            /* TODO: Generate function type ref */ \
+            reducer.func_type_ref = 0; \
+            return reducer; \
+        } \
+        void Invoke(bsatn::Reader& reader, SpacetimeDb::Internal::IReducerContext& ctx) override { \
+            /* TODO: Deserialize arguments and call implementation */ \
+            SpacetimeDb::sdk::ReducerContext sdk_ctx{/* TODO: Initialize from IReducerContext */}; \
+            name##_impl(sdk_ctx, ##__VA_ARGS__); \
+        } \
+    }; \
+    namespace { \
+        struct Register_##name##_Reducer { \
+            Register_##name##_Reducer() { \
+                SpacetimeDb::Internal::Module::RegisterReducer<name##_Reducer>(); \
             } \
         }; \
-        static Register##SanitizedCppTypeName register_##SanitizedCppTypeName##_instance; \
-    }}
+        static Register_##name##_Reducer register_##name##_reducer_instance; \
+    } \
+    void name##_impl(SpacetimeDb::sdk::ReducerContext ctx_param, ##__VA_ARGS__)
 
-#define SPACETIMEDB_ENUM_VARIANT(VariantNameStr) \
-    ::SpacetimeDb::EnumVariantDefinition{VariantNameStr}
-
-// Diagnostic pragmas removed - macros are working correctly
-
-#define SPACETIMEDB_TYPE_ENUM(_actual_cpp_type_name_, SanitizedCppTypeName, SpacetimeDbEnumNameStr, VariantsInitializerList) \
-    namespace SpacetimeDb { namespace ModuleRegistration { \
-        struct SPACETIMEDB_PASTE(Register, SanitizedCppTypeName) { \
-            SPACETIMEDB_PASTE(Register, SanitizedCppTypeName)() { \
-                ::SpacetimeDb::ModuleSchema::instance().register_enum_type( \
-                    SPACETIMEDB_STRINGIFY(_actual_cpp_type_name_), \
-                    SpacetimeDbEnumNameStr, \
-                    std::vector< ::SpacetimeDb::EnumVariantDefinition> VariantsInitializerList \
-                ); \
-            } \
-        }; \
-        static SPACETIMEDB_PASTE(Register, SanitizedCppTypeName) SPACETIMEDB_PASTE(register_, SPACETIMEDB_PASTE(SanitizedCppTypeName, _instance)); \
-    }} /* SpacetimeDb::ModuleRegistration */
-
-
-#define SPACETIMEDB_TABLE(CppRowTypeName, SpacetimeDbTableNameStr, IsPublicBool, ScheduledReducerNameStr) \
-    namespace SpacetimeDb { namespace ModuleRegistration { \
-        struct RegisterTable_##CppRowTypeName##_##SpacetimedbNameStr { \
+// Legacy compatibility - these will be removed in future
+#define SPACETIMEDB_FIELD_INTERNAL(name, core_type, user_defined_name, is_optional, is_unique_field, is_auto_inc_field) \
+    /* Deprecated - use SPACETIMEDB_TABLE macro instead */
             RegisterTable_##CppRowTypeName##_##SpacetimedbNameStr() { \
                 ::SpacetimeDb::ModuleSchema::instance().register_table( \
                     SPACETIMEDB_STRINGIFY(CppRowTypeName), \

@@ -5391,6 +5391,7 @@ dependencies = [
  "spacetimedb-data-structures",
  "spacetimedb-lib",
  "spacetimedb-primitives",
+ "spacetimedb-sats",
  "spacetimedb-schema",
  "spacetimedb-testing",
 ]

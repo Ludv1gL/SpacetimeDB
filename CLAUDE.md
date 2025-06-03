@@ -16,6 +16,27 @@ SpacetimeDB is a revolutionary database that merges database and application ser
 
 ## Development Environment
 
+### Rust Toolchain
+
+The development environment has full Rust capabilities for cross-reference development and analysis:
+
+```bash
+# Rust toolchain versions
+rustc --version  # Rust 1.84.0 (latest stable)
+cargo --version  # Cargo 1.84.0
+
+# Build and analyze Rust crates
+cargo build --all           # Build all crates in workspace
+cargo check --package <name>  # Type-check specific crate
+cargo test --package <name>   # Run tests for specific crate
+cargo doc --package <name>    # Generate documentation
+cargo tree                   # Show dependency tree
+
+# Cross-reference analysis for C++ SDK development
+cargo expand --package spacetimedb  # Show macro expansions
+cargo run --example <name>          # Run examples for reference
+```
+
 ### WebAssembly Tools
 
 ```bash
@@ -288,6 +309,37 @@ Key C++ SDK components:
 - C++ modules require Emscripten and must match the module name in both CMakeLists.txt and Cargo.toml
 - Real-time subscription system is in `crates/core/src/subscription/`
 - BSATN (Binary Spacetime Algebraic Type Notation) serialization is in `crates/sats/`
+
+### Using Rust for C++ SDK Development
+
+**Cross-Reference Analysis**: The development environment supports using Rust as a reference for C++ SDK implementation:
+
+```bash
+# Study Rust SDK implementations for C++ feature development
+cargo check --package spacetimedb        # Rust Module SDK (bindings)
+cargo check --package spacetimedb-cli    # CLI tools and codegen
+
+# Analyze specific features for C++ implementation
+cargo expand --package spacetimedb       # Show macro expansions for table/reducer registration
+cargo doc --package spacetimedb --open   # Browse Rust SDK documentation
+cargo test --package spacetimedb -- --nocapture  # See test patterns
+
+# Extract type definitions and schemas
+cargo run --bin spacetime -- describe <db> --json  # Compare schema outputs
+cargo tree --package spacetimedb         # Understand dependencies and structure
+```
+
+**Key Rust Crates for C++ Reference**:
+- `spacetimedb` (`crates/bindings/`) - Rust Module SDK with complete table/reducer system
+- `spacetimedb-sats` (`crates/sats/`) - BSATN serialization and type system
+- `spacetimedb-lib` (`crates/lib/`) - Core types and module definitions
+- `spacetimedb-bindings-macro` (`crates/bindings-macro/`) - Macro implementations to study
+
+**Cross-Language Validation**:
+- Use Rust modules to generate reference schemas for testing C++ output
+- Compare BSATN encoding between Rust and C++ implementations  
+- Study error handling patterns in Rust for C++ exception design
+- Extract complete feature lists from Rust SDK for C++ roadmap planning
 
 ### SpacetimeDB Module Description Format (BSATN)
 

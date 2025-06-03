@@ -2,7 +2,7 @@
 #include "test_types.h"       // For SpacetimeDB::Test types
 #include "spacetimedb/sdk/logging.h"           // For SpacetimeDB::log_info etc.
 #include "spacetimedb/sdk/database.h"          // For SpacetimeDB::sdk::table_insert etc.
-#include "spacetimedb/internal/module_def.h"   // Updated path for SpacetimeDB::Internal::get_serialized_module_definition_bytes()
+#include "spacetimedb/internal/Module.h"   // Updated to use new Module API
 // spacetime_module_exports.h (for __describe_module__ etc.) is implicitly included via test_common.h
 #include "spacetimedb/bsatn/writer.h"          // For bsatn::Writer (updated to new path style)
 #include "spacetimedb/bsatn/reader.h"          // For bsatn::Reader (updated to new path style)
@@ -253,7 +253,11 @@ void test_module_def_abi() {
     // Ensure schema is populated by macros in test_types.h and reducers in this file.
     // (This happens due to static initialization order when these files are linked.)
 
-    std::vector<std::byte> direct_def_bytes = SpacetimeDB::Internal::get_serialized_module_definition_bytes();
+    // Use Module API to generate module definition
+    SpacetimeDb::Internal::FFI::BytesSink mock_direct_sink{_bytes_sink_create()};
+    SpacetimeDb::Internal::Module::__describe_module__(mock_direct_sink);
+    std::vector<std::byte> direct_def_bytes = g_mock_sinks_data[mock_direct_sink.handle];
+    _bytes_sink_done(mock_direct_sink.handle);
     ASSERT_TRUE(direct_def_bytes.size() > 0, "Serialized ModuleDef (direct) should not be empty.");
     print_bytes_test_common(direct_def_bytes, "Serialized ModuleDef (direct): ");
 

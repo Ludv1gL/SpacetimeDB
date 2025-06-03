@@ -3,15 +3,15 @@ use spacetimedb_schema::identifier::Identifier;
 
 mod code_indenter;
 pub mod csharp;
+pub mod cpp;
 pub mod rust;
 pub mod typescript;
-pub mod cpp; // Added cpp module
 mod util;
 
 pub use self::csharp::Csharp;
+pub use self::cpp::Cpp;
 pub use self::rust::Rust;
 pub use self::typescript::TypeScript;
-pub use self::cpp::Cpp; // Added Cpp struct export
 pub use util::AUTO_GENERATED_PREFIX;
 
 pub fn generate(module: &ModuleDef, lang: &dyn Lang) -> Vec<(String, String)> {
