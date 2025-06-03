@@ -54,23 +54,40 @@ SPACETIMEDB_REDUCER(insert_another_u8, ReducerContext ctx, uint8_t n) {
     ctx.db.another_u8().insert(row);
 }
 
-// Initialize the database with default values
+// Initialize the database with default values - demonstrates enhanced logging
 SPACETIMEDB_REDUCER(init_db, ReducerContext ctx) {
-    log("Database initialized!");
-    ctx.db.one_u8().insert({42});
-    ctx.db.another_u8().insert({100});
+    LOG_INFO("Database initialized with enhanced logging!");
+    
+    // Performance measurement example
+    {
+        SpacetimeDB::LogStopwatch timer("database_initialization");
+        ctx.db.one_u8().insert({42});
+        ctx.db.another_u8().insert({100});
+        LOG_DEBUG("Default values inserted successfully");
+    } // Timer automatically ends here
 }
 
-// Insert a value with an offset calculation
+// Insert a value with an offset calculation - demonstrates caller info logging
 SPACETIMEDB_REDUCER(insert_with_offset, ReducerContext ctx, uint8_t n, uint8_t offset) {
+    LOG_DEBUG("Computing offset: " + std::to_string(n) + " + " + std::to_string(offset));
     OneU8 row{static_cast<uint8_t>(n + offset)};
     ctx.db.one_u8().insert(row);
+    LOG_TRACE("Inserted value: " + std::to_string(row.n));
 }
 
-// Insert a range of values with a specified step
+// Insert a range of values with a specified step - demonstrates performance timing
 SPACETIMEDB_REDUCER(insert_range, ReducerContext ctx, uint8_t start, uint8_t end, uint8_t step) {
+    SpacetimeDB::LogStopwatch range_timer("bulk_insert_range");
+    
+    LOG_INFO("Inserting range: " + std::to_string(start) + " to " + std::to_string(end) + 
+             " with step " + std::to_string(step));
+    
+    uint32_t count = 0;
     for (uint8_t i = start; i <= end; i += step) {
         OneU8 row{i};
         ctx.db.one_u8().insert(row);
+        count++;
     }
+    
+    LOG_INFO("Successfully inserted " + std::to_string(count) + " values");
 }

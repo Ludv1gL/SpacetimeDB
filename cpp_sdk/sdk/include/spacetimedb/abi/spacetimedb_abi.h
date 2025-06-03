@@ -26,6 +26,18 @@ void _console_log(
     size_t text_len
 );
 
+// Timer functions for performance measurement
+__attribute__((import_module("spacetime_10.0"), import_name("console_timer_start")))
+uint32_t _console_timer_start(
+    const uint8_t *name,
+    size_t name_len
+);
+
+__attribute__((import_module("spacetime_10.0"), import_name("console_timer_end")))
+uint16_t _console_timer_end(
+    uint32_t timer_id
+);
+
 // Buffer handling
 // _buffer_alloc: Returns Buffer directly.
 __attribute__((import_module("spacetime_10.0"), import_name("_buffer_alloc")))
