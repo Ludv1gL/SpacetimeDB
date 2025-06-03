@@ -216,3 +216,4 @@ new.json
 # Keys
 *.pem
 .ok.sql
+*.wasm

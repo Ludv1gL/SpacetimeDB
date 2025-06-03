@@ -7,7 +7,7 @@
 #include <vector>
 #include <optional>
 #include <type_traits>
-#include "bsatn_compat.h"  // For WriterCompat
+#include "writer.h"  // For Writer
 
 namespace SpacetimeDb::bsatn {
 
@@ -120,9 +120,9 @@ std::vector<uint8_t> to_bsatn_vec(const T& value) {
     result.reserve(size);
     
     // Use existing Writer to serialize
-    WriterCompat writer;
+    Writer writer;
     serialize(writer, value);
-    return writer.take_uint8_buffer();
+    return writer.take_buffer();
 }
 
 /**

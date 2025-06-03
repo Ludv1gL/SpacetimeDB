@@ -9,7 +9,9 @@
 
 // Include the base header  
 #include "spacetimedb.h"
-#include "sdk/logging.h"  // For enhanced logging features
+#include "sdk/logging.h"     // For enhanced logging features
+#include "sdk/exceptions.h"  // For rich error handling
+#include "sdk/index_management.h"  // For index management features
 #include <cstring>  // For std::strcmp
 
 // Override the original SPACETIMEDB_TABLE macro
