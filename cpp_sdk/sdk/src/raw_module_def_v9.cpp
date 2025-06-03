@@ -1,6 +1,7 @@
 #include "spacetimedb/internal/raw_module_def_v9.h"
 #include "spacetimedb/internal/module_schema.h"
 #include "spacetimedb/bsatn_all.h"
+#include "spacetimedb/spacetimedb.h"  // For spacetimedb::ModuleDef
 #include <iostream>
 
 namespace SpacetimeDb {
@@ -23,10 +24,13 @@ namespace SpacetimeDb {
             }
         }
 
-        // Serialize Typespace (simplified for now)
+        // Serialize Typespace
         void serialize(SpacetimeDb::bsatn::Writer& writer, const Typespace& ts) {
-            // Typespace is a vector of AlgebraicType - serialize as empty vector for now
-            writer.write_u32_le(0); // Empty vector length
+            // Typespace is a vector of AlgebraicType 
+            writer.write_u32_le(static_cast<uint32_t>(ts.types.size()));
+            for (const auto& type_bytes : ts.types) {
+                writer.write_bytes_raw(type_bytes.data(), type_bytes.size());
+            }
         }
 
         // Serialize RawModuleDefV9
@@ -76,33 +80,53 @@ namespace SpacetimeDb {
             
             RawModuleDefV9& v9_def = raw_def.v9_def;
             
-            // Initialize typespace (empty for now)
+            // Build typespace with actual table schemas
             v9_def.typespace = Typespace{};
+            uint32_t type_index = 0;
             
-            // Convert tables
+            // Get the ModuleDef instance to access table schemas
+            auto& module_def = spacetimedb::ModuleDef::instance();
+            
+            // Convert tables and generate their AlgebraicTypes
             for (const auto& [table_name, table_def] : user_schema.tables) {
                 RawTableDefV9 raw_table;
                 raw_table.table_name = table_def.spacetime_name;
-                raw_table.product_type_ref = 0; // TODO: Proper type reference
+                raw_table.product_type_ref = type_index; // Reference to type in typespace
                 raw_table.is_public = table_def.is_public;
+                
+                // Find the corresponding table in ModuleDef and generate its schema
+                for (const auto& mod_table : module_def.tables) {
+                    if (mod_table.name == table_def.spacetime_name) {
+                        // Generate the AlgebraicType for this table
+                        std::vector<uint8_t> type_bytes;
+                        mod_table.write_schema(type_bytes);
+                        v9_def.typespace.types.push_back(type_bytes);
+                        break;
+                    }
+                }
+                
                 v9_def.tables.push_back(raw_table);
+                type_index++;
             }
             
             // Convert reducers
             for (const auto& [reducer_name, reducer_def] : user_schema.reducers) {
                 RawReducerDefV9 raw_reducer;
                 raw_reducer.reducer_name = reducer_def.spacetime_name;
-                raw_reducer.func_type_ref = 0; // TODO: Proper type reference
+                raw_reducer.func_type_ref = type_index; // TODO: Generate proper function type
                 v9_def.reducers.push_back(raw_reducer);
+                
+                // For now, add a simple function type (no parameters, no return)
+                std::vector<uint8_t> func_type_bytes;
+                SpacetimeDb::bsatn::Writer func_writer;
+                func_writer.write_u8(2); // Product type
+                func_writer.write_u32_le(0); // 0 fields
+                v9_def.typespace.types.push_back(func_writer.take_buffer());
+                type_index++;
             }
             
-            // Convert types
-            for (const auto& [type_name, type_def] : user_schema.types) {
-                RawTypeDefV9 raw_type;
-                raw_type.type_name = type_def.spacetime_db_name;
-                raw_type.algebraic_type_ref = 0; // TODO: Proper type reference
-                v9_def.types.push_back(raw_type);
-            }
+            // Convert types (empty for now)
+            v9_def.types.clear();
             
             // Empty misc_exports and row_level_security for now
             v9_def.misc_exports.clear();

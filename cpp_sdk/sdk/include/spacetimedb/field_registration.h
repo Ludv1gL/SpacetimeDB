@@ -150,9 +150,25 @@ template<> struct bsatn_type_id<SpacetimeDb::Types::int256_t_placeholder> {
     static constexpr uint8_t value = bsatn_type::I256; 
 };
 
-// Forward declarations
-void write_u32(std::vector<uint8_t>& buf, uint32_t val);
-void write_string(std::vector<uint8_t>& buf, const std::string& str);
+// Utility functions for BSATN encoding (implemented in spacetimedb.h)
+#ifndef SPACETIMEDB_WRITE_UTILS_DEFINED
+#define SPACETIMEDB_WRITE_UTILS_DEFINED
+
+inline void write_u32(std::vector<uint8_t>& buf, uint32_t val) {
+    buf.push_back(val & 0xFF);
+    buf.push_back((val >> 8) & 0xFF);
+    buf.push_back((val >> 16) & 0xFF);
+    buf.push_back((val >> 24) & 0xFF);
+}
+
+inline void write_string(std::vector<uint8_t>& buf, const std::string& str) {
+    write_u32(buf, static_cast<uint32_t>(str.length()));
+    for (char c : str) {
+        buf.push_back(static_cast<uint8_t>(c));
+    }
+}
+
+#endif // SPACETIMEDB_WRITE_UTILS_DEFINED
 
 template<typename T>
 void write_field_type(std::vector<uint8_t>& buf);
@@ -437,7 +453,7 @@ void serialize_value(std::vector<uint8_t>& buf, const std::vector<T>& val) {
 // Macro to register a single field
 #define SPACETIMEDB_FIELD(struct_type, field_name, field_type) \
     { \
-        FieldDescriptor desc; \
+        spacetimedb::FieldDescriptor desc; \
         desc.name = #field_name; \
         desc.offset = offsetof(struct_type, field_name); \
         desc.size = sizeof(field_type); \

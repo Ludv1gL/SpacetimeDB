@@ -187,24 +187,44 @@ The C++ SDK (`/cpp_sdk/`) enables writing SpacetimeDB modules in C++:
 
 **Current Working C++ SDK Syntax**:
 ```cpp
-#include <spacetimedb/spacetimedb_easy.h>
+#include <spacetimedb/spacetimedb.h>
 
 struct OneU8 { uint8_t n; };
 
-SPACETIMEDB_TABLE(OneU8, one_u8, true)  // Public table
-SPACETIMEDB_TABLE(OneU8, another_u8, false)  // Private table
+// Field registration for complex types with strings
+struct Person {
+    uint32_t id;
+    std::string name;
+    uint8_t age;
+};
 
-SPACETIMEDB_REDUCER(insert_one_u8, ReducerContext ctx, uint8_t n) {
+SPACETIMEDB_REGISTER_FIELDS(Person,
+    SPACETIMEDB_FIELD(Person, id, uint32_t);
+    SPACETIMEDB_FIELD(Person, name, std::string);
+    SPACETIMEDB_FIELD(Person, age, uint8_t);
+)
+
+SPACETIMEDB_TABLE(OneU8, one_u8, true)  // Simple table
+SPACETIMEDB_TABLE(Person, person, true) // Complex table with field registration
+
+SPACETIMEDB_REDUCER(insert_one_u8, spacetimedb::ReducerContext ctx, uint8_t n) {
     OneU8 row{n};
-    ctx.db.one_u8().insert(row);  // Clean type-safe syntax
+    ctx.db.table<OneU8>("one_u8").insert(row);  // Type-safe syntax
+}
+
+SPACETIMEDB_REDUCER(insert_person, spacetimedb::ReducerContext ctx, std::string name, uint8_t age) {
+    Person person{0, name, age};  // id auto-generated
+    ctx.db.table<Person>("person").insert(person);
 }
 ```
 
 Key C++ SDK components:
 - `SPACETIMEDB_TABLE(Type, table_name, is_public)`: Register tables with the module
-- `SPACETIMEDB_REDUCER(name, ReducerContext ctx, ...)`: Export functions as reducers
-- `ModuleDatabase` class: Type-safe database access via `ctx.db.table_name()`
-- `TableHandle<T>` template: Type-safe table operations with string constructor
+- `SPACETIMEDB_REGISTER_FIELDS(Type, ...)`: Automatic field registration for complex types
+- `SPACETIMEDB_FIELD(struct, field, type)`: Individual field registration
+- `SPACETIMEDB_REDUCER(name, spacetimedb::ReducerContext ctx, ...)`: Export functions as reducers
+- `ModuleDatabase` class: Type-safe database access via `ctx.db.table<T>(name)`
+- `TableHandle<T>` template: Type-safe table operations
 
 **C++ SDK Testing & Validation**:
 - `cpp_sdk/tests/sdk-test-desc.json`: Expected schema output for complete sdk_test.cpp implementation
@@ -222,7 +242,22 @@ Key C++ SDK components:
 - **TableHandle constructor missing**: Fixed by adding `TableHandle(const std::string& name)` constructor
 - **ReducerContext redefinition**: Use `SPACETIMEDB_CUSTOM_REDUCER_CONTEXT` flag and conditional compilation
 - **Module description format errors**: Ensure `__describe_module__` generates correct RawModuleDef V9 format
-- **Header conflicts**: Use spacetimedb_easy.h which properly overrides base header definitions
+- **BSATN Option encoding**: Fixed to use tag 0 for Some, tag 1 for None
+- **Field registration macro**: Fixed namespace qualification in `SPACETIMEDB_FIELD` macro
+- **Current Issue**: String field encoding causing "unknown tag 0x61" errors during module publishing
+
+**C++ Module SDK Status (as of Jan 2025)**:
+- ✅ **Working**: Basic table registration, primitive types, reducer registration, BSATN encoding, module exports
+- ✅ **Working**: Simple modules without strings publish and run successfully
+- ⚠️ **In Progress**: String field encoding issue blocking complex table usage
+- ❌ **Missing**: Advanced query operations (count, iter, delete, index accessors)
+- ❌ **Missing**: Error handling (try_insert, constraint violations)
+- ❌ **Missing**: Built-in reducers (init, client_connected, client_disconnected)
+- ❌ **Missing**: ReducerContext metadata (timestamp, sender, connection_id)
+- ❌ **Missing**: Module utilities (RNG, LogStopwatch, credential management)
+
+**Module SDK Completion**: ~32% (7/22 core features implemented)
+**Client SDK**: Not started (0% - focused on Module SDK first)
 
 ### Key Design Patterns
 

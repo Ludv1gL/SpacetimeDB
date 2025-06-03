@@ -13,7 +13,8 @@ emcc -std=c++20 \
     -O2 \
     -Wl,--no-entry \
     -o module_test.wasm \
-    src/module_test.cpp
+    src/module_test.cpp \
+    sdk_stubs.cpp
 
 if [ $? -eq 0 ]; then
     echo "Build successful! Generated module_test.wasm"

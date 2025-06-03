@@ -17,9 +17,9 @@ namespace SpacetimeDb {
         struct RawMiscModuleExportV9;
         struct RawRowLevelSecurityDefV9;
 
-        // Typespace structure (simplified)
+        // Typespace structure 
         struct Typespace {
-            std::vector<uint8_t> types;  // Placeholder for now
+            std::vector<std::vector<uint8_t>> types;  // Vector of AlgebraicType serializations
         };
         void serialize(SpacetimeDb::bsatn::Writer& writer, const Typespace& ts);
 

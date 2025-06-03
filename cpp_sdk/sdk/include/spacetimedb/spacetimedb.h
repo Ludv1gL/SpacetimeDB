@@ -133,6 +133,9 @@ namespace detail {
 // Binary I/O Utilities
 // -----------------------------------------------------------------------------
 
+#ifndef SPACETIMEDB_WRITE_UTILS_DEFINED
+#define SPACETIMEDB_WRITE_UTILS_DEFINED
+
 inline void write_u32(std::vector<uint8_t>& buf, uint32_t val) {
     buf.push_back(val & 0xFF);
     buf.push_back((val >> 8) & 0xFF);
@@ -141,9 +144,11 @@ inline void write_u32(std::vector<uint8_t>& buf, uint32_t val) {
 }
 
 inline void write_string(std::vector<uint8_t>& buf, const std::string& str) {
-    write_u32(buf, str.length());
-    for (char c : str) buf.push_back(c);
+    write_u32(buf, static_cast<uint32_t>(str.length()));
+    for (char c : str) buf.push_back(static_cast<uint8_t>(c));
 }
+
+#endif // SPACETIMEDB_WRITE_UTILS_DEFINED
 
 inline uint8_t read_u8(uint32_t source) {
     uint8_t val = 0;
@@ -395,14 +400,17 @@ void register_table_impl(const char* name, bool is_public) {
         auto desc_it = descriptors.find(&typeid(T));
         
         if (desc_it != descriptors.end()) {
-            // Write Product type with proper fields
+            // Use the simplified working format that matches the fallback
             buf.push_back(2); // Product type
             write_u32(buf, desc_it->second.fields.size());
             
             for (const auto& field_desc : desc_it->second.fields) {
-                buf.push_back(0); // Some (field name present) - BSATN Option::Some = 0
+                // Write in the same format as the fallback case but with registered info
+                buf.push_back(0); // Some (field name present)
                 write_string(buf, field_desc.name);
-                field_desc.write_type(buf);  // Write the AlgebraicType
+                
+                // Write the correct type for this field
+                field_desc.write_type(buf);
             }
         } else {
             // Fallback to simple format
