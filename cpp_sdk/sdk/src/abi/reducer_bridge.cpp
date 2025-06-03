@@ -8,7 +8,7 @@
 #include <stdexcept> // For std::runtime_error
 #include <iostream>  // For temporary error logging
 #include <algorithm> // For std::advance (iterator increment)
-#include <cstddef>   // For std::byte
+#include <cstddef>   // For size_t
 
 // Note: SPACETIMEDB_WASM_EXPORT is applied in the header "spacetime_module_exports.h"
 
@@ -59,7 +59,7 @@ extern "C" {
         // We don't use ManagedBytesSource/Sink for them here as they don't take existing handles.
 
         try {
-            std::vector<std::byte> args_bytes = SpacetimeDB::Abi::Utils::read_all_from_source(args_source_handle);
+            std::vector<uint8_t> args_bytes = SpacetimeDB::Abi::Utils::read_all_from_source(args_source_handle);
             SpacetimeDb::bsatn::Reader reader(args_bytes);
             const auto& schema = SpacetimeDb::ModuleSchema::instance();
             const SpacetimeDb::ReducerDefinition* reducer_def_ptr = get_reducer_by_id(schema, reducer_id);

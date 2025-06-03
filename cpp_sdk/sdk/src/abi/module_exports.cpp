@@ -3,7 +3,7 @@
 #include "spacetimedb/internal/raw_module_def_v9.h"  // Use new RawModuleDefV9
 
 #include <vector>
-#include <cstddef> // For std::byte
+#include <cstddef> // For size_t
 #include <string>  // For std::string in error handling
 #include <iostream> // For temporary error logging if needed
 
@@ -14,7 +14,7 @@ extern "C" {
     void __describe_module__(BytesSink description_sink_handle) {
         try {
             // 1. Get the serialized RawModuleDefV9
-            std::vector<std::byte> module_def_bytes = SpacetimeDb::Internal::get_raw_module_def_v9_bytes();
+            std::vector<uint8_t> module_def_bytes = SpacetimeDb::Internal::get_raw_module_def_v9_bytes();
 
             // 2. Write it to the sink
             SpacetimeDB::Abi::Utils::write_vector_to_sink(description_sink_handle, module_def_bytes);

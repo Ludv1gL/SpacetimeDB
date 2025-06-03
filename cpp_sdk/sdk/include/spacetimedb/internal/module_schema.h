@@ -8,7 +8,7 @@
 #include <variant>
 #include <functional> // For std::function
 #include <map>
-#include <cstddef> // For std::byte
+#include <cstddef> // For size_t
 
 // Forward declarations within the namespace
 namespace bsatn { class Reader; } // Already included, but good practice if it were only forward needed by this header

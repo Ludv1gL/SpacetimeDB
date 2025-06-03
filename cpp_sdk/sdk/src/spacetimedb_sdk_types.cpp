@@ -5,7 +5,7 @@
 #include <array>
 #include <stdexcept> // For std::runtime_error
 #include <algorithm> // For std::copy
-#include <cstddef>   // For std::byte
+#include <cstddef>   // For size_t
 
 namespace SpacetimeDb {
     namespace sdk {

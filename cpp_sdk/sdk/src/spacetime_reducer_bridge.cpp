@@ -50,7 +50,7 @@ int16_t __call_reducer__(
 
     try {
         // 1. Read all argument bytes from args_source_handle
-        std::vector<std::byte> args_bytes = SpacetimeDB::Abi::Utils::read_all_from_source(source_manager.get_handle());
+        std::vector<uint8_t> args_bytes = SpacetimeDB::Abi::Utils::read_all_from_source(source_manager.get_handle());
 
         // 2. Create a bsatn::Reader for these bytes
         SpacetimeDb::bsatn::Reader reader(args_bytes);

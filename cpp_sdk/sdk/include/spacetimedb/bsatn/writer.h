@@ -45,10 +45,7 @@ namespace SpacetimeDb::bsatn {
         void write_f64_le(double value);
 
         void write_string(const std::string& value);
-        void write_bytes(const std::vector<uint8_t>& value);  // Changed from std::byte
-        
-        // Compatibility method for std::byte vectors
-        void write_bytes(const std::vector<std::byte>& value);
+        void write_bytes(const std::vector<uint8_t>& value);
 
         template<typename T>
         void write_optional(const std::optional<T>& opt_value) {
@@ -69,7 +66,7 @@ namespace SpacetimeDb::bsatn {
             }
         }
 
-        void write_vector_byte(const std::vector<uint8_t>& vec);  // Changed from std::byte
+        void write_vector_byte(const std::vector<uint8_t>& vec);
 
         // Generic serialize member function
         template<typename T>
@@ -77,16 +74,12 @@ namespace SpacetimeDb::bsatn {
             SpacetimeDb::bsatn::serialize(*this, value);
         }
 
-        const std::vector<uint8_t>& get_buffer() const { return buffer; }  // Changed from std::byte
-        std::vector<uint8_t>&& take_buffer() { return std::move(buffer); }  // Changed from std::byte
-        
-        // Compatibility methods that return std::byte vectors
-        std::vector<std::byte> get_buffer_as_std_byte() const;
-        std::vector<std::byte> take_buffer_as_std_byte();
+        const std::vector<uint8_t>& get_buffer() const { return buffer; }
+        std::vector<uint8_t>&& take_buffer() { return std::move(buffer); }
 
     private:
         void write_bytes_raw(const void* data, size_t size);
-        std::vector<uint8_t> buffer;  // Changed from std::byte
+        std::vector<uint8_t> buffer;
     };
 
     // Helper to detect if type has bsatn_serialize method

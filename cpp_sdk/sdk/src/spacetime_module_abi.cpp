@@ -3,7 +3,7 @@
 #include "spacetimedb/internal/module_def.h"  // For SpacetimeDB::Internal::get_serialized_module_definition_bytes
 
 #include <vector>
-#include <cstddef> // For std::byte
+#include <cstddef> // For size_t
 #include <iostream> // For temporary error logging if needed
 
 // Note: SPACETIMEDB_WASM_EXPORT is applied in the header "spacetime_module_exports.h"
@@ -13,7 +13,7 @@ extern "C" {
     void __describe_module__(BytesSink description_sink_handle) {
         try {
             // 1. Get the serialized ModuleDef
-            std::vector<std::byte> module_def_bytes = SpacetimeDb::Internal::get_serialized_module_definition_bytes();
+            std::vector<uint8_t> module_def_bytes = SpacetimeDb::Internal::get_serialized_module_definition_bytes();
 
             // 2. Write it to the sink
             SpacetimeDB::Abi::Utils::write_vector_to_sink(description_sink_handle, module_def_bytes);

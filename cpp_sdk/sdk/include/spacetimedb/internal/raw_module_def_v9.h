@@ -86,7 +86,7 @@ namespace SpacetimeDb {
         RawModuleDef build_raw_module_def_v9(const SpacetimeDb::ModuleSchema& user_schema);
 
         // Get serialized bytes for the module definition
-        std::vector<std::byte> get_raw_module_def_v9_bytes();
+        std::vector<uint8_t> get_raw_module_def_v9_bytes();
 
     } // namespace Internal
 } // namespace SpacetimeDb

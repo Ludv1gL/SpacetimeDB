@@ -96,7 +96,7 @@ std::tuple<Args...> deserialize_all_args(SpacetimeDb::bsatn::Reader& reader) {
             return 100; /* Distinct error code for uninitialized SDK */ \
         } \
         try { \
-            SpacetimeDb::bsatn::Reader reader(reinterpret_cast<const std::byte*>(args_data), args_len); \
+            SpacetimeDb::bsatn::Reader reader(reinterpret_cast<const uint8_t*>(args_data), args_len); \
             SpacetimeDb::sdk::Identity sender; \
             sender.bsatn_deserialize(reader); \
             SpacetimeDb::sdk::Timestamp timestamp; \

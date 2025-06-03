@@ -256,7 +256,7 @@ void SpacetimeDB::Internal::serialize(bsatn::Writer& writer, const InternalModul
     }
 }
 
-std::vector<std::byte> SpacetimeDB::Internal::get_serialized_module_definition_bytes() {
+std::vector<uint8_t> SpacetimeDB::Internal::get_serialized_module_definition_bytes() {
     const SpacetimeDb::ModuleSchema& user_schema = SpacetimeDb::ModuleSchema::instance();
     InternalModuleDef internal_module_def = build_internal_module_def(user_schema);
     bsatn::Writer writer;

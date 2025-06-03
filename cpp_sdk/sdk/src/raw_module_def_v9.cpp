@@ -112,7 +112,7 @@ namespace SpacetimeDb {
         }
 
         // Get serialized bytes
-        std::vector<std::byte> get_raw_module_def_v9_bytes() {
+        std::vector<uint8_t> get_raw_module_def_v9_bytes() {
             // Get the user schema
             const SpacetimeDb::ModuleSchema& schema = SpacetimeDb::ModuleSchema::instance();
             

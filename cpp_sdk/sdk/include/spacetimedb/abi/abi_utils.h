@@ -7,7 +7,7 @@
 #include <vector>
 #include <string>
 #include <stdexcept> // For std::runtime_error
-#include <cstddef>   // For std::byte (C++17)
+#include <cstddef>   // For size_t
 
 // Forward declare the corrected ABI function
 extern "C" {
@@ -29,8 +29,8 @@ inline void write_bytes_to_sink(::BytesSink sink_handle, const unsigned char* da
     }
 }
 
-// Convenience overload for std::vector<std::byte>.
-inline void write_vector_to_sink(::BytesSink sink_handle, const std::vector<std::byte>& data) {
+// Convenience overload for std::vector<uint8_t>.
+inline void write_vector_to_sink(::BytesSink sink_handle, const std::vector<uint8_t>& data) {
     write_bytes_to_sink(sink_handle, reinterpret_cast<const unsigned char*>(data.data()), static_cast<uint32_t>(data.size()));
 }
 
@@ -42,9 +42,9 @@ inline void write_string_to_sink(::BytesSink sink_handle, const std::string& str
 
 // Helper to read all remaining data from a BytesSource.
 // Throws std::runtime_error on host error or if read count doesn't match expected.
-inline std::vector<std::byte> read_all_from_source(::BytesSource source_handle) {
+inline std::vector<uint8_t> read_all_from_source(::BytesSource source_handle) {
     uint32_t remaining_count = ::_bytes_source_get_remaining_count(source_handle);
-    std::vector<std::byte> buffer(remaining_count);
+    std::vector<uint8_t> buffer(remaining_count);
 
     if (remaining_count == 0) {
         return buffer;

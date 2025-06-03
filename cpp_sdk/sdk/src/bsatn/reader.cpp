@@ -135,26 +135,6 @@ namespace SpacetimeDb::bsatn {
         return result;
     }
 
-    // Compatibility methods
-    std::vector<std::byte> Reader::read_bytes_as_std_byte() {
-        auto bytes = read_bytes();
-        std::vector<std::byte> result;
-        result.reserve(bytes.size());
-        for (uint8_t b : bytes) {
-            result.push_back(static_cast<std::byte>(b));
-        }
-        return result;
-    }
-
-    std::vector<std::byte> Reader::read_fixed_bytes_as_std_byte(size_t count) {
-        auto bytes = read_fixed_bytes(count);
-        std::vector<std::byte> result;
-        result.reserve(bytes.size());
-        for (uint8_t b : bytes) {
-            result.push_back(static_cast<std::byte>(b));
-        }
-        return result;
-    }
 
     std::vector<uint8_t> Reader::read_vector_byte() {
         return read_bytes();

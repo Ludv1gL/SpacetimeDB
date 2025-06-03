@@ -33,25 +33,13 @@ namespace SpacetimeDb::bsatn {
 
     class Reader {
     public:
-        // Constructors - now accepting uint8_t instead of std::byte
+        // Constructors - using uint8_t consistently
         Reader(const uint8_t* data, size_t size) : current_ptr(data), end_ptr(data + size) {}
 #if __cplusplus >= 202002L
         Reader(std::span<const uint8_t> data) : current_ptr(data.data()), end_ptr(data.data() + data.size()) {}
 #endif
         Reader(const std::vector<uint8_t>& data) : current_ptr(data.data()), end_ptr(data.data() + data.size()) {}
         
-        // Compatibility constructor for std::byte (for gradual migration)
-        Reader(const std::byte* data, size_t size) 
-            : current_ptr(reinterpret_cast<const uint8_t*>(data)), 
-              end_ptr(reinterpret_cast<const uint8_t*>(data) + size) {}
-#if __cplusplus >= 202002L
-        Reader(std::span<const std::byte> data) 
-            : current_ptr(reinterpret_cast<const uint8_t*>(data.data())), 
-              end_ptr(reinterpret_cast<const uint8_t*>(data.data()) + data.size()) {}
-#endif
-        Reader(const std::vector<std::byte>& data) 
-            : current_ptr(reinterpret_cast<const uint8_t*>(data.data())), 
-              end_ptr(reinterpret_cast<const uint8_t*>(data.data()) + data.size()) {}
 
         bool read_bool();
         uint8_t read_u8();
@@ -72,12 +60,8 @@ namespace SpacetimeDb::bsatn {
         double read_f64_le();
 
         std::string read_string();
-        std::vector<uint8_t> read_bytes();  // Changed from std::byte to uint8_t
-        std::vector<uint8_t> read_fixed_bytes(size_t count);  // Changed from std::byte to uint8_t
-        
-        // Compatibility methods that return std::byte vectors
-        std::vector<std::byte> read_bytes_as_std_byte();
-        std::vector<std::byte> read_fixed_bytes_as_std_byte(size_t count);
+        std::vector<uint8_t> read_bytes();
+        std::vector<uint8_t> read_fixed_bytes(size_t count);
 
         template<typename T>
         std::optional<T> read_optional() {
@@ -102,7 +86,7 @@ namespace SpacetimeDb::bsatn {
             return result;
         }
 
-        std::vector<uint8_t> read_vector_byte();  // Changed from std::byte
+        std::vector<uint8_t> read_vector_byte();
 
         template<typename T>
         T deserialize_type() {
@@ -116,8 +100,8 @@ namespace SpacetimeDb::bsatn {
         void check_available(size_t num_bytes) const;
         void advance(size_t num_bytes);
 
-        const uint8_t* current_ptr;  // Changed from std::byte*
-        const uint8_t* end_ptr;      // Changed from std::byte*
+        const uint8_t* current_ptr;
+        const uint8_t* end_ptr;
     };
 
     // Generic deserialize function implementation

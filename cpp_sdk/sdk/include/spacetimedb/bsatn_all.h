@@ -30,9 +30,6 @@ using SpacetimeDb::bsatn::deserialize;
 using SpacetimeDb::bsatn::bsatn_traits;
 using SpacetimeDb::bsatn::AlgebraicType;
 
-// Compatibility typedefs for code that uses ReaderCompat/WriterCompat
-using ReaderCompat = SpacetimeDb::bsatn::Reader;
-using WriterCompat = SpacetimeDb::bsatn::Writer;
 
 // The SPACETIMEDB_BSATN_STRUCT macro from traits.h
 // is already available after including traits.h

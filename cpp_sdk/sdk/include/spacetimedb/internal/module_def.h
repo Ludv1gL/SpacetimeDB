@@ -119,7 +119,7 @@ namespace SpacetimeDb {
         // void serialize_module_def(bsatn::Writer& writer, const InternalModuleDef& def); // This is an alternative to free serialize()
 
         // Declaration for getting the final bytes (implementation in module_def_builder.cpp)
-        std::vector<std::byte> get_serialized_module_definition_bytes();
+        std::vector<uint8_t> get_serialized_module_definition_bytes();
 
         // Implementation for InternalType copy constructor/assignment
         inline InternalType::InternalType(const InternalType& other) :

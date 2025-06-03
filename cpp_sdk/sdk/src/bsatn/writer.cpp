@@ -76,34 +76,8 @@ namespace SpacetimeDb::bsatn {
         write_bytes_raw(value.data(), value.size());
     }
 
-    // Compatibility method for std::byte vectors
-    void Writer::write_bytes(const std::vector<std::byte>& value) {
-        write_u32_le(static_cast<uint32_t>(value.size()));
-        write_bytes_raw(value.data(), value.size());
-    }
-
     void Writer::write_vector_byte(const std::vector<uint8_t>& vec) {
         write_bytes(vec);
-    }
-
-    // Compatibility methods
-    std::vector<std::byte> Writer::get_buffer_as_std_byte() const {
-        std::vector<std::byte> result;
-        result.reserve(buffer.size());
-        for (uint8_t b : buffer) {
-            result.push_back(static_cast<std::byte>(b));
-        }
-        return result;
-    }
-
-    std::vector<std::byte> Writer::take_buffer_as_std_byte() {
-        std::vector<std::byte> result;
-        result.reserve(buffer.size());
-        for (uint8_t b : buffer) {
-            result.push_back(static_cast<std::byte>(b));
-        }
-        buffer.clear();
-        return result;
     }
 
 

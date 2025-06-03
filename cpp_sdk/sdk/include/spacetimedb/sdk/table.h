@@ -133,7 +133,7 @@ private:
         }
 
         try {
-            SpacetimeDb::bsatn::Reader reader(reinterpret_cast<const std::byte*>(temp_buffer.data()), temp_buffer.size());
+            SpacetimeDb::bsatn::Reader reader(reinterpret_cast<const uint8_t*>(temp_buffer.data()), temp_buffer.size());
             current_row_.bsatn_deserialize(reader);
             is_valid_ = true;
         } catch (const std::exception& e) {
@@ -161,7 +161,7 @@ public:
         SpacetimeDb::bsatn::Writer writer;
         row_data.bsatn_serialize(writer);
 
-        std::vector<std::byte>&& buffer_vec = writer.take_buffer();
+        std::vector<uint8_t>&& buffer_vec = writer.take_buffer();
 
         uint16_t error_code = _insert(table_id_, const_cast<uint8_t*>(reinterpret_cast<const uint8_t*>(buffer_vec.data())), buffer_vec.size());
 
@@ -202,7 +202,7 @@ public:
             value_to_match.bsatn_serialize(writer);
         }
 
-        std::vector<std::byte>&& value_buffer_vec = writer.take_buffer();
+        std::vector<uint8_t>&& value_buffer_vec = writer.take_buffer();
         uint32_t deleted_count = 0;
 
         uint16_t error_code = _delete_by_col_eq(table_id_, column_index, reinterpret_cast<const uint8_t*>(value_buffer_vec.data()), value_buffer_vec.size(), &deleted_count);
@@ -247,7 +247,7 @@ public:
             value_to_match.bsatn_serialize(writer);
         }
 
-        std::vector<std::byte>&& value_buffer_vec = writer.take_buffer();
+        std::vector<uint8_t>&& value_buffer_vec = writer.take_buffer();
         Buffer result_buffer_handle = 0;
 
         uint16_t error_code = _iter_by_col_eq(table_id_, column_index, reinterpret_cast<const uint8_t*>(value_buffer_vec.data()), value_buffer_vec.size(), &result_buffer_handle);
@@ -271,7 +271,7 @@ public:
         }
 
         if (len > 0) {
-            SpacetimeDb::bsatn::Reader reader(reinterpret_cast<const std::byte*>(concatenated_rows_buffer.data()), concatenated_rows_buffer.size());
+            SpacetimeDb::bsatn::Reader reader(reinterpret_cast<const uint8_t*>(concatenated_rows_buffer.data()), concatenated_rows_buffer.size());
             try {
                 while(!reader.is_eos()) {
                     T row_data;
