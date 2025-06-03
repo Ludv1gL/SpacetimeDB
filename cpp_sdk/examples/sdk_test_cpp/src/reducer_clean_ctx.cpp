@@ -22,13 +22,7 @@
 
 using namespace spacetimedb;
 
-/**
- * Example table row type.
- * This struct will be automatically serialized using BSATN.
- */
-struct OneU8 {
-    uint8_t n;
-};
+
 
 /**
  * Table declarations.
@@ -40,7 +34,13 @@ struct OneU8 {
  */
 SPACETIMEDB_TABLE(OneU8, one_u8, true)      // Public table
 SPACETIMEDB_TABLE(OneU8, another_u8, false) // Private table
-
+/**
+ * Example table row type.
+ * This struct will be automatically serialized using BSATN.
+ */
+struct OneU8 {
+    uint8_t n;
+};
 // Insert a single value into the public table
 SPACETIMEDB_REDUCER(insert_one_u8, ReducerContext ctx, uint8_t n) {
     OneU8 row{n};
