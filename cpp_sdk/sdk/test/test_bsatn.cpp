@@ -25,11 +25,11 @@ constexpr int RANDOM_TEST_COUNT = 100;
 #define TEST(name) if (VERBOSE) std::cout << "  " << #name << "... "; test_##name(); if (VERBOSE) std::cout << "✓\n"
 #define ASSERT_EQ(a, b) assert((a) == (b))
 #define ASSERT_ROUNDTRIP(value) do { \
-    WriterCompat w; \
-    serialize(w, value); \
+    ::SpacetimeDb::bsatn::WriterCompat w; \
+    ::SpacetimeDb::bsatn::serialize(w, value); \
     auto buf = w.take_uint8_buffer(); \
-    ReaderCompat r(buf); \
-    auto result = deserialize<decltype(value)>(r); \
+    ::SpacetimeDb::bsatn::ReaderCompat r(buf); \
+    auto result = ::SpacetimeDb::bsatn::deserialize<decltype(value)>(r); \
     ASSERT_EQ(value, result); \
 } while(0)
 
