@@ -250,45 +250,58 @@ std::vector<uint8_t> ConsumeBytes(FFI::BytesSource source) {
         return {};
     }
     
-    std::vector<uint8_t> buffer(0x20000);
-    uint32_t written = 0;
+    std::vector<uint8_t> buffer;
+    buffer.reserve(1024); // Start with reasonable size
     
     while (true) {
-        uint32_t buf_len = static_cast<uint32_t>(buffer.size() - written);
-        uint8_t* write_ptr = buffer.data() + written;
+        // Ensure buffer has some spare capacity
+        if (buffer.size() == buffer.capacity()) {
+            buffer.reserve(buffer.capacity() + 1024);
+        }
         
-        auto ret = FFI::bytes_source_read(source, write_ptr, &buf_len);
-        written += buf_len;
+        // Calculate available space
+        size_t current_size = buffer.size();
+        size_t capacity = buffer.capacity(); 
+        size_t spare_capacity = capacity - current_size;
+        
+        // Expand buffer to use all available capacity
+        buffer.resize(capacity);
+        
+        // Read into spare capacity
+        size_t buf_len = spare_capacity;
+        uint8_t* write_ptr = buffer.data() + current_size;
+        
+        int16_t ret = FFI::bytes_source_read(source, write_ptr, &buf_len);
+        
+        // Update size to reflect actual bytes read
+        buffer.resize(current_size + buf_len);
         
         switch (ret) {
-            case FFI::Errno::EXHAUSTED:
-                buffer.resize(written);
+            case -1: // Host side source exhausted, we're done
                 return buffer;
                 
-            case FFI::Errno::OK:
-                if (written == buffer.size()) {
-                    // Need more space
-                    buffer.resize(buffer.size() + 1024);
-                }
+            case 0: // Success, continue reading
+                // If we didn't fill the available space, we might be done
+                // but continue to try reading more
                 break;
                 
-            case FFI::Errno::NO_SUCH_BYTES:
-                throw std::runtime_error("No such bytes");
-                
-            default:
-                throw std::runtime_error("Unknown error reading bytes");
+            default: // Error
+                throw std::runtime_error("Error reading from bytes source: " + std::to_string(ret));
         }
     }
 }
 
 void WriteBytes(FFI::BytesSink sink, const std::vector<uint8_t>& bytes) {
-    uint32_t start = 0;
+    size_t start = 0;
     while (start < bytes.size()) {
-        uint32_t written = static_cast<uint32_t>(bytes.size() - start);
+        size_t remaining = bytes.size() - start;
         const uint8_t* read_ptr = bytes.data() + start;
         
-        FFI::bytes_sink_write(sink, read_ptr, &written);
-        start += written;
+        auto result = FFI::bytes_sink_write(sink, read_ptr, &remaining);
+        if (result != FFI::Errno::OK) {
+            throw std::runtime_error("Error writing to bytes sink: " + std::to_string(static_cast<uint16_t>(result)));
+        }
+        start += remaining;
     }
 }
 

@@ -13,11 +13,11 @@ extern "C" {
 // OPAQUE_TYPEDEF(Status, uint16_t);
 typedef struct { uint16_t inner; } Status;
 
-// OPAQUE_TYPEDEF(TableId, uint16_t);
-typedef struct { uint16_t inner; } TableId;
+// OPAQUE_TYPEDEF(TableId, uint32_t);
+typedef struct { uint32_t inner; } TableId;
 
-// OPAQUE_TYPEDEF(IndexId, uint16_t);
-typedef struct { uint16_t inner; } IndexId;
+// OPAQUE_TYPEDEF(IndexId, uint32_t);
+typedef struct { uint32_t inner; } IndexId;
 
 // OPAQUE_TYPEDEF(ColId, uint16_t);
 typedef struct { uint16_t inner; } ColId;
@@ -28,17 +28,17 @@ typedef struct { uint8_t inner; } IndexType; // Range, Hash etc. (specific value
 // OPAQUE_TYPEDEF(LogLevel, uint8_t);
 typedef struct { uint8_t inner; } LogLevel; // Error = 0, Warn = 1, Info = 2, Debug = 3, Trace = 4
 
-// OPAQUE_TYPEDEF(BytesSink, uint16_t);
-typedef struct { uint16_t inner; } BytesSink;
+// OPAQUE_TYPEDEF(BytesSink, uint32_t);
+typedef struct { uint32_t inner; } BytesSink;
 
-// OPAQUE_TYPEDEF(BytesSource, uint16_t);
-typedef struct { uint16_t inner; } BytesSource;
+// OPAQUE_TYPEDEF(BytesSource, uint32_t);
+typedef struct { uint32_t inner; } BytesSource;
 
-// OPAQUE_TYPEDEF(RowIter, uint16_t);
-typedef struct { uint16_t inner; } RowIter;
+// OPAQUE_TYPEDEF(RowIter, uint32_t);
+typedef struct { uint32_t inner; } RowIter;
 
-// OPAQUE_TYPEDEF(ConsoleTimerId, uint16_t);
-typedef struct { uint16_t inner; } ConsoleTimerId;
+// OPAQUE_TYPEDEF(ConsoleTimerId, uint32_t);
+typedef struct { uint32_t inner; } ConsoleTimerId;
 
 #ifdef __cplusplus
 } // extern "C"

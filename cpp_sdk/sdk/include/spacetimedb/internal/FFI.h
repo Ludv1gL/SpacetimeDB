@@ -10,21 +10,25 @@ namespace SpacetimeDb {
 namespace Internal {
 namespace FFI {
 
-// Error codes matching the ABI
+// Error codes matching the actual ABI from crates/primitives/src/errno.rs
 enum class Errno : uint16_t {
     OK = 0,
     HOST_CALL_FAILURE = 1,
-    EXHAUSTED = 2,
-    NO_SUCH_ITER = 3,
-    NO_SUCH_BYTES = 4,
-    NO_SUCH_TABLE = 5,
-    BUFFER_TOO_SMALL = 6,
-    UNIQUE_CONSTRAINT_VIOLATION = 7,
-    BSATN_DECODE_ERROR = 8,
-    NO_SUCH_REDUCER = 9,
-    REDUCER_ARG_DECODE_ERROR = 10,
-    NO_SUCH_SCHEDULED_REDUCER = 11,
-    NOT_IN_TRANSACTION = 12,
+    NOT_IN_TRANSACTION = 2,
+    BSATN_DECODE_ERROR = 3,
+    NO_SUCH_TABLE = 4,
+    NO_SUCH_INDEX = 5,
+    NO_SUCH_ITER = 6,
+    NO_SUCH_CONSOLE_TIMER = 7,
+    NO_SUCH_BYTES = 8,
+    NO_SPACE = 9,
+    BUFFER_TOO_SMALL = 11,
+    UNIQUE_ALREADY_EXISTS = 12,
+    SCHEDULE_AT_DELAY_TOO_LONG = 13,
+    INDEX_NOT_UNIQUE = 14,
+    NO_SUCH_ROW = 15,
+    // Custom values for module operations
+    NO_SUCH_REDUCER = 999, // Custom value for module errors
     UNKNOWN = 0xFFFF
 };
 
@@ -83,18 +87,15 @@ inline void row_iter_bsatn_close(RowIter iter) {
     _iter_drop(iter);
 }
 
-// Bytes source/sink operations  
-inline Errno bytes_source_read(BytesSource source, uint8_t* buffer, uint32_t* buffer_len) {
-    ::BytesSource src{static_cast<uint16_t>(source)};
-    uint32_t read = _bytes_source_read(src, buffer, *buffer_len);
-    *buffer_len = read;
-    return Errno::OK;
+// Bytes source/sink operations using correct ABI functions
+inline int16_t bytes_source_read(BytesSource source, uint8_t* buffer, size_t* buffer_len) {
+    ::BytesSource src{static_cast<uint32_t>(source)};
+    return ::bytes_source_read(src, buffer, buffer_len);
 }
 
-inline Errno bytes_sink_write(BytesSink sink, const uint8_t* buffer, uint32_t* buffer_len) {
-    size_t len = *buffer_len;
-    ::BytesSink snk{static_cast<uint16_t>(sink)};
-    return static_cast<Errno>(::bytes_sink_write(snk, buffer, &len));
+inline Errno bytes_sink_write(BytesSink sink, const uint8_t* buffer, size_t* buffer_len) {
+    ::BytesSink snk{static_cast<uint32_t>(sink)};
+    return static_cast<Errno>(::bytes_sink_write(snk, buffer, buffer_len));
 }
 
 // Console operations

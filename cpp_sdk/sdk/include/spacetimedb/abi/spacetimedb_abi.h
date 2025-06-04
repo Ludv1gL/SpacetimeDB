@@ -160,37 +160,16 @@ uint16_t _iter_start_filtered(
 
 
 // --- BytesSink and BytesSource Operations ---
-// Based on common/bindings.c style, assuming "spacetime" module
-// These might need different import_name if already defined by host with other names.
+// These match the actual FFI function names from crates/bindings-sys/src/lib.rs
+// and the signatures from crates/bindings-csharp/Runtime/bindings.c
 
-__attribute__((import_module("spacetime_10.0"), import_name("_bytes_sink_create")))
-BytesSink _bytes_sink_create();
+// BytesSource operations - for reading reducer arguments
+__attribute__((import_module("spacetime_10.0"), import_name("bytes_source_read")))
+int16_t bytes_source_read(BytesSource source, uint8_t* buffer_ptr, size_t* buffer_len_ptr);
 
-__attribute__((import_module("spacetime_10.0"), import_name("_bytes_sink_done")))
-void _bytes_sink_done(BytesSink sink_handle);
-
+// BytesSink operations - for writing reducer error messages  
 __attribute__((import_module("spacetime_10.0"), import_name("bytes_sink_write")))
-uint16_t bytes_sink_write(BytesSink sink_handle, const uint8_t* buffer_ptr, size_t* buffer_len_ptr);
-
-__attribute__((import_module("spacetime_10.0"), import_name("_bytes_sink_get_written_count")))
-uint32_t _bytes_sink_get_written_count(BytesSink sink_handle);
-
-
-__attribute__((import_module("spacetime_10.0"), import_name("_bytes_source_create_from_bytes")))
-BytesSource _bytes_source_create_from_bytes(const uint8_t* data_ptr, uint32_t data_len);
-
-__attribute__((import_module("spacetime_10.0"), import_name("_bytes_source_create_from_sink_bytes")))
-BytesSource _bytes_source_create_from_sink_bytes(BytesSink sink_handle);
-
-__attribute__((import_module("spacetime_10.0"), import_name("_bytes_source_done")))
-void _bytes_source_done(BytesSource source_handle);
-
-// Returns actual number of bytes read into buffer_ptr
-__attribute__((import_module("spacetime_10.0"), import_name("_bytes_source_read")))
-uint32_t _bytes_source_read(BytesSource source_handle, uint8_t* buffer_ptr, uint32_t buffer_len);
-
-__attribute__((import_module("spacetime_10.0"), import_name("_bytes_source_get_remaining_count")))
-uint32_t _bytes_source_get_remaining_count(BytesSource source_handle);
+uint16_t bytes_sink_write(BytesSink sink, const uint8_t* buffer_ptr, size_t* buffer_len_ptr);
 
 
 // Update existing log function to use LogLevel from common_defs.h

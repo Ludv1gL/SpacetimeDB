@@ -38,6 +38,10 @@ extern "C" {
     __attribute__((import_module("spacetime_10.0"), import_name("bytes_sink_write")))
     uint16_t bytes_sink_write(uint32_t sink, const uint8_t* buffer_ptr, size_t* buffer_len_ptr);
     
+    // BytesSource operations
+    __attribute__((import_module("spacetime_10.0"), import_name("bytes_source_read")))
+    int16_t bytes_source_read(uint32_t source, uint8_t* buffer_ptr, size_t* buffer_len_ptr);
+    
     // Module exports (these will be implemented by user modules)
     void __describe_module__(uint32_t description);
     int16_t __call_reducer__(uint32_t id, 
@@ -200,6 +204,90 @@ public:
     }
 };
 
+// BSATN Reader (simplified)
+class BsatnReader {
+    uint32_t source_;
+    std::vector<uint8_t> buffer_;
+    size_t pos_ = 0;
+    
+    void ensure_bytes(size_t needed) {
+        while (buffer_.size() - pos_ < needed) {
+            std::vector<uint8_t> chunk(64);  // Read in chunks
+            size_t chunk_size = chunk.size();
+            int16_t ret = bytes_source_read(source_, chunk.data(), &chunk_size);
+            
+            if (ret == -1) {
+                // Source exhausted
+                if (chunk_size > 0) {
+                    buffer_.insert(buffer_.end(), chunk.begin(), chunk.begin() + chunk_size);
+                }
+                break;
+            } else if (ret == 0) {
+                // Success
+                if (chunk_size > 0) {
+                    buffer_.insert(buffer_.end(), chunk.begin(), chunk.begin() + chunk_size);
+                }
+            } else {
+                // Error
+                throw std::runtime_error("Error reading from BytesSource: " + std::to_string(ret));
+            }
+        }
+        
+        if (buffer_.size() - pos_ < needed) {
+            throw std::runtime_error("Not enough bytes available");
+        }
+    }
+    
+public:
+    explicit BsatnReader(uint32_t source) : source_(source) {}
+    
+    uint8_t read_u8() {
+        ensure_bytes(1);
+        return buffer_[pos_++];
+    }
+    
+    uint32_t read_u32() {
+        ensure_bytes(4);
+        uint32_t value = 0;
+        for (int i = 0; i < 4; ++i) {
+            value |= static_cast<uint32_t>(buffer_[pos_++]) << (i * 8);
+        }
+        return value;
+    }
+    
+    std::string read_string() {
+        uint32_t len = read_u32();
+        ensure_bytes(len);
+        std::string result(reinterpret_cast<const char*>(&buffer_[pos_]), len);
+        pos_ += len;
+        return result;
+    }
+    
+    uint32_t read_vec_len() {
+        return read_u32();
+    }
+    
+    // Argument parsing helpers
+    template<typename T>
+    T read_arg();
+};
+
+// Template specializations for common types
+template<>
+inline uint8_t BsatnReader::read_arg<uint8_t>() {
+    return read_u8();
+}
+
+template<>
+inline uint32_t BsatnReader::read_arg<uint32_t>() {
+    return read_u32();
+}
+
+template<>
+inline std::string BsatnReader::read_arg<std::string>() {
+    return read_string();
+}
+
 // Table definition info
 struct TableInfo {
     std::string name;
@@ -231,7 +319,7 @@ public:
     
     std::vector<uint8_t> build() {
         std::vector<uint8_t> result;
-        BsatnWriter writer(result);
+        spacetimedb::BsatnWriter writer(result);
         
         // RawModuleDef::V9 tag
         writer.write_u8(1);
@@ -259,13 +347,13 @@ public:
     }
     
 private:
-    void write_empty_typespace(BsatnWriter& writer) {
+    void write_empty_typespace(spacetimedb::BsatnWriter& writer) {
         // Typespace { types: Vec<AlgebraicType>, names: Vec<ScopedTypeName> }
         writer.write_vec_len(0); // types
         writer.write_vec_len(0); // names
     }
     
-    void write_tables(BsatnWriter& writer) {
+    void write_tables(spacetimedb::BsatnWriter& writer) {
         writer.write_vec_len(tables_.size());
         
         for (const auto& table : tables_) {
@@ -276,13 +364,13 @@ private:
             writer.write_vec_len(0);                   // indexes (empty)
             writer.write_vec_len(0);                   // constraints (empty)
             writer.write_vec_len(0);                   // sequences (empty)
-            writer.write_u8(0);                        // schedule (None)
+            writer.write_u8(1);                        // schedule (None tag)
             writer.write_u8(0);                        // table_type (User)
             writer.write_u8(table.is_public ? 0 : 1);  // table_access (Public=0, Private=1)
         }
     }
     
-    void write_reducers(BsatnWriter& writer) {
+    void write_reducers(spacetimedb::BsatnWriter& writer) {
         writer.write_vec_len(reducers_.size());
         
         for (const auto& reducer : reducers_) {
@@ -328,7 +416,64 @@ public:
     }
 };
 
+// Reducer dispatcher system
+using ReducerFunction = std::function<void(spacetimedb::ReducerContext, uint32_t)>;
+
+class ReducerDispatcher {
+    std::unordered_map<std::string, ReducerFunction> reducers_;
+    std::vector<std::string> reducer_names_;  // Keep names in registration order
+    
+public:
+    static ReducerDispatcher& instance() {
+        static ReducerDispatcher dispatcher;
+        return dispatcher;
+    }
+    
+    void register_reducer(const std::string& name, ReducerFunction fn) {
+        if (reducers_.find(name) == reducers_.end()) {
+            reducer_names_.push_back(name);
+        }
+        reducers_[name] = fn;
+    }
+    
+    bool call_reducer(uint32_t id, spacetimedb::ReducerContext ctx, uint32_t args) {
+        if (id >= reducer_names_.size()) {
+            return false;
+        }
+        
+        const std::string& name = reducer_names_[id];
+        auto it = reducers_.find(name);
+        if (it == reducers_.end()) {
+            return false;
+        }
+        
+        try {
+            it->second(ctx, args);
+            return true;
+        } catch (const std::exception& e) {
+            LOG_ERROR("Error in reducer " + name + ": " + e.what());
+            return false;
+        }
+    }
+    
+    size_t get_reducer_count() const {
+        return reducer_names_.size();
+    }
+    
+    const std::string& get_reducer_name(uint32_t id) const {
+        static const std::string empty;
+        return (id < reducer_names_.size()) ? reducer_names_[id] : empty;
+    }
+};
+
 } // namespace spacetimedb
+
+// =============================================================================
+// GLOBAL EXPORTS
+// =============================================================================
+
+// Note: Global exports (__describe_module__ and __call_reducer__) should be implemented 
+// in user modules that include this header.
 
 // =============================================================================
 // REGISTRATION MACROS
@@ -348,16 +493,20 @@ public:
 
 // Reducer registration  
 #define SPACETIMEDB_REDUCER(name, ...) \
+    void spacetimedb_reducer_##name##_impl(__VA_ARGS__); \
     namespace { \
         struct reducer_##name##_registrar { \
             reducer_##name##_registrar() { \
                 spacetimedb::ModuleRegistry::instance().register_reducer(#name); \
+                spacetimedb::ReducerDispatcher::instance().register_reducer(#name, \
+                    [](spacetimedb::ReducerContext ctx, uint32_t args) { \
+                        spacetimedb_reducer_##name##_impl(ctx); \
+                    }); \
             } \
         }; \
         static reducer_##name##_registrar reducer_##name##_reg_; \
     } \
-    extern "C" void spacetimedb_reducer_##name(__VA_ARGS__); \
-    void spacetimedb_reducer_##name(__VA_ARGS__)
+    void spacetimedb_reducer_##name##_impl(__VA_ARGS__)
 
 // Built-in reducer registration
 #define SPACETIMEDB_INIT(name) \
