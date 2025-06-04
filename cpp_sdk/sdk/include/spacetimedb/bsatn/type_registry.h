@@ -10,7 +10,11 @@
 #include <typeinfo>
 #include <mutex>
 
-namespace SpacetimeDb::bsatn {
+namespace spacetimedb::bsatn {
+
+// Forward declarations
+class ITypeRegistrar;
+class TypeRegistry;
 
 /**
  * Type registry for managing algebraic types and their IDs.
@@ -31,7 +35,7 @@ public:
     TypeRegistry() {
         // Register the unit type at index 0
         types_.push_back(AlgebraicType::make_product(
-            std::make_unique<ProductType>(std::vector<AggregateElement>{})
+            std::make_unique<ProductType>(std::vector<ProductTypeElement>{})
         ));
         named_types_["Unit"] = UNIT_TYPE_ID;
     }
@@ -91,7 +95,7 @@ public:
         }
         
         // Get the algebraic type for T
-        AlgebraicType alg_type = algebraic_type_of<T>::get();
+        AlgebraicType alg_type = bsatn_traits<T>::algebraic_type();
         uint32_t id = types_.size();
         types_.push_back(std::move(alg_type));
         cpp_type_map_[type_idx] = id;
@@ -108,17 +112,21 @@ public:
     // Get or register a C++ type
     template<typename T>
     uint32_t get_or_register_type() {
+        std::lock_guard<std::mutex> lock(mutex_);
         std::type_index type_idx(typeid(T));
         
-        {
-            std::lock_guard<std::mutex> lock(mutex_);
-            auto it = cpp_type_map_.find(type_idx);
-            if (it != cpp_type_map_.end()) {
-                return it->second;
-            }
+        auto it = cpp_type_map_.find(type_idx);
+        if (it != cpp_type_map_.end()) {
+            return it->second;
         }
         
-        return register_cpp_type<T>();
+        // Register new type
+        AlgebraicType alg_type = bsatn_traits<T>::algebraic_type();
+        uint32_t id = types_.size();
+        types_.push_back(std::move(alg_type));
+        cpp_type_map_[type_idx] = id;
+        
+        return id;
     }
     
     // Get the unit type ID
@@ -178,7 +186,7 @@ std::unique_ptr<ProductType> build_product_type() {
  *   };
  */
 #define SPACETIMEDB_BSATN_REGISTER_TYPE(Type, ...) \
-    static void register_fields(SpacetimeDb::bsatn::ProductTypeBuilder& builder) { \
+    static void register_fields(spacetimedb::bsatn::ProductTypeBuilder& builder) { \
         SPACETIMEDB_BSATN_REGISTER_TYPE_FIELDS(Type, builder, __VA_ARGS__) \
     }
 
@@ -188,6 +196,11 @@ std::unique_ptr<ProductType> build_product_type() {
 #define SPACETIMEDB_BSATN_REGISTER_TYPE_FIELDS(Type, builder, ...) \
     SPACETIMEDB_FOR_EACH_ARG(SPACETIMEDB_BSATN_REGISTER_TYPE_FIELD, Type, builder, __VA_ARGS__)
 
-} // namespace SpacetimeDb::bsatn
+} // namespace spacetimedb::bsatn
+
+// Legacy namespace alias
+namespace SpacetimeDb::bsatn {
+    using namespace ::spacetimedb::bsatn;
+}
 
 #endif // SPACETIMEDB_BSATN_TYPE_REGISTRY_H

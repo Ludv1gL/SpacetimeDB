@@ -24,26 +24,33 @@
 #include "sum_type.h"            // SumType and Option (renamed from Sum)
 #include "visitor.h"             // Visitor pattern for deserialization
 #include "size_calculator.h"     // Size calculation without serialization
+#include "special_types.h"       // Special type handling (Identity, Timestamp, etc.)
 #include "bsatn_compat.h"        // Backward compatibility layer
 
-// The spacetimedb::bsatn namespace contains the unified BSATN system with consistent
-// naming conventions aligned to Rust and C# implementations:
+// BSATN (Binary SpacetimeDB Algebraic Type Notation) C++ Implementation
 //
-// Core Types (matching Rust/C#):
-//   - AlgebraicType, ProductType, SumType (renamed from Sum)
-//   - ProductTypeElement, SumTypeVariant
+// This provides a complete serialization system compatible with Rust and C#:
 //
-// Core Operations (matching Rust):
-//   - serialize(writer, value)
-//   - deserialize<T>(reader)
+// 🔹 Core Types:
+//   - AlgebraicType: Type metadata system
+//   - ProductType: Structs/tuples (renamed elements for consistency)
+//   - SumType<T...>: Discriminated unions (renamed from Sum)
+//   - Option<T>: Optional values
 //
-// Error Types (matching Rust):
-//   - EncodeError, DecodeError (future)
+// 🔹 Usage:
+//   serialize(writer, value);           // Serialize any supported type
+//   auto obj = deserialize<T>(reader);  // Deserialize to specific type
+//   SPACETIMEDB_BSATN_STRUCT(MyType, field1, field2);  // Enable struct serialization
 //
-// Usage:
-//   spacetimedb::bsatn::serialize(writer, obj)
-//   auto obj = spacetimedb::bsatn::deserialize<MyType>(reader)
+// 🔹 Features:
+//   ✅ All primitive types (bool, integers, floats, string)
+//   ✅ Containers (vector, optional)
+//   ✅ User-defined structs via macro
+//   ✅ Sum types and discriminated unions
+//   ✅ Special SpacetimeDB types (Identity, Timestamp, etc.)
+//   ✅ Type registry for metadata
+//   ✅ Cross-language compatibility
 //
-// Legacy namespace SpacetimeDb::bsatn is provided for backward compatibility.
+// Note: Legacy SpacetimeDb::bsatn namespace is available for backward compatibility.
 
 #endif // SPACETIMEDB_BSATN_MAIN_H

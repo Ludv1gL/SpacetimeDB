@@ -257,31 +257,27 @@ public:
     static AlgebraicType F64() { return make_f64(); }
     static AlgebraicType String() { return make_string(); }
     static AlgebraicType Ref(uint32_t type_id) { return make_ref(type_id); }
-    static AlgebraicType Array(const AlgebraicType& elem_type) {
-        // For now, we'll need to handle this differently since we need to store the type
-        // This is a placeholder - we'll need to enhance this
-        return make_array(std::make_unique<ArrayType>(0)); // TODO: fix this
+    static AlgebraicType Array(uint32_t elem_type_id) {
+        return make_array(std::make_unique<ArrayType>(elem_type_id));
     }
-    static AlgebraicType Option(const AlgebraicType& some_type) {
+    static AlgebraicType Option(uint32_t some_type_id) {
         // Create an option type as a sum type with two variants
         std::vector<SumTypeVariant> variants;
-        variants.emplace_back("some", 0); // TODO: fix type index
-        variants.emplace_back("none", 0); // TODO: fix type index (unit type)
+        variants.emplace_back("none", 0);  // Unit type at index 0
+        variants.emplace_back("some", some_type_id);
         return make_sum(std::make_unique<SumType>(std::move(variants)));
     }
-    static AlgebraicType Product(std::vector<std::pair<std::string, AlgebraicType>> fields) {
-        // TODO: This needs to be properly implemented with type registry
+    static AlgebraicType Product(std::vector<std::pair<std::string, uint32_t>> fields) {
         std::vector<ProductTypeElement> elements;
-        for (const auto& [name, type] : fields) {
-            elements.emplace_back(name, 0); // TODO: fix type index
+        for (const auto& [name, type_id] : fields) {
+            elements.emplace_back(name, type_id);
         }
         return make_product(std::make_unique<ProductType>(std::move(elements)));
     }
-    static AlgebraicType Sum(std::vector<std::pair<std::string, AlgebraicType>> variants) {
-        // TODO: This needs to be properly implemented with type registry
+    static AlgebraicType Sum(std::vector<std::pair<std::string, uint32_t>> variants) {
         std::vector<SumTypeVariant> sum_variants;
-        for (const auto& [name, type] : variants) {
-            sum_variants.emplace_back(name, 0); // TODO: fix type index
+        for (const auto& [name, type_id] : variants) {
+            sum_variants.emplace_back(name, type_id);
         }
         return make_sum(std::make_unique<SumType>(std::move(sum_variants)));
     }
@@ -345,6 +341,21 @@ template<> struct algebraic_type_of<double> {
 
 template<> struct algebraic_type_of<std::string> {
     static AlgebraicType get() { return AlgebraicType::make_string(); }
+};
+
+// Container type specializations
+template<typename T> struct algebraic_type_of<std::vector<T>> {
+    static AlgebraicType get() {
+        // TODO: This needs type registry integration to get proper element type ID
+        return AlgebraicType::Array(0); // Placeholder
+    }
+};
+
+template<typename T> struct algebraic_type_of<std::optional<T>> {
+    static AlgebraicType get() {
+        // TODO: This needs type registry integration to get proper element type ID
+        return AlgebraicType::Option(0); // Placeholder
+    }
 };
 
 // TODO: Add specializations for I128, I256, U128, U256 when those types are properly defined

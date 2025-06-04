@@ -35,20 +35,24 @@ concept BsatnSerializable = requires(T t, Writer& w, Reader& r) {
  */
 template<typename T>
 struct bsatn_traits {
-    // By default, forward to the free functions
     static void serialize(Writer& writer, const T& value) {
-        ::SpacetimeDb::bsatn::serialize(writer, value);
+        if constexpr (requires { value.bsatn_serialize(writer); }) {
+            value.bsatn_serialize(writer);
+        } else {
+            static_assert(false, "Type must implement bsatn_serialize or specialize bsatn_traits");
+        }
     }
     
     static T deserialize(Reader& reader) {
-        return ::SpacetimeDb::bsatn::deserialize<T>(reader);
+        if constexpr (requires { T::bsatn_deserialize(reader); }) {
+            return T::bsatn_deserialize(reader);
+        } else {
+            static_assert(false, "Type must implement bsatn_deserialize or specialize bsatn_traits");
+        }
     }
     
-    // Override this to provide type information
     static AlgebraicType algebraic_type() {
-        // For now, just throw a runtime error in C++17
-        // In C++20, we'd use requires expression
-        throw std::runtime_error("No algebraic type information available");
+        return algebraic_type_of<T>::get();
     }
 };
 
@@ -116,7 +120,7 @@ public:
  */
 class ProductTypeBuilder {
 private:
-    std::vector<AggregateElement> elements_;
+    std::vector<ProductTypeElement> elements_;
     ITypeRegistrar* registrar_;
     
 public:
@@ -125,21 +129,16 @@ public:
     
     template<typename T>
     ProductTypeBuilder& with_field(const std::string& name) {
-        uint32_t type_id = 0;
-        if (registrar_) {
-            // Register the field type and get its ID
-            type_id = registrar_->register_type(algebraic_type_of<T>::get());
-        }
+        uint32_t type_id = registrar_ ? 
+            registrar_->register_type(bsatn_traits<T>::algebraic_type()) : 0;
         elements_.emplace_back(name, type_id);
         return *this;
     }
     
     template<typename T>
     ProductTypeBuilder& with_unnamed_field() {
-        uint32_t type_id = 0;
-        if (registrar_) {
-            type_id = registrar_->register_type(algebraic_type_of<T>::get());
-        }
+        uint32_t type_id = registrar_ ? 
+            registrar_->register_type(bsatn_traits<T>::algebraic_type()) : 0;
         elements_.emplace_back(std::nullopt, type_id);
         return *this;
     }
@@ -154,7 +153,7 @@ public:
  */
 class SumTypeBuilder {
 private:
-    std::vector<SumType::Variant> variants_;
+    std::vector<SumTypeVariant> variants_;
     ITypeRegistrar* registrar_;
     
 public:
@@ -163,10 +162,8 @@ public:
     
     template<typename T>
     SumTypeBuilder& with_variant(const std::string& name) {
-        uint32_t type_id = 0;
-        if (registrar_) {
-            type_id = registrar_->register_type(algebraic_type_of<T>::get());
-        }
+        uint32_t type_id = registrar_ ? 
+            registrar_->register_type(bsatn_traits<T>::algebraic_type()) : 0;
         variants_.emplace_back(name, type_id);
         return *this;
     }
