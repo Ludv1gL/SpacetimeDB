@@ -1,0 +1,10 @@
+[package]
+name = "test_encoding"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+spacetimedb = { path = "../../crates/bindings" }
+
+[lib]
+crate-type = ["cdylib"]
