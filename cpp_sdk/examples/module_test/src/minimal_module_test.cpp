@@ -52,6 +52,15 @@ public:
         return data[pos++];
     }
     
+    uint16_t read_u16_le() {
+        if (pos + 2 > len) return 0;
+        uint16_t result = 0;
+        for (int i = 0; i < 2; i++) {
+            result |= (uint16_t(data[pos++]) << (i * 8));
+        }
+        return result;
+    }
+    
     uint32_t read_u32_le() {
         if (pos + 4 > len) return 0;
         uint32_t result = 0;
@@ -68,6 +77,14 @@ public:
             result |= (uint64_t(data[pos++]) << (i * 8));
         }
         return result;
+    }
+    
+    int16_t read_i16_le() {
+        return static_cast<int16_t>(read_u16_le());
+    }
+    
+    int32_t read_i32_le() {
+        return static_cast<int32_t>(read_u32_le());
     }
     
     int64_t read_i64_le() {
@@ -402,7 +419,7 @@ extern "C" {
         MinimalReader reader(buffer, len);
         uint64_t x = reader.read_u64_le();
         uint32_t y = reader.read_u32_le();
-        uint16_t z = static_cast<uint16_t>(reader.read_u32_le()); // Read as u32
+        uint16_t z = reader.read_u16_le(); // Read as u16
         
         log_info("Inserting test_a: x=" + std::to_string(x) + ", y=" + std::to_string(y) + ", z=" + std::to_string(z));
         
@@ -462,12 +479,12 @@ extern "C" {
         
         MinimalReader reader(buffer, len);
         uint8_t a_u8 = reader.read_u8();
-        uint16_t a_u16 = static_cast<uint16_t>(reader.read_u32_le());
+        uint16_t a_u16 = reader.read_u16_le();
         uint32_t a_u32 = reader.read_u32_le();
         uint64_t a_u64 = reader.read_u64_le();
         int8_t a_i8 = static_cast<int8_t>(reader.read_u8());
-        int16_t a_i16 = static_cast<int16_t>(reader.read_u32_le());
-        int32_t a_i32 = static_cast<int32_t>(reader.read_u32_le());
+        int16_t a_i16 = reader.read_i16_le();
+        int32_t a_i32 = reader.read_i32_le();
         int64_t a_i64 = reader.read_i64_le();
         bool a_bool = reader.read_u8() != 0;
         std::string a_string = reader.read_string();

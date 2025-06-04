@@ -22,10 +22,7 @@
 #include "spacetimedb/internal/ITable.h"
 #include "spacetimedb/internal/FFI.h"
 
-// Forward declarations
-namespace spacetimedb {
-    struct ReducerContext;
-}
+// Forward declarations are handled by proper includes
 
 namespace SpacetimeDb {
 namespace Internal {
