@@ -17,11 +17,11 @@ namespace SpacetimeDb::Internal {
 
 struct RawColumnDefV8 {
     std::string col_name;
-    AlgebraicType col_type;
+    SpacetimeDb::Internal::AlgebraicType col_type;
 
     RawColumnDefV8() = default;
 
-    RawColumnDefV8(std::string col_name, AlgebraicType col_type)
+    RawColumnDefV8(std::string col_name, SpacetimeDb::Internal::AlgebraicType col_type)
         : col_name(col_name), col_type(col_type) {}
 
     // BSATN serialization support
@@ -36,3 +36,19 @@ struct RawColumnDefV8 {
     }
 };
 } // namespace SpacetimeDb::Internal
+// Type registration macro
+#define SPACETIMEDB_REGISTER_TYPE_RawColumnDefV8 \
+    namespace spacetimedb { \
+    namespace detail { \
+    template<> \
+    struct TypeRegistrar<SpacetimeDb::Internal::RawColumnDefV8> { \
+        static AlgebraicTypeRef register_type(TypeContext& ctx) { \
+            return ctx.add(AlgebraicType::Product(std::make_unique<ProductType>(std::vector<ProductType::Element>{
+    {"col_name", AlgebraicType::String()},
+    {"col_type", AlgebraicType::Ref(3)}
+}))); \
+        } \
+    }; \
+    } /* namespace detail */ \
+    } /* namespace spacetimedb */
+

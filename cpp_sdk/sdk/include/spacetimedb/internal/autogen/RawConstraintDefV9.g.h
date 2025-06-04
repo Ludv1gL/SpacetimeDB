@@ -17,11 +17,11 @@ namespace SpacetimeDb::Internal {
 
 struct RawConstraintDefV9 {
     std::optional<std::string> name;
-    RawConstraintDataV9 data;
+    SpacetimeDb::Internal::RawConstraintDataV9 data;
 
     RawConstraintDefV9() = default;
 
-    RawConstraintDefV9(std::optional<std::string> name, RawConstraintDataV9 data)
+    RawConstraintDefV9(std::optional<std::string> name, SpacetimeDb::Internal::RawConstraintDataV9 data)
         : name(name), data(data) {}
 
     // BSATN serialization support
@@ -36,3 +36,19 @@ struct RawConstraintDefV9 {
     }
 };
 } // namespace SpacetimeDb::Internal
+// Type registration macro
+#define SPACETIMEDB_REGISTER_TYPE_RawConstraintDefV9 \
+    namespace spacetimedb { \
+    namespace detail { \
+    template<> \
+    struct TypeRegistrar<SpacetimeDb::Internal::RawConstraintDefV9> { \
+        static AlgebraicTypeRef register_type(TypeContext& ctx) { \
+            return ctx.add(AlgebraicType::Product(std::make_unique<ProductType>(std::vector<ProductType::Element>{
+    {"name", AlgebraicType::Option(AlgebraicType::String())},
+    {"data", AlgebraicType::Ref(23)}
+}))); \
+        } \
+    }; \
+    } /* namespace detail */ \
+    } /* namespace spacetimedb */
+

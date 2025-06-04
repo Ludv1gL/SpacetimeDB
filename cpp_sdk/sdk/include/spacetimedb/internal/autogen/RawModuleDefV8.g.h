@@ -11,22 +11,22 @@
 #include <optional>
 #include <memory>
 #include "spacetimedb/bsatn/bsatn.h"
-#include "MiscModuleExport.g.h"
 #include "ReducerDef.g.h"
-#include "TableDesc.g.h"
 #include "Typespace.g.h"
+#include "TableDesc.g.h"
+#include "MiscModuleExport.g.h"
 
 namespace SpacetimeDb::Internal {
 
 struct RawModuleDefV8 {
-    Typespace typespace;
-    std::vector<TableDesc> tables;
-    std::vector<ReducerDef> reducers;
-    std::vector<MiscModuleExport> misc_exports;
+    SpacetimeDb::Internal::Typespace typespace;
+    std::vector<SpacetimeDb::Internal::TableDesc> tables;
+    std::vector<SpacetimeDb::Internal::ReducerDef> reducers;
+    std::vector<SpacetimeDb::Internal::MiscModuleExport> misc_exports;
 
     RawModuleDefV8() = default;
 
-    RawModuleDefV8(Typespace typespace, std::vector<TableDesc> tables, std::vector<ReducerDef> reducers, std::vector<MiscModuleExport> misc_exports)
+    RawModuleDefV8(SpacetimeDb::Internal::Typespace typespace, std::vector<SpacetimeDb::Internal::TableDesc> tables, std::vector<SpacetimeDb::Internal::ReducerDef> reducers, std::vector<SpacetimeDb::Internal::MiscModuleExport> misc_exports)
         : typespace(typespace), tables(tables), reducers(reducers), misc_exports(misc_exports) {}
 
     // BSATN serialization support
@@ -41,3 +41,21 @@ struct RawModuleDefV8 {
     }
 };
 } // namespace SpacetimeDb::Internal
+// Type registration macro
+#define SPACETIMEDB_REGISTER_TYPE_RawModuleDefV8 \
+    namespace spacetimedb { \
+    namespace detail { \
+    template<> \
+    struct TypeRegistrar<SpacetimeDb::Internal::RawModuleDefV8> { \
+        static AlgebraicTypeRef register_type(TypeContext& ctx) { \
+            return ctx.add(AlgebraicType::Product(std::make_unique<ProductType>(std::vector<ProductType::Element>{
+    {"typespace", AlgebraicType::Ref(2)},
+    {"tables", AlgebraicType::Array(std::make_unique<ArrayType>(AlgebraicType::Ref(8))))},
+    {"reducers", AlgebraicType::Array(std::make_unique<ArrayType>(AlgebraicType::Ref(15))))},
+    {"misc_exports", AlgebraicType::Array(std::make_unique<ArrayType>(AlgebraicType::Ref(16))))}
+}))); \
+        } \
+    }; \
+    } /* namespace detail */ \
+    } /* namespace spacetimedb */
+

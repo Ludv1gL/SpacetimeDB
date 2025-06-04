@@ -18,11 +18,11 @@ namespace SpacetimeDb::Internal {
 struct RawIndexDefV9 {
     std::optional<std::string> name;
     std::optional<std::string> accessor_name;
-    RawIndexAlgorithm algorithm;
+    SpacetimeDb::Internal::RawIndexAlgorithm algorithm;
 
     RawIndexDefV9() = default;
 
-    RawIndexDefV9(std::optional<std::string> name, std::optional<std::string> accessor_name, RawIndexAlgorithm algorithm)
+    RawIndexDefV9(std::optional<std::string> name, std::optional<std::string> accessor_name, SpacetimeDb::Internal::RawIndexAlgorithm algorithm)
         : name(name), accessor_name(accessor_name), algorithm(algorithm) {}
 
     // BSATN serialization support
@@ -37,3 +37,20 @@ struct RawIndexDefV9 {
     }
 };
 } // namespace SpacetimeDb::Internal
+// Type registration macro
+#define SPACETIMEDB_REGISTER_TYPE_RawIndexDefV9 \
+    namespace spacetimedb { \
+    namespace detail { \
+    template<> \
+    struct TypeRegistrar<SpacetimeDb::Internal::RawIndexDefV9> { \
+        static AlgebraicTypeRef register_type(TypeContext& ctx) { \
+            return ctx.add(AlgebraicType::Product(std::make_unique<ProductType>(std::vector<ProductType::Element>{
+    {"name", AlgebraicType::Option(AlgebraicType::String())},
+    {"accessor_name", AlgebraicType::Option(AlgebraicType::String())},
+    {"algorithm", AlgebraicType::Ref(21)}
+}))); \
+        } \
+    }; \
+    } /* namespace detail */ \
+    } /* namespace spacetimedb */
+

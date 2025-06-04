@@ -11,11 +11,42 @@
 #include <optional>
 #include <memory>
 #include "spacetimedb/bsatn/bsatn.h"
+#include "ProductTypeElement.g.h"
 
 namespace SpacetimeDb::Internal {
 
-// Product types are represented as indices into the typespace
-// This is a placeholder until proper codegen
-using ProductType = uint32_t;
+struct ProductType {
+    std::vector<SpacetimeDb::Internal::ProductTypeElement> elements;
 
+    ProductType() = default;
+
+    ProductType(std::vector<SpacetimeDb::Internal::ProductTypeElement> elements)
+        : elements(elements) {}
+
+    // BSATN serialization support
+    void bsatn_serialize(SpacetimeDb::bsatn::Writer& writer) const;
+    void bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader);
+
+    // Static factory method for BSATN deserialization
+    static ProductType from_bsatn(SpacetimeDb::bsatn::Reader& reader) {
+        ProductType result;
+        result.bsatn_deserialize(reader);
+        return result;
+    }
+};
 } // namespace SpacetimeDb::Internal
+// Type registration macro
+#define SPACETIMEDB_REGISTER_TYPE_ProductType \
+    namespace spacetimedb { \
+    namespace detail { \
+    template<> \
+    struct TypeRegistrar<SpacetimeDb::Internal::ProductType> { \
+        static AlgebraicTypeRef register_type(TypeContext& ctx) { \
+            return ctx.add(AlgebraicType::Product(std::make_unique<ProductType>(std::vector<ProductType::Element>{
+    {"elements", AlgebraicType::Array(std::make_unique<ArrayType>(AlgebraicType::Ref(7))))}
+}))); \
+        } \
+    }; \
+    } /* namespace detail */ \
+    } /* namespace spacetimedb */
+

@@ -16,13 +16,13 @@
 namespace SpacetimeDb::Internal {
 
 struct RawTypeDefV9 {
-    RawScopedTypeNameV9 name;
+    SpacetimeDb::Internal::RawScopedTypeNameV9 name;
     uint32_t ty;
     bool custom_ordering;
 
     RawTypeDefV9() = default;
 
-    RawTypeDefV9(RawScopedTypeNameV9 name, uint32_t ty, bool custom_ordering)
+    RawTypeDefV9(SpacetimeDb::Internal::RawScopedTypeNameV9 name, uint32_t ty, bool custom_ordering)
         : name(name), ty(ty), custom_ordering(custom_ordering) {}
 
     // BSATN serialization support
@@ -37,3 +37,20 @@ struct RawTypeDefV9 {
     }
 };
 } // namespace SpacetimeDb::Internal
+// Type registration macro
+#define SPACETIMEDB_REGISTER_TYPE_RawTypeDefV9 \
+    namespace spacetimedb { \
+    namespace detail { \
+    template<> \
+    struct TypeRegistrar<SpacetimeDb::Internal::RawTypeDefV9> { \
+        static AlgebraicTypeRef register_type(TypeContext& ctx) { \
+            return ctx.add(AlgebraicType::Product(std::make_unique<ProductType>(std::vector<ProductType::Element>{
+    {"name", AlgebraicType::Ref(32)},
+    {"ty", AlgebraicType::U32()},
+    {"custom_ordering", AlgebraicType::Bool()}
+}))); \
+        } \
+    }; \
+    } /* namespace detail */ \
+    } /* namespace spacetimedb */
+

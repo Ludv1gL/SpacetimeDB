@@ -11,38 +11,41 @@
 #include <optional>
 #include <memory>
 #include "spacetimedb/bsatn/bsatn.h"
+#include "AlgebraicType.g.h"
 
 namespace SpacetimeDb::Internal {
 
-struct RawRowLevelSecurityDefV9 {
-    std::string sql;
+struct ProductTypeElement {
+    std::optional<std::string> name;
+    SpacetimeDb::Internal::AlgebraicType algebraic_type;
 
-    RawRowLevelSecurityDefV9() = default;
+    ProductTypeElement() = default;
 
-    RawRowLevelSecurityDefV9(std::string sql)
-        : sql(sql) {}
+    ProductTypeElement(std::optional<std::string> name, SpacetimeDb::Internal::AlgebraicType algebraic_type)
+        : name(name), algebraic_type(algebraic_type) {}
 
     // BSATN serialization support
     void bsatn_serialize(SpacetimeDb::bsatn::Writer& writer) const;
     void bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader);
 
     // Static factory method for BSATN deserialization
-    static RawRowLevelSecurityDefV9 from_bsatn(SpacetimeDb::bsatn::Reader& reader) {
-        RawRowLevelSecurityDefV9 result;
+    static ProductTypeElement from_bsatn(SpacetimeDb::bsatn::Reader& reader) {
+        ProductTypeElement result;
         result.bsatn_deserialize(reader);
         return result;
     }
 };
 } // namespace SpacetimeDb::Internal
 // Type registration macro
-#define SPACETIMEDB_REGISTER_TYPE_RawRowLevelSecurityDefV9 \
+#define SPACETIMEDB_REGISTER_TYPE_ProductTypeElement \
     namespace spacetimedb { \
     namespace detail { \
     template<> \
-    struct TypeRegistrar<SpacetimeDb::Internal::RawRowLevelSecurityDefV9> { \
+    struct TypeRegistrar<SpacetimeDb::Internal::ProductTypeElement> { \
         static AlgebraicTypeRef register_type(TypeContext& ctx) { \
             return ctx.add(AlgebraicType::Product(std::make_unique<ProductType>(std::vector<ProductType::Element>{
-    {"sql", AlgebraicType::String()}
+    {"name", AlgebraicType::Option(AlgebraicType::String())},
+    {"algebraic_type", AlgebraicType::Ref(3)}
 }))); \
         } \
     }; \

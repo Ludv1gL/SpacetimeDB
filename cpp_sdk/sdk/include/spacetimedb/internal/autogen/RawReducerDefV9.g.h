@@ -11,19 +11,19 @@
 #include <optional>
 #include <memory>
 #include "spacetimedb/bsatn/bsatn.h"
-#include "Lifecycle.g.h"
 #include "ProductType.g.h"
+#include "Lifecycle.g.h"
 
 namespace SpacetimeDb::Internal {
 
 struct RawReducerDefV9 {
     std::string name;
-    ProductType params;
-    std::optional<Lifecycle> lifecycle;
+    SpacetimeDb::Internal::ProductType params;
+    std::optional<SpacetimeDb::Internal::Lifecycle> lifecycle;
 
     RawReducerDefV9() = default;
 
-    RawReducerDefV9(std::string name, ProductType params, std::optional<Lifecycle> lifecycle)
+    RawReducerDefV9(std::string name, SpacetimeDb::Internal::ProductType params, std::optional<SpacetimeDb::Internal::Lifecycle> lifecycle)
         : name(name), params(params), lifecycle(lifecycle) {}
 
     // BSATN serialization support
@@ -38,3 +38,20 @@ struct RawReducerDefV9 {
     }
 };
 } // namespace SpacetimeDb::Internal
+// Type registration macro
+#define SPACETIMEDB_REGISTER_TYPE_RawReducerDefV9 \
+    namespace spacetimedb { \
+    namespace detail { \
+    template<> \
+    struct TypeRegistrar<SpacetimeDb::Internal::RawReducerDefV9> { \
+        static AlgebraicTypeRef register_type(TypeContext& ctx) { \
+            return ctx.add(AlgebraicType::Product(std::make_unique<ProductType>(std::vector<ProductType::Element>{
+    {"name", AlgebraicType::String()},
+    {"params", AlgebraicType::Ref(6)},
+    {"lifecycle", AlgebraicType::Option(AlgebraicType::Ref(30))}
+}))); \
+        } \
+    }; \
+    } /* namespace detail */ \
+    } /* namespace spacetimedb */
+

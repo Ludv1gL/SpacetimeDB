@@ -11,38 +11,39 @@
 #include <optional>
 #include <memory>
 #include "spacetimedb/bsatn/bsatn.h"
+#include "SumTypeVariant.g.h"
 
 namespace SpacetimeDb::Internal {
 
-struct RawRowLevelSecurityDefV9 {
-    std::string sql;
+struct SumType {
+    std::vector<SpacetimeDb::Internal::SumTypeVariant> variants;
 
-    RawRowLevelSecurityDefV9() = default;
+    SumType() = default;
 
-    RawRowLevelSecurityDefV9(std::string sql)
-        : sql(sql) {}
+    SumType(std::vector<SpacetimeDb::Internal::SumTypeVariant> variants)
+        : variants(variants) {}
 
     // BSATN serialization support
     void bsatn_serialize(SpacetimeDb::bsatn::Writer& writer) const;
     void bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader);
 
     // Static factory method for BSATN deserialization
-    static RawRowLevelSecurityDefV9 from_bsatn(SpacetimeDb::bsatn::Reader& reader) {
-        RawRowLevelSecurityDefV9 result;
+    static SumType from_bsatn(SpacetimeDb::bsatn::Reader& reader) {
+        SumType result;
         result.bsatn_deserialize(reader);
         return result;
     }
 };
 } // namespace SpacetimeDb::Internal
 // Type registration macro
-#define SPACETIMEDB_REGISTER_TYPE_RawRowLevelSecurityDefV9 \
+#define SPACETIMEDB_REGISTER_TYPE_SumType \
     namespace spacetimedb { \
     namespace detail { \
     template<> \
-    struct TypeRegistrar<SpacetimeDb::Internal::RawRowLevelSecurityDefV9> { \
+    struct TypeRegistrar<SpacetimeDb::Internal::SumType> { \
         static AlgebraicTypeRef register_type(TypeContext& ctx) { \
             return ctx.add(AlgebraicType::Product(std::make_unique<ProductType>(std::vector<ProductType::Element>{
-    {"sql", AlgebraicType::String()}
+    {"variants", AlgebraicType::Array(std::make_unique<ArrayType>(AlgebraicType::Ref(5))))}
 }))); \
         } \
     }; \

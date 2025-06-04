@@ -17,11 +17,11 @@ namespace SpacetimeDb::Internal {
 
 struct ReducerDef {
     std::string name;
-    std::vector<ProductTypeElement> args;
+    std::vector<SpacetimeDb::Internal::ProductTypeElement> args;
 
     ReducerDef() = default;
 
-    ReducerDef(std::string name, std::vector<ProductTypeElement> args)
+    ReducerDef(std::string name, std::vector<SpacetimeDb::Internal::ProductTypeElement> args)
         : name(name), args(args) {}
 
     // BSATN serialization support
@@ -36,3 +36,19 @@ struct ReducerDef {
     }
 };
 } // namespace SpacetimeDb::Internal
+// Type registration macro
+#define SPACETIMEDB_REGISTER_TYPE_ReducerDef \
+    namespace spacetimedb { \
+    namespace detail { \
+    template<> \
+    struct TypeRegistrar<SpacetimeDb::Internal::ReducerDef> { \
+        static AlgebraicTypeRef register_type(TypeContext& ctx) { \
+            return ctx.add(AlgebraicType::Product(std::make_unique<ProductType>(std::vector<ProductType::Element>{
+    {"name", AlgebraicType::String()},
+    {"args", AlgebraicType::Array(std::make_unique<ArrayType>(AlgebraicType::Ref(7))))}
+}))); \
+        } \
+    }; \
+    } /* namespace detail */ \
+    } /* namespace spacetimedb */
+

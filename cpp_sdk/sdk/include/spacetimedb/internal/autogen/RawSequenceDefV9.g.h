@@ -17,14 +17,14 @@ namespace SpacetimeDb::Internal {
 struct RawSequenceDefV9 {
     std::optional<std::string> name;
     uint16_t column;
-    std::optional<SpacetimeDb::Types::int128_t_placeholder> start;
-    std::optional<SpacetimeDb::Types::int128_t_placeholder> min_value;
-    std::optional<SpacetimeDb::Types::int128_t_placeholder> max_value;
-    SpacetimeDb::Types::int128_t_placeholder increment;
+    std::optional<spacetimedb::u128> start;
+    std::optional<spacetimedb::u128> min_value;
+    std::optional<spacetimedb::u128> max_value;
+    spacetimedb::u128 increment;
 
     RawSequenceDefV9() = default;
 
-    RawSequenceDefV9(std::optional<std::string> name, uint16_t column, std::optional<SpacetimeDb::Types::int128_t_placeholder> start, std::optional<SpacetimeDb::Types::int128_t_placeholder> min_value, std::optional<SpacetimeDb::Types::int128_t_placeholder> max_value, SpacetimeDb::Types::int128_t_placeholder increment)
+    RawSequenceDefV9(std::optional<std::string> name, uint16_t column, std::optional<spacetimedb::u128> start, std::optional<spacetimedb::u128> min_value, std::optional<spacetimedb::u128> max_value, spacetimedb::u128 increment)
         : name(name), column(column), start(start), min_value(min_value), max_value(max_value), increment(increment) {}
 
     // BSATN serialization support
@@ -39,3 +39,23 @@ struct RawSequenceDefV9 {
     }
 };
 } // namespace SpacetimeDb::Internal
+// Type registration macro
+#define SPACETIMEDB_REGISTER_TYPE_RawSequenceDefV9 \
+    namespace spacetimedb { \
+    namespace detail { \
+    template<> \
+    struct TypeRegistrar<SpacetimeDb::Internal::RawSequenceDefV9> { \
+        static AlgebraicTypeRef register_type(TypeContext& ctx) { \
+            return ctx.add(AlgebraicType::Product(std::make_unique<ProductType>(std::vector<ProductType::Element>{
+    {"name", AlgebraicType::Option(AlgebraicType::String())},
+    {"column", AlgebraicType::U16()},
+    {"start", AlgebraicType::Option(AlgebraicType::I128())},
+    {"min_value", AlgebraicType::Option(AlgebraicType::I128())},
+    {"max_value", AlgebraicType::Option(AlgebraicType::I128())},
+    {"increment", AlgebraicType::I128()}
+}))); \
+        } \
+    }; \
+    } /* namespace detail */ \
+    } /* namespace spacetimedb */
+

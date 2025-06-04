@@ -18,12 +18,12 @@ namespace SpacetimeDb::Internal {
 struct RawIndexDefV8 {
     std::string index_name;
     bool is_unique;
-    IndexType index_type;
+    SpacetimeDb::Internal::IndexType index_type;
     std::vector<uint16_t> columns;
 
     RawIndexDefV8() = default;
 
-    RawIndexDefV8(std::string index_name, bool is_unique, IndexType index_type, std::vector<uint16_t> columns)
+    RawIndexDefV8(std::string index_name, bool is_unique, SpacetimeDb::Internal::IndexType index_type, std::vector<uint16_t> columns)
         : index_name(index_name), is_unique(is_unique), index_type(index_type), columns(columns) {}
 
     // BSATN serialization support
@@ -38,3 +38,21 @@ struct RawIndexDefV8 {
     }
 };
 } // namespace SpacetimeDb::Internal
+// Type registration macro
+#define SPACETIMEDB_REGISTER_TYPE_RawIndexDefV8 \
+    namespace spacetimedb { \
+    namespace detail { \
+    template<> \
+    struct TypeRegistrar<SpacetimeDb::Internal::RawIndexDefV8> { \
+        static AlgebraicTypeRef register_type(TypeContext& ctx) { \
+            return ctx.add(AlgebraicType::Product(std::make_unique<ProductType>(std::vector<ProductType::Element>{
+    {"index_name", AlgebraicType::String()},
+    {"is_unique", AlgebraicType::Bool()},
+    {"index_type", AlgebraicType::Ref(12)},
+    {"columns", AlgebraicType::Array(std::make_unique<ArrayType>(AlgebraicType::U16())))}
+}))); \
+        } \
+    }; \
+    } /* namespace detail */ \
+    } /* namespace spacetimedb */
+

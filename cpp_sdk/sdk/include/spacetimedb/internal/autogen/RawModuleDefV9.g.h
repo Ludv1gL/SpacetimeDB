@@ -11,26 +11,26 @@
 #include <optional>
 #include <memory>
 #include "spacetimedb/bsatn/bsatn.h"
-#include "RawMiscModuleExportV9.g.h"
 #include "RawReducerDefV9.g.h"
-#include "RawRowLevelSecurityDefV9.g.h"
-#include "RawTableDefV9.g.h"
-#include "RawTypeDefV9.g.h"
 #include "Typespace.g.h"
+#include "RawMiscModuleExportV9.g.h"
+#include "RawRowLevelSecurityDefV9.g.h"
+#include "RawTypeDefV9.g.h"
+#include "RawTableDefV9.g.h"
 
 namespace SpacetimeDb::Internal {
 
 struct RawModuleDefV9 {
-    Typespace typespace;
-    std::vector<RawTableDefV9> tables;
-    std::vector<RawReducerDefV9> reducers;
-    std::vector<RawTypeDefV9> types;
-    std::vector<RawMiscModuleExportV9> misc_exports;
-    std::vector<RawRowLevelSecurityDefV9> row_level_security;
+    SpacetimeDb::Internal::Typespace typespace;
+    std::vector<SpacetimeDb::Internal::RawTableDefV9> tables;
+    std::vector<SpacetimeDb::Internal::RawReducerDefV9> reducers;
+    std::vector<SpacetimeDb::Internal::RawTypeDefV9> types;
+    std::vector<SpacetimeDb::Internal::RawMiscModuleExportV9> misc_exports;
+    std::vector<SpacetimeDb::Internal::RawRowLevelSecurityDefV9> row_level_security;
 
     RawModuleDefV9() = default;
 
-    RawModuleDefV9(Typespace typespace, std::vector<RawTableDefV9> tables, std::vector<RawReducerDefV9> reducers, std::vector<RawTypeDefV9> types, std::vector<RawMiscModuleExportV9> misc_exports, std::vector<RawRowLevelSecurityDefV9> row_level_security)
+    RawModuleDefV9(SpacetimeDb::Internal::Typespace typespace, std::vector<SpacetimeDb::Internal::RawTableDefV9> tables, std::vector<SpacetimeDb::Internal::RawReducerDefV9> reducers, std::vector<SpacetimeDb::Internal::RawTypeDefV9> types, std::vector<SpacetimeDb::Internal::RawMiscModuleExportV9> misc_exports, std::vector<SpacetimeDb::Internal::RawRowLevelSecurityDefV9> row_level_security)
         : typespace(typespace), tables(tables), reducers(reducers), types(types), misc_exports(misc_exports), row_level_security(row_level_security) {}
 
     // BSATN serialization support
@@ -45,3 +45,23 @@ struct RawModuleDefV9 {
     }
 };
 } // namespace SpacetimeDb::Internal
+// Type registration macro
+#define SPACETIMEDB_REGISTER_TYPE_RawModuleDefV9 \
+    namespace spacetimedb { \
+    namespace detail { \
+    template<> \
+    struct TypeRegistrar<SpacetimeDb::Internal::RawModuleDefV9> { \
+        static AlgebraicTypeRef register_type(TypeContext& ctx) { \
+            return ctx.add(AlgebraicType::Product(std::make_unique<ProductType>(std::vector<ProductType::Element>{
+    {"typespace", AlgebraicType::Ref(2)},
+    {"tables", AlgebraicType::Array(std::make_unique<ArrayType>(AlgebraicType::Ref(19))))},
+    {"reducers", AlgebraicType::Array(std::make_unique<ArrayType>(AlgebraicType::Ref(29))))},
+    {"types", AlgebraicType::Array(std::make_unique<ArrayType>(AlgebraicType::Ref(31))))},
+    {"misc_exports", AlgebraicType::Array(std::make_unique<ArrayType>(AlgebraicType::Ref(33))))},
+    {"row_level_security", AlgebraicType::Array(std::make_unique<ArrayType>(AlgebraicType::Ref(34))))}
+}))); \
+        } \
+    }; \
+    } /* namespace detail */ \
+    } /* namespace spacetimedb */
+

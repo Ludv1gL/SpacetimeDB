@@ -2,7 +2,7 @@
 //! Run `cargo run --example regen-cpp-moduledef` to update C++ bindings whenever the module definition changes.
 
 use fs_err as fs;
-use spacetimedb_codegen::{cpp, generate};
+use spacetimedb_codegen::{cpp_enhanced, generate};
 use spacetimedb_lib::{RawModuleDef, RawModuleDefV8};
 use spacetimedb_schema::def::ModuleDef;
 use std::path::Path;
@@ -32,25 +32,18 @@ fn main() -> anyhow::Result<()> {
     let module: ModuleDef = module.try_into()?;
     generate(
         &module,
-        &cpp::Cpp {
+        &cpp_enhanced::CppEnhanced {
             namespace: "SpacetimeDb::Internal",
         },
     )
     .into_iter()
     .try_for_each(|(filename, code)| {
-        // Skip anything but raw types (in particular, this will skip global headers we don't need).
-        let Some(filename) = filename.strip_prefix("Types/") else {
-            return Ok(());
+        // Remove any prefix and just use the filename
+        let filename = if let Some(name) = filename.strip_prefix("Types/") {
+            name
+        } else {
+            &filename
         };
-
-        // For now, skip AlgebraicType and other large BSATN types since we have custom C++ implementations
-        // that are more optimized for the C++ SDK. These can be generated later if needed.
-        if filename == "AlgebraicType.g.h" || filename.starts_with("SumType") || filename.starts_with("ProductType") {
-            return Ok(());
-        }
-
-        // For now, skip type transformations since we need to handle these types properly
-        // TODO: Implement proper AlgebraicType, ProductType, SumType generation
 
         println!("Generating {}", filename);
         fs::write(dir.join(filename), code)

@@ -14,21 +14,22 @@
 
 namespace SpacetimeDb::Internal {
 
-enum class Lifecycle {
+enum class Lifecycle : uint8_t {
     Init = 0,
     OnConnect = 1,
     OnDisconnect = 2,
 };
 } // namespace SpacetimeDb::Internal
+// Type registration macro
+#define SPACETIMEDB_REGISTER_TYPE_Lifecycle \
+    namespace spacetimedb { \
+    namespace detail { \
+    template<> \
+    struct TypeRegistrar<SpacetimeDb::Internal::Lifecycle> { \
+        static AlgebraicTypeRef register_type(TypeContext& ctx) { \
+            return ctx.add(AlgebraicType::U8()); \
+        } \
+    }; \
+    } /* namespace detail */ \
+    } /* namespace spacetimedb */
 
-// BSATN serialization for Lifecycle
-namespace SpacetimeDb::bsatn {
-    inline void serialize(Writer& w, const SpacetimeDb::Internal::Lifecycle& value) {
-        w.write_u8(static_cast<uint8_t>(value));
-    }
-
-    template<>
-    inline SpacetimeDb::Internal::Lifecycle deserialize<SpacetimeDb::Internal::Lifecycle>(Reader& r) {
-        return static_cast<SpacetimeDb::Internal::Lifecycle>(r.read_u8());
-    }
-}

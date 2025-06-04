@@ -16,11 +16,11 @@
 namespace SpacetimeDb::Internal {
 
 struct Typespace {
-    std::vector<AlgebraicType> types;
+    std::vector<SpacetimeDb::Internal::AlgebraicType> types;
 
     Typespace() = default;
 
-    Typespace(std::vector<AlgebraicType> types)
+    Typespace(std::vector<SpacetimeDb::Internal::AlgebraicType> types)
         : types(types) {}
 
     // BSATN serialization support
@@ -35,3 +35,18 @@ struct Typespace {
     }
 };
 } // namespace SpacetimeDb::Internal
+// Type registration macro
+#define SPACETIMEDB_REGISTER_TYPE_Typespace \
+    namespace spacetimedb { \
+    namespace detail { \
+    template<> \
+    struct TypeRegistrar<SpacetimeDb::Internal::Typespace> { \
+        static AlgebraicTypeRef register_type(TypeContext& ctx) { \
+            return ctx.add(AlgebraicType::Product(std::make_unique<ProductType>(std::vector<ProductType::Element>{
+    {"types", AlgebraicType::Array(std::make_unique<ArrayType>(AlgebraicType::Ref(3))))}
+}))); \
+        } \
+    }; \
+    } /* namespace detail */ \
+    } /* namespace spacetimedb */
+

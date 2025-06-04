@@ -17,15 +17,15 @@ namespace SpacetimeDb::Internal {
 struct RawSequenceDefV8 {
     std::string sequence_name;
     uint16_t col_pos;
-    SpacetimeDb::Types::int128_t_placeholder increment;
-    std::optional<SpacetimeDb::Types::int128_t_placeholder> start;
-    std::optional<SpacetimeDb::Types::int128_t_placeholder> min_value;
-    std::optional<SpacetimeDb::Types::int128_t_placeholder> max_value;
-    SpacetimeDb::Types::int128_t_placeholder allocated;
+    spacetimedb::u128 increment;
+    std::optional<spacetimedb::u128> start;
+    std::optional<spacetimedb::u128> min_value;
+    std::optional<spacetimedb::u128> max_value;
+    spacetimedb::u128 allocated;
 
     RawSequenceDefV8() = default;
 
-    RawSequenceDefV8(std::string sequence_name, uint16_t col_pos, SpacetimeDb::Types::int128_t_placeholder increment, std::optional<SpacetimeDb::Types::int128_t_placeholder> start, std::optional<SpacetimeDb::Types::int128_t_placeholder> min_value, std::optional<SpacetimeDb::Types::int128_t_placeholder> max_value, SpacetimeDb::Types::int128_t_placeholder allocated)
+    RawSequenceDefV8(std::string sequence_name, uint16_t col_pos, spacetimedb::u128 increment, std::optional<spacetimedb::u128> start, std::optional<spacetimedb::u128> min_value, std::optional<spacetimedb::u128> max_value, spacetimedb::u128 allocated)
         : sequence_name(sequence_name), col_pos(col_pos), increment(increment), start(start), min_value(min_value), max_value(max_value), allocated(allocated) {}
 
     // BSATN serialization support
@@ -40,3 +40,24 @@ struct RawSequenceDefV8 {
     }
 };
 } // namespace SpacetimeDb::Internal
+// Type registration macro
+#define SPACETIMEDB_REGISTER_TYPE_RawSequenceDefV8 \
+    namespace spacetimedb { \
+    namespace detail { \
+    template<> \
+    struct TypeRegistrar<SpacetimeDb::Internal::RawSequenceDefV8> { \
+        static AlgebraicTypeRef register_type(TypeContext& ctx) { \
+            return ctx.add(AlgebraicType::Product(std::make_unique<ProductType>(std::vector<ProductType::Element>{
+    {"sequence_name", AlgebraicType::String()},
+    {"col_pos", AlgebraicType::U16()},
+    {"increment", AlgebraicType::I128()},
+    {"start", AlgebraicType::Option(AlgebraicType::I128())},
+    {"min_value", AlgebraicType::Option(AlgebraicType::I128())},
+    {"max_value", AlgebraicType::Option(AlgebraicType::I128())},
+    {"allocated", AlgebraicType::I128()}
+}))); \
+        } \
+    }; \
+    } /* namespace detail */ \
+    } /* namespace spacetimedb */
+

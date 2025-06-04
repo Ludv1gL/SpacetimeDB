@@ -11,12 +11,12 @@
 #include <optional>
 #include <memory>
 #include "spacetimedb/bsatn/bsatn.h"
-#include "RawConstraintDefV9.g.h"
-#include "RawIndexDefV9.g.h"
 #include "RawScheduleDefV9.g.h"
 #include "RawSequenceDefV9.g.h"
-#include "TableAccess.g.h"
 #include "TableType.g.h"
+#include "RawConstraintDefV9.g.h"
+#include "TableAccess.g.h"
+#include "RawIndexDefV9.g.h"
 
 namespace SpacetimeDb::Internal {
 
@@ -24,16 +24,16 @@ struct RawTableDefV9 {
     std::string name;
     uint32_t product_type_ref;
     std::vector<uint16_t> primary_key;
-    std::vector<RawIndexDefV9> indexes;
-    std::vector<RawConstraintDefV9> constraints;
-    std::vector<RawSequenceDefV9> sequences;
-    std::optional<RawScheduleDefV9> schedule;
-    TableType table_type;
-    TableAccess table_access;
+    std::vector<SpacetimeDb::Internal::RawIndexDefV9> indexes;
+    std::vector<SpacetimeDb::Internal::RawConstraintDefV9> constraints;
+    std::vector<SpacetimeDb::Internal::RawSequenceDefV9> sequences;
+    std::optional<SpacetimeDb::Internal::RawScheduleDefV9> schedule;
+    SpacetimeDb::Internal::TableType table_type;
+    SpacetimeDb::Internal::TableAccess table_access;
 
     RawTableDefV9() = default;
 
-    RawTableDefV9(std::string name, uint32_t product_type_ref, std::vector<uint16_t> primary_key, std::vector<RawIndexDefV9> indexes, std::vector<RawConstraintDefV9> constraints, std::vector<RawSequenceDefV9> sequences, std::optional<RawScheduleDefV9> schedule, TableType table_type, TableAccess table_access)
+    RawTableDefV9(std::string name, uint32_t product_type_ref, std::vector<uint16_t> primary_key, std::vector<SpacetimeDb::Internal::RawIndexDefV9> indexes, std::vector<SpacetimeDb::Internal::RawConstraintDefV9> constraints, std::vector<SpacetimeDb::Internal::RawSequenceDefV9> sequences, std::optional<SpacetimeDb::Internal::RawScheduleDefV9> schedule, SpacetimeDb::Internal::TableType table_type, SpacetimeDb::Internal::TableAccess table_access)
         : name(name), product_type_ref(product_type_ref), primary_key(primary_key), indexes(indexes), constraints(constraints), sequences(sequences), schedule(schedule), table_type(table_type), table_access(table_access) {}
 
     // BSATN serialization support
@@ -48,3 +48,26 @@ struct RawTableDefV9 {
     }
 };
 } // namespace SpacetimeDb::Internal
+// Type registration macro
+#define SPACETIMEDB_REGISTER_TYPE_RawTableDefV9 \
+    namespace spacetimedb { \
+    namespace detail { \
+    template<> \
+    struct TypeRegistrar<SpacetimeDb::Internal::RawTableDefV9> { \
+        static AlgebraicTypeRef register_type(TypeContext& ctx) { \
+            return ctx.add(AlgebraicType::Product(std::make_unique<ProductType>(std::vector<ProductType::Element>{
+    {"name", AlgebraicType::String()},
+    {"product_type_ref", AlgebraicType::U32()},
+    {"primary_key", AlgebraicType::Array(std::make_unique<ArrayType>(AlgebraicType::U16())))},
+    {"indexes", AlgebraicType::Array(std::make_unique<ArrayType>(AlgebraicType::Ref(20))))},
+    {"constraints", AlgebraicType::Array(std::make_unique<ArrayType>(AlgebraicType::Ref(22))))},
+    {"sequences", AlgebraicType::Array(std::make_unique<ArrayType>(AlgebraicType::Ref(25))))},
+    {"schedule", AlgebraicType::Option(AlgebraicType::Ref(26))},
+    {"table_type", AlgebraicType::Ref(27)},
+    {"table_access", AlgebraicType::Ref(28)}
+}))); \
+        } \
+    }; \
+    } /* namespace detail */ \
+    } /* namespace spacetimedb */
+

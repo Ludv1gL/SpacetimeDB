@@ -14,20 +14,21 @@
 
 namespace SpacetimeDb::Internal {
 
-enum class TableAccess {
+enum class TableAccess : uint8_t {
     Public = 0,
     Private = 1,
 };
 } // namespace SpacetimeDb::Internal
+// Type registration macro
+#define SPACETIMEDB_REGISTER_TYPE_TableAccess \
+    namespace spacetimedb { \
+    namespace detail { \
+    template<> \
+    struct TypeRegistrar<SpacetimeDb::Internal::TableAccess> { \
+        static AlgebraicTypeRef register_type(TypeContext& ctx) { \
+            return ctx.add(AlgebraicType::U8()); \
+        } \
+    }; \
+    } /* namespace detail */ \
+    } /* namespace spacetimedb */
 
-// BSATN serialization for TableAccess
-namespace SpacetimeDb::bsatn {
-    inline void serialize(Writer& w, const SpacetimeDb::Internal::TableAccess& value) {
-        w.write_u8(static_cast<uint8_t>(value));
-    }
-
-    template<>
-    inline SpacetimeDb::Internal::TableAccess deserialize<SpacetimeDb::Internal::TableAccess>(Reader& r) {
-        return static_cast<SpacetimeDb::Internal::TableAccess>(r.read_u8());
-    }
-}

@@ -1,0 +1,569 @@
+//! Enhanced C++ code generation for SpacetimeDB module definitions.
+//! Generates complete C++ headers with type registration macros.
+
+use super::Lang;
+use spacetimedb_schema::def::{ModuleDef, ReducerDef, ScopedTypeName, TableDef, TypeDef};
+use spacetimedb_schema::identifier::Identifier;
+use spacetimedb_schema::type_for_generate::{
+    AlgebraicTypeDef, AlgebraicTypeUse, PlainEnumTypeDef, PrimitiveType, ProductTypeDef, SumTypeDef,
+};
+use spacetimedb_sats::AlgebraicTypeRef;
+use std::fmt::{self, Write};
+use std::collections::HashSet;
+
+pub struct CppEnhanced {
+    pub namespace: &'static str,
+}
+
+impl CppEnhanced {
+    /// Generate the implementation file content for BSATN serialization
+    fn generate_implementation(&self, module: &ModuleDef, typ: &TypeDef) -> String {
+        let mut output = String::new();
+        let type_name = typ.name.name();
+        
+        writeln!(&mut output, "// Implementation of BSATN serialization for {}", type_name).unwrap();
+        writeln!(&mut output, "#include \"{}.g.h\"", type_name).unwrap();
+        writeln!(&mut output).unwrap();
+        
+        match &module.typespace_for_generate()[typ.ty] {
+            AlgebraicTypeDef::Product(product) => {
+                self.write_product_serialization_impl(&mut output, type_name, product);
+            }
+            AlgebraicTypeDef::Sum(sum) => {
+                self.write_sum_serialization_impl(&mut output, type_name, sum);
+            }
+            AlgebraicTypeDef::PlainEnum(_) => {
+                // Plain enums serialization is inline
+            }
+        }
+        
+        output
+    }
+    
+    fn write_product_serialization_impl(&self, output: &mut String, type_name: &str, product: &ProductTypeDef) {
+        writeln!(output, "namespace {} {{", self.namespace).unwrap();
+        writeln!(output).unwrap();
+        
+        // Serialize implementation
+        writeln!(output, "void {}::bsatn_serialize(SpacetimeDb::bsatn::Writer& writer) const {{", type_name).unwrap();
+        for (field_name, _) in &product.elements {
+            writeln!(output, "    SpacetimeDb::bsatn::serialize(writer, {});", field_name).unwrap();
+        }
+        writeln!(output, "}}").unwrap();
+        writeln!(output).unwrap();
+        
+        // Deserialize implementation
+        writeln!(output, "void {}::bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader) {{", type_name).unwrap();
+        for (field_name, _) in &product.elements {
+            writeln!(output, "    {} = SpacetimeDb::bsatn::deserialize<decltype({})>(reader);", field_name, field_name).unwrap();
+        }
+        writeln!(output, "}}").unwrap();
+        writeln!(output).unwrap();
+        
+        writeln!(output, "}} // namespace {}", self.namespace).unwrap();
+    }
+    
+    fn write_sum_serialization_impl(&self, output: &mut String, type_name: &str, sum: &SumTypeDef) {
+        writeln!(output, "namespace {} {{", self.namespace).unwrap();
+        writeln!(output).unwrap();
+        
+        // Serialize implementation
+        writeln!(output, "void {}::bsatn_serialize(SpacetimeDb::bsatn::Writer& writer) const {{", type_name).unwrap();
+        writeln!(output, "    writer.write_u8(static_cast<uint8_t>(tag_));").unwrap();
+        writeln!(output, "    // Serialize variant data based on tag").unwrap();
+        writeln!(output, "    switch (tag_) {{").unwrap();
+        for (_i, (variant_name, _)) in sum.variants.iter().enumerate() {
+            writeln!(output, "        case Tag::{}: /* serialize {} data */ break;", variant_name, variant_name).unwrap();
+        }
+        writeln!(output, "    }}").unwrap();
+        writeln!(output, "}}").unwrap();
+        writeln!(output).unwrap();
+        
+        // Deserialize implementation
+        writeln!(output, "void {}::bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader) {{", type_name).unwrap();
+        writeln!(output, "    tag_ = static_cast<Tag>(reader.read_u8());").unwrap();
+        writeln!(output, "    // Deserialize variant data based on tag").unwrap();
+        writeln!(output, "}}").unwrap();
+        writeln!(output).unwrap();
+        
+        writeln!(output, "}} // namespace {}", self.namespace).unwrap();
+    }
+    
+    /// Generate type registration macro for a type
+    fn generate_type_registration(&self, type_name: &str, algebraic_type_expr: &str) -> String {
+        format!(
+            r#"// Type registration macro
+#define SPACETIMEDB_REGISTER_TYPE_{name} \
+    namespace spacetimedb {{ \
+    namespace detail {{ \
+    template<> \
+    struct TypeRegistrar<{ns}::{name}> {{ \
+        static AlgebraicTypeRef register_type(TypeContext& ctx) {{ \
+            return ctx.add({algebraic_type}); \
+        }} \
+    }}; \
+    }} /* namespace detail */ \
+    }} /* namespace spacetimedb */
+"#,
+            name = type_name,
+            ns = self.namespace,
+            algebraic_type = algebraic_type_expr
+        )
+    }
+}
+
+impl Lang for CppEnhanced {
+    fn table_filename(&self, _module: &ModuleDef, table: &TableDef) -> String {
+        format!("{}.g.h", table.name)
+    }
+
+    fn type_filename(&self, type_name: &ScopedTypeName) -> String {
+        format!("{}.g.h", type_name.name())
+    }
+
+    fn reducer_filename(&self, reducer_name: &Identifier) -> String {
+        format!("{}.g.h", reducer_name)
+    }
+
+    fn generate_table(&self, module: &ModuleDef, table: &TableDef) -> String {
+        let mut output = String::new();
+        self.write_header_comment(&mut output);
+        
+        let mut includes = vec!["spacetimedb/bsatn/bsatn.h".to_string()];
+        
+        // Add includes for field types
+        if let Some(table_type) = module.typespace_for_generate().get(table.product_type_ref) {
+            if let AlgebraicTypeDef::Product(product) = table_type {
+                let deps = self.collect_product_dependencies(module, product);
+                for dep in deps {
+                    includes.push(format!("{}.g.h", dep));
+                }
+            }
+        }
+        
+        self.write_includes(&mut output, &includes);
+        self.write_namespace_begin(&mut output);
+        
+        // Generate the table struct
+        if let Some(table_type) = module.typespace_for_generate().get(table.product_type_ref) {
+            if let AlgebraicTypeDef::Product(product) = table_type {
+                self.write_product_type(&mut output, module, &table.name.to_string(), product);
+            }
+        }
+        
+        self.write_namespace_end(&mut output);
+        
+        // Add type registration macro
+        let algebraic_type_expr = self.generate_product_algebraic_type(module, 
+            &module.typespace_for_generate()[table.product_type_ref].as_product().unwrap());
+        writeln!(&mut output, "{}", self.generate_type_registration(&table.name.to_string(), &algebraic_type_expr)).unwrap();
+        
+        output
+    }
+
+    fn generate_type(&self, module: &ModuleDef, typ: &TypeDef) -> String {
+        let mut output = String::new();
+        self.write_header_comment(&mut output);
+        self.write_type_def(&mut output, module, typ);
+        output
+    }
+
+    fn generate_reducer(&self, _module: &ModuleDef, reducer: &ReducerDef) -> String {
+        let mut output = String::new();
+        self.write_header_comment(&mut output);
+        
+        self.write_includes(&mut output, &vec!["spacetimedb/bsatn/bsatn.h".to_string()]);
+        self.write_namespace_begin(&mut output);
+        
+        writeln!(&mut output, "// Reducer definition for {}", reducer.name).unwrap();
+        writeln!(&mut output, "struct {}Reducer {{", reducer.name).unwrap();
+        writeln!(&mut output, "    static constexpr const char* NAME = \"{}\";", reducer.name).unwrap();
+        writeln!(&mut output, "}};").unwrap();
+        
+        self.write_namespace_end(&mut output);
+        output
+    }
+
+    fn generate_globals(&self, _module: &ModuleDef) -> Vec<(String, String)> {
+        // Don't generate global files that conflict with type-specific files
+        // The AlgebraicType, ProductType, SumType, ArrayType will be generated
+        // by the individual type generation when those types are encountered
+        vec![]
+    }
+}
+
+// Implementation of helper methods
+impl CppEnhanced {
+    fn write_header_comment(&self, output: &mut String) {
+        writeln!(output, "// THIS FILE IS AUTOMATICALLY GENERATED BY SPACETIMEDB. EDITS TO THIS FILE").unwrap();
+        writeln!(output, "// WILL NOT BE SAVED. MODIFY TABLES IN YOUR MODULE SOURCE CODE INSTEAD.").unwrap();
+        writeln!(output).unwrap();
+        writeln!(output, "// This was generated using spacetimedb codegen.").unwrap();
+        writeln!(output).unwrap();
+    }
+
+    fn write_includes(&self, output: &mut String, extra_includes: &[String]) {
+        writeln!(output, "#pragma once").unwrap();
+        writeln!(output).unwrap();
+        writeln!(output, "#include <cstdint>").unwrap();
+        writeln!(output, "#include <string>").unwrap();
+        writeln!(output, "#include <vector>").unwrap();
+        writeln!(output, "#include <optional>").unwrap();
+        writeln!(output, "#include <memory>").unwrap();
+        
+        for include in extra_includes {
+            writeln!(output, "#include \"{}\"", include).unwrap();
+        }
+        writeln!(output).unwrap();
+    }
+
+    fn write_namespace_begin(&self, output: &mut String) {
+        writeln!(output, "namespace {} {{", self.namespace).unwrap();
+        writeln!(output).unwrap();
+    }
+
+    fn write_namespace_end(&self, output: &mut String) {
+        writeln!(output, "}} // namespace {}", self.namespace).unwrap();
+    }
+    
+    fn needs_algebraic_type(&self, _module: &ModuleDef) -> bool {
+        true // Always generate for now
+    }
+    
+    fn needs_sum_type(&self, module: &ModuleDef) -> bool {
+        module.types().any(|type_def| {
+            matches!(module.typespace_for_generate()[type_def.ty], AlgebraicTypeDef::Sum(_))
+        })
+    }
+    
+    fn needs_product_type(&self, _module: &ModuleDef) -> bool {
+        true // Always needed
+    }
+    
+    fn needs_array_type(&self, _module: &ModuleDef) -> bool {
+        true // Common enough to always include
+    }
+    
+    fn generate_algebraic_type_header(&self) -> String {
+        // Generate AlgebraicType.g.h content
+        let mut output = String::new();
+        self.write_header_comment(&mut output);
+        writeln!(&mut output, "#pragma once").unwrap();
+        writeln!(&mut output).unwrap();
+        writeln!(&mut output, "#include <cstdint>").unwrap();
+        writeln!(&mut output, "#include <vector>").unwrap();
+        writeln!(&mut output, "#include <string>").unwrap();
+        writeln!(&mut output, "#include <memory>").unwrap();
+        writeln!(&mut output, "#include <variant>").unwrap();
+        writeln!(&mut output, "#include <optional>").unwrap();
+        writeln!(&mut output, "#include \"spacetimedb/bsatn/bsatn.h\"").unwrap();
+        writeln!(&mut output).unwrap();
+        
+        // Include the actual AlgebraicType implementation we created
+        writeln!(&mut output, "// Forward declarations and implementation").unwrap();
+        writeln!(&mut output, "#include \"../../../../../../cpp_sdk/sdk/include/spacetimedb/internal/autogen/AlgebraicType.g.h\"").unwrap();
+        
+        output
+    }
+    
+    fn generate_sum_type_header(&self) -> String {
+        // Return the actual SumType implementation
+        std::fs::read_to_string("/home/ludvi/stdbfork/SpacetimeDB/cpp_sdk/sdk/include/spacetimedb/internal/autogen/SumType.g.h")
+            .unwrap_or_else(|_| "// SumType.g.h not found".to_string())
+    }
+    
+    fn generate_product_type_header(&self) -> String {
+        // Return the actual ProductType implementation
+        std::fs::read_to_string("/home/ludvi/stdbfork/SpacetimeDB/cpp_sdk/sdk/include/spacetimedb/internal/autogen/ProductType.g.h")
+            .unwrap_or_else(|_| "// ProductType.g.h not found".to_string())
+    }
+    
+    fn generate_array_type_header(&self) -> String {
+        // Return the actual ArrayType implementation
+        std::fs::read_to_string("/home/ludvi/stdbfork/SpacetimeDB/cpp_sdk/sdk/include/spacetimedb/internal/autogen/ArrayType.g.h")
+            .unwrap_or_else(|_| "// ArrayType.g.h not found".to_string())
+    }
+
+    // Implement missing methods from cpp.rs
+    fn collect_product_dependencies(&self, module: &ModuleDef, product: &ProductTypeDef) -> HashSet<String> {
+        let mut deps = HashSet::new();
+        for (_, field_type) in &product.elements {
+            self.collect_type_dependencies(module, field_type, &mut deps);
+        }
+        deps
+    }
+    
+    fn collect_type_dependencies(&self, module: &ModuleDef, typ: &AlgebraicTypeUse, deps: &mut HashSet<String>) {
+        match typ {
+            AlgebraicTypeUse::Array(elem_type) => {
+                self.collect_type_dependencies(module, elem_type, deps);
+            }
+            AlgebraicTypeUse::Option(inner_type) => {
+                self.collect_type_dependencies(module, inner_type, deps);
+            }
+            AlgebraicTypeUse::Ref(type_ref) => {
+                if let Some((type_name, _)) = module.type_def_from_ref(*type_ref) {
+                    deps.insert(type_name.name().to_string());
+                }
+            }
+            _ => {}
+        }
+    }
+    
+    fn cpp_primitive_type(&self, primitive: &PrimitiveType) -> &'static str {
+        match primitive {
+            PrimitiveType::Bool => "bool",
+            PrimitiveType::I8 => "int8_t",
+            PrimitiveType::U8 => "uint8_t", 
+            PrimitiveType::I16 => "int16_t",
+            PrimitiveType::U16 => "uint16_t",
+            PrimitiveType::I32 => "int32_t",
+            PrimitiveType::U32 => "uint32_t",
+            PrimitiveType::I64 => "int64_t",
+            PrimitiveType::U64 => "uint64_t",
+            PrimitiveType::I128 => "spacetimedb::u128",
+            PrimitiveType::U128 => "spacetimedb::u128",
+            PrimitiveType::I256 => "spacetimedb::i256", 
+            PrimitiveType::U256 => "spacetimedb::u256",
+            PrimitiveType::F32 => "float",
+            PrimitiveType::F64 => "double",
+        }
+    }
+    
+    fn write_algebraic_type(&self, output: &mut String, module: &ModuleDef, typ: &AlgebraicTypeUse) -> fmt::Result {
+        match typ {
+            AlgebraicTypeUse::Primitive(p) => write!(output, "{}", self.cpp_primitive_type(p)),
+            AlgebraicTypeUse::Array(elem_type) => {
+                write!(output, "std::vector<")?;
+                self.write_algebraic_type(output, module, elem_type)?;
+                write!(output, ">")
+            }
+            AlgebraicTypeUse::Option(inner_type) => {
+                write!(output, "std::optional<")?;
+                self.write_algebraic_type(output, module, inner_type)?;
+                write!(output, ">")
+            }
+            AlgebraicTypeUse::String => write!(output, "std::string"),
+            AlgebraicTypeUse::Ref(type_ref) => {
+                let resolved_type = self.resolve_type_ref(module, type_ref);
+                write!(output, "{}", resolved_type)
+            }
+            _ => write!(output, "/* unhandled type */"),
+        }
+    }
+    
+    fn resolve_type_ref(&self, module: &ModuleDef, type_ref: &AlgebraicTypeRef) -> String {
+        if let Some((type_name, _)) = module.type_def_from_ref(*type_ref) {
+            format!("{}::{}", self.namespace, type_name.name())
+        } else {
+            format!("TypeRef_{}", type_ref.idx())
+        }
+    }
+    
+    fn write_type_def(&self, output: &mut String, module: &ModuleDef, typ: &TypeDef) {
+        let type_name = &typ.name.name().to_string();
+        
+        // Collect type dependencies for includes
+        let mut include_deps = vec![];
+        match &module.typespace_for_generate()[typ.ty] {
+            AlgebraicTypeDef::Product(product) => {
+                let deps = self.collect_product_dependencies(module, product);
+                for dep in deps {
+                    include_deps.push(format!("{}.g.h", dep));
+                }
+            }
+            AlgebraicTypeDef::Sum(_sum) => {
+                // TODO: Collect sum type dependencies
+            }
+            AlgebraicTypeDef::PlainEnum(_) => {
+                // Enums don't have dependencies
+            }
+        }
+        
+        let mut all_includes = vec!["spacetimedb/bsatn/bsatn.h".to_string()];
+        all_includes.extend(include_deps);
+        
+        self.write_includes(output, &all_includes);
+        self.write_namespace_begin(output);
+
+        match &module.typespace_for_generate()[typ.ty] {
+            AlgebraicTypeDef::Product(product) => {
+                self.write_product_type(output, module, type_name, product);
+            }
+            AlgebraicTypeDef::Sum(sum) => {
+                self.write_sum_type(output, module, type_name, sum);
+            }
+            AlgebraicTypeDef::PlainEnum(plain_enum) => {
+                self.write_plain_enum(output, type_name, plain_enum);
+            }
+        }
+
+        self.write_namespace_end(output);
+        
+        // Add type registration
+        let algebraic_type_expr = match &module.typespace_for_generate()[typ.ty] {
+            AlgebraicTypeDef::Product(product) => self.generate_product_algebraic_type(module, product),
+            AlgebraicTypeDef::Sum(sum) => self.generate_sum_algebraic_type(module, sum),
+            AlgebraicTypeDef::PlainEnum(_) => format!("AlgebraicType::U8()"), // Enums are U8
+        };
+        
+        writeln!(output, "{}", self.generate_type_registration(type_name, &algebraic_type_expr)).unwrap();
+    }
+    
+    fn write_product_type(&self, output: &mut String, module: &ModuleDef, type_name: &str, product: &ProductTypeDef) {
+        writeln!(output, "struct {} {{", type_name).unwrap();
+        
+        // Write fields
+        for (field_name, field_type) in &product.elements {
+            write!(output, "    ").unwrap();
+            self.write_algebraic_type(output, module, field_type).unwrap();
+            writeln!(output, " {};", field_name).unwrap();
+        }
+        
+        writeln!(output).unwrap();
+
+        // Write default constructor
+        writeln!(output, "    {}() = default;", type_name).unwrap();
+        writeln!(output).unwrap();
+
+        // Write parameterized constructor if there are fields
+        if !product.elements.is_empty() {
+            write!(output, "    {}(", type_name).unwrap();
+            for (i, (field_name, field_type)) in product.elements.iter().enumerate() {
+                if i > 0 {
+                    write!(output, ", ").unwrap();
+                }
+                self.write_algebraic_type(output, module, field_type).unwrap();
+                write!(output, " {}", field_name).unwrap();
+            }
+            writeln!(output, ")").unwrap();
+            
+            // Constructor body
+            write!(output, "        : ").unwrap();
+            for (i, (field_name, _)) in product.elements.iter().enumerate() {
+                if i > 0 {
+                    write!(output, ", ").unwrap();
+                }
+                write!(output, "{}({})", field_name, field_name).unwrap();
+            }
+            writeln!(output, " {{}}").unwrap();
+        }
+
+        writeln!(output).unwrap();
+        writeln!(output, "    // BSATN serialization support").unwrap();
+        writeln!(output, "    void bsatn_serialize(SpacetimeDb::bsatn::Writer& writer) const;").unwrap();
+        writeln!(output, "    void bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader);").unwrap();
+        writeln!(output).unwrap();
+        writeln!(output, "    // Static factory method for BSATN deserialization").unwrap();
+        writeln!(output, "    static {} from_bsatn(SpacetimeDb::bsatn::Reader& reader) {{", type_name).unwrap();
+        writeln!(output, "        {} result;", type_name).unwrap();
+        writeln!(output, "        result.bsatn_deserialize(reader);").unwrap();
+        writeln!(output, "        return result;").unwrap();
+        writeln!(output, "    }}").unwrap();
+        
+        writeln!(output, "}};").unwrap();
+    }
+    
+    fn write_sum_type(&self, output: &mut String, _module: &ModuleDef, type_name: &str, sum: &SumTypeDef) {
+        writeln!(output, "class {} {{", type_name).unwrap();
+        writeln!(output, "public:").unwrap();
+        
+        // Enum for variant tags
+        writeln!(output, "    enum class Tag {{").unwrap();
+        for (i, (variant_name, _)) in sum.variants.iter().enumerate() {
+            writeln!(output, "        {} = {},", variant_name, i).unwrap();
+        }
+        writeln!(output, "    }};").unwrap();
+        writeln!(output).unwrap();
+
+        writeln!(output, "private:").unwrap();
+        writeln!(output, "    Tag tag_;").unwrap();
+        writeln!(output, "    // TODO: Implement variant storage").unwrap();
+        writeln!(output).unwrap();
+
+        writeln!(output, "public:").unwrap();
+        writeln!(output, "    Tag get_tag() const {{ return tag_; }}").unwrap();
+        writeln!(output).unwrap();
+        
+        writeln!(output, "    // BSATN serialization support").unwrap();
+        writeln!(output, "    void bsatn_serialize(SpacetimeDb::bsatn::Writer& writer) const;").unwrap();
+        writeln!(output, "    void bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader);").unwrap();
+        
+        writeln!(output, "}};").unwrap();
+    }
+    
+    fn write_plain_enum(&self, output: &mut String, type_name: &str, plain_enum: &PlainEnumTypeDef) {
+        writeln!(output, "enum class {} : uint8_t {{", type_name).unwrap();
+        
+        for (i, variant) in plain_enum.variants.iter().enumerate() {
+            writeln!(output, "    {} = {},", variant, i).unwrap();
+        }
+        
+        writeln!(output, "}};").unwrap();
+    }
+    
+    fn generate_product_algebraic_type(&self, module: &ModuleDef, product: &ProductTypeDef) -> String {
+        let mut elements = Vec::new();
+        for (field_name, field_type) in &product.elements {
+            let field_type_str = self.generate_algebraic_type(module, field_type);
+            elements.push(format!("    {{\"{}\", {}}}", field_name, field_type_str));
+        }
+        
+        if elements.is_empty() {
+            "AlgebraicType::Product(std::make_unique<ProductType>())".to_string()
+        } else {
+            format!("AlgebraicType::Product(std::make_unique<ProductType>(std::vector<ProductType::Element>{{\n{}\n}}))", 
+                elements.join(",\n"))
+        }
+    }
+    
+    fn generate_sum_algebraic_type(&self, module: &ModuleDef, sum: &SumTypeDef) -> String {
+        let mut variants = Vec::new();
+        for (variant_name, variant_type) in &sum.variants {
+            let variant_type_str = self.generate_algebraic_type(module, variant_type);
+            variants.push(format!("    {{\"{}\", {}}}", variant_name, variant_type_str));
+        }
+        
+        if variants.is_empty() {
+            "AlgebraicType::Sum(std::make_unique<SumType>())".to_string()
+        } else {
+            format!("AlgebraicType::Sum(std::make_unique<SumType>(std::vector<SumType::Variant>{{\n{}\n}}))", 
+                variants.join(",\n"))
+        }
+    }
+    
+    fn generate_algebraic_type(&self, module: &ModuleDef, typ: &AlgebraicTypeUse) -> String {
+        match typ {
+            AlgebraicTypeUse::Primitive(p) => match p {
+                PrimitiveType::Bool => "AlgebraicType::Bool()".to_string(),
+                PrimitiveType::I8 => "AlgebraicType::I8()".to_string(),
+                PrimitiveType::U8 => "AlgebraicType::U8()".to_string(),
+                PrimitiveType::I16 => "AlgebraicType::I16()".to_string(),
+                PrimitiveType::U16 => "AlgebraicType::U16()".to_string(),
+                PrimitiveType::I32 => "AlgebraicType::I32()".to_string(),
+                PrimitiveType::U32 => "AlgebraicType::U32()".to_string(),
+                PrimitiveType::I64 => "AlgebraicType::I64()".to_string(),
+                PrimitiveType::U64 => "AlgebraicType::U64()".to_string(),
+                PrimitiveType::I128 => "AlgebraicType::I128()".to_string(),
+                PrimitiveType::U128 => "AlgebraicType::U128()".to_string(),
+                PrimitiveType::I256 => "AlgebraicType::I256()".to_string(),
+                PrimitiveType::U256 => "AlgebraicType::U256()".to_string(),
+                PrimitiveType::F32 => "AlgebraicType::F32()".to_string(),
+                PrimitiveType::F64 => "AlgebraicType::F64()".to_string(),
+            },
+            AlgebraicTypeUse::String => "AlgebraicType::String()".to_string(),
+            AlgebraicTypeUse::Array(elem_type) => {
+                let elem = self.generate_algebraic_type(module, elem_type);
+                format!("AlgebraicType::Array(std::make_unique<ArrayType>({})))", elem)
+            }
+            AlgebraicTypeUse::Option(inner_type) => {
+                let inner = self.generate_algebraic_type(module, inner_type);
+                format!("AlgebraicType::Option({})", inner)
+            }
+            AlgebraicTypeUse::Ref(type_ref) => {
+                format!("AlgebraicType::Ref({})", type_ref.idx())
+            }
+            _ => "/* unhandled algebraic type */".to_string(),
+        }
+    }
+}
