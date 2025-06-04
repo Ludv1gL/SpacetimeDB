@@ -7,6 +7,8 @@
 #include "spacetimedb/table_ops.h"
 #include "spacetimedb/schedule_reducer.h"
 #include "spacetimedb/constraint_validation.h"
+#include "spacetimedb/reducer_args.h"
+#include "spacetimedb/rls.h"
 
 #include <string>
 #include <vector>
@@ -225,6 +227,37 @@ namespace SpacetimeDb {
     };
 }
 
+// Helper to extract just types from parameter list
+#define SPACETIMEDB_REDUCER_ARG_TYPE(type, name) type
+
+// Reducer call helpers for different argument counts
+#define SPACETIMEDB_REDUCER_CALL_0(name, ctx, args, args_len) \
+    name(ctx);
+
+#define SPACETIMEDB_REDUCER_CALL_2(name, ctx, args, args_len, type1, name1) \
+    { \
+        auto arg_tuple = spacetimedb::ReducerArgumentDeserializer<type1>::deserialize(args, args_len); \
+        name(ctx, std::get<0>(arg_tuple)); \
+    }
+
+#define SPACETIMEDB_REDUCER_CALL_4(name, ctx, args, args_len, type1, name1, type2, name2) \
+    { \
+        auto arg_tuple = spacetimedb::ReducerArgumentDeserializer<type1, type2>::deserialize(args, args_len); \
+        name(ctx, std::get<0>(arg_tuple), std::get<1>(arg_tuple)); \
+    }
+
+#define SPACETIMEDB_REDUCER_CALL_6(name, ctx, args, args_len, type1, name1, type2, name2, type3, name3) \
+    { \
+        auto arg_tuple = spacetimedb::ReducerArgumentDeserializer<type1, type2, type3>::deserialize(args, args_len); \
+        name(ctx, std::get<0>(arg_tuple), std::get<1>(arg_tuple), std::get<2>(arg_tuple)); \
+    }
+
+#define SPACETIMEDB_REDUCER_CALL_8(name, ctx, args, args_len, type1, name1, type2, name2, type3, name3, type4, name4) \
+    { \
+        auto arg_tuple = spacetimedb::ReducerArgumentDeserializer<type1, type2, type3, type4>::deserialize(args, args_len); \
+        name(ctx, std::get<0>(arg_tuple), std::get<1>(arg_tuple), std::get<2>(arg_tuple), std::get<3>(arg_tuple)); \
+    }
+
 // Enhanced reducer macro with ReducerKind support
 // Usage: SPACETIMEDB_REDUCER(my_reducer, UserDefined, ctx, int arg1, std::string arg2)
 #define SPACETIMEDB_REDUCER(name, kind, ctx_param, ...) \
@@ -236,8 +269,7 @@ namespace SpacetimeDb {
         ) { \
             try { \
                 spacetimedb::ReducerContext sctx(ctx); \
-                /* TODO: Deserialize arguments and call actual function */ \
-                name(sctx); \
+                SPACETIMEDB_REDUCER_CALL_##SPACETIMEDB_NARGS(__VA_ARGS__)(name, sctx, args, args_len, __VA_ARGS__) \
                 return SpacetimeDb::Internal::FFI::Errno::OK; \
             } catch (const std::exception& e) { \
                 return SpacetimeDb::Internal::FFI::Errno::HOST_CALL_FAILURE; \
@@ -545,20 +577,35 @@ namespace SpacetimeDb {
 // ROW LEVEL SECURITY (RLS) MACROS - Future Implementation
 // =============================================================================
 
-// Placeholder for RLS policy macro
+// RLS policy registration macro
 #define SPACETIMEDB_RLS_POLICY(table_name, policy_name, operation, condition) \
-    /* TODO: Implement RLS policy registration */
+    namespace { \
+        struct Register_##table_name##_##policy_name##_RLS { \
+            Register_##table_name##_##policy_name##_RLS() { \
+                if (!spacetimedb::validate_sql_condition(condition)) { \
+                    static_assert(false, "Invalid SQL condition in RLS policy"); \
+                } \
+                spacetimedb::RlsPolicyRegistry::instance().register_policy( \
+                    #table_name, \
+                    #policy_name, \
+                    spacetimedb::RlsOperation::operation, \
+                    condition \
+                ); \
+            } \
+        }; \
+        static Register_##table_name##_##policy_name##_RLS register_##table_name##_##policy_name##_rls_instance; \
+    }
 
 #define SPACETIMEDB_RLS_SELECT(table_name, policy_name, condition) \
-    SPACETIMEDB_RLS_POLICY(table_name, policy_name, "SELECT", condition)
+    SPACETIMEDB_RLS_POLICY(table_name, policy_name, Select, condition)
 
 #define SPACETIMEDB_RLS_INSERT(table_name, policy_name, condition) \
-    SPACETIMEDB_RLS_POLICY(table_name, policy_name, "INSERT", condition)
+    SPACETIMEDB_RLS_POLICY(table_name, policy_name, Insert, condition)
 
 #define SPACETIMEDB_RLS_UPDATE(table_name, policy_name, condition) \
-    SPACETIMEDB_RLS_POLICY(table_name, policy_name, "UPDATE", condition)
+    SPACETIMEDB_RLS_POLICY(table_name, policy_name, Update, condition)
 
 #define SPACETIMEDB_RLS_DELETE(table_name, policy_name, condition) \
-    SPACETIMEDB_RLS_POLICY(table_name, policy_name, "DELETE", condition)
+    SPACETIMEDB_RLS_POLICY(table_name, policy_name, Delete, condition)
 
 #endif // SPACETIMEDB_MACROS_H

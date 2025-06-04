@@ -8,35 +8,33 @@
  */
 
 #include "spacetimedb.h"
+#include "bsatn/type_registry.h"
+#include "bsatn/algebraic_type.h"
+#include "bsatn/traits.h"
+#include "rls.h"
 #include <typeinfo>
 #include <typeindex>
 
 namespace spacetimedb {
 
-// Type trait to get AlgebraicType tag for basic types
-template<typename T>
-struct AlgebraicTypeTag {
-    static constexpr uint8_t value = 255; // Invalid by default
+// Table information for module definition
+struct TableInfo {
+    std::string name;
+    bool is_public;
+    uint32_t product_type_ref;
 };
 
-// Specializations for basic types
-template<> struct AlgebraicTypeTag<uint8_t> { static constexpr uint8_t value = 7; };   // U8
-template<> struct AlgebraicTypeTag<uint16_t> { static constexpr uint8_t value = 8; };  // U16
-template<> struct AlgebraicTypeTag<uint32_t> { static constexpr uint8_t value = 9; };  // U32
-template<> struct AlgebraicTypeTag<uint64_t> { static constexpr uint8_t value = 10; }; // U64
-template<> struct AlgebraicTypeTag<int8_t> { static constexpr uint8_t value = 3; };    // I8
-template<> struct AlgebraicTypeTag<int16_t> { static constexpr uint8_t value = 4; };   // I16
-template<> struct AlgebraicTypeTag<int32_t> { static constexpr uint8_t value = 5; };   // I32
-template<> struct AlgebraicTypeTag<int64_t> { static constexpr uint8_t value = 6; };   // I64
-template<> struct AlgebraicTypeTag<float> { static constexpr uint8_t value = 12; };    // F32
-template<> struct AlgebraicTypeTag<double> { static constexpr uint8_t value = 13; };   // F64
-template<> struct AlgebraicTypeTag<bool> { static constexpr uint8_t value = 11; };     // Bool
-template<> struct AlgebraicTypeTag<std::string> { static constexpr uint8_t value = 15; }; // String
+// Reducer information for module definition
+struct ReducerInfo {
+    std::string name;
+    std::vector<std::string> param_types;
+    std::optional<uint8_t> lifecycle;
+};
 
 // Field information for type registration
 struct FieldInfo {
     std::string name;
-    uint8_t algebraic_type_tag;
+    std::function<spacetimedb::bsatn::AlgebraicType()> get_algebraic_type;
     std::function<void(BsatnWriter&, const void*)> serializer;
 };
 
@@ -45,8 +43,9 @@ struct TypeInfo {
     std::type_index type_id;
     std::vector<FieldInfo> fields;
     std::string name;
+    uint32_t type_ref; // Reference in the type registry
     
-    TypeInfo(std::type_index tid) : type_id(tid) {}
+    TypeInfo(std::type_index tid) : type_id(tid), type_ref(0) {}
 };
 
 // Enhanced module definition builder with type support
@@ -55,16 +54,31 @@ class AutogenModuleDefBuilder {
     std::vector<TableInfo> tables_;
     std::vector<ReducerInfo> reducers_;
     std::unordered_map<std::type_index, uint32_t> type_to_ref_;
+    spacetimedb::bsatn::TypeRegistry type_registry_;
     
 public:
     // Register a type with its fields
     void register_type(std::type_index type_id, const std::string& name, const std::vector<FieldInfo>& fields) {
         if (type_to_ref_.find(type_id) == type_to_ref_.end()) {
-            uint32_t ref = types_.size();
+            // Build the product type for this struct
+            std::vector<spacetimedb::bsatn::ProductTypeElement> elements;
+            for (const auto& field : fields) {
+                auto field_type = field.get_algebraic_type();
+                elements.emplace_back(field.name, std::move(field_type));
+            }
+            
+            auto product_type = spacetimedb::bsatn::AlgebraicType::make_product(
+                std::make_unique<spacetimedb::bsatn::ProductType>(std::move(elements))
+            );
+            
+            // Register in the type registry
+            uint32_t ref = type_registry_.register_named_type(name, std::move(product_type));
             type_to_ref_[type_id] = ref;
+            
             types_.push_back(TypeInfo(type_id));
             types_.back().name = name;
             types_.back().fields = fields;
+            types_.back().type_ref = ref;
         }
     }
     
@@ -86,6 +100,17 @@ public:
     void register_reducer(const std::string& name, const std::vector<std::string>& param_types = {},
                          std::optional<uint8_t> lifecycle = std::nullopt) {
         reducers_.push_back({name, param_types, lifecycle});
+    }
+    
+    // Register a reducer with parameter type references
+    void register_reducer_with_types(const std::string& name, const std::vector<uint32_t>& param_type_refs,
+                                   std::optional<uint8_t> lifecycle = std::nullopt) {
+        // Convert type refs to names for now
+        std::vector<std::string> param_names;
+        for (uint32_t ref : param_type_refs) {
+            param_names.push_back("type_" + std::to_string(ref));
+        }
+        reducers_.push_back({name, param_names, lifecycle});
     }
     
     std::vector<uint8_t> build() {
@@ -112,32 +137,36 @@ public:
         // 5. misc_exports: Vec<RawMiscModuleExportV9> (empty)
         writer.write_vec_len(0);
         
-        // 6. row_level_security: Vec<RawRowLevelSecurityDefV9> (empty)
-        writer.write_vec_len(0);
+        // 6. row_level_security: Vec<RawRowLevelSecurityDefV9>
+        RlsPolicyRegistry::instance().write_policies(writer);
         
         return result;
     }
     
 private:
     void write_typespace(BsatnWriter& writer) {
+        // Build the complete typespace
+        // First, ensure all registered types are in the registry
+        
         // types: Vec<AlgebraicType>
+        // For now, we'll write the types we've registered
         writer.write_vec_len(types_.size());
         
         for (const auto& type : types_) {
-            // Write Product type
-            writer.write_u8(2); // AlgebraicType::Product
-            writer.write_vec_len(type.fields.size());
-            
-            for (const auto& field : type.fields) {
-                // ProductTypeElement
-                writer.write_u8(0); // Option::Some for name
-                writer.write_string(field.name);
-                writer.write_u8(field.algebraic_type_tag);
-            }
+            // Get the registered AlgebraicType from the registry
+            const auto& alg_type = type_registry_.get_type(type.type_ref);
+            alg_type.write_bsatn(writer);
         }
         
-        // names: Vec<ScopedTypeName> (empty for now)
-        writer.write_vec_len(0);
+        // names: Vec<ScopedTypeName>
+        // Include named types
+        writer.write_vec_len(types_.size());
+        for (const auto& type : types_) {
+            // ScopedTypeName structure
+            writer.write_vec_len(0); // scope (empty for now)
+            writer.write_string(type.name); // name
+            writer.write_u32(type.type_ref); // type_ref
+        }
     }
     
     void write_tables(BsatnWriter& writer) {
@@ -161,7 +190,45 @@ private:
         
         for (const auto& reducer : reducers_) {
             writer.write_string(reducer.name);         // name
-            writer.write_vec_len(0);                   // params (empty product for now)
+            
+            // params: ProductType
+            // For now, create a product type with named parameters
+            writer.write_u8(2); // AlgebraicType::Product tag
+            writer.write_vec_len(reducer.param_types.size());
+            
+            for (size_t i = 0; i < reducer.param_types.size(); ++i) {
+                // ProductTypeElement
+                writer.write_u8(0); // Option::Some for name
+                writer.write_string("arg" + std::to_string(i)); // parameter name
+                
+                // Try to resolve the type by name
+                if (reducer.param_types[i].find("type_") == 0) {
+                    // It's a type reference
+                    uint32_t ref = std::stoul(reducer.param_types[i].substr(5));
+                    writer.write_u8(0); // AlgebraicType::Ref tag
+                    writer.write_u32(ref);
+                } else {
+                    // Try to map common type names
+                    const std::string& type_name = reducer.param_types[i];
+                    if (type_name == "u32" || type_name == "uint32_t") {
+                        writer.write_u8(9); // U32
+                    } else if (type_name == "u64" || type_name == "uint64_t") {
+                        writer.write_u8(10); // U64
+                    } else if (type_name == "i32" || type_name == "int32_t") {
+                        writer.write_u8(5); // I32
+                    } else if (type_name == "i64" || type_name == "int64_t") {
+                        writer.write_u8(6); // I64
+                    } else if (type_name == "string" || type_name == "std::string") {
+                        writer.write_u8(15); // String
+                    } else if (type_name == "bool") {
+                        writer.write_u8(11); // Bool
+                    } else {
+                        // Unknown type - use unit type as placeholder
+                        writer.write_u8(2); // Product
+                        writer.write_vec_len(0); // Empty product (unit type)
+                    }
+                }
+            }
             
             if (reducer.lifecycle.has_value()) {
                 writer.write_u8(0); // Some tag
@@ -212,27 +279,34 @@ template<typename T, typename FieldType>
 FieldInfo make_field(const std::string& name, FieldType T::*member_ptr) {
     return {
         name,
-        AlgebraicTypeTag<FieldType>::value,
+        []() -> spacetimedb::bsatn::AlgebraicType {
+            return spacetimedb::bsatn::algebraic_type_of<FieldType>::get();
+        },
         [member_ptr](BsatnWriter& writer, const void* obj) {
             const T* typed_obj = static_cast<const T*>(obj);
             const FieldType& value = typed_obj->*member_ptr;
             
-            // Serialize based on type
-            if constexpr (std::is_same_v<FieldType, std::string>) {
-                writer.write_string(value);
-            } else if constexpr (std::is_same_v<FieldType, uint8_t>) {
-                writer.write_u8(value);
-            } else if constexpr (std::is_same_v<FieldType, uint16_t>) {
-                writer.write_u16(value);
-            } else if constexpr (std::is_same_v<FieldType, uint32_t>) {
-                writer.write_u32(value);
-            } else if constexpr (std::is_same_v<FieldType, uint64_t>) {
-                writer.write_u64(value);
-            } else if constexpr (std::is_integral_v<FieldType> || std::is_floating_point_v<FieldType>) {
-                // For other numeric types, write raw bytes
-                auto& buffer = writer.get_buffer();
-                const uint8_t* bytes = reinterpret_cast<const uint8_t*>(&value);
-                buffer.insert(buffer.end(), bytes, bytes + sizeof(value));
+            // Use BSATN traits for serialization
+            if constexpr (requires { spacetimedb::bsatn::bsatn_traits<FieldType>::serialize(writer, value); }) {
+                spacetimedb::bsatn::bsatn_traits<FieldType>::serialize(writer, value);
+            } else {
+                // Fallback to basic serialization
+                if constexpr (std::is_same_v<FieldType, std::string>) {
+                    writer.write_string(value);
+                } else if constexpr (std::is_same_v<FieldType, uint8_t>) {
+                    writer.write_u8(value);
+                } else if constexpr (std::is_same_v<FieldType, uint16_t>) {
+                    writer.write_u16(value);
+                } else if constexpr (std::is_same_v<FieldType, uint32_t>) {
+                    writer.write_u32(value);
+                } else if constexpr (std::is_same_v<FieldType, uint64_t>) {
+                    writer.write_u64(value);
+                } else if constexpr (std::is_integral_v<FieldType> || std::is_floating_point_v<FieldType>) {
+                    // For other numeric types, write raw bytes
+                    auto& buffer = writer.get_buffer();
+                    const uint8_t* bytes = reinterpret_cast<const uint8_t*>(&value);
+                    buffer.insert(buffer.end(), bytes, bytes + sizeof(value));
+                }
             }
         }
     };
@@ -260,6 +334,10 @@ FieldInfo make_field(const std::string& name, FieldType T::*member_ptr) {
 // Helper macro to define a field
 #define SPACETIMEDB_FIELD(type, field) \
     spacetimedb::make_field<type>(#field, &type::field)
+
+// Helper macro to define a field with renamed database column
+#define SPACETIMEDB_FIELD_RENAMED(type, field, db_name) \
+    spacetimedb::make_field<type>(db_name, &type::field)
 
 // Enhanced table registration that uses registered type
 #define SPACETIMEDB_TABLE_AUTO(type, name, is_public) \
