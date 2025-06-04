@@ -7,7 +7,7 @@
  * generation for SpacetimeDB modules.
  */
 
-#include "spacetimedb_core.h"
+#include "spacetimedb.h"
 #include <typeinfo>
 #include <typeindex>
 

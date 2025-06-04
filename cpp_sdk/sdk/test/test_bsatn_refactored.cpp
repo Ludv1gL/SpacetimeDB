@@ -2,13 +2,27 @@
  * Test program to verify the refactored BSATN implementation
  */
 
-#include <spacetimedb/bsatn.h>
+#include <spacetimedb/bsatn/bsatn.h>
 #include <spacetimedb/sdk/spacetimedb_sdk_types.h>
 #include <iostream>
 #include <cassert>
 
 using namespace spacetimedb::bsatn;
-using namespace SpacetimeDb::sdk;
+
+// Convenience functions for testing
+template<typename T>
+std::vector<uint8_t> to_vec(const T& value) {
+    std::vector<uint8_t> buffer;
+    Writer writer(buffer);
+    serialize(writer, value);
+    return buffer;
+}
+
+template<typename T>
+T from_vec(const std::vector<uint8_t>& data) {
+    Reader reader(data.data(), data.size());
+    return deserialize<T>(reader);
+}
 
 // Test struct
 struct TestStruct {

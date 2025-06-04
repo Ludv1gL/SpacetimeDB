@@ -18,7 +18,7 @@
     X(TestRow, test_table, true) \
     X(UniqueRow, unique_table, true)
 
-#include <spacetimedb/spacetimedb_easy.h>
+#include <spacetimedb/spacetimedb.h>
 #include <spacetimedb/sdk/exceptions.h>
 
 using namespace spacetimedb;

@@ -9,8 +9,7 @@
 #include <iostream>
 #include <cassert>
 
-using namespace SpacetimeDb::bsatn;
-using namespace SpacetimeDb::sdk;
+using namespace spacetimedb::bsatn;
 
 // Test struct
 struct TestStruct {

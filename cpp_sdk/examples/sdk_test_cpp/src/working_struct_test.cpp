@@ -1,4 +1,4 @@
-#include <spacetimedb/spacetimedb_easy.h>
+#include <spacetimedb/spacetimedb.h>
 #include <spacetimedb/bsatn/bsatn.h>
 
 // Simple struct with primitive types only

@@ -15,7 +15,7 @@
  */
 
 #include <spacetimedb/spacetimedb.h>
-#include <spacetimedb/spacetimedb_advanced.h>
+#include <spacetimedb/spacetimedb.h>
 #include <spacetimedb/schedule_reducer.h>
 #include <spacetimedb/constraint_validation.h>
 #include <spacetimedb/transaction.h>

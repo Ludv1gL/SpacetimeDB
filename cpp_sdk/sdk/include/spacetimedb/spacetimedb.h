@@ -40,8 +40,7 @@
 #include "sdk/logging.h"        // Enhanced logging system
 #include "sdk/exceptions.h"     // Rich error handling
 #include "sdk/database.h"       // Database types
-#include "algebraic_type.h"     // AlgebraicType definitions
-#include "bsatn/bsatn.h"        // BSATN serialization
+#include "bsatn/bsatn.h"        // BSATN serialization (includes AlgebraicType)
 #include "field_registration.h"  // Field registration system
 #include "table_ops.h"          // Table operations
 #include "macros.h"             // Core macros
@@ -63,23 +62,23 @@
 // =============================================================================
 
 #ifndef LOG_TRACE
-#define LOG_TRACE(msg) SpacetimeDB::log_trace(msg, __func__, __FILE__, __LINE__)
+#define LOG_TRACE(msg) spacetimedb::log_trace(msg, __func__, __FILE__, __LINE__)
 #endif
 
 #ifndef LOG_DEBUG  
-#define LOG_DEBUG(msg) SpacetimeDB::log_debug(msg, __func__, __FILE__, __LINE__)
+#define LOG_DEBUG(msg) spacetimedb::log_debug(msg, __func__, __FILE__, __LINE__)
 #endif
 
 #ifndef LOG_INFO
-#define LOG_INFO(msg) SpacetimeDB::log_info(msg, __func__, __FILE__, __LINE__)
+#define LOG_INFO(msg) spacetimedb::log_info(msg, __func__, __FILE__, __LINE__)
 #endif
 
 #ifndef LOG_WARN
-#define LOG_WARN(msg) SpacetimeDB::log_warn(msg, __func__, __FILE__, __LINE__)
+#define LOG_WARN(msg) spacetimedb::log_warn(msg, __func__, __FILE__, __LINE__)
 #endif
 
 #ifndef LOG_ERROR
-#define LOG_ERROR(msg) SpacetimeDB::log_error(msg, __func__, __FILE__, __LINE__)
+#define LOG_ERROR(msg) spacetimedb::log_error(msg, __func__, __FILE__, __LINE__)
 #endif
 
 // FFI declarations are provided by abi/spacetimedb_abi.h and internal/FFI.h

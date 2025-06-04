@@ -8,11 +8,13 @@
 #include <variant>
 #include <optional>
 
-namespace SpacetimeDb::bsatn {
+namespace spacetimedb::bsatn {
 
 // Forward declarations
 struct SumType;
 struct ProductType;
+struct ProductTypeElement;
+struct SumTypeVariant;
 struct ArrayType;
 
 /**
@@ -43,43 +45,49 @@ enum class AlgebraicTypeTag : uint8_t {
 };
 
 /**
- * Represents an element in a Product or Sum type.
- * Each element has an optional name and a type.
+ * Represents an element in a ProductType.
+ * Renamed from AggregateElement to match Rust/C# conventions.
  */
-struct AggregateElement {
+struct ProductTypeElement {
     std::optional<std::string> name;
     uint32_t algebraic_type;  // Index into type registry
     
-    AggregateElement(std::optional<std::string> n, uint32_t type)
+    ProductTypeElement(std::optional<std::string> n, uint32_t type)
+        : name(std::move(n)), algebraic_type(type) {}
+};
+
+/**
+ * Represents a variant in a SumType.
+ * Renamed for consistency with Rust/C# naming.
+ */
+struct SumTypeVariant {
+    std::string name;
+    uint32_t algebraic_type;  // Index into type registry
+    
+    SumTypeVariant(std::string n, uint32_t type)
         : name(std::move(n)), algebraic_type(type) {}
 };
 
 /**
  * Represents a sum type (tagged union/enum).
  * Each variant has a name and can contain data.
+ * Aligned with Rust/C# naming conventions.
  */
 struct SumType {
-    struct Variant {
-        std::string name;
-        uint32_t algebraic_type;  // Index into type registry
-        
-        Variant(std::string n, uint32_t type)
-            : name(std::move(n)), algebraic_type(type) {}
-    };
+    std::vector<SumTypeVariant> variants;
     
-    std::vector<Variant> variants;
-    
-    explicit SumType(std::vector<Variant> v) : variants(std::move(v)) {}
+    explicit SumType(std::vector<SumTypeVariant> v) : variants(std::move(v)) {}
 };
 
 /**
  * Represents a product type (struct/tuple).
  * Contains ordered elements (fields).
+ * Aligned with Rust/C# naming conventions.
  */
 struct ProductType {
-    std::vector<AggregateElement> elements;
+    std::vector<ProductTypeElement> elements;
     
-    explicit ProductType(std::vector<AggregateElement> elems) 
+    explicit ProductType(std::vector<ProductTypeElement> elems) 
         : elements(std::move(elems)) {}
     
     // Helper to create a product type for a C++ struct
@@ -256,14 +264,14 @@ public:
     }
     static AlgebraicType Option(const AlgebraicType& some_type) {
         // Create an option type as a sum type with two variants
-        std::vector<SumType::Variant> variants;
+        std::vector<SumTypeVariant> variants;
         variants.emplace_back("some", 0); // TODO: fix type index
         variants.emplace_back("none", 0); // TODO: fix type index (unit type)
         return make_sum(std::make_unique<SumType>(std::move(variants)));
     }
     static AlgebraicType Product(std::vector<std::pair<std::string, AlgebraicType>> fields) {
         // TODO: This needs to be properly implemented with type registry
-        std::vector<AggregateElement> elements;
+        std::vector<ProductTypeElement> elements;
         for (const auto& [name, type] : fields) {
             elements.emplace_back(name, 0); // TODO: fix type index
         }
@@ -271,7 +279,7 @@ public:
     }
     static AlgebraicType Sum(std::vector<std::pair<std::string, AlgebraicType>> variants) {
         // TODO: This needs to be properly implemented with type registry
-        std::vector<SumType::Variant> sum_variants;
+        std::vector<SumTypeVariant> sum_variants;
         for (const auto& [name, type] : variants) {
             sum_variants.emplace_back(name, 0); // TODO: fix type index
         }
@@ -341,16 +349,14 @@ template<> struct algebraic_type_of<std::string> {
 
 // TODO: Add specializations for I128, I256, U128, U256 when those types are properly defined
 
-} // namespace SpacetimeDb::bsatn
+// Backward compatibility aliases for old naming
+using AggregateElement = ProductTypeElement;  // Legacy name
 
-// Namespace alias for convenience
-namespace spacetimedb {
-    using AlgebraicType = SpacetimeDb::bsatn::AlgebraicType;
-    using AlgebraicTypeTag = SpacetimeDb::bsatn::AlgebraicTypeTag;
-    using SumType = SpacetimeDb::bsatn::SumType;
-    using ProductType = SpacetimeDb::bsatn::ProductType;
-    using ArrayType = SpacetimeDb::bsatn::ArrayType;
-    using AggregateElement = SpacetimeDb::bsatn::AggregateElement;
+} // namespace spacetimedb::bsatn
+
+// Legacy namespace alias for backward compatibility
+namespace SpacetimeDb::bsatn {
+    using namespace ::spacetimedb::bsatn;
 }
 
 #endif // SPACETIMEDB_BSATN_ALGEBRAIC_TYPE_H

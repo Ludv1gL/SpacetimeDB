@@ -1,5 +1,5 @@
 #include <spacetimedb/spacetimedb.h>
-#include <spacetimedb/spacetimedb_advanced.h>
+#include <spacetimedb/spacetimedb.h>
 
 // Example: E-commerce product catalog with advanced features
 

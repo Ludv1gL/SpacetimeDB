@@ -1,4 +1,4 @@
-#include <spacetimedb/spacetimedb_easy.h>
+#include <spacetimedb/spacetimedb.h>
 #include <spacetimedb/bsatn/traits.h>
 
 // Test structure with proper BSATN serialization

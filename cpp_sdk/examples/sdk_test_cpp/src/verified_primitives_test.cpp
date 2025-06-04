@@ -1,4 +1,4 @@
-#include <spacetimedb/spacetimedb_easy.h>
+#include <spacetimedb/spacetimedb.h>
 
 // Test with ONLY primitive types to verify core functionality
 struct PrimitiveOnly {

@@ -5,7 +5,7 @@
  * Verifies compatibility with C# and Rust implementations
  */
 
-#include <spacetimedb/bsatn_simple.h>
+#include <spacetimedb/bsatn/bsatn.h>
 #include <spacetimedb/sdk/spacetimedb_sdk_types.h>
 #include <iostream>
 #include <cassert>
@@ -15,7 +15,21 @@
 #include <iomanip>
 
 using namespace spacetimedb::bsatn;
-using namespace SpacetimeDb::sdk;
+
+// Convenience functions for testing
+template<typename T>
+std::vector<uint8_t> to_vec(const T& value) {
+    std::vector<uint8_t> buffer;
+    Writer writer(buffer);
+    serialize(writer, value);
+    return buffer;
+}
+
+template<typename T>
+T from_vec(const std::vector<uint8_t>& data) {
+    Reader reader(data.data(), data.size());
+    return deserialize<T>(reader);
+}
 
 // Test configuration
 constexpr bool VERBOSE = false;
@@ -45,7 +59,7 @@ SPACETIMEDB_BSATN_STRUCT(BasicStruct, id, name, score)
 struct ComplexStruct {
     std::vector<BasicStruct> items;
     Option<std::vector<Option<int32_t>>> numbers;
-    Sum<int32_t, std::string, BasicStruct> variant;
+    SumType<int32_t, std::string, BasicStruct> variant;
     
     bool operator==(const ComplexStruct& o) const {
         return items == o.items && numbers == o.numbers && variant == o.variant;

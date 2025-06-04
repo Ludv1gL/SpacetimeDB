@@ -8,25 +8,26 @@
 #include <type_traits>
 #include <utility>
 
-namespace SpacetimeDb::bsatn {
+namespace spacetimedb::bsatn {
 
 /**
- * Sum type (discriminated union) implementation for BSATN.
+ * SumType (discriminated union) implementation for BSATN.
  * This provides a type-safe way to represent values that can be one of several types.
+ * Follows Rust/C# naming conventions for consistency.
  * 
  * Example usage:
- *   using MySum = Sum<int32_t, std::string, double>;
+ *   using MySum = SumType<int32_t, std::string, double>;
  *   MySum value = "hello";  // Automatically selects the string variant
  */
 template<typename... Ts>
-class Sum {
+class SumType {
 private:
     std::variant<Ts...> value_;
     
     // Helper to deserialize based on tag
     template<size_t... Is>
-    static Sum deserialize_impl(Reader& reader, uint8_t tag, std::index_sequence<Is...>) {
-        Sum result;
+    static SumType deserialize_impl(Reader& reader, uint8_t tag, std::index_sequence<Is...>) {
+        SumType result;
         bool success = ((tag == Is ? (result.value_ = deserialize<Ts>(reader), true) : false) || ...);
         if (!success) {
             throw std::runtime_error("Invalid sum type tag: " + std::to_string(tag));
@@ -36,10 +37,10 @@ private:
     
 public:
     // Constructors
-    Sum() = default;
+    SumType() = default;
     
     template<typename T>
-    Sum(T&& value) : value_(std::forward<T>(value)) {}
+    SumType(T&& value) : value_(std::forward<T>(value)) {}
     
     // Get the current tag (0-based index)
     uint8_t tag() const {
@@ -86,11 +87,11 @@ public:
     }
     
     // Equality comparison
-    bool operator==(const Sum& other) const {
+    bool operator==(const SumType& other) const {
         return value_ == other.value_;
     }
     
-    bool operator!=(const Sum& other) const {
+    bool operator!=(const SumType& other) const {
         return !(*this == other);
     }
     
@@ -102,7 +103,7 @@ public:
         }, value_);
     }
     
-    static Sum bsatn_deserialize(Reader& reader) {
+    static SumType bsatn_deserialize(Reader& reader) {
         uint8_t tag = reader.read_u8();
         if (tag >= sizeof...(Ts)) {
             throw std::runtime_error("Invalid sum type tag: " + std::to_string(tag));
@@ -111,15 +112,15 @@ public:
     }
 };
 
-// Specialization of bsatn_traits for Sum types
+// Specialization of bsatn_traits for SumType
 template<typename... Ts>
-struct bsatn_traits<Sum<Ts...>> {
-    static void serialize(Writer& writer, const Sum<Ts...>& value) {
+struct bsatn_traits<SumType<Ts...>> {
+    static void serialize(Writer& writer, const SumType<Ts...>& value) {
         value.bsatn_serialize(writer);
     }
     
-    static Sum<Ts...> deserialize(Reader& reader) {
-        return Sum<Ts...>::bsatn_deserialize(reader);
+    static SumType<Ts...> deserialize(Reader& reader) {
+        return SumType<Ts...>::bsatn_deserialize(reader);
     }
     
     static AlgebraicType algebraic_type() {
@@ -164,9 +165,9 @@ struct StringLiteral {
 };
 
 template<typename... Variants>
-class TaggedSum : public Sum<typename Variants::value_type...> {
+class TaggedSumType : public SumType<typename Variants::value_type...> {
 private:
-    using Base = Sum<typename Variants::value_type...>;
+    using Base = SumType<typename Variants::value_type...>;
     
     template<typename T, size_t I = 0>
     static constexpr size_t variant_index() {
@@ -195,8 +196,8 @@ public:
     
     // Create from specific variant type
     template<typename T>
-    static TaggedSum make(T&& value) {
-        return TaggedSum(std::forward<T>(value));
+    static TaggedSumType make(T&& value) {
+        return TaggedSumType(std::forward<T>(value));
     }
 };
 
@@ -205,9 +206,9 @@ public:
  * Specialized sum type for optional values.
  */
 template<typename T>
-class Option : public Sum<std::monostate, T> {
+class Option : public SumType<std::monostate, T> {
 private:
-    using Base = Sum<std::monostate, T>;
+    using Base = SumType<std::monostate, T>;
     
 public:
     Option() : Base(std::monostate{}) {}  // None by default
@@ -260,7 +261,7 @@ struct bsatn_traits<Option<T>> {
     static void serialize(Writer& writer, const Option<T>& opt) {
         if (opt.has_value()) {
             writer.write_u8(1);  // Some
-            SpacetimeDb::bsatn::serialize(writer, opt.value());
+            spacetimedb::bsatn::serialize(writer, opt.value());
         } else {
             writer.write_u8(0);  // None
         }
@@ -271,7 +272,7 @@ struct bsatn_traits<Option<T>> {
         if (tag == 0) {
             return Option<T>();  // None
         } else if (tag == 1) {
-            return Option<T>(SpacetimeDb::bsatn::deserialize<T>(reader));  // Some
+            return Option<T>(spacetimedb::bsatn::deserialize<T>(reader));  // Some
         } else {
             throw std::runtime_error("Invalid Option tag: " + std::to_string(tag));
         }
@@ -285,6 +286,18 @@ struct bsatn_traits<Option<T>> {
     }
 };
 
-} // namespace SpacetimeDb::bsatn
+// Backward compatibility aliases
+template<typename... Ts>
+using Sum = SumType<Ts...>;
+
+template<typename... Variants>
+using TaggedSum = TaggedSumType<Variants...>;
+
+} // namespace spacetimedb::bsatn
+
+// Legacy namespace alias for compatibility
+namespace SpacetimeDb::bsatn {
+    using namespace ::spacetimedb::bsatn;
+}
 
 #endif // SPACETIMEDB_BSATN_SUM_TYPE_H
