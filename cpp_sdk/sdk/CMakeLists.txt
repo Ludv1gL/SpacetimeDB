@@ -12,6 +12,7 @@ set(SDK_SOURCES
     src/abi/module_exports.cpp
     src/bsatn/reader.cpp
     src/bsatn/writer.cpp
+    src/credentials.cpp
     src/database.cpp
     src/logging.cpp
     src/reducer_context.cpp

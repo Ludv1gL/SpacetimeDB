@@ -40,13 +40,23 @@
 #include "sdk/logging.h"        // Enhanced logging system
 #include "sdk/exceptions.h"     // Rich error handling
 #include "sdk/database.h"       // Database types
-#include "sdk/reducer_context_enhanced.h" // Enhanced reducer context
+#include "algebraic_type.h"     // AlgebraicType definitions
 #include "bsatn/bsatn.h"        // BSATN serialization
 #include "field_registration.h"  // Field registration system
 #include "table_ops.h"          // Table operations
 #include "macros.h"             // Core macros
+#include "builtin_reducers.h"   // Built-in reducer support (defines Identity)
+#include "credentials.h"        // Credential management
+// Note: reducer_context_enhanced.h defines ReducerContext, so we don't include the basic version
+#include "sdk/reducer_context_enhanced.h" // Enhanced reducer context (uses Identity)
 #include "internal/Module.h"    // Module registration
-#include "builtin_reducers.h"   // Built-in reducer support
+#include "timestamp.h"          // Timestamp type for scheduled reducers
+#include "time_duration.h"      // TimeDuration type for scheduled reducers
+#include "schedule_reducer.h"   // Scheduled reducer support
+// Advanced features - to be integrated
+// #include "sdk/query_operations.h"  // Advanced query operations
+// #include "sdk/index_management.h"  // Index management
+// #include "sdk/schema_management.h" // Schema management
 
 // =============================================================================
 // ENHANCED LOGGING MACROS

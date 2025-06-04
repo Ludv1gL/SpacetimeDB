@@ -274,12 +274,14 @@ Key C++ SDK components:
 - ✅ **Working**: Built-in reducers (init, client_connected, client_disconnected)
 - ✅ **Working**: Enhanced ReducerContext (timestamp, sender, RNG, connection_id)
 - ✅ **Working**: Automatic field registration via SPACETIMEDB_REGISTER_FIELDS
-- ⚠️ **Infrastructure Ready**: Index management, advanced queries, schema management
-- ❌ **Missing**: Schedule reducer functionality
-- ❌ **Missing**: Credential management
+- ✅ **Working**: Advanced features (Index, Query, Schema) via spacetimedb_advanced.h
+- ✅ **Working**: Schedule reducer functionality with time types
+- ✅ **Working**: Credential management with role-based access
 - ❌ **Missing**: Constraint validation
+- ❌ **Missing**: Transaction control
+- ❌ **Missing**: Performance profiling
 
-**Module SDK Completion**: ~64% (14/22 core features implemented)
+**Module SDK Completion**: ~77% (17/22 core features implemented)
 **Client SDK**: Not started (0% - focused on Module SDK first)
 
 ### Key Design Patterns

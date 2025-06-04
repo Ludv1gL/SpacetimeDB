@@ -84,15 +84,7 @@ enum class Lifecycle : uint8_t {
 // -----------------------------------------------------------------------------
 
 // Forward declaration
-class ReducerContext;
-
-// Extended context that includes sender identity for built-in reducers
-class BuiltinReducerContext : public ReducerContext {
-public:
-    Identity sender;
-    
-    BuiltinReducerContext(const Identity& identity) : sender(identity) {}
-};
+// ReducerContext is defined in reducer_context_enhanced.h and already includes sender identity
 
 // -----------------------------------------------------------------------------
 // Built-in Reducer Registration Helpers

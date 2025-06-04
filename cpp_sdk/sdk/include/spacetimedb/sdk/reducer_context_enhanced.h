@@ -1,7 +1,7 @@
 #ifndef REDUCER_CONTEXT_ENHANCED_H
 #define REDUCER_CONTEXT_ENHANCED_H
 
-#include <spacetimedb/spacetimedb_sdk.h>
+// Forward declarations and necessary includes
 #include <spacetimedb/abi/spacetimedb_abi.h>
 #include <optional>
 #include <array>
@@ -11,8 +11,11 @@
 
 namespace spacetimedb {
 
-// Forward declaration
+// Forward declarations and type aliases
 class ModuleDatabase;
+// Identity is defined in builtin_reducers.h which should be included before this file
+using Timestamp = uint64_t;  // Microseconds since Unix epoch
+using Address = std::array<uint8_t, 16>;  // Network address
 
 // Helper function to convert bytes to hex string
 inline std::string bytes_to_hex(const uint8_t* bytes, size_t len) {
