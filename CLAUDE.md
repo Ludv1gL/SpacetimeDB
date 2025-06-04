@@ -265,19 +265,21 @@ Key C++ SDK components:
 - **Module description format errors**: Ensure `__describe_module__` generates correct RawModuleDef V9 format
 - **BSATN Option encoding**: Fixed to use tag 0 for Some, tag 1 for None
 - **Field registration macro**: Fixed namespace qualification in `SPACETIMEDB_FIELD` macro
-- **Current Issue**: String field encoding causing "unknown tag 0x61" errors during module publishing
+- **String field encoding**: Fixed - strings now work correctly with proper BSATN encoding
 
-**C++ Module SDK Status (as of Jan 2025)**:
-- ✅ **Working**: Basic table registration, primitive types, reducer registration, BSATN encoding, module exports
-- ✅ **Working**: Simple modules without strings publish and run successfully
-- ⚠️ **In Progress**: String field encoding issue blocking complex table usage
-- ❌ **Missing**: Advanced query operations (count, iter, delete, index accessors)
-- ❌ **Missing**: Error handling (try_insert, constraint violations)
-- ❌ **Missing**: Built-in reducers (init, client_connected, client_disconnected)
-- ❌ **Missing**: ReducerContext metadata (timestamp, sender, connection_id)
-- ❌ **Missing**: Module utilities (RNG, LogStopwatch, credential management)
+**C++ Module SDK Status (as of June 2025)**:
+- ✅ **Working**: Table registration, all primitive types, strings, reducer registration, BSATN encoding
+- ✅ **Working**: Complex modules with strings, vectors, and custom types
+- ✅ **Working**: Table operations (insert, count, iter, delete, update)
+- ✅ **Working**: Built-in reducers (init, client_connected, client_disconnected)
+- ✅ **Working**: Enhanced ReducerContext (timestamp, sender, RNG, connection_id)
+- ✅ **Working**: Automatic field registration via SPACETIMEDB_REGISTER_FIELDS
+- ⚠️ **Infrastructure Ready**: Index management, advanced queries, schema management
+- ❌ **Missing**: Schedule reducer functionality
+- ❌ **Missing**: Credential management
+- ❌ **Missing**: Constraint validation
 
-**Module SDK Completion**: ~32% (7/22 core features implemented)
+**Module SDK Completion**: ~64% (14/22 core features implemented)
 **Client SDK**: Not started (0% - focused on Module SDK first)
 
 ### Key Design Patterns

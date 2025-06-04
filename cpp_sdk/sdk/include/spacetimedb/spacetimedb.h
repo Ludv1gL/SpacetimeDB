@@ -40,12 +40,13 @@
 #include "sdk/logging.h"        // Enhanced logging system
 #include "sdk/exceptions.h"     // Rich error handling
 #include "sdk/database.h"       // Database types
-#include "sdk/reducer_context.h" // Reducer context
+#include "sdk/reducer_context_enhanced.h" // Enhanced reducer context
 #include "bsatn/bsatn.h"        // BSATN serialization
 #include "field_registration.h"  // Field registration system
 #include "table_ops.h"          // Table operations
 #include "macros.h"             // Core macros
 #include "internal/Module.h"    // Module registration
+#include "builtin_reducers.h"   // Built-in reducer support
 
 // =============================================================================
 // ENHANCED LOGGING MACROS
@@ -206,6 +207,7 @@ struct ModuleDef {
         std::string name;
         std::function<void(std::vector<uint8_t>&)> write_params;
         std::function<void(spacetimedb::ReducerContext&, uint32_t)> handler;
+        std::optional<Lifecycle> lifecycle;
     };
     
     std::vector<Table> tables;
@@ -226,33 +228,238 @@ struct ModuleDef {
 } // namespace spacetimedb
 
 // -----------------------------------------------------------------------------
+// Table Iterator
+// -----------------------------------------------------------------------------
+
+template<typename T>
+class TableIterator {
+private:
+    uint32_t handle_ = 0xFFFFFFFF;
+    std::vector<uint8_t> buffer_;
+    std::vector<T> current_batch_;
+    size_t current_index_ = 0;
+    bool done_ = false;
+    
+    void fetch_next_batch() {
+        if (done_) return;
+        
+        buffer_.resize(0x20000); // 128KB buffer
+        ::Buffer buf_handle;
+        
+        auto ret = _iter_next(handle_, &buf_handle);
+        
+        if (ret == 2) { // EXHAUSTED
+            done_ = true;
+            return;
+        }
+        
+        if (ret != 0) {
+            done_ = true;
+            return;
+        }
+        
+        // Get buffer length and read data
+        size_t buf_len = _buffer_len(buf_handle);
+        buffer_.resize(buf_len);
+        _buffer_consume(buf_handle, buffer_.data(), buf_len);
+        
+        // Parse the batch - the buffer contains concatenated BSATN-encoded rows
+        current_batch_.clear();
+        size_t pos = 0;
+        
+        auto& module = spacetimedb::ModuleDef::instance();
+        auto it = module.table_indices.find(&typeid(T));
+        if (it == module.table_indices.end()) {
+            done_ = true;
+            return;
+        }
+        
+        // For now, assume each row is serialized as a fixed-size struct
+        // In a real implementation, we'd need to parse BSATN properly
+        const auto& table = module.tables[it->second];
+        
+        // Simple approach: assume we know the size of each row
+        // This is a placeholder - proper BSATN parsing needed
+        size_t estimated_row_size = sizeof(T);
+        
+        while (pos + estimated_row_size <= buf_len) {
+            T row{};
+            // This is simplified - in reality we'd deserialize field by field
+            std::memcpy(&row, buffer_.data() + pos, sizeof(T));
+            current_batch_.push_back(row);
+            pos += estimated_row_size;
+        }
+        
+        current_index_ = 0;
+    }
+    
+public:
+    explicit TableIterator(uint32_t table_id) {
+        ::BufferIter iter;
+        if (_iter_start(table_id, &iter) == 0) {
+            handle_ = iter;
+            fetch_next_batch();
+        } else {
+            done_ = true;
+        }
+    }
+    
+    ~TableIterator() {
+        if (handle_ != 0xFFFFFFFF) {
+            _iter_drop(handle_);
+        }
+    }
+    
+    // Iterator interface
+    bool has_next() const {
+        return !done_ || current_index_ < current_batch_.size();
+    }
+    
+    T next() {
+        if (current_index_ >= current_batch_.size()) {
+            fetch_next_batch();
+        }
+        
+        if (done_ && current_index_ >= current_batch_.size()) {
+            throw std::runtime_error("Iterator exhausted");
+        }
+        
+        return current_batch_[current_index_++];
+    }
+    
+    // Range-for support
+    class iterator {
+        TableIterator* parent_;
+        std::optional<T> current_;
+        
+    public:
+        explicit iterator(TableIterator* parent) : parent_(parent) {
+            if (parent && parent->has_next()) {
+                current_ = parent->next();
+            }
+        }
+        
+        iterator& operator++() {
+            if (parent_ && parent_->has_next()) {
+                current_ = parent_->next();
+            } else {
+                current_.reset();
+            }
+            return *this;
+        }
+        
+        bool operator!=(const iterator& other) const {
+            return current_.has_value() != other.current_.has_value();
+        }
+        
+        const T& operator*() const { return *current_; }
+    };
+    
+    iterator begin() { return iterator(this); }
+    iterator end() { return iterator(nullptr); }
+};
+
+// -----------------------------------------------------------------------------
 // Table Handle
 // -----------------------------------------------------------------------------
 
 template<typename T>
 class TableHandle {
     std::string table_name_;
+    mutable uint32_t table_id_ = 0;
+    mutable bool id_resolved_ = false;
     
-public:
-    TableHandle() = default;
-    explicit TableHandle(const std::string& name) : table_name_(name) {}
-    
-    void insert(const T& row) {
+    void resolve_table_id() const {
+        if (id_resolved_) return;
+        
         auto& module = spacetimedb::ModuleDef::instance();
         auto it = module.table_indices.find(&typeid(T));
         if (it == module.table_indices.end()) return;
         
         const auto& table = module.tables[it->second];
-        uint32_t table_id;
-        if (_get_table_id((const uint8_t*)table.name.c_str(), table.name.length(), &table_id) != 0) {
-            return;
+        if (_get_table_id((const uint8_t*)table.name.c_str(), table.name.length(), &table_id_) == 0) {
+            id_resolved_ = true;
         }
+    }
+    
+public:
+    TableHandle() = default;
+    explicit TableHandle(const std::string& name) : table_name_(name) {}
+    
+    // Insert a row into the table
+    T insert(const T& row) {
+        resolve_table_id();
+        
+        auto& module = spacetimedb::ModuleDef::instance();
+        auto it = module.table_indices.find(&typeid(T));
+        if (it == module.table_indices.end()) return row;
+        
+        const auto& table = module.tables[it->second];
         
         std::vector<uint8_t> data;
         table.serialize(data, &row);
         
-        uint32_t len = static_cast<uint32_t>(data.size());
-        SpacetimeDb::Internal::FFI::datastore_insert_bsatn(table_id, data.data(), &len);
+        size_t len = data.size();
+        auto err = _insert(table_id_, data.data(), len);
+        
+        if (err == 0 && len > 0) {
+            // Parse returned row (may have auto-inc fields)
+            // TODO: Implement proper deserialization
+            return row;
+        }
+        
+        return row;
+    }
+    
+    // Count rows in the table
+    uint64_t count() const {
+        resolve_table_id();
+        
+        // TODO: Once we have a proper count FFI function
+        // For now, iterate and count
+        uint64_t count = 0;
+        auto iter = this->iter();
+        while (iter.has_next()) {
+            iter.next();
+            count++;
+        }
+        return count;
+    }
+    
+    // Iterate over all rows
+    TableIterator<T> iter() const {
+        resolve_table_id();
+        return TableIterator<T>(table_id_);
+    }
+    
+    // Delete rows matching a value
+    bool delete_by_value(const T& value) {
+        resolve_table_id();
+        
+        auto& module = spacetimedb::ModuleDef::instance();
+        auto it = module.table_indices.find(&typeid(T));
+        if (it == module.table_indices.end()) return false;
+        
+        const auto& table = module.tables[it->second];
+        
+        std::vector<uint8_t> data;
+        table.serialize(data, &value);
+        
+        // For now, we'll use delete_by_col_eq with col_id 0 (first column)
+        // In a full implementation, this would be more sophisticated
+        uint32_t deleted_count = 0;
+        auto err = _delete_by_col_eq(table_id_, 0, data.data(), data.size(), &deleted_count);
+        
+        return err == 0 && deleted_count > 0;
+    }
+    
+    // Update a row (delete old, insert new)
+    bool update(const T& old_value, const T& new_value) {
+        if (delete_by_value(old_value)) {
+            insert(new_value);
+            return true;
+        }
+        return false;
     }
     
     std::string get_table_name() const { return table_name_; }
@@ -442,8 +649,15 @@ void spacetimedb_reducer_wrapper(void (*func)(spacetimedb::ReducerContext, Args.
     if constexpr (sizeof...(Args) == 0) {
         func(ctx);
     } else if constexpr (sizeof...(Args) == 1) {
-        auto arg = read_arg<Args...>(args_source);
-        func(ctx, arg);
+        using ArgType = std::tuple_element_t<0, std::tuple<Args...>>;
+        if constexpr (std::is_same_v<ArgType, Identity>) {
+            // For built-in reducers with Identity, this is handled specially
+            // The Identity is passed through the context
+            func(ctx, Identity{});
+        } else {
+            auto arg = read_arg<ArgType>(args_source);
+            func(ctx, arg);
+        }
     } else if constexpr (sizeof...(Args) == 2) {
         auto arg1 = read_arg<std::tuple_element_t<0, std::tuple<Args...>>>(args_source);
         auto arg2 = read_arg<std::tuple_element_t<1, std::tuple<Args...>>>(args_source);
@@ -480,6 +694,52 @@ void register_reducer_impl(const std::string& name, void (*func)(spacetimedb::Re
     };
     reducer.write_params = [](std::vector<uint8_t>& buf) {
         write_params_for_types<Args...>(buf);
+    };
+    // Check if this is a lifecycle reducer
+    reducer.lifecycle = detail::get_lifecycle_for_name(name);
+    ModuleDef::instance().reducers.push_back(std::move(reducer));
+}
+
+// Specialized registration for init reducer
+inline void register_init_reducer(void (*func)(spacetimedb::ReducerContext)) {
+    ModuleDef::Reducer reducer;
+    reducer.name = "init";
+    reducer.lifecycle = Lifecycle::Init;
+    reducer.handler = [func](spacetimedb::ReducerContext& ctx, uint32_t) {
+        func(ctx);
+    };
+    reducer.write_params = [](std::vector<uint8_t>& buf) {
+        write_u32(buf, 0);  // No parameters
+    };
+    ModuleDef::instance().reducers.push_back(std::move(reducer));
+}
+
+// Specialized registration for client_connected reducer
+inline void register_client_connected_reducer(void (*func)(spacetimedb::ReducerContext, Identity)) {
+    ModuleDef::Reducer reducer;
+    reducer.name = "client_connected";
+    reducer.lifecycle = Lifecycle::OnConnect;
+    reducer.handler = [func](spacetimedb::ReducerContext& ctx, uint32_t) {
+        Identity sender(g_sender_parts[0], g_sender_parts[1], g_sender_parts[2], g_sender_parts[3]);
+        func(ctx, sender);
+    };
+    reducer.write_params = [](std::vector<uint8_t>& buf) {
+        write_u32(buf, 0);  // No parameters from args
+    };
+    ModuleDef::instance().reducers.push_back(std::move(reducer));
+}
+
+// Specialized registration for client_disconnected reducer
+inline void register_client_disconnected_reducer(void (*func)(spacetimedb::ReducerContext, Identity)) {
+    ModuleDef::Reducer reducer;
+    reducer.name = "client_disconnected";
+    reducer.lifecycle = Lifecycle::OnDisconnect;
+    reducer.handler = [func](spacetimedb::ReducerContext& ctx, uint32_t) {
+        Identity sender(g_sender_parts[0], g_sender_parts[1], g_sender_parts[2], g_sender_parts[3]);
+        func(ctx, sender);
+    };
+    reducer.write_params = [](std::vector<uint8_t>& buf) {
+        write_u32(buf, 0);  // No parameters from args
     };
     ModuleDef::instance().reducers.push_back(std::move(reducer));
 }
@@ -544,7 +804,13 @@ inline void spacetimedb_write_module_def(uint32_t sink) {
             write_u32(w, 0);
         }
         
-        w.push_back(1);  // lifecycle (None)
+        // Write lifecycle information
+        if (reducer.lifecycle.has_value()) {
+            w.push_back(0);  // Some
+            w.push_back(static_cast<uint8_t>(reducer.lifecycle.value()));
+        } else {
+            w.push_back(1);  // None
+        }
     }
     
     // Types (empty)
@@ -561,9 +827,20 @@ inline void spacetimedb_write_module_def(uint32_t sink) {
     ::bytes_sink_write(snk, w.data(), &len);
 }
 
-inline int16_t spacetimedb_call_reducer(uint32_t id, uint32_t args) {
+// Global variables to pass sender identity to lifecycle reducers
+thread_local uint64_t g_sender_parts[4] = {0, 0, 0, 0};
+
+inline int16_t spacetimedb_call_reducer(uint32_t id, uint32_t args, 
+                                       uint64_t sender_0, uint64_t sender_1, 
+                                       uint64_t sender_2, uint64_t sender_3) {
     auto& module = ModuleDef::instance();
     if (id < module.reducers.size()) {
+        // Store sender parts for lifecycle reducers
+        g_sender_parts[0] = sender_0;
+        g_sender_parts[1] = sender_1;
+        g_sender_parts[2] = sender_2;
+        g_sender_parts[3] = sender_3;
+        
         spacetimedb::ReducerContext ctx;
         module.reducers[id].handler(ctx, args);
         return 0;
@@ -661,7 +938,7 @@ extern "C" {
         uint32_t error_sink
     ) {
         spacetimedb::initialize_module();
-        return spacetimedb::spacetimedb_call_reducer(id, args_source);
+        return spacetimedb::spacetimedb_call_reducer(id, args_source, sender_0, sender_1, sender_2, sender_3);
     }
 }
 

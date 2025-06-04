@@ -1,6 +1,6 @@
 #include "spacetimedb/internal/Module.h"
 #include "spacetimedb/internal/autogen/RawModuleDef.g.h"
-#include "spacetimedb/sdk/reducer_context.h"
+#include "spacetimedb/sdk/reducer_context_enhanced.h"
 #include <iostream>
 #include <cstring>
 
@@ -209,11 +209,11 @@ FFI::Errno Module::__call_reducer__(
         }
         
         // Create SDK reducer context directly (Rust-like)
-        sdk::ReducerContext ctx;
-        ctx.sender = sender;
-        ctx.connection_id = connectionId;
-        ctx.timestamp = timestamp;
-        // TODO: Initialize db field
+        sdk::ReducerContext ctx = sdk::ReducerContext::from_reducer_call(
+            sender_0, sender_1, sender_2, sender_3,
+            conn_id_0, conn_id_1,
+            timestamp.microseconds_since_epoch
+        );
         
         // Check which dispatch method to use
         if (!instance.reducerFns.empty() && id < instance.reducerFns.size()) {

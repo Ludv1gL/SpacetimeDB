@@ -57,6 +57,11 @@ protected:
                                                std::function<std::vector<uint8_t>(AlgebraicTypeRef)> makeType) = 0;
 };
 
+// Forward declare the enhanced context
+namespace spacetimedb {
+    struct ReducerContext;
+}
+
 // Reducer function type - matches Rust pattern
 using ReducerFn = std::function<FFI::Errno(spacetimedb::ReducerContext, const uint8_t*, size_t)>;
 
