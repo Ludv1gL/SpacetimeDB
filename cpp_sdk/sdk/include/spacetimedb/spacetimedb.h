@@ -38,12 +38,13 @@
 
 #include "sdk/logging.h"        // Enhanced logging system
 #include "sdk/exceptions.h"     // Rich error handling
-#include "sdk/index_management.h"  // Index management
-#include "sdk/query_operations.h"  // Advanced queries
-#include "sdk/schema_management.h" // Schema management
-#include "bsatn/traits.h"       // BSATN serialization
+#include "sdk/database.h"       // Database types
+#include "sdk/reducer_context.h" // Reducer context
+#include "bsatn/bsatn.h"        // BSATN serialization
 #include "field_registration.h"  // Field registration system
-#include "sdk/spacetimedb_sdk_types.h"  // SDK types (Identity, ConnectionId, etc.)
+#include "table_ops.h"          // Table operations
+#include "macros.h"             // Core macros
+#include "internal/Module.h"    // Module registration
 
 // =============================================================================
 // ENHANCED LOGGING MACROS

@@ -1,41 +1,39 @@
 #ifndef REDUCER_CONTEXT_H
 #define REDUCER_CONTEXT_H
 
-#include <spacetimedb/sdk/spacetimedb_sdk_types.h> // For Identity, Timestamp
+#include <spacetimedb/sdk/spacetimedb_sdk_types.h> // For Identity, Timestamp, ConnectionId
+#include <optional>
+#include <array>
 
-namespace spacetimedb {
+namespace SpacetimeDb {
 namespace sdk {
 
 // Forward declaration
 class Database;
 
-class ReducerContext {
-public:
-    // Constructor: Typically called by the SDK internals.
-    // It needs access to the current transaction's sender identity, timestamp,
-    // and a way to interact with the database.
-    ReducerContext(SpacetimeDb::sdk::Identity sender, SpacetimeDb::sdk::Timestamp timestamp, Database& db_instance);
-
-    // Gets the identity of the client/principal that initiated the transaction.
-    const SpacetimeDb::sdk::Identity& get_sender() const;
-
-    // Gets the timestamp of the current transaction.
-    SpacetimeDb::sdk::Timestamp get_timestamp() const;
-
-    // Provides access to database operations.
-    Database& db();
-    const Database& db() const; // Const overload
-
-
-private:
-    SpacetimeDb::sdk::Identity current_sender;
-    SpacetimeDb::sdk::Timestamp current_timestamp;
-    Database& database_instance;
-    // Note: Storing a reference to Database implies Database lifetime management
-    // is handled externally and outlives ReducerContext.
+// Simple ReducerContext for hybrid approach - matches Rust pattern
+struct ReducerContext {
+    // Core fields - directly accessible like in Rust
+    Identity sender;
+    std::optional<ConnectionId> connection_id;
+    Timestamp timestamp;
+    
+    // Database access - will be added later
+    // Database& db;
+    
+    // Constructor
+    ReducerContext() = default;
+    
+    ReducerContext(Identity s, std::optional<ConnectionId> cid, Timestamp ts)
+        : sender(s), connection_id(cid), timestamp(ts) {}
 };
 
 } // namespace sdk
-} // namespace spacetimedb
+} // namespace SpacetimeDb
+
+// Alias for consistency with old code
+namespace spacetimedb {
+    using ReducerContext = SpacetimeDb::sdk::ReducerContext;
+}
 
 #endif // REDUCER_CONTEXT_H

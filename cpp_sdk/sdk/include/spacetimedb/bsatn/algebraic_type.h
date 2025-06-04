@@ -27,16 +27,16 @@ enum class AlgebraicTypeTag : uint8_t {
     String = 4,   // UTF-8 string
     Bool = 5,     // Boolean
     I8 = 6,       // Signed 8-bit integer
-    I16 = 7,      // Signed 16-bit integer
-    I32 = 8,      // Signed 32-bit integer
-    I64 = 9,      // Signed 64-bit integer
-    I128 = 10,    // Signed 128-bit integer
-    I256 = 11,    // Signed 256-bit integer
-    U8 = 12,      // Unsigned 8-bit integer
-    U16 = 13,     // Unsigned 16-bit integer
-    U32 = 14,     // Unsigned 32-bit integer
-    U64 = 15,     // Unsigned 64-bit integer
-    U128 = 16,    // Unsigned 128-bit integer
+    U8 = 7,       // Unsigned 8-bit integer
+    I16 = 8,      // Signed 16-bit integer
+    U16 = 9,      // Unsigned 16-bit integer
+    I32 = 10,     // Signed 32-bit integer
+    U32 = 11,     // Unsigned 32-bit integer
+    I64 = 12,     // Signed 64-bit integer
+    U64 = 13,     // Unsigned 64-bit integer
+    I128 = 14,    // Signed 128-bit integer
+    U128 = 15,    // Unsigned 128-bit integer
+    I256 = 16,    // Signed 256-bit integer
     U256 = 17,    // Unsigned 256-bit integer
     F32 = 18,     // 32-bit floating point
     F64 = 19      // 64-bit floating point
@@ -230,6 +230,53 @@ public:
         if (!is_array()) throw std::runtime_error("Type is not an Array");
         return *std::get<std::unique_ptr<ArrayType>>(data_);
     }
+    
+    // Convenient factory methods for codegen
+    static AlgebraicType Bool() { return make_bool(); }
+    static AlgebraicType I8() { return make_i8(); }
+    static AlgebraicType U8() { return make_u8(); }
+    static AlgebraicType I16() { return make_i16(); }
+    static AlgebraicType U16() { return make_u16(); }
+    static AlgebraicType I32() { return make_i32(); }
+    static AlgebraicType U32() { return make_u32(); }
+    static AlgebraicType I64() { return make_i64(); }
+    static AlgebraicType U64() { return make_u64(); }
+    static AlgebraicType I128() { return make_i128(); }
+    static AlgebraicType U128() { return make_u128(); }
+    static AlgebraicType I256() { return make_i256(); }
+    static AlgebraicType U256() { return make_u256(); }
+    static AlgebraicType F32() { return make_f32(); }
+    static AlgebraicType F64() { return make_f64(); }
+    static AlgebraicType String() { return make_string(); }
+    static AlgebraicType Ref(uint32_t type_id) { return make_ref(type_id); }
+    static AlgebraicType Array(const AlgebraicType& elem_type) {
+        // For now, we'll need to handle this differently since we need to store the type
+        // This is a placeholder - we'll need to enhance this
+        return make_array(std::make_unique<ArrayType>(0)); // TODO: fix this
+    }
+    static AlgebraicType Option(const AlgebraicType& some_type) {
+        // Create an option type as a sum type with two variants
+        std::vector<SumType::Variant> variants;
+        variants.emplace_back("some", 0); // TODO: fix type index
+        variants.emplace_back("none", 0); // TODO: fix type index (unit type)
+        return make_sum(std::make_unique<SumType>(std::move(variants)));
+    }
+    static AlgebraicType Product(std::vector<std::pair<std::string, AlgebraicType>> fields) {
+        // TODO: This needs to be properly implemented with type registry
+        std::vector<AggregateElement> elements;
+        for (const auto& [name, type] : fields) {
+            elements.emplace_back(name, 0); // TODO: fix type index
+        }
+        return make_product(std::make_unique<ProductType>(std::move(elements)));
+    }
+    static AlgebraicType Sum(std::vector<std::pair<std::string, AlgebraicType>> variants) {
+        // TODO: This needs to be properly implemented with type registry
+        std::vector<SumType::Variant> sum_variants;
+        for (const auto& [name, type] : variants) {
+            sum_variants.emplace_back(name, 0); // TODO: fix type index
+        }
+        return make_sum(std::make_unique<SumType>(std::move(sum_variants)));
+    }
 
 private:
     template<typename T>
@@ -295,5 +342,15 @@ template<> struct algebraic_type_of<std::string> {
 // TODO: Add specializations for I128, I256, U128, U256 when those types are properly defined
 
 } // namespace SpacetimeDb::bsatn
+
+// Namespace alias for convenience
+namespace spacetimedb {
+    using AlgebraicType = SpacetimeDb::bsatn::AlgebraicType;
+    using AlgebraicTypeTag = SpacetimeDb::bsatn::AlgebraicTypeTag;
+    using SumType = SpacetimeDb::bsatn::SumType;
+    using ProductType = SpacetimeDb::bsatn::ProductType;
+    using ArrayType = SpacetimeDb::bsatn::ArrayType;
+    using AggregateElement = SpacetimeDb::bsatn::AggregateElement;
+}
 
 #endif // SPACETIMEDB_BSATN_ALGEBRAIC_TYPE_H

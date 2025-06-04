@@ -43,8 +43,19 @@ public:
     
     // Register a type and get its reference
     template<typename T>
-    AlgebraicTypeRef RegisterType(std::function<std::vector<uint8_t>(AlgebraicTypeRef)> makeType);
+    AlgebraicTypeRef RegisterType(std::function<std::vector<uint8_t>(AlgebraicTypeRef)> makeType) {
+        // Delegate to implementation
+        return RegisterTypeImpl(typeid(T).name(), makeType);
+    }
+    
+protected:
+    // Implementation method for derived classes
+    virtual AlgebraicTypeRef RegisterTypeImpl(const std::string& typeName, 
+                                               std::function<std::vector<uint8_t>(AlgebraicTypeRef)> makeType) = 0;
 };
+
+// Reducer function type - matches Rust pattern
+using ReducerFn = std::function<FFI::Errno(sdk::ReducerContext, const uint8_t*, size_t)>;
 
 // Module class - manages module definition and registration
 class Module {
@@ -55,16 +66,11 @@ private:
     // Module definition
     RawModuleDefV9 moduleDef;
     
-    // Registered reducers
-    std::vector<std::unique_ptr<IReducer>> reducers;
+    // Registered reducers - stored as functions for direct dispatch
+    std::vector<ReducerFn> reducerFns;
     
-    // Reducer context factory
-    std::function<std::unique_ptr<IReducerContext>(
-        sdk::Identity sender, 
-        std::optional<sdk::ConnectionId> connectionId, 
-        uint64_t seed, 
-        sdk::Timestamp timestamp
-    )> newContext;
+    // Reducer metadata for error reporting
+    std::vector<std::string> reducerNames;
     
     // Type registrar
     std::unique_ptr<TypeRegistrar> typeRegistrar;
@@ -84,11 +90,24 @@ public:
         )> ctor
     );
     
-    // Register a reducer
+    // Register a reducer with a simpler pattern
     template<typename R>
     static void RegisterReducer() {
         static_assert(std::is_base_of_v<IReducer, R>, "R must derive from IReducer");
-        Instance().RegisterReducerImpl(std::make_unique<R>());
+        auto reducer = std::make_unique<R>();
+        Instance().RegisterReducerImpl(std::move(reducer));
+    }
+    
+    // Direct reducer registration (Rust-like)
+    static void RegisterReducerDirect(const std::string& name, ReducerFn fn) {
+        Instance().RegisterReducerDirectImpl(name, fn);
+    }
+    
+    // Direct table registration (Rust-like)
+    static void RegisterTableDirect(const std::string& name, 
+                                   TableAccess access,
+                                   std::function<std::vector<uint8_t>()> typeGen) {
+        Instance().RegisterTableDirectImpl(name, access, typeGen);
     }
     
     // Register a table
@@ -115,11 +134,13 @@ public:
     
 private:
     void RegisterReducerImpl(std::unique_ptr<IReducer> reducer);
+    void RegisterReducerDirectImpl(const std::string& name, ReducerFn fn);
     void RegisterTableImpl(const RawTableDefV9& table);
+    void RegisterTableDirectImpl(const std::string& name, TableAccess access, std::function<std::vector<uint8_t>()> typeGen);
     
     // Add type to typespace and register its name
-    template<typename T>
-    AlgebraicTypeRef RegisterTypeImpl(std::function<std::vector<uint8_t>(AlgebraicTypeRef)> makeType) {
+    AlgebraicTypeRef RegisterTypeGeneric(const std::string& typeName,
+                                         std::function<std::vector<uint8_t>(AlgebraicTypeRef)> makeType) {
         auto& types = moduleDef.typespace.types;
         AlgebraicTypeRef typeRef(static_cast<uint32_t>(types.size()));
         
@@ -132,7 +153,7 @@ private:
         
         // Register type name
         RawScopedTypeNameV9 scopedName;
-        scopedName.name = typeid(T).name(); // Simple name generation
+        scopedName.name = typeName; // Use provided type name
         
         RawTypeDefV9 typeDef;
         typeDef.name = scopedName;
@@ -154,17 +175,17 @@ private:
 public:
     explicit TypeRegistrar(Module& module) : module(module) {}
     
-    template<typename T>
-    AlgebraicTypeRef RegisterType(std::function<std::vector<uint8_t>(AlgebraicTypeRef)> makeType) override {
+protected:
+    AlgebraicTypeRef RegisterTypeImpl(const std::string& typeName, 
+                                      std::function<std::vector<uint8_t>(AlgebraicTypeRef)> makeType) override {
         // Check if type already registered
-        std::string typeName = typeid(T).name();
         auto it = types.find(typeName);
         if (it != types.end()) {
             return it->second;
         }
         
         // Register new type
-        auto typeRef = module.RegisterTypeImpl<T>(makeType);
+        auto typeRef = module.RegisterTypeGeneric(typeName, makeType);
         types[typeName] = typeRef;
         return typeRef;
     }

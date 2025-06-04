@@ -1,10 +1,39 @@
 #include "spacetimedb/internal/Module.h"
 #include "spacetimedb/internal/autogen/RawModuleDef.g.h"
+#include "spacetimedb/sdk/reducer_context.h"
 #include <iostream>
 #include <cstring>
 
 namespace SpacetimeDb {
 namespace Internal {
+
+// Default implementation of IReducerContext
+class DefaultReducerContext : public IReducerContext {
+private:
+    sdk::Identity sender_;
+    std::optional<sdk::ConnectionId> connectionId_;
+    sdk::Timestamp timestamp_;
+    uint64_t seed_;
+    
+public:
+    DefaultReducerContext(sdk::Identity sender, 
+                         std::optional<sdk::ConnectionId> connectionId,
+                         uint64_t seed,
+                         sdk::Timestamp timestamp)
+        : sender_(sender), connectionId_(connectionId), 
+          timestamp_(timestamp), seed_(seed) {}
+    
+    sdk::Identity GetSender() const override { return sender_; }
+    std::optional<sdk::ConnectionId> GetConnectionId() const override { return connectionId_; }
+    sdk::Timestamp GetTimestamp() const override { return timestamp_; }
+    
+    sdk::ReducerContext ToSdkContext() override {
+        // Create SDK context - implementation depends on sdk::ReducerContext structure
+        sdk::ReducerContext ctx;
+        // TODO: Initialize ctx with sender, connectionId, timestamp
+        return ctx;
+    }
+};
 
 // FFI constants
 const FFI::RowIter FFI::RowIter::INVALID = {0xFFFFFFFF};
@@ -19,6 +48,12 @@ Module& Module::Instance() {
 Module::Module() : typeRegistrar(std::make_unique<TypeRegistrar>(*this)) {
     // Initialize empty module definition
     moduleDef = RawModuleDefV9{};
+    
+    // Set default context constructor
+    newContext = [](sdk::Identity sender, std::optional<sdk::ConnectionId> connectionId, 
+                    uint64_t seed, sdk::Timestamp timestamp) {
+        return std::make_unique<DefaultReducerContext>(sender, connectionId, seed, timestamp);
+    };
 }
 
 void Module::SetReducerContextConstructor(
@@ -42,6 +77,54 @@ void Module::RegisterReducerImpl(std::unique_ptr<IReducer> reducer) {
 
 void Module::RegisterTableImpl(const RawTableDefV9& table) {
     moduleDef.tables.push_back(table);
+}
+
+void Module::RegisterReducerDirectImpl(const std::string& name, ReducerFn fn) {
+    // Create reducer definition
+    RawReducerDefV9 reducerDef;
+    reducerDef.name = name;
+    
+    // Generate function type
+    auto funcTypeRef = typeRegistrar->RegisterType<void()>(
+        [](AlgebraicTypeRef) -> std::vector<uint8_t> {
+            // Simple function type with no args for now
+            bsatn::Writer writer;
+            writer.write_u8(2); // Product type
+            writer.write_u32_le(0); // 0 args
+            return writer.take_buffer();
+        }
+    );
+    reducerDef.func_type_ref = funcTypeRef.idx;
+    reducerDef.lifecycle = std::nullopt;
+    
+    // Add to module definition
+    moduleDef.reducers.push_back(std::move(reducerDef));
+    
+    // Store the function
+    reducerFns.push_back(fn);
+    reducerNames.push_back(name);
+}
+
+void Module::RegisterTableDirectImpl(const std::string& name, TableAccess access, std::function<std::vector<uint8_t>()> typeGen) {
+    RawTableDefV9 table;
+    table.name = name;
+    table.table_access = access;
+    table.table_type = TableType::User;
+    
+    // Generate and register the type
+    auto typeBytes = typeGen();
+    auto& types = moduleDef.typespace.types;
+    table.product_type_ref = static_cast<uint32_t>(types.size());
+    types.push_back(AlgebraicType(std::move(typeBytes)));
+    
+    // Initialize other fields
+    table.primary_key = std::nullopt;
+    table.indexes = {};
+    table.constraints = {};
+    table.sequences = {};
+    table.schedule = std::nullopt;
+    
+    moduleDef.tables.push_back(std::move(table));
 }
 
 void Module::RegisterClientVisibilityFilter(const std::string& sql) {
@@ -83,44 +166,50 @@ FFI::Errno Module::__call_reducer__(
     try {
         auto& instance = Instance();
         
-        // Check reducer ID
-        if (id >= instance.reducers.size()) {
-            WriteBytes(error, std::vector<uint8_t>{'N', 'o', ' ', 's', 'u', 'c', 'h', ' ', 'r', 'e', 'd', 'u', 'c', 'e', 'r'});
-            return FFI::Errno::NO_SUCH_REDUCER;
-        }
-        
         // Reconstruct identity from parts
-        Identity sender;
+        sdk::Identity sender;
         std::memcpy(&sender.data[0], &sender_0, 8);
         std::memcpy(&sender.data[8], &sender_1, 8);
         std::memcpy(&sender.data[16], &sender_2, 8);
         std::memcpy(&sender.data[24], &sender_3, 8);
         
         // Reconstruct connection ID
-        std::optional<ConnectionId> connectionId;
+        std::optional<sdk::ConnectionId> connectionId;
         if (conn_id_0 != 0 || conn_id_1 != 0) {
-            ConnectionId connId;
+            sdk::ConnectionId connId;
             std::memcpy(&connId.data[0], &conn_id_0, 8);
             std::memcpy(&connId.data[8], &conn_id_1, 8);
             connectionId = connId;
         }
         
-        // Create reducer context
-        auto ctx = instance.newContext(sender, connectionId, timestamp.microseconds_since_epoch, timestamp);
+        // Create SDK reducer context directly (Rust-like)
+        sdk::ReducerContext ctx;
+        ctx.sender = sender;
+        ctx.connection_id = connectionId;
+        ctx.timestamp = timestamp;
+        // TODO: Initialize db field
         
-        // Read arguments
-        auto argBytes = ConsumeBytes(args);
-        bsatn::Reader reader(argBytes);
-        
-        // Invoke the reducer
-        instance.reducers[id]->Invoke(reader, *ctx);
-        
-        // Check all bytes were consumed
-        if (!reader.is_eos()) {
-            throw std::runtime_error("Unrecognised extra bytes in the reducer arguments");
+        // Check which dispatch method to use
+        if (!instance.reducerFns.empty() && id < instance.reducerFns.size()) {
+            // Direct dispatch (new Rust-like pattern)
+            auto argBytes = ConsumeBytes(args);
+            return instance.reducerFns[id](ctx, argBytes.data(), argBytes.size());
+        } else if (id < instance.reducers.size()) {
+            // Legacy IReducer dispatch
+            auto internalCtx = instance.newContext(sender, connectionId, timestamp.microseconds_since_epoch, timestamp);
+            auto argBytes = ConsumeBytes(args);
+            bsatn::Reader reader(argBytes);
+            instance.reducers[id]->Invoke(reader, *internalCtx);
+            
+            if (!reader.is_eos()) {
+                throw std::runtime_error("Unrecognised extra bytes in the reducer arguments");
+            }
+            
+            return FFI::Errno::OK;
+        } else {
+            WriteBytes(error, std::vector<uint8_t>{'N', 'o', ' ', 's', 'u', 'c', 'h', ' ', 'r', 'e', 'd', 'u', 'c', 'e', 'r'});
+            return FFI::Errno::NO_SUCH_REDUCER;
         }
-        
-        return FFI::Errno::OK;
     }
     catch (const std::exception& e) {
         auto errorStr = std::string(e.what());

@@ -4,6 +4,7 @@
 #include "spacetimedb/internal/Module.h"
 #include "spacetimedb/bsatn_all.h"
 #include "spacetimedb/sdk/reducer_context.h"
+#include "spacetimedb/table_ops.h"
 
 #include <string>
 #include <vector>
@@ -11,6 +12,7 @@
 #include <tuple>
 #include <functional>
 #include <type_traits> // For std::is_same_v
+#include <unordered_map>
 
 // Helper macro to stringify its argument
 #define SPACETIMEDB_STRINGIFY_IMPL(x) #x
@@ -22,100 +24,151 @@
 
 // --- New Table and Reducer Definition Macros ---
 
-// Table definition macro using the new Internal API
+// Helper to get table ID from name - cached like Rust
+static uint32_t get_table_id(const std::string& name) {
+    static std::unordered_map<std::string, uint32_t> cache;
+    auto it = cache.find(name);
+    if (it != cache.end()) {
+        return it->second;
+    }
+    
+    uint32_t id;
+    auto err = SpacetimeDb::Internal::FFI::table_id_from_name(
+        reinterpret_cast<const uint8_t*>(name.data()),
+        static_cast<uint32_t>(name.size()),
+        &id
+    );
+    
+    if (err != SpacetimeDb::Internal::FFI::Errno::OK) {
+        throw std::runtime_error("Table not found: " + name);
+    }
+    
+    cache[name] = id;
+    return id;
+}
+
+// Simplified table macro - combines Rust's directness with C++ type safety
 #define SPACETIMEDB_TABLE(RowType, table_name, is_public) \
-    class table_name##_TableView : public SpacetimeDb::Internal::ITableView<table_name##_TableView, RowType> { \
-    public: \
-        static SpacetimeDb::Internal::RawTableDefV9 MakeTableDesc(SpacetimeDb::Internal::ITypeRegistrar& registrar) { \
-            SpacetimeDb::Internal::RawTableDefV9 table; \
-            table.name = SPACETIMEDB_STRINGIFY(table_name); \
-            table.table_access = is_public ? SpacetimeDb::Internal::TableAccess::Public : SpacetimeDb::Internal::TableAccess::Private; \
-            table.table_type = SpacetimeDb::Internal::TableType::User; \
-            /* TODO: Generate product type ref from RowType */ \
-            table.product_type_ref = 0; \
-            return table; \
-        } \
-        static uint32_t GetTableId() { \
-            static uint32_t id = 0xFFFFFFFF; \
-            if (id == 0xFFFFFFFF) { \
-                std::string name = SPACETIMEDB_STRINGIFY(table_name); \
-                SpacetimeDb::Internal::FFI::table_id_from_name( \
-                    reinterpret_cast<const uint8_t*>(name.data()), \
-                    name.size(), \
-                    &id \
-                ); \
-            } \
-            return id; \
-        } \
-        static RowType ReadGenFields(bsatn::Reader& reader, const RowType& row) { \
-            /* TODO: Read generated fields */ \
-            return row; \
-        } \
+    /* Table handle type */ \
+    struct table_name##__TableHandle { \
+        SpacetimeDb::TableOps<RowType> ops; \
+        \
+        table_name##__TableHandle() : ops(get_table_id(SPACETIMEDB_STRINGIFY(table_name)), SPACETIMEDB_STRINGIFY(table_name)) {} \
+        \
+        /* Delegate to ops */ \
+        uint64_t count() const { return ops.count(); } \
+        SpacetimeDb::TableIterator<RowType> iter() const { return ops.iter(); } \
+        RowType insert(const RowType& row) { return ops.insert(row); } \
+        bool delete_row(const RowType& row) { return ops.delete_row(row); } \
     }; \
+    \
+    /* Trait for ReducerContext.db */ \
+    struct table_name { \
+        table_name##__TableHandle table_name() { return {}; } \
+    }; \
+    \
+    /* Registration */ \
     namespace { \
         struct Register_##table_name##_Table { \
             Register_##table_name##_Table() { \
-                SpacetimeDb::Internal::Module::RegisterTable<RowType, table_name##_TableView>(); \
+                SpacetimeDb::Internal::Module::RegisterTableDirect( \
+                    SPACETIMEDB_STRINGIFY(table_name), \
+                    is_public ? SpacetimeDb::Internal::TableAccess::Public : SpacetimeDb::Internal::TableAccess::Private, \
+                    []() -> std::vector<uint8_t> { \
+                        /* Generate AlgebraicType for RowType */ \
+                        return spacetimedb_generate_type<RowType>(); \
+                    } \
+                ); \
             } \
         }; \
         static Register_##table_name##_Table register_##table_name##_table_instance; \
     }
 
-// Reducer definition macro using the new Internal API
+// Helper to count macro arguments
+#define SPACETIMEDB_NARGS_IMPL(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, N, ...) N
+#define SPACETIMEDB_NARGS(...) SPACETIMEDB_NARGS_IMPL(__VA_ARGS__, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
+
+// Simplified reducer macro - Rust-like with C++ conveniences
 #define SPACETIMEDB_REDUCER(name, ctx_param, ...) \
-    void name##_impl(SpacetimeDb::sdk::ReducerContext ctx_param, ##__VA_ARGS__); \
-    class name##_Reducer : public SpacetimeDb::Internal::IReducer { \
-    public: \
-        SpacetimeDb::Internal::RawReducerDefV9 MakeReducerDef(SpacetimeDb::Internal::ITypeRegistrar& registrar) override { \
-            SpacetimeDb::Internal::RawReducerDefV9 reducer; \
-            reducer.name = SPACETIMEDB_STRINGIFY(name); \
-            /* TODO: Generate function type ref */ \
-            reducer.func_type_ref = 0; \
-            return reducer; \
-        } \
-        void Invoke(bsatn::Reader& reader, SpacetimeDb::Internal::IReducerContext& ctx) override { \
-            /* TODO: Deserialize arguments and call implementation */ \
-            SpacetimeDb::sdk::ReducerContext sdk_ctx{/* TODO: Initialize from IReducerContext */}; \
-            name##_impl(sdk_ctx, ##__VA_ARGS__); \
-        } \
-    }; \
+    void name(SpacetimeDb::ReducerContext& ctx_param, ##__VA_ARGS__); \
     namespace { \
+        SpacetimeDb::Internal::FFI::Errno name##_wrapper( \
+            SpacetimeDb::sdk::ReducerContext ctx, \
+            const uint8_t* args, size_t args_len \
+        ) { \
+            try { \
+                /* TODO: Deserialize arguments */ \
+                name(ctx); \
+                return SpacetimeDb::Internal::FFI::Errno::OK; \
+            } catch (const std::exception& e) { \
+                /* Log error */ \
+                return SpacetimeDb::Internal::FFI::Errno::HOST_CALL_FAILURE; \
+            } \
+        } \
+        \
         struct Register_##name##_Reducer { \
             Register_##name##_Reducer() { \
-                SpacetimeDb::Internal::Module::RegisterReducer<name##_Reducer>(); \
+                SpacetimeDb::Internal::Module::RegisterReducerDirect( \
+                    SPACETIMEDB_STRINGIFY(name), \
+                    name##_wrapper \
+                ); \
             } \
         }; \
         static Register_##name##_Reducer register_##name##_reducer_instance; \
     } \
-    void name##_impl(SpacetimeDb::sdk::ReducerContext ctx_param, ##__VA_ARGS__)
+    void name(SpacetimeDb::ReducerContext& ctx_param, ##__VA_ARGS__)
 
-// Legacy compatibility - these will be removed in future
-#define SPACETIMEDB_FIELD_INTERNAL(name, core_type, user_defined_name, is_optional, is_unique_field, is_auto_inc_field) \
-    /* Deprecated - use SPACETIMEDB_TABLE macro instead */
-            RegisterTable_##CppRowTypeName##_##SpacetimedbNameStr() { \
-                ::SpacetimeDb::ModuleSchema::instance().register_table( \
-                    SPACETIMEDB_STRINGIFY(CppRowTypeName), \
-                    SpacetimeDbTableNameStr, \
-                    IsPublicBool, \
-                    ScheduledReducerNameStr \
-                ); \
-            } \
-        }; \
-        static RegisterTable_##CppRowTypeName##_##SpacetimedbNameStr register_table_##CppRowTypeName##_##SpacetimedbNameStr##_instance; \
-    }}
+// Helper function to generate AlgebraicType for a type
+// This should be specialized for user types
+template<typename T>
+std::vector<uint8_t> spacetimedb_generate_type() {
+    // Default implementation for primitive types
+    SpacetimeDb::bsatn::Writer writer;
+    
+    // Determine type tag based on T
+    if constexpr (std::is_same_v<T, bool>) {
+        writer.write_u8(5);  // Bool
+    } else if constexpr (std::is_same_v<T, uint8_t>) {
+        writer.write_u8(12); // U8
+    } else if constexpr (std::is_same_v<T, uint16_t>) {
+        writer.write_u8(13); // U16
+    } else if constexpr (std::is_same_v<T, uint32_t>) {
+        writer.write_u8(14); // U32
+    } else if constexpr (std::is_same_v<T, uint64_t>) {
+        writer.write_u8(15); // U64
+    } else if constexpr (std::is_same_v<T, int8_t>) {
+        writer.write_u8(6);  // I8
+    } else if constexpr (std::is_same_v<T, int16_t>) {
+        writer.write_u8(7);  // I16
+    } else if constexpr (std::is_same_v<T, int32_t>) {
+        writer.write_u8(8);  // I32
+    } else if constexpr (std::is_same_v<T, int64_t>) {
+        writer.write_u8(9);  // I64
+    } else if constexpr (std::is_same_v<T, float>) {
+        writer.write_u8(18); // F32
+    } else if constexpr (std::is_same_v<T, double>) {
+        writer.write_u8(19); // F64
+    } else if constexpr (std::is_same_v<T, std::string>) {
+        writer.write_u8(4);  // String
+    } else {
+        // For user types, generate a product type
+        writer.write_u8(2);  // Product
+        writer.write_u32_le(0); // TODO: Add field count
+    }
+    
+    return writer.take_buffer();
+}
 
-#define SPACETIMEDB_PRIMARY_KEY(SpacetimeDbTableNameStr, FieldNameStr) \
-    namespace SpacetimeDb { namespace ModuleRegistration { \
-        struct SetPrimaryKey_Default_##FieldNameStr { \
-             SetPrimaryKey_Default_##FieldNameStr() { \
-                ::SpacetimeDb::ModuleSchema::instance().set_primary_key( \
-                    SpacetimeDbTableNameStr, \
-                    FieldNameStr \
-                ); \
-            } \
-        }; \
-        static SetPrimaryKey_Default_##FieldNameStr set_pk_##FieldNameStr##_instance; \
-    }}
+// Macro to specialize type generation for user structs
+#define SPACETIMEDB_TYPE(Type, ...) \
+    template<> \
+    std::vector<uint8_t> spacetimedb_generate_type<Type>() { \
+        SpacetimeDb::bsatn::Writer writer; \
+        writer.write_u8(2); /* Product type */ \
+        /* TODO: Generate field information */ \
+        writer.write_u32_le(0); /* Field count */ \
+        return writer.take_buffer(); \
+    }
 
 #define SPACETIMEDB_INDEX(SpacetimeDbTableNameStr, IndexNameStr, ColumnFieldNamesInitializerList) \
     namespace SpacetimeDb { namespace ModuleRegistration { \

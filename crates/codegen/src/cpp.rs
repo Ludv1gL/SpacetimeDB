@@ -382,4 +382,70 @@ impl Cpp {
         writeln!(output, "}};").unwrap();
     }
 
+    /// Generate C++ AlgebraicType construction from an AlgebraicTypeUse
+    pub fn generate_algebraic_type(&self, module: &ModuleDef, typ: &AlgebraicTypeUse) -> String {
+        match typ {
+            AlgebraicTypeUse::Primitive(p) => match p {
+                PrimitiveType::Bool => "spacetimedb::AlgebraicType::Bool()".to_string(),
+                PrimitiveType::I8 => "spacetimedb::AlgebraicType::I8()".to_string(),
+                PrimitiveType::U8 => "spacetimedb::AlgebraicType::U8()".to_string(),
+                PrimitiveType::I16 => "spacetimedb::AlgebraicType::I16()".to_string(),
+                PrimitiveType::U16 => "spacetimedb::AlgebraicType::U16()".to_string(),
+                PrimitiveType::I32 => "spacetimedb::AlgebraicType::I32()".to_string(),
+                PrimitiveType::U32 => "spacetimedb::AlgebraicType::U32()".to_string(),
+                PrimitiveType::I64 => "spacetimedb::AlgebraicType::I64()".to_string(),
+                PrimitiveType::U64 => "spacetimedb::AlgebraicType::U64()".to_string(),
+                PrimitiveType::I128 => "spacetimedb::AlgebraicType::I128()".to_string(),
+                PrimitiveType::U128 => "spacetimedb::AlgebraicType::U128()".to_string(),
+                PrimitiveType::I256 => "spacetimedb::AlgebraicType::I256()".to_string(),
+                PrimitiveType::U256 => "spacetimedb::AlgebraicType::U256()".to_string(),
+                PrimitiveType::F32 => "spacetimedb::AlgebraicType::F32()".to_string(),
+                PrimitiveType::F64 => "spacetimedb::AlgebraicType::F64()".to_string(),
+            },
+            AlgebraicTypeUse::String => "spacetimedb::AlgebraicType::String()".to_string(),
+            AlgebraicTypeUse::Array(elem_type) => {
+                let elem = self.generate_algebraic_type(module, elem_type);
+                format!("spacetimedb::AlgebraicType::Array({})", elem)
+            }
+            AlgebraicTypeUse::Option(inner_type) => {
+                let inner = self.generate_algebraic_type(module, inner_type);
+                format!("spacetimedb::AlgebraicType::Option({})", inner)
+            }
+            AlgebraicTypeUse::Ref(type_ref) => {
+                format!("spacetimedb::AlgebraicType::Ref({})", type_ref.idx())
+            }
+            _ => "/* unhandled algebraic type */".to_string(),
+        }
+    }
+
+    /// Generate AlgebraicType for a ProductTypeDef
+    pub fn generate_product_algebraic_type(&self, module: &ModuleDef, product: &ProductTypeDef) -> String {
+        let mut elements = Vec::new();
+        for (field_name, field_type) in &product.elements {
+            let field_type_str = self.generate_algebraic_type(module, field_type);
+            elements.push(format!("    {{\"{}\", {}}}", field_name, field_type_str));
+        }
+        
+        if elements.is_empty() {
+            "spacetimedb::AlgebraicType::Product({})".to_string()
+        } else {
+            format!("spacetimedb::AlgebraicType::Product({{\n{}\n}})", elements.join(",\n"))
+        }
+    }
+
+    /// Generate AlgebraicType for a SumTypeDef
+    pub fn generate_sum_algebraic_type(&self, module: &ModuleDef, sum: &SumTypeDef) -> String {
+        let mut variants = Vec::new();
+        for (variant_name, variant_type) in &sum.variants {
+            let variant_type_str = self.generate_algebraic_type(module, variant_type);
+            variants.push(format!("    {{\"{}\", {}}}", variant_name, variant_type_str));
+        }
+        
+        if variants.is_empty() {
+            "spacetimedb::AlgebraicType::Sum({})".to_string()
+        } else {
+            format!("spacetimedb::AlgebraicType::Sum({{\n{}\n}})", variants.join(",\n"))
+        }
+    }
+
 }
