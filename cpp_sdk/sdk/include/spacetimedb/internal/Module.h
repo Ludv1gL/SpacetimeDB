@@ -132,38 +132,15 @@ public:
         FFI::BytesSink error
     );
     
+    // Type registration - needs to be public for macros
+    AlgebraicTypeRef RegisterTypeGeneric(const std::string& typeName,
+                                         std::function<std::vector<uint8_t>(AlgebraicTypeRef)> makeType);
+    
 private:
     void RegisterReducerImpl(std::unique_ptr<IReducer> reducer);
     void RegisterReducerDirectImpl(const std::string& name, ReducerFn fn);
     void RegisterTableImpl(const RawTableDefV9& table);
     void RegisterTableDirectImpl(const std::string& name, TableAccess access, std::function<std::vector<uint8_t>()> typeGen);
-    
-    // Add type to typespace and register its name
-    AlgebraicTypeRef RegisterTypeGeneric(const std::string& typeName,
-                                         std::function<std::vector<uint8_t>(AlgebraicTypeRef)> makeType) {
-        auto& types = moduleDef.typespace.types;
-        AlgebraicTypeRef typeRef(static_cast<uint32_t>(types.size()));
-        
-        // Reserve slot with empty type
-        types.push_back(AlgebraicType{});
-        
-        // Generate the actual type
-        auto typeBytes = makeType(typeRef);
-        types[typeRef.idx] = AlgebraicType(std::move(typeBytes));
-        
-        // Register type name
-        RawScopedTypeNameV9 scopedName;
-        scopedName.name = typeName; // Use provided type name
-        
-        RawTypeDefV9 typeDef;
-        typeDef.name = scopedName;
-        typeDef.ty = typeRef.idx;
-        typeDef.custom_ordering = true;
-        
-        moduleDef.types.push_back(std::move(typeDef));
-        
-        return typeRef;
-    }
 };
 
 // Type registrar implementation

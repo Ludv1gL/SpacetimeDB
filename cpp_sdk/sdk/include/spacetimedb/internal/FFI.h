@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <cstddef>
 #include "spacetimedb/sdk/spacetimedb_sdk_types.h"
+#include "spacetimedb/abi/spacetimedb_abi.h"
 
 namespace SpacetimeDb {
 namespace Internal {
@@ -27,55 +28,78 @@ enum class Errno : uint16_t {
     UNKNOWN = 0xFFFF
 };
 
-// Opaque handle types
-struct RowIter {
-    uint32_t handle;
-    
-    static const RowIter INVALID;
-    
-    bool operator==(const RowIter& other) const {
-        return handle == other.handle;
+// Use simple types for handles - the ABI functions expect uint32_t
+using RowIter = uint32_t;
+using TableId = uint32_t;
+using BytesSource = uint32_t;
+using BytesSink = uint32_t;
+
+// Wrapper functions that convert between our types and ABI types
+inline Errno table_id_from_name(const uint8_t* name, uint32_t name_len, TableId* out) {
+    return static_cast<Errno>(_get_table_id(name, name_len, out));
+}
+
+inline Errno datastore_table_row_count(TableId table_id, uint64_t* count) {
+    // TODO: Implement using appropriate ABI function
+    return Errno::OK;
+}
+
+inline Errno datastore_table_scan_bsatn(TableId table_id, RowIter* out) {
+    ::BufferIter iter;
+    auto err = _iter_start(table_id, &iter);
+    *out = iter;
+    return static_cast<Errno>(err);
+}
+
+inline Errno datastore_insert_bsatn(TableId table_id, uint8_t* row, uint32_t* row_len) {
+    size_t len = *row_len;
+    auto err = _insert(table_id, row, len);
+    *row_len = static_cast<uint32_t>(len);
+    return static_cast<Errno>(err);
+}
+
+inline Errno datastore_delete_all_by_eq_bsatn(TableId table_id, const uint8_t* args, uint32_t args_len, uint32_t* count) {
+    // TODO: Implement using _delete_by_col_eq
+    return Errno::OK;
+}
+
+// Iterator operations
+inline Errno row_iter_bsatn_advance(RowIter iter, uint8_t* buffer, uint32_t* buffer_len) {
+    ::Buffer buf;
+    auto err = _iter_next(iter, &buf);
+    if (err == 0) {
+        size_t len = _buffer_len(buf);
+        if (len <= *buffer_len) {
+            _buffer_consume(buf, buffer, len);
+            *buffer_len = static_cast<uint32_t>(len);
+        } else {
+            return Errno::BUFFER_TOO_SMALL;
+        }
     }
-    
-    bool operator!=(const RowIter& other) const {
-        return handle != other.handle;
-    }
-};
+    return static_cast<Errno>(err);
+}
 
-struct TableId {
-    uint32_t id;
-};
+inline void row_iter_bsatn_close(RowIter iter) {
+    _iter_drop(iter);
+}
 
-struct BytesSource {
-    uint32_t handle;
-    
-    static const BytesSource INVALID;
-};
+// Bytes source/sink operations  
+inline Errno bytes_source_read(BytesSource source, uint8_t* buffer, uint32_t* buffer_len) {
+    ::BytesSource src{static_cast<uint16_t>(source)};
+    uint32_t read = _bytes_source_read(src, buffer, *buffer_len);
+    *buffer_len = read;
+    return Errno::OK;
+}
 
-struct BytesSink {
-    uint32_t handle;
-};
+inline Errno bytes_sink_write(BytesSink sink, const uint8_t* buffer, uint32_t* buffer_len) {
+    size_t len = *buffer_len;
+    ::BytesSink snk{static_cast<uint16_t>(sink)};
+    return static_cast<Errno>(::bytes_sink_write(snk, buffer, &len));
+}
 
-// FFI function declarations matching the SpacetimeDB ABI
-
-// Table operations
-extern "C" {
-    Errno table_id_from_name(const uint8_t* name, uint32_t name_len, TableId* out);
-    Errno datastore_table_row_count(TableId table_id, uint64_t* count);
-    Errno datastore_table_scan_bsatn(TableId table_id, RowIter* out);
-    Errno datastore_insert_bsatn(TableId table_id, const uint8_t* row, uint32_t* row_len);
-    Errno datastore_delete_all_by_eq_bsatn(TableId table_id, const uint8_t* args, uint32_t args_len, uint32_t* count);
-    
-    // Iterator operations
-    Errno row_iter_bsatn_advance(RowIter iter, uint8_t* buffer, uint32_t* buffer_len);
-    void row_iter_bsatn_close(RowIter iter);
-    
-    // Bytes source/sink operations
-    Errno bytes_source_read(BytesSource source, uint8_t* buffer, uint32_t* buffer_len);
-    void bytes_sink_write(BytesSink sink, const uint8_t* buffer, uint32_t* buffer_len);
-    
-    // Console operations
-    void console_log(const uint8_t* message, uint32_t message_len, uint8_t level);
+// Console operations
+inline void console_log(const uint8_t* message, uint32_t message_len, uint8_t level) {
+    _console_log(level, nullptr, 0, nullptr, 0, 0, message, message_len);
 }
 
 } // namespace FFI

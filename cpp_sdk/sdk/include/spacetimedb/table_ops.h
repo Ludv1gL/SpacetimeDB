@@ -104,7 +104,7 @@ public:
 template<typename T>
 class TableIterator {
 private:
-    Internal::FFI::RowIter handle_;
+    Internal::FFI::RowIter handle_ = 0xFFFFFFFF;
     std::vector<uint8_t> buffer_;
     std::vector<T> current_batch_;
     size_t current_index_ = 0;
@@ -148,7 +148,7 @@ public:
     }
     
     ~TableIterator() {
-        if (handle_.handle != 0xFFFFFFFF) {
+        if (handle_ != 0xFFFFFFFF) {
             Internal::FFI::row_iter_bsatn_close(handle_);
         }
     }

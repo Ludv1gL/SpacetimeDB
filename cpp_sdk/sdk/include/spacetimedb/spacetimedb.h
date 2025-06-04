@@ -36,6 +36,7 @@
 // SDK FEATURE INCLUDES
 // =============================================================================
 
+#include "abi/spacetimedb_abi.h"  // SpacetimeDB ABI
 #include "sdk/logging.h"        // Enhanced logging system
 #include "sdk/exceptions.h"     // Rich error handling
 #include "sdk/database.h"       // Database types
@@ -70,28 +71,7 @@
 #define LOG_ERROR(msg) SpacetimeDB::log_error(msg, __func__, __FILE__, __LINE__)
 #endif
 
-// =============================================================================
-// FFI DECLARATIONS - SpacetimeDB Host Interface
-// =============================================================================
-
-extern "C" {
-    __attribute__((import_module("spacetime_10.0"), import_name("bytes_sink_write")))
-    uint16_t bytes_sink_write(uint32_t sink, const uint8_t* buffer_ptr, size_t* buffer_len_ptr);
-    
-    __attribute__((import_module("spacetime_10.0"), import_name("bytes_source_read")))
-    uint16_t bytes_source_read(uint32_t source, uint8_t* buffer_ptr, size_t* buffer_len_ptr);
-    
-    __attribute__((import_module("spacetime_10.0"), import_name("datastore_insert_bsatn")))
-    uint16_t datastore_insert_bsatn(uint32_t table_id, uint8_t* row_ptr, size_t* row_len_ptr);
-    
-    __attribute__((import_module("spacetime_10.0"), import_name("table_id_from_name")))
-    uint16_t table_id_from_name(const uint8_t* name_ptr, size_t name_len, uint32_t* out);
-    
-    __attribute__((import_module("spacetime_10.0"), import_name("console_log")))
-    void console_log(uint32_t level, uint32_t msg_ptr, uint32_t msg_len, 
-                     uint32_t caller1, uint32_t caller2, uint32_t file_ptr, 
-                     uint32_t file_len, uint32_t line);
-}
+// FFI declarations are provided by abi/spacetimedb_abi.h and internal/FFI.h
 
 // =============================================================================
 // UTILITY MACROS
@@ -112,7 +92,6 @@ namespace spacetimedb {
 
 using byte = uint8_t;
 class Database;
-class ReducerContext;
 
 // -----------------------------------------------------------------------------
 // Table Name Registry
@@ -153,15 +132,15 @@ inline void write_string(std::vector<uint8_t>& buf, const std::string& str) {
 
 inline uint8_t read_u8(uint32_t source) {
     uint8_t val = 0;
-    size_t len = 1;
-    bytes_source_read(source, &val, &len);
+    ::BytesSource src{static_cast<uint16_t>(source)};
+    _bytes_source_read(src, &val, 1);
     return val;
 }
 
 inline uint32_t read_u32(uint32_t source) {
     uint8_t buf[4] = {0};
-    size_t len = 4;
-    bytes_source_read(source, buf, &len);
+    ::BytesSource src{static_cast<uint16_t>(source)};
+    _bytes_source_read(src, buf, 4);
     return buf[0] | (buf[1] << 8) | (buf[2] << 16) | (buf[3] << 24);
 }
 
@@ -226,7 +205,7 @@ struct ModuleDef {
     struct Reducer {
         std::string name;
         std::function<void(std::vector<uint8_t>&)> write_params;
-        std::function<void(ReducerContext&, uint32_t)> handler;
+        std::function<void(spacetimedb::ReducerContext&, uint32_t)> handler;
     };
     
     std::vector<Table> tables;
@@ -265,15 +244,15 @@ public:
         
         const auto& table = module.tables[it->second];
         uint32_t table_id;
-        if (table_id_from_name((const uint8_t*)table.name.c_str(), table.name.length(), &table_id) != 0) {
+        if (_get_table_id((const uint8_t*)table.name.c_str(), table.name.length(), &table_id) != 0) {
             return;
         }
         
         std::vector<uint8_t> data;
         table.serialize(data, &row);
         
-        size_t len = data.size();
-        datastore_insert_bsatn(table_id, data.data(), &len);
+        uint32_t len = static_cast<uint32_t>(data.size());
+        SpacetimeDb::Internal::FFI::datastore_insert_bsatn(table_id, data.data(), &len);
     }
     
     std::string get_table_name() const { return table_name_; }
@@ -333,16 +312,6 @@ public:
 };
 
 namespace spacetimedb {
-
-// -----------------------------------------------------------------------------
-// Reducer Context
-// -----------------------------------------------------------------------------
-
-class ReducerContext {
-public:
-    ModuleDatabase db;
-    ReducerContext() = default;
-};
 
 // -----------------------------------------------------------------------------
 // Table Registration
@@ -451,8 +420,8 @@ T read_arg(uint32_t& source) {
         return read_u8(source);
     } else if constexpr (std::is_same_v<T, uint16_t>) {
         uint8_t buf[2];
-        size_t len = 2;
-        bytes_source_read(source, buf, &len);
+        ::BytesSource src{static_cast<uint16_t>(source)};
+        _bytes_source_read(src, buf, 2);
         return buf[0] | (buf[1] << 8);
     } else if constexpr (std::is_same_v<T, uint32_t>) {
         return read_u32(source);
@@ -460,16 +429,16 @@ T read_arg(uint32_t& source) {
         uint32_t len = read_u32(source);
         std::string result;
         result.resize(len);
-        size_t actual_len = len;
-        bytes_source_read(source, reinterpret_cast<uint8_t*>(result.data()), &actual_len);
+        ::BytesSource src{static_cast<uint16_t>(source)};
+        _bytes_source_read(src, reinterpret_cast<uint8_t*>(result.data()), len);
         return result;
     }
     return T{};
 }
 
 template<typename... Args>
-void spacetimedb_reducer_wrapper(void (*func)(ReducerContext, Args...), 
-                                ReducerContext& ctx, uint32_t args_source) {
+void spacetimedb_reducer_wrapper(void (*func)(spacetimedb::ReducerContext, Args...), 
+                                spacetimedb::ReducerContext& ctx, uint32_t args_source) {
     if constexpr (sizeof...(Args) == 0) {
         func(ctx);
     } else if constexpr (sizeof...(Args) == 1) {
@@ -503,10 +472,10 @@ void write_params_for_types(std::vector<uint8_t>& buf) {
 }
 
 template<typename... Args>
-void register_reducer_impl(const std::string& name, void (*func)(ReducerContext, Args...)) {
+void register_reducer_impl(const std::string& name, void (*func)(spacetimedb::ReducerContext, Args...)) {
     ModuleDef::Reducer reducer;
     reducer.name = name;
-    reducer.handler = [func](ReducerContext& ctx, uint32_t args) {
+    reducer.handler = [func](spacetimedb::ReducerContext& ctx, uint32_t args) {
         spacetimedb_reducer_wrapper(func, ctx, args);
     };
     reducer.write_params = [](std::vector<uint8_t>& buf) {
@@ -521,8 +490,8 @@ struct ReducerRegistrar {
 };
 
 template<typename... Args>
-struct ReducerRegistrar<void (*)(ReducerContext, Args...)> {
-    static void register_func(const char* name, void (*func)(ReducerContext, Args...)) {
+struct ReducerRegistrar<void (*)(spacetimedb::ReducerContext, Args...)> {
+    static void register_func(const char* name, void (*func)(spacetimedb::ReducerContext, Args...)) {
         register_reducer_impl(name, func);
     }
 };
@@ -588,13 +557,14 @@ inline void spacetimedb_write_module_def(uint32_t sink) {
     write_u32(w, 0);
     
     size_t len = w.size();
-    bytes_sink_write(sink, w.data(), &len);
+    ::BytesSink snk{static_cast<uint16_t>(sink)};
+    ::bytes_sink_write(snk, w.data(), &len);
 }
 
 inline int16_t spacetimedb_call_reducer(uint32_t id, uint32_t args) {
     auto& module = ModuleDef::instance();
     if (id < module.reducers.size()) {
-        ReducerContext ctx;
+        spacetimedb::ReducerContext ctx;
         module.reducers[id].handler(ctx, args);
         return 0;
     }
@@ -668,22 +638,7 @@ inline void initialize_module() {
 SPACETIMEDB_TABLES_LIST
 #undef X
 
-// Table registration macro
-#define SPACETIMEDB_TABLE(type_name, table_name, is_public) \
-    __attribute__((export_name("__preinit__20_table_" #table_name))) \
-    extern "C" void SPACETIMEDB_CAT(_preinit_register_table_, table_name)() { \
-        spacetimedb::register_table_impl<type_name>(#table_name, is_public); \
-        spacetimedb::detail::register_table_name(#table_name); \
-    }
-
-// Reducer registration macro
-#define SPACETIMEDB_REDUCER(func_name, ...) \
-    void func_name(__VA_ARGS__); \
-    extern "C" __attribute__((export_name("__preinit__30_reducer_" #func_name))) \
-    void _preinit_register_reducer_##func_name() { \
-        spacetimedb::ReducerRegistrar<decltype(&func_name)>::register_func(#func_name, func_name); \
-    } \
-    void func_name(__VA_ARGS__)
+// Macros are already defined in macros.h
 
 // =============================================================================
 // MODULE EXPORTS

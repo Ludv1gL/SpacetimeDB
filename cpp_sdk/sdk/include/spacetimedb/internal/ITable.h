@@ -33,7 +33,7 @@ public:
             : handle(handle), buffer(0x20000) {}
         
         ~Iterator() {
-            if (handle != FFI::RowIter::INVALID) {
+            if (handle != 0xFFFFFFFF) {
                 FFI::row_iter_bsatn_close(handle);
             }
         }
@@ -75,7 +75,7 @@ public:
     }
     
     Iterator end() {
-        return Iterator(FFI::RowIter::INVALID);
+        return Iterator(0xFFFFFFFF);
     }
     
     // Parse the raw bytes into T objects
