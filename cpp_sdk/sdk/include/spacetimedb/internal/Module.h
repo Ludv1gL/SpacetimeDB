@@ -22,6 +22,11 @@
 #include "spacetimedb/internal/ITable.h"
 #include "spacetimedb/internal/FFI.h"
 
+// Forward declarations
+namespace spacetimedb {
+    struct ReducerContext;
+}
+
 namespace SpacetimeDb {
 namespace Internal {
 
@@ -33,6 +38,7 @@ class TypeRegistrar;
 struct AlgebraicTypeRef {
     uint32_t idx;
     
+    AlgebraicTypeRef() : idx(0) {}
     explicit AlgebraicTypeRef(uint32_t idx) : idx(idx) {}
 };
 
@@ -55,7 +61,7 @@ protected:
 };
 
 // Reducer function type - matches Rust pattern
-using ReducerFn = std::function<FFI::Errno(sdk::ReducerContext, const uint8_t*, size_t)>;
+using ReducerFn = std::function<FFI::Errno(spacetimedb::ReducerContext, const uint8_t*, size_t)>;
 
 // Module class - manages module definition and registration
 class Module {

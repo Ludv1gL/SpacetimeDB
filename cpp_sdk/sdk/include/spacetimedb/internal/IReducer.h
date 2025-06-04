@@ -42,7 +42,7 @@ public:
     virtual sdk::Timestamp GetTimestamp() const = 0;
     
     // Convert to SDK context for user code
-    virtual sdk::ReducerContext ToSdkContext() = 0;
+    virtual spacetimedb::ReducerContext ToSdkContext() = 0;
     
     // TODO: Add database access methods
 };

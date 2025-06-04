@@ -5,43 +5,58 @@ struct Person {
     uint32_t id;
     std::string name;
     uint8_t age;
+    
+    // BSATN serialization
+    void bsatn_serialize(SpacetimeDb::bsatn::Writer& writer) const {
+        writer.write_u32_le(id);
+        writer.write_string(name);
+        writer.write_u8(age);
+    }
+    
+    // BSATN deserialization
+    void bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader) {
+        id = reader.read_u32_le();
+        name = reader.read_string();
+        age = reader.read_u8();
+    }
 };
 
-// Register BSATN serialization
-SPACETIMEDB_REGISTER_FIELDS(Person,
-    SPACETIMEDB_FIELD(Person, id, uint32_t);
-    SPACETIMEDB_FIELD(Person, name, std::string);
-    SPACETIMEDB_FIELD(Person, age, uint8_t);
-)
-
-// Specialize type generation for Person
+// Register type with AlgebraicType system
 template<>
 std::vector<uint8_t> spacetimedb_generate_type<Person>() {
-    using namespace SpacetimeDb::bsatn;
-    Writer writer;
+    SpacetimeDb::bsatn::Writer writer;
+    writer.write_u8(2);  // Product type
+    writer.write_u32_le(3); // 3 fields
     
-    // Write Product type tag (2)
-    writer.write_u8(2);
+    // Field 1: id
+    writer.write_u8(0);  // Some (field name present)
+    writer.write_string("id");
+    writer.write_u8(14); // U32
     
-    // Write number of fields (3)
-    writer.write_u32_le(3);
+    // Field 2: name
+    writer.write_u8(0);  // Some
+    writer.write_string("name");
+    writer.write_u8(4);  // String
     
-    // TODO: Properly write field information
-    // For now, this is a placeholder
+    // Field 3: age
+    writer.write_u8(0);  // Some
+    writer.write_string("age");
+    writer.write_u8(12); // U8
     
     return writer.take_buffer();
 }
 
+
 // Register the table - new simplified macro
 SPACETIMEDB_TABLE(Person, person, true)
 
-// Define a reducer to insert a person
-SPACETIMEDB_REDUCER(insert_person, ctx, std::string name, uint8_t age) {
+// Define a reducer to insert a person (simplified without args for now)
+SPACETIMEDB_REDUCER(insert_person, ctx) {
     // Get the person table handle
     person__TableHandle table;
     
-    // Insert with auto-generated ID
-    Person person{0, name, age};
+    // Insert with auto-generated ID - hardcoded for now
+    Person person{0, "Test Person", 25};
     person = table.insert(person);
     
     LOG_INFO("Inserted person with ID: " + std::to_string(person.id));
