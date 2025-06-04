@@ -89,9 +89,27 @@ impl CppEnhanced {
         writeln!(output, "}} // namespace {}", self.namespace).unwrap();
     }
     
-    /// Generate type registration macro for a type
+    /// Generate type registration and C# equivalent macros for a type
     fn generate_type_registration(&self, type_name: &str, _algebraic_type_expr: &str) -> String {
-        format!("SPACETIMEDB_REGISTER_TYPE({})", type_name)
+        let mut output = String::new();
+        
+        // Generate equivalent to [SpacetimeDB.Type] 
+        writeln!(&mut output, "SPACETIMEDB_TYPE({})", type_name).unwrap();
+        
+        // Generate equivalent to [DataContract] for serialization
+        writeln!(&mut output, "SPACETIMEDB_DATA_CONTRACT").unwrap();
+        
+        // Also include the generic type registration for autogen compatibility
+        writeln!(&mut output, "SPACETIMEDB_REGISTER_TYPE({})", type_name).unwrap();
+        
+        output.trim().to_string()
+    }
+    
+    /// Generate data member annotations for struct fields (equivalent to [DataMember(Name="...")])
+    fn generate_data_member_annotations(&self, product: &ProductTypeDef) -> Vec<String> {
+        product.elements.iter()
+            .map(|(field_name, _)| format!("SPACETIMEDB_DATA_MEMBER(\"{}\")", field_name))
+            .collect()
     }
 }
 
@@ -139,10 +157,28 @@ impl Lang for CppEnhanced {
         // Include macros after the type definition
         writeln!(&mut output, "#include \"spacetimedb/macros.h\"").unwrap();
         
-        // Add type registration macro
+        // Add type registration and table-specific macros
         let algebraic_type_expr = self.generate_product_algebraic_type(module, 
             &module.typespace_for_generate()[table.product_type_ref].as_product().unwrap());
+        
+        // Generate type registration
         writeln!(&mut output, "{}", self.generate_type_registration(&table.name.to_string(), &algebraic_type_expr)).unwrap();
+        
+        // Generate table registration (equivalent to C# [SpacetimeDB.Table(...)])
+        let is_public = matches!(table.table_access, spacetimedb_lib::db::raw_def::v9::TableAccess::Public);
+        let scheduled_reducer = table.schedule.as_ref().map(|s| s.reducer_name.to_string());
+        let scheduled_at = table.schedule.as_ref().map(|s| s.at_column.to_string());
+        
+        match (scheduled_reducer.as_deref(), scheduled_at.as_deref()) {
+            (Some(reducer), Some(column)) => {
+                writeln!(&mut output, "SPACETIMEDB_TABLE({}, \"{}\", {}, \"{}\", \"{}\")", 
+                    table.name, table.name, is_public, reducer, column).unwrap();
+            }
+            _ => {
+                writeln!(&mut output, "SPACETIMEDB_TABLE({}, \"{}\", {}, nullptr, nullptr)", 
+                    table.name, table.name, is_public).unwrap();
+            }
+        }
         
         output
     }
@@ -167,6 +203,22 @@ impl Lang for CppEnhanced {
         writeln!(&mut output, "}};").unwrap();
         
         self.write_namespace_end(&mut output);
+        
+        // Include macros after the type definition
+        writeln!(&mut output, "#include \"spacetimedb/macros.h\"").unwrap();
+        
+        // Generate reducer registration (equivalent to C# [SpacetimeDB.Reducer(Kind=...)])
+        let reducer_kind = match reducer.lifecycle {
+            Some(spacetimedb_lib::db::raw_def::v9::Lifecycle::Init) => "SpacetimeDb::ReducerKind::Init",
+            Some(spacetimedb_lib::db::raw_def::v9::Lifecycle::OnConnect) => "SpacetimeDb::ReducerKind::ClientConnected", 
+            Some(spacetimedb_lib::db::raw_def::v9::Lifecycle::OnDisconnect) => "SpacetimeDb::ReducerKind::ClientDisconnected",
+            Some(_) => "SpacetimeDb::ReducerKind::UserDefined", // Handle any future lifecycle variants
+            None => "SpacetimeDb::ReducerKind::UserDefined",
+        };
+        
+        writeln!(&mut output, "// Register reducer with appropriate kind").unwrap();
+        writeln!(&mut output, "// SPACETIMEDB_REDUCER({}, {}, ctx, ...)", reducer.name, reducer_kind).unwrap();
+        
         output
     }
 
@@ -402,8 +454,9 @@ impl CppEnhanced {
     fn write_product_type(&self, output: &mut String, module: &ModuleDef, type_name: &str, product: &ProductTypeDef) {
         writeln!(output, "struct {} {{", type_name).unwrap();
         
-        // Write fields
+        // Write fields with data member annotations (equivalent to C# [DataMember(Name="...")])
         for (field_name, field_type) in &product.elements {
+            writeln!(output, "    SPACETIMEDB_DATA_MEMBER(\"{}\")", field_name).unwrap();
             write!(output, "    ").unwrap();
             self.write_algebraic_type(output, module, field_type).unwrap();
             writeln!(output, " {};", field_name).unwrap();
