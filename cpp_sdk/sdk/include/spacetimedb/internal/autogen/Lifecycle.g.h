@@ -20,16 +20,5 @@ enum class Lifecycle : uint8_t {
     OnDisconnect = 2,
 };
 } // namespace SpacetimeDb::Internal
-// Type registration macro
-#define SPACETIMEDB_REGISTER_TYPE_Lifecycle \
-    namespace spacetimedb { \
-    namespace detail { \
-    template<> \
-    struct TypeRegistrar<SpacetimeDb::Internal::Lifecycle> { \
-        static AlgebraicTypeRef register_type(TypeContext& ctx) { \
-            return ctx.add(AlgebraicType::U8()); \
-        } \
-    }; \
-    } /* namespace detail */ \
-    } /* namespace spacetimedb */
-
+#include "spacetimedb/macros.h"
+SPACETIMEDB_REGISTER_TYPE(Lifecycle)

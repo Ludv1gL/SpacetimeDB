@@ -32,18 +32,5 @@ public:
     void bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader);
 };
 } // namespace SpacetimeDb::Internal
-// Type registration macro
-#define SPACETIMEDB_REGISTER_TYPE_RawConstraintDataV9 \
-    namespace spacetimedb { \
-    namespace detail { \
-    template<> \
-    struct TypeRegistrar<SpacetimeDb::Internal::RawConstraintDataV9> { \
-        static AlgebraicTypeRef register_type(TypeContext& ctx) { \
-            return ctx.add(AlgebraicType::Sum(std::make_unique<SumType>(std::vector<SumType::Variant>{
-    {"Unique", AlgebraicType::Ref(24)}
-}))); \
-        } \
-    }; \
-    } /* namespace detail */ \
-    } /* namespace spacetimedb */
-
+#include "spacetimedb/macros.h"
+SPACETIMEDB_REGISTER_TYPE(RawConstraintDataV9)

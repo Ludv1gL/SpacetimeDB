@@ -38,21 +38,5 @@ struct RawIndexDefV8 {
     }
 };
 } // namespace SpacetimeDb::Internal
-// Type registration macro
-#define SPACETIMEDB_REGISTER_TYPE_RawIndexDefV8 \
-    namespace spacetimedb { \
-    namespace detail { \
-    template<> \
-    struct TypeRegistrar<SpacetimeDb::Internal::RawIndexDefV8> { \
-        static AlgebraicTypeRef register_type(TypeContext& ctx) { \
-            return ctx.add(AlgebraicType::Product(std::make_unique<ProductType>(std::vector<ProductType::Element>{
-    {"index_name", AlgebraicType::String()},
-    {"is_unique", AlgebraicType::Bool()},
-    {"index_type", AlgebraicType::Ref(12)},
-    {"columns", AlgebraicType::Array(std::make_unique<ArrayType>(AlgebraicType::U16())))}
-}))); \
-        } \
-    }; \
-    } /* namespace detail */ \
-    } /* namespace spacetimedb */
-
+#include "spacetimedb/macros.h"
+SPACETIMEDB_REGISTER_TYPE(RawIndexDefV8)

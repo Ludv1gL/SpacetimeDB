@@ -19,16 +19,5 @@ enum class TableAccess : uint8_t {
     Private = 1,
 };
 } // namespace SpacetimeDb::Internal
-// Type registration macro
-#define SPACETIMEDB_REGISTER_TYPE_TableAccess \
-    namespace spacetimedb { \
-    namespace detail { \
-    template<> \
-    struct TypeRegistrar<SpacetimeDb::Internal::TableAccess> { \
-        static AlgebraicTypeRef register_type(TypeContext& ctx) { \
-            return ctx.add(AlgebraicType::U8()); \
-        } \
-    }; \
-    } /* namespace detail */ \
-    } /* namespace spacetimedb */
-
+#include "spacetimedb/macros.h"
+SPACETIMEDB_REGISTER_TYPE(TableAccess)

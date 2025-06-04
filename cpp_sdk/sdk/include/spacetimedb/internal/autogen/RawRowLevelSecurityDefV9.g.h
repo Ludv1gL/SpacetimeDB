@@ -34,18 +34,5 @@ struct RawRowLevelSecurityDefV9 {
     }
 };
 } // namespace SpacetimeDb::Internal
-// Type registration macro
-#define SPACETIMEDB_REGISTER_TYPE_RawRowLevelSecurityDefV9 \
-    namespace spacetimedb { \
-    namespace detail { \
-    template<> \
-    struct TypeRegistrar<SpacetimeDb::Internal::RawRowLevelSecurityDefV9> { \
-        static AlgebraicTypeRef register_type(TypeContext& ctx) { \
-            return ctx.add(AlgebraicType::Product(std::make_unique<ProductType>(std::vector<ProductType::Element>{
-    {"sql", AlgebraicType::String()}
-}))); \
-        } \
-    }; \
-    } /* namespace detail */ \
-    } /* namespace spacetimedb */
-
+#include "spacetimedb/macros.h"
+SPACETIMEDB_REGISTER_TYPE(RawRowLevelSecurityDefV9)

@@ -35,19 +35,5 @@ struct TypeAlias {
     }
 };
 } // namespace SpacetimeDb::Internal
-// Type registration macro
-#define SPACETIMEDB_REGISTER_TYPE_TypeAlias \
-    namespace spacetimedb { \
-    namespace detail { \
-    template<> \
-    struct TypeRegistrar<SpacetimeDb::Internal::TypeAlias> { \
-        static AlgebraicTypeRef register_type(TypeContext& ctx) { \
-            return ctx.add(AlgebraicType::Product(std::make_unique<ProductType>(std::vector<ProductType::Element>{
-    {"name", AlgebraicType::String()},
-    {"ty", AlgebraicType::U32()}
-}))); \
-        } \
-    }; \
-    } /* namespace detail */ \
-    } /* namespace spacetimedb */
-
+#include "spacetimedb/macros.h"
+SPACETIMEDB_REGISTER_TYPE(TypeAlias)

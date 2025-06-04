@@ -90,25 +90,8 @@ impl CppEnhanced {
     }
     
     /// Generate type registration macro for a type
-    fn generate_type_registration(&self, type_name: &str, algebraic_type_expr: &str) -> String {
-        format!(
-            r#"// Type registration macro
-#define SPACETIMEDB_REGISTER_TYPE_{name} \
-    namespace spacetimedb {{ \
-    namespace detail {{ \
-    template<> \
-    struct TypeRegistrar<{ns}::{name}> {{ \
-        static AlgebraicTypeRef register_type(TypeContext& ctx) {{ \
-            return ctx.add({algebraic_type}); \
-        }} \
-    }}; \
-    }} /* namespace detail */ \
-    }} /* namespace spacetimedb */
-"#,
-            name = type_name,
-            ns = self.namespace,
-            algebraic_type = algebraic_type_expr
-        )
+    fn generate_type_registration(&self, type_name: &str, _algebraic_type_expr: &str) -> String {
+        format!("SPACETIMEDB_REGISTER_TYPE({})", type_name)
     }
 }
 
@@ -152,6 +135,9 @@ impl Lang for CppEnhanced {
         }
         
         self.write_namespace_end(&mut output);
+        
+        // Include macros after the type definition
+        writeln!(&mut output, "#include \"spacetimedb/macros.h\"").unwrap();
         
         // Add type registration macro
         let algebraic_type_expr = self.generate_product_algebraic_type(module, 
@@ -400,7 +386,10 @@ impl CppEnhanced {
 
         self.write_namespace_end(output);
         
-        // Add type registration
+        // Include macros after the type definition
+        writeln!(output, "#include \"spacetimedb/macros.h\"").unwrap();
+        
+        // Add type registration using the generic macro
         let algebraic_type_expr = match &module.typespace_for_generate()[typ.ty] {
             AlgebraicTypeDef::Product(product) => self.generate_product_algebraic_type(module, product),
             AlgebraicTypeDef::Sum(sum) => self.generate_sum_algebraic_type(module, sum),

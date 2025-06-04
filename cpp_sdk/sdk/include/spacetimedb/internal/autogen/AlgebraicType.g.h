@@ -51,37 +51,5 @@ public:
     void bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader);
 };
 } // namespace SpacetimeDb::Internal
-// Type registration macro
-#define SPACETIMEDB_REGISTER_TYPE_AlgebraicType \
-    namespace spacetimedb { \
-    namespace detail { \
-    template<> \
-    struct TypeRegistrar<SpacetimeDb::Internal::AlgebraicType> { \
-        static AlgebraicTypeRef register_type(TypeContext& ctx) { \
-            return ctx.add(AlgebraicType::Sum(std::make_unique<SumType>(std::vector<SumType::Variant>{
-    {"Ref", AlgebraicType::U32()},
-    {"Sum", AlgebraicType::Ref(4)},
-    {"Product", AlgebraicType::Ref(6)},
-    {"Array", AlgebraicType::Ref(3)},
-    {"String", /* unhandled algebraic type */},
-    {"Bool", /* unhandled algebraic type */},
-    {"I8", /* unhandled algebraic type */},
-    {"U8", /* unhandled algebraic type */},
-    {"I16", /* unhandled algebraic type */},
-    {"U16", /* unhandled algebraic type */},
-    {"I32", /* unhandled algebraic type */},
-    {"U32", /* unhandled algebraic type */},
-    {"I64", /* unhandled algebraic type */},
-    {"U64", /* unhandled algebraic type */},
-    {"I128", /* unhandled algebraic type */},
-    {"U128", /* unhandled algebraic type */},
-    {"I256", /* unhandled algebraic type */},
-    {"U256", /* unhandled algebraic type */},
-    {"F32", /* unhandled algebraic type */},
-    {"F64", /* unhandled algebraic type */}
-}))); \
-        } \
-    }; \
-    } /* namespace detail */ \
-    } /* namespace spacetimedb */
-
+#include "spacetimedb/macros.h"
+SPACETIMEDB_REGISTER_TYPE(AlgebraicType)

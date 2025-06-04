@@ -39,23 +39,5 @@ struct RawSequenceDefV9 {
     }
 };
 } // namespace SpacetimeDb::Internal
-// Type registration macro
-#define SPACETIMEDB_REGISTER_TYPE_RawSequenceDefV9 \
-    namespace spacetimedb { \
-    namespace detail { \
-    template<> \
-    struct TypeRegistrar<SpacetimeDb::Internal::RawSequenceDefV9> { \
-        static AlgebraicTypeRef register_type(TypeContext& ctx) { \
-            return ctx.add(AlgebraicType::Product(std::make_unique<ProductType>(std::vector<ProductType::Element>{
-    {"name", AlgebraicType::Option(AlgebraicType::String())},
-    {"column", AlgebraicType::U16()},
-    {"start", AlgebraicType::Option(AlgebraicType::I128())},
-    {"min_value", AlgebraicType::Option(AlgebraicType::I128())},
-    {"max_value", AlgebraicType::Option(AlgebraicType::I128())},
-    {"increment", AlgebraicType::I128()}
-}))); \
-        } \
-    }; \
-    } /* namespace detail */ \
-    } /* namespace spacetimedb */
-
+#include "spacetimedb/macros.h"
+SPACETIMEDB_REGISTER_TYPE(RawSequenceDefV9)

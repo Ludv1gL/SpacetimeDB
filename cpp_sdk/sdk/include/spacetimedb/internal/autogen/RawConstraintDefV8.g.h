@@ -36,20 +36,5 @@ struct RawConstraintDefV8 {
     }
 };
 } // namespace SpacetimeDb::Internal
-// Type registration macro
-#define SPACETIMEDB_REGISTER_TYPE_RawConstraintDefV8 \
-    namespace spacetimedb { \
-    namespace detail { \
-    template<> \
-    struct TypeRegistrar<SpacetimeDb::Internal::RawConstraintDefV8> { \
-        static AlgebraicTypeRef register_type(TypeContext& ctx) { \
-            return ctx.add(AlgebraicType::Product(std::make_unique<ProductType>(std::vector<ProductType::Element>{
-    {"constraint_name", AlgebraicType::String()},
-    {"constraints", AlgebraicType::U8()},
-    {"columns", AlgebraicType::Array(std::make_unique<ArrayType>(AlgebraicType::U16())))}
-}))); \
-        } \
-    }; \
-    } /* namespace detail */ \
-    } /* namespace spacetimedb */
-
+#include "spacetimedb/macros.h"
+SPACETIMEDB_REGISTER_TYPE(RawConstraintDefV8)

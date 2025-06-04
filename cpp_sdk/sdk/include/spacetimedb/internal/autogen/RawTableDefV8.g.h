@@ -11,10 +11,10 @@
 #include <optional>
 #include <memory>
 #include "spacetimedb/bsatn/bsatn.h"
+#include "RawColumnDefV8.g.h"
+#include "RawIndexDefV8.g.h"
 #include "RawConstraintDefV8.g.h"
 #include "RawSequenceDefV8.g.h"
-#include "RawIndexDefV8.g.h"
-#include "RawColumnDefV8.g.h"
 
 namespace SpacetimeDb::Internal {
 
@@ -45,25 +45,5 @@ struct RawTableDefV8 {
     }
 };
 } // namespace SpacetimeDb::Internal
-// Type registration macro
-#define SPACETIMEDB_REGISTER_TYPE_RawTableDefV8 \
-    namespace spacetimedb { \
-    namespace detail { \
-    template<> \
-    struct TypeRegistrar<SpacetimeDb::Internal::RawTableDefV8> { \
-        static AlgebraicTypeRef register_type(TypeContext& ctx) { \
-            return ctx.add(AlgebraicType::Product(std::make_unique<ProductType>(std::vector<ProductType::Element>{
-    {"table_name", AlgebraicType::String()},
-    {"columns", AlgebraicType::Array(std::make_unique<ArrayType>(AlgebraicType::Ref(10))))},
-    {"indexes", AlgebraicType::Array(std::make_unique<ArrayType>(AlgebraicType::Ref(11))))},
-    {"constraints", AlgebraicType::Array(std::make_unique<ArrayType>(AlgebraicType::Ref(13))))},
-    {"sequences", AlgebraicType::Array(std::make_unique<ArrayType>(AlgebraicType::Ref(14))))},
-    {"table_type", AlgebraicType::String()},
-    {"table_access", AlgebraicType::String()},
-    {"scheduled", AlgebraicType::Option(AlgebraicType::String())}
-}))); \
-        } \
-    }; \
-    } /* namespace detail */ \
-    } /* namespace spacetimedb */
-
+#include "spacetimedb/macros.h"
+SPACETIMEDB_REGISTER_TYPE(RawTableDefV8)
