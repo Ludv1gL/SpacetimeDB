@@ -274,6 +274,18 @@ public:
     void write_vec_len(size_t len) {
         write_u32(static_cast<uint32_t>(len));
     }
+    
+    void write_u16(uint16_t value) {
+        buffer_.push_back(static_cast<uint8_t>(value & 0xFF));
+        buffer_.push_back(static_cast<uint8_t>((value >> 8) & 0xFF));
+    }
+    
+    void write_u64(uint64_t value) {
+        write_u32(static_cast<uint32_t>(value & 0xFFFFFFFF));
+        write_u32(static_cast<uint32_t>((value >> 32) & 0xFFFFFFFF));
+    }
+    
+    std::vector<uint8_t>& get_buffer() { return buffer_; }
 };
 
 // BSATN Reader (simplified)
