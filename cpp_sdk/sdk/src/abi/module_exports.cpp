@@ -1,7 +1,6 @@
-#include "spacetimedb/abi/spacetime_module_exports.h"
-#include "spacetimedb/abi/abi_utils.h"
+#include "spacetimedb/abi/spacetimedb_abi.h"
 #include "spacetimedb/internal/Module.h"  // Use new Module API
-#include "spacetimedb/sdk/database.h"     // For sdk::Timestamp
+#include "spacetimedb/types.h"     // For Timestamp
 
 #include <vector>
 #include <cstddef> // For size_t
@@ -12,12 +11,9 @@
 
 extern "C" {
 
-    void __describe_module__(BytesSink description_sink_handle) {
-        // Convert BytesSink to FFI::BytesSink
-        SpacetimeDb::Internal::FFI::BytesSink sink{description_sink_handle};
-        
+    void __describe_module__(uint32_t description_sink_handle) {
         // Use the new Module API
-        SpacetimeDb::Internal::Module::__describe_module__(sink);
+        SpacetimeDb::Internal::Module::__describe_module__(description_sink_handle);
     }
 
     int16_t __call_reducer__(
@@ -25,13 +21,9 @@ extern "C" {
         uint64_t sender_0, uint64_t sender_1, uint64_t sender_2, uint64_t sender_3,
         uint64_t conn_id_0, uint64_t conn_id_1,
         uint64_t timestamp_us,
-        BytesSource args,
-        BytesSink error
+        uint32_t args,
+        uint32_t error
     ) {
-        // Convert to FFI types
-        SpacetimeDb::Internal::FFI::BytesSource source{args};
-        SpacetimeDb::Internal::FFI::BytesSink sink{error};
-        
         // Create timestamp
         SpacetimeDb::sdk::Timestamp ts;
         ts.microseconds_since_epoch = timestamp_us;
@@ -42,8 +34,8 @@ extern "C" {
             sender_0, sender_1, sender_2, sender_3,
             conn_id_0, conn_id_1,
             ts,
-            source,
-            sink
+            args,
+            error
         );
         
         // Convert Errno to int16_t

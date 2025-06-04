@@ -40,7 +40,7 @@ using BytesSink = uint32_t;
 
 // Wrapper functions that convert between our types and ABI types
 inline Errno table_id_from_name(const uint8_t* name, uint32_t name_len, TableId* out) {
-    return static_cast<Errno>(_get_table_id(name, name_len, out));
+    return static_cast<Errno>(::table_id_from_name(name, name_len, out));
 }
 
 inline Errno datastore_table_row_count(TableId table_id, uint64_t* count) {
@@ -49,9 +49,7 @@ inline Errno datastore_table_row_count(TableId table_id, uint64_t* count) {
 }
 
 inline Errno datastore_table_scan_bsatn(TableId table_id, RowIter* out) {
-    ::BufferIter iter;
-    auto err = _iter_start(table_id, &iter);
-    *out = iter;
+    auto err = _iter_start(table_id, out);
     return static_cast<Errno>(err);
 }
 
@@ -69,7 +67,7 @@ inline Errno datastore_delete_all_by_eq_bsatn(TableId table_id, const uint8_t* a
 
 // Iterator operations
 inline Errno row_iter_bsatn_advance(RowIter iter, uint8_t* buffer, uint32_t* buffer_len) {
-    ::Buffer buf;
+    uint32_t buf;
     auto err = _iter_next(iter, &buf);
     if (err == 0) {
         size_t len = _buffer_len(buf);
@@ -89,18 +87,16 @@ inline void row_iter_bsatn_close(RowIter iter) {
 
 // Bytes source/sink operations using correct ABI functions
 inline int16_t bytes_source_read(BytesSource source, uint8_t* buffer, size_t* buffer_len) {
-    ::BytesSource src{static_cast<uint32_t>(source)};
-    return ::bytes_source_read(src, buffer, buffer_len);
+    return ::bytes_source_read(source, buffer, buffer_len);
 }
 
 inline Errno bytes_sink_write(BytesSink sink, const uint8_t* buffer, size_t* buffer_len) {
-    ::BytesSink snk{static_cast<uint32_t>(sink)};
-    return static_cast<Errno>(::bytes_sink_write(snk, buffer, buffer_len));
+    return static_cast<Errno>(::bytes_sink_write(sink, buffer, buffer_len));
 }
 
 // Console operations
 inline void console_log(const uint8_t* message, uint32_t message_len, uint8_t level) {
-    _console_log(level, nullptr, 0, nullptr, 0, 0, message, message_len);
+    ::console_log(level, nullptr, 0, nullptr, 0, 0, message, message_len);
 }
 
 } // namespace FFI

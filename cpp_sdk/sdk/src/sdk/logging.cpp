@@ -1,10 +1,9 @@
 #include "spacetimedb/sdk/logging.h"
 #include "spacetimedb/abi/spacetimedb_abi.h" // For ABI functions
-#include "spacetimedb/abi/common_defs.h"   // For SpacetimeDB::Abi::to_abi (LogLevelCpp -> ::LogLevel)
 #include <cstring>
 #include <filesystem>
 
-namespace SpacetimeDB {
+namespace SpacetimeDb {
 
 void log_with_caller_info(LogLevel level, const std::string& message, 
                          const char* target, const char* filename, uint32_t line_number) {
@@ -24,7 +23,7 @@ void log_with_caller_info(LogLevel level, const std::string& message,
     }
     
     // Call the enhanced console_log function with caller information
-    ::_console_log(abi_level,
+    console_log(abi_level,
                    reinterpret_cast<const uint8_t*>(safe_target), std::strlen(safe_target),
                    reinterpret_cast<const uint8_t*>(safe_filename), std::strlen(safe_filename),
                    line_number,
@@ -58,7 +57,7 @@ void log_trace(const std::string& message) {
 
 // LogStopwatch implementation
 LogStopwatch::LogStopwatch(const std::string& name) : ended_(false) {
-    timer_id_ = ::_console_timer_start(
+    timer_id_ = console_timer_start(
         reinterpret_cast<const uint8_t*>(name.c_str()),
         name.length()
     );
@@ -72,7 +71,7 @@ LogStopwatch::~LogStopwatch() {
 
 void LogStopwatch::end() {
     if (!ended_) {
-        uint16_t status = ::_console_timer_end(timer_id_);
+        uint16_t status = console_timer_end(timer_id_);
         ended_ = true;
         // TODO: Add error handling when we implement exception system
         (void)status; // Suppress unused variable warning for now
@@ -96,4 +95,4 @@ LogStopwatch& LogStopwatch::operator=(LogStopwatch&& other) noexcept {
     return *this;
 }
 
-} // namespace SpacetimeDB
+} // namespace SpacetimeDb

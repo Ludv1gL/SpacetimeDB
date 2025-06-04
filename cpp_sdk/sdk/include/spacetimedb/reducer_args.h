@@ -13,18 +13,18 @@ template<typename... Args>
 class ReducerArgumentDeserializer {
 public:
     static std::tuple<Args...> deserialize(const uint8_t* data, size_t len) {
-        spacetimedb::bsatn::Reader reader(data, len);
+        SpacetimeDb::bsatn::Reader reader(data, len);
         return deserialize_tuple<Args...>(reader, std::index_sequence_for<Args...>{});
     }
     
 private:
     template<typename... T, size_t... Is>
-    static std::tuple<T...> deserialize_tuple(spacetimedb::bsatn::Reader& reader, std::index_sequence<Is...>) {
+    static std::tuple<T...> deserialize_tuple(SpacetimeDb::bsatn::Reader& reader, std::index_sequence<Is...>) {
         return std::make_tuple(deserialize_arg<T>(reader, Is)...);
     }
     
     template<typename T>
-    static T deserialize_arg(spacetimedb::bsatn::Reader& reader, size_t index) {
+    static T deserialize_arg(SpacetimeDb::bsatn::Reader& reader, size_t index) {
         // Each argument is wrapped in a ProductTypeElement
         // Skip the field name
         auto name_opt = reader.read_u8();
@@ -33,7 +33,7 @@ private:
         }
         
         // Deserialize the actual value
-        return spacetimedb::bsatn::bsatn_traits<T>::deserialize(reader);
+        return SpacetimeDb::bsatn::bsatn_traits<T>::deserialize(reader);
     }
 };
 
@@ -43,7 +43,7 @@ class ReducerArgumentSerializer {
 public:
     static std::vector<uint8_t> serialize(const Args&... args) {
         std::vector<uint8_t> buffer;
-        spacetimedb::bsatn::Writer writer(buffer);
+        SpacetimeDb::bsatn::Writer writer(buffer);
         
         // Write as a product type
         writer.write_u8(2); // AlgebraicType::Product
@@ -57,16 +57,16 @@ public:
     
 private:
     template<typename T>
-    static void serialize_arg(spacetimedb::bsatn::Writer& writer, const T& arg, size_t index) {
+    static void serialize_arg(SpacetimeDb::bsatn::Writer& writer, const T& arg, size_t index) {
         // Write ProductTypeElement
         writer.write_u8(0); // Some
         writer.write_string("arg" + std::to_string(index));
         
         // Write the type (simplified - in reality this should use type registry)
-        spacetimedb::bsatn::algebraic_type_of<T>::get().write_bsatn(writer);
+        SpacetimeDb::bsatn::algebraic_type_of<T>::get().write_bsatn(writer);
         
         // Write the value
-        spacetimedb::bsatn::bsatn_traits<T>::serialize(writer, arg);
+        SpacetimeDb::bsatn::bsatn_traits<T>::serialize(writer, arg);
     }
 };
 
@@ -110,7 +110,7 @@ private:
     template<typename T>
     static void add_type_ref(std::vector<uint32_t>& refs) {
         // Get type reference from registry
-        auto ref = spacetimedb::bsatn::TypeRegistry::instance().get_or_register_type<T>();
+        auto ref = SpacetimeDb::bsatn::TypeRegistry::instance().get_or_register_type<T>();
         refs.push_back(ref);
     }
 };

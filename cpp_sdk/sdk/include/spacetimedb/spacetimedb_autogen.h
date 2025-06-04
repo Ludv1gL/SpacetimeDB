@@ -34,7 +34,7 @@ struct ReducerInfo {
 // Field information for type registration
 struct FieldInfo {
     std::string name;
-    std::function<spacetimedb::bsatn::AlgebraicType()> get_algebraic_type;
+    std::function<SpacetimeDb::bsatn::AlgebraicType()> get_algebraic_type;
     std::function<void(BsatnWriter&, const void*)> serializer;
 };
 
@@ -54,21 +54,21 @@ class AutogenModuleDefBuilder {
     std::vector<TableInfo> tables_;
     std::vector<ReducerInfo> reducers_;
     std::unordered_map<std::type_index, uint32_t> type_to_ref_;
-    spacetimedb::bsatn::TypeRegistry type_registry_;
+    SpacetimeDb::bsatn::TypeRegistry type_registry_;
     
 public:
     // Register a type with its fields
     void register_type(std::type_index type_id, const std::string& name, const std::vector<FieldInfo>& fields) {
         if (type_to_ref_.find(type_id) == type_to_ref_.end()) {
             // Build the product type for this struct
-            std::vector<spacetimedb::bsatn::ProductTypeElement> elements;
+            std::vector<SpacetimeDb::bsatn::ProductTypeElement> elements;
             for (const auto& field : fields) {
                 auto field_type = field.get_algebraic_type();
                 elements.emplace_back(field.name, std::move(field_type));
             }
             
-            auto product_type = spacetimedb::bsatn::AlgebraicType::make_product(
-                std::make_unique<spacetimedb::bsatn::ProductType>(std::move(elements))
+            auto product_type = SpacetimeDb::bsatn::AlgebraicType::make_product(
+                std::make_unique<SpacetimeDb::bsatn::ProductType>(std::move(elements))
             );
             
             // Register in the type registry
@@ -279,16 +279,16 @@ template<typename T, typename FieldType>
 FieldInfo make_field(const std::string& name, FieldType T::*member_ptr) {
     return {
         name,
-        []() -> spacetimedb::bsatn::AlgebraicType {
-            return spacetimedb::bsatn::algebraic_type_of<FieldType>::get();
+        []() -> SpacetimeDb::bsatn::AlgebraicType {
+            return SpacetimeDb::bsatn::algebraic_type_of<FieldType>::get();
         },
         [member_ptr](BsatnWriter& writer, const void* obj) {
             const T* typed_obj = static_cast<const T*>(obj);
             const FieldType& value = typed_obj->*member_ptr;
             
             // Use BSATN traits for serialization
-            if constexpr (requires { spacetimedb::bsatn::bsatn_traits<FieldType>::serialize(writer, value); }) {
-                spacetimedb::bsatn::bsatn_traits<FieldType>::serialize(writer, value);
+            if constexpr (requires { SpacetimeDb::bsatn::bsatn_traits<FieldType>::serialize(writer, value); }) {
+                SpacetimeDb::bsatn::bsatn_traits<FieldType>::serialize(writer, value);
             } else {
                 // Fallback to basic serialization
                 if constexpr (std::is_same_v<FieldType, std::string>) {

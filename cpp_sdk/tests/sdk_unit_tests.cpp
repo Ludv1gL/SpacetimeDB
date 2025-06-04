@@ -3,10 +3,9 @@
 #include "spacetimedb/sdk/logging.h"           // For SpacetimeDB::log_info etc.
 #include "spacetimedb/sdk/database.h"          // For SpacetimeDB::sdk::table_insert etc.
 #include "spacetimedb/internal/Module.h"   // Updated to use new Module API
-// spacetime_module_exports.h (for __describe_module__ etc.) is implicitly included via test_common.h
-#include "spacetimedb/bsatn/writer.h"          // For bsatn::Writer (updated to new path style)
-#include "spacetimedb/bsatn/reader.h"          // For bsatn::Reader (updated to new path style)
-#include "spacetimedb/abi/abi_utils.h"         // For SpacetimeDB::Abi::Utils e.g. ManagedBytesSink
+#include "spacetimedb/abi/spacetimedb_abi.h"  // For ABI definitions
+#include "spacetimedb/bsatn/writer.h"          // For bsatn::Writer
+#include "spacetimedb/bsatn/reader.h"          // For bsatn::Reader
 
 #include <iostream>
 #include <vector>

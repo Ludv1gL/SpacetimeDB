@@ -6,10 +6,10 @@
 #include <chrono>
 #include <memory>
 
-namespace SpacetimeDB {
+namespace SpacetimeDb {
 
-// Re-expose LogLevelCpp from common_defs.h for convenience if desired, or use it directly via SpacetimeDB::Abi::LogLevelCpp
-using LogLevel = SpacetimeDB::Abi::LogLevelCpp;
+// Re-expose LogLevelCpp from common_defs.h for convenience if desired, or use it directly via SpacetimeDb::Abi::LogLevelCpp
+using LogLevel = SpacetimeDb::Abi::LogLevelCpp;
 
 /**
  * @brief Enhanced logging with caller information injection.
@@ -35,19 +35,19 @@ void log(LogLevel level, const std::string& message);
 
 // Enhanced logging macros with automatic caller information injection
 #define LOG_ERROR(message) \
-    SpacetimeDB::log_with_caller_info(SpacetimeDB::LogLevel::Error, (message), __func__, __FILE__, __LINE__)
+    SpacetimeDb::log_with_caller_info(SpacetimeDb::LogLevel::Error, (message), __func__, __FILE__, __LINE__)
 
 #define LOG_WARN(message) \
-    SpacetimeDB::log_with_caller_info(SpacetimeDB::LogLevel::Warn, (message), __func__, __FILE__, __LINE__)
+    SpacetimeDb::log_with_caller_info(SpacetimeDb::LogLevel::Warn, (message), __func__, __FILE__, __LINE__)
 
 #define LOG_INFO(message) \
-    SpacetimeDB::log_with_caller_info(SpacetimeDB::LogLevel::Info, (message), __func__, __FILE__, __LINE__)
+    SpacetimeDb::log_with_caller_info(SpacetimeDb::LogLevel::Info, (message), __func__, __FILE__, __LINE__)
 
 #define LOG_DEBUG(message) \
-    SpacetimeDB::log_with_caller_info(SpacetimeDB::LogLevel::Debug, (message), __func__, __FILE__, __LINE__)
+    SpacetimeDb::log_with_caller_info(SpacetimeDb::LogLevel::Debug, (message), __func__, __FILE__, __LINE__)
 
 #define LOG_TRACE(message) \
-    SpacetimeDB::log_with_caller_info(SpacetimeDB::LogLevel::Trace, (message), __func__, __FILE__, __LINE__)
+    SpacetimeDb::log_with_caller_info(SpacetimeDb::LogLevel::Trace, (message), __func__, __FILE__, __LINE__)
 
 /**
  * @brief Logs an error message. Convenience wrapper for `log(LogLevel::Error, ...)`.
@@ -137,31 +137,8 @@ private:
 
 #include <cstring>
 
-// Forward declare the specific ABI functions we need
-extern "C" {
-    __attribute__((import_module("spacetime_10.0"), import_name("console_log")))
-    void _console_log(
-        uint8_t level,
-        const uint8_t *target,
-        size_t target_len,
-        const uint8_t *filename,
-        size_t filename_len,
-        uint32_t line_number,
-        const uint8_t *text,
-        size_t text_len
-    );
-    
-    __attribute__((import_module("spacetime_10.0"), import_name("console_timer_start")))
-    uint32_t _console_timer_start(
-        const uint8_t *name,
-        size_t name_len
-    );
-    
-    __attribute__((import_module("spacetime_10.0"), import_name("console_timer_end")))
-    uint16_t _console_timer_end(
-        uint32_t timer_id
-    );
-}
+// Include centralized ABI
+#include "spacetimedb/abi/spacetimedb_abi.h"
 
 // Simple filename extraction without filesystem dependency
 inline const char* extract_filename(const char* path) {
@@ -186,7 +163,7 @@ inline const char* extract_filename(const char* path) {
 
 inline void log_with_caller_info(LogLevel level, const std::string& message, 
                          const char* target, const char* filename, uint32_t line_number) {
-    // Convert SpacetimeDB::LogLevel to uint8_t for ABI
+    // Convert SpacetimeDb::LogLevel to uint8_t for ABI
     uint8_t abi_level = static_cast<uint8_t>(level);
     
     // Handle nullptr parameters
@@ -194,11 +171,11 @@ inline void log_with_caller_info(LogLevel level, const std::string& message,
     const char* safe_filename = extract_filename(filename);
     
     // Call the enhanced console_log function with caller information
-    _console_log(abi_level,
-                 reinterpret_cast<const uint8_t*>(safe_target), std::strlen(safe_target),
-                 reinterpret_cast<const uint8_t*>(safe_filename), std::strlen(safe_filename),
-                 line_number,
-                 reinterpret_cast<const uint8_t*>(message.c_str()), message.length());
+    console_log(abi_level,
+                reinterpret_cast<const uint8_t*>(safe_target), std::strlen(safe_target),
+                reinterpret_cast<const uint8_t*>(safe_filename), std::strlen(safe_filename),
+                line_number,
+                reinterpret_cast<const uint8_t*>(message.c_str()), message.length());
 }
 
 inline void log(LogLevel level, const std::string& message) {
@@ -228,7 +205,7 @@ inline void log_trace(const std::string& message) {
 
 // LogStopwatch inline implementations
 inline LogStopwatch::LogStopwatch(const std::string& name) : ended_(false) {
-    timer_id_ = _console_timer_start(
+    timer_id_ = console_timer_start(
         reinterpret_cast<const uint8_t*>(name.c_str()),
         name.length()
     );
@@ -242,7 +219,7 @@ inline LogStopwatch::~LogStopwatch() {
 
 inline void LogStopwatch::end() {
     if (!ended_) {
-        uint16_t status = _console_timer_end(timer_id_);
+        uint16_t status = console_timer_end(timer_id_);
         ended_ = true;
         // TODO: Add error handling when we implement exception system
         (void)status; // Suppress unused variable warning for now
@@ -266,6 +243,6 @@ inline LogStopwatch& LogStopwatch::operator=(LogStopwatch&& other) noexcept {
     return *this;
 }
 
-} // namespace SpacetimeDB
+} // namespace SpacetimeDb
 
 #endif // SPACETIMEDB_SDK_LOGGING_H
