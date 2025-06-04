@@ -16,6 +16,7 @@
 namespace SpacetimeDb::Internal {
 
 struct ProductType {
+    SPACETIMEDB_DATA_MEMBER("elements")
     std::vector<SpacetimeDb::Internal::ProductTypeElement> elements;
 
     ProductType() = default;
@@ -36,4 +37,6 @@ struct ProductType {
 };
 } // namespace SpacetimeDb::Internal
 #include "spacetimedb/macros.h"
+SPACETIMEDB_TYPE(ProductType)
+SPACETIMEDB_DATA_CONTRACT
 SPACETIMEDB_REGISTER_TYPE(ProductType)

@@ -20,4 +20,6 @@ enum class TableType : uint8_t {
 };
 } // namespace SpacetimeDb::Internal
 #include "spacetimedb/macros.h"
+SPACETIMEDB_TYPE(TableType)
+SPACETIMEDB_DATA_CONTRACT
 SPACETIMEDB_REGISTER_TYPE(TableType)

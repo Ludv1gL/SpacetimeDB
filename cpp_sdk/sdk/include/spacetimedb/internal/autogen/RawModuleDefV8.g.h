@@ -11,17 +11,21 @@
 #include <optional>
 #include <memory>
 #include "spacetimedb/bsatn/bsatn.h"
-#include "TableDesc.g.h"
 #include "ReducerDef.g.h"
-#include "Typespace.g.h"
 #include "MiscModuleExport.g.h"
+#include "TableDesc.g.h"
+#include "Typespace.g.h"
 
 namespace SpacetimeDb::Internal {
 
 struct RawModuleDefV8 {
+    SPACETIMEDB_DATA_MEMBER("typespace")
     SpacetimeDb::Internal::Typespace typespace;
+    SPACETIMEDB_DATA_MEMBER("tables")
     std::vector<SpacetimeDb::Internal::TableDesc> tables;
+    SPACETIMEDB_DATA_MEMBER("reducers")
     std::vector<SpacetimeDb::Internal::ReducerDef> reducers;
+    SPACETIMEDB_DATA_MEMBER("misc_exports")
     std::vector<SpacetimeDb::Internal::MiscModuleExport> misc_exports;
 
     RawModuleDefV8() = default;
@@ -42,4 +46,6 @@ struct RawModuleDefV8 {
 };
 } // namespace SpacetimeDb::Internal
 #include "spacetimedb/macros.h"
+SPACETIMEDB_TYPE(RawModuleDefV8)
+SPACETIMEDB_DATA_CONTRACT
 SPACETIMEDB_REGISTER_TYPE(RawModuleDefV8)

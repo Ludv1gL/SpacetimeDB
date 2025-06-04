@@ -12,23 +12,32 @@
 #include <memory>
 #include "spacetimedb/bsatn/bsatn.h"
 #include "RawScheduleDefV9.g.h"
-#include "RawIndexDefV9.g.h"
-#include "RawSequenceDefV9.g.h"
 #include "RawConstraintDefV9.g.h"
 #include "TableType.g.h"
 #include "TableAccess.g.h"
+#include "RawIndexDefV9.g.h"
+#include "RawSequenceDefV9.g.h"
 
 namespace SpacetimeDb::Internal {
 
 struct RawTableDefV9 {
+    SPACETIMEDB_DATA_MEMBER("name")
     std::string name;
+    SPACETIMEDB_DATA_MEMBER("product_type_ref")
     uint32_t product_type_ref;
+    SPACETIMEDB_DATA_MEMBER("primary_key")
     std::vector<uint16_t> primary_key;
+    SPACETIMEDB_DATA_MEMBER("indexes")
     std::vector<SpacetimeDb::Internal::RawIndexDefV9> indexes;
+    SPACETIMEDB_DATA_MEMBER("constraints")
     std::vector<SpacetimeDb::Internal::RawConstraintDefV9> constraints;
+    SPACETIMEDB_DATA_MEMBER("sequences")
     std::vector<SpacetimeDb::Internal::RawSequenceDefV9> sequences;
+    SPACETIMEDB_DATA_MEMBER("schedule")
     std::optional<SpacetimeDb::Internal::RawScheduleDefV9> schedule;
+    SPACETIMEDB_DATA_MEMBER("table_type")
     SpacetimeDb::Internal::TableType table_type;
+    SPACETIMEDB_DATA_MEMBER("table_access")
     SpacetimeDb::Internal::TableAccess table_access;
 
     RawTableDefV9() = default;
@@ -49,4 +58,6 @@ struct RawTableDefV9 {
 };
 } // namespace SpacetimeDb::Internal
 #include "spacetimedb/macros.h"
+SPACETIMEDB_TYPE(RawTableDefV9)
+SPACETIMEDB_DATA_CONTRACT
 SPACETIMEDB_REGISTER_TYPE(RawTableDefV9)

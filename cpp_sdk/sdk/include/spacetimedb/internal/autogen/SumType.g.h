@@ -16,6 +16,7 @@
 namespace SpacetimeDb::Internal {
 
 struct SumType {
+    SPACETIMEDB_DATA_MEMBER("variants")
     std::vector<SpacetimeDb::Internal::SumTypeVariant> variants;
 
     SumType() = default;
@@ -36,4 +37,6 @@ struct SumType {
 };
 } // namespace SpacetimeDb::Internal
 #include "spacetimedb/macros.h"
+SPACETIMEDB_TYPE(SumType)
+SPACETIMEDB_DATA_CONTRACT
 SPACETIMEDB_REGISTER_TYPE(SumType)

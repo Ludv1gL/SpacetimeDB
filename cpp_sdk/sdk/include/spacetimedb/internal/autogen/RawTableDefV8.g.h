@@ -11,21 +11,29 @@
 #include <optional>
 #include <memory>
 #include "spacetimedb/bsatn/bsatn.h"
-#include "RawColumnDefV8.g.h"
-#include "RawIndexDefV8.g.h"
 #include "RawConstraintDefV8.g.h"
 #include "RawSequenceDefV8.g.h"
+#include "RawIndexDefV8.g.h"
+#include "RawColumnDefV8.g.h"
 
 namespace SpacetimeDb::Internal {
 
 struct RawTableDefV8 {
+    SPACETIMEDB_DATA_MEMBER("table_name")
     std::string table_name;
+    SPACETIMEDB_DATA_MEMBER("columns")
     std::vector<SpacetimeDb::Internal::RawColumnDefV8> columns;
+    SPACETIMEDB_DATA_MEMBER("indexes")
     std::vector<SpacetimeDb::Internal::RawIndexDefV8> indexes;
+    SPACETIMEDB_DATA_MEMBER("constraints")
     std::vector<SpacetimeDb::Internal::RawConstraintDefV8> constraints;
+    SPACETIMEDB_DATA_MEMBER("sequences")
     std::vector<SpacetimeDb::Internal::RawSequenceDefV8> sequences;
+    SPACETIMEDB_DATA_MEMBER("table_type")
     std::string table_type;
+    SPACETIMEDB_DATA_MEMBER("table_access")
     std::string table_access;
+    SPACETIMEDB_DATA_MEMBER("scheduled")
     std::optional<std::string> scheduled;
 
     RawTableDefV8() = default;
@@ -46,4 +54,6 @@ struct RawTableDefV8 {
 };
 } // namespace SpacetimeDb::Internal
 #include "spacetimedb/macros.h"
+SPACETIMEDB_TYPE(RawTableDefV8)
+SPACETIMEDB_DATA_CONTRACT
 SPACETIMEDB_REGISTER_TYPE(RawTableDefV8)

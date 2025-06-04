@@ -18,4 +18,6 @@ enum class RawMiscModuleExportV9 : uint8_t {
 };
 } // namespace SpacetimeDb::Internal
 #include "spacetimedb/macros.h"
+SPACETIMEDB_TYPE(RawMiscModuleExportV9)
+SPACETIMEDB_DATA_CONTRACT
 SPACETIMEDB_REGISTER_TYPE(RawMiscModuleExportV9)

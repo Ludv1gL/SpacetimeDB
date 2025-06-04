@@ -16,7 +16,9 @@
 namespace SpacetimeDb::Internal {
 
 struct ProductTypeElement {
+    SPACETIMEDB_DATA_MEMBER("name")
     std::optional<std::string> name;
+    SPACETIMEDB_DATA_MEMBER("algebraic_type")
     SpacetimeDb::Internal::AlgebraicType algebraic_type;
 
     ProductTypeElement() = default;
@@ -37,4 +39,6 @@ struct ProductTypeElement {
 };
 } // namespace SpacetimeDb::Internal
 #include "spacetimedb/macros.h"
+SPACETIMEDB_TYPE(ProductTypeElement)
+SPACETIMEDB_DATA_CONTRACT
 SPACETIMEDB_REGISTER_TYPE(ProductTypeElement)

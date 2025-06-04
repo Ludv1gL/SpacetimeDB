@@ -15,7 +15,9 @@
 namespace SpacetimeDb::Internal {
 
 struct RawScopedTypeNameV9 {
+    SPACETIMEDB_DATA_MEMBER("scope")
     std::vector<std::string> scope;
+    SPACETIMEDB_DATA_MEMBER("name")
     std::string name;
 
     RawScopedTypeNameV9() = default;
@@ -36,4 +38,6 @@ struct RawScopedTypeNameV9 {
 };
 } // namespace SpacetimeDb::Internal
 #include "spacetimedb/macros.h"
+SPACETIMEDB_TYPE(RawScopedTypeNameV9)
+SPACETIMEDB_DATA_CONTRACT
 SPACETIMEDB_REGISTER_TYPE(RawScopedTypeNameV9)

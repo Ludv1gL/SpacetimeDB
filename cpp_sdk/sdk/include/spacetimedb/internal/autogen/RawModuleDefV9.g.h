@@ -12,20 +12,26 @@
 #include <memory>
 #include "spacetimedb/bsatn/bsatn.h"
 #include "RawTableDefV9.g.h"
+#include "RawMiscModuleExportV9.g.h"
+#include "RawRowLevelSecurityDefV9.g.h"
+#include "RawTypeDefV9.g.h"
 #include "RawReducerDefV9.g.h"
 #include "Typespace.g.h"
-#include "RawRowLevelSecurityDefV9.g.h"
-#include "RawMiscModuleExportV9.g.h"
-#include "RawTypeDefV9.g.h"
 
 namespace SpacetimeDb::Internal {
 
 struct RawModuleDefV9 {
+    SPACETIMEDB_DATA_MEMBER("typespace")
     SpacetimeDb::Internal::Typespace typespace;
+    SPACETIMEDB_DATA_MEMBER("tables")
     std::vector<SpacetimeDb::Internal::RawTableDefV9> tables;
+    SPACETIMEDB_DATA_MEMBER("reducers")
     std::vector<SpacetimeDb::Internal::RawReducerDefV9> reducers;
+    SPACETIMEDB_DATA_MEMBER("types")
     std::vector<SpacetimeDb::Internal::RawTypeDefV9> types;
+    SPACETIMEDB_DATA_MEMBER("misc_exports")
     std::vector<SpacetimeDb::Internal::RawMiscModuleExportV9> misc_exports;
+    SPACETIMEDB_DATA_MEMBER("row_level_security")
     std::vector<SpacetimeDb::Internal::RawRowLevelSecurityDefV9> row_level_security;
 
     RawModuleDefV9() = default;
@@ -46,4 +52,6 @@ struct RawModuleDefV9 {
 };
 } // namespace SpacetimeDb::Internal
 #include "spacetimedb/macros.h"
+SPACETIMEDB_TYPE(RawModuleDefV9)
+SPACETIMEDB_DATA_CONTRACT
 SPACETIMEDB_REGISTER_TYPE(RawModuleDefV9)

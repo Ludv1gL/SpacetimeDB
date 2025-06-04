@@ -17,8 +17,11 @@
 namespace SpacetimeDb::Internal {
 
 struct RawReducerDefV9 {
+    SPACETIMEDB_DATA_MEMBER("name")
     std::string name;
+    SPACETIMEDB_DATA_MEMBER("params")
     SpacetimeDb::Internal::ProductType params;
+    SPACETIMEDB_DATA_MEMBER("lifecycle")
     std::optional<SpacetimeDb::Internal::Lifecycle> lifecycle;
 
     RawReducerDefV9() = default;
@@ -39,4 +42,6 @@ struct RawReducerDefV9 {
 };
 } // namespace SpacetimeDb::Internal
 #include "spacetimedb/macros.h"
+SPACETIMEDB_TYPE(RawReducerDefV9)
+SPACETIMEDB_DATA_CONTRACT
 SPACETIMEDB_REGISTER_TYPE(RawReducerDefV9)

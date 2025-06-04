@@ -15,8 +15,11 @@
 namespace SpacetimeDb::Internal {
 
 struct RawConstraintDefV8 {
+    SPACETIMEDB_DATA_MEMBER("constraint_name")
     std::string constraint_name;
+    SPACETIMEDB_DATA_MEMBER("constraints")
     uint8_t constraints;
+    SPACETIMEDB_DATA_MEMBER("columns")
     std::vector<uint16_t> columns;
 
     RawConstraintDefV8() = default;
@@ -37,4 +40,6 @@ struct RawConstraintDefV8 {
 };
 } // namespace SpacetimeDb::Internal
 #include "spacetimedb/macros.h"
+SPACETIMEDB_TYPE(RawConstraintDefV8)
+SPACETIMEDB_DATA_CONTRACT
 SPACETIMEDB_REGISTER_TYPE(RawConstraintDefV8)

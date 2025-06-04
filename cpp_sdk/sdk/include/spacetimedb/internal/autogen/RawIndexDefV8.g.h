@@ -16,9 +16,13 @@
 namespace SpacetimeDb::Internal {
 
 struct RawIndexDefV8 {
+    SPACETIMEDB_DATA_MEMBER("index_name")
     std::string index_name;
+    SPACETIMEDB_DATA_MEMBER("is_unique")
     bool is_unique;
+    SPACETIMEDB_DATA_MEMBER("index_type")
     SpacetimeDb::Internal::IndexType index_type;
+    SPACETIMEDB_DATA_MEMBER("columns")
     std::vector<uint16_t> columns;
 
     RawIndexDefV8() = default;
@@ -39,4 +43,6 @@ struct RawIndexDefV8 {
 };
 } // namespace SpacetimeDb::Internal
 #include "spacetimedb/macros.h"
+SPACETIMEDB_TYPE(RawIndexDefV8)
+SPACETIMEDB_DATA_CONTRACT
 SPACETIMEDB_REGISTER_TYPE(RawIndexDefV8)

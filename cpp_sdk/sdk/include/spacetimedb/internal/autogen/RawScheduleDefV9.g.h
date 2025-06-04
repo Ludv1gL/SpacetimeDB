@@ -15,8 +15,11 @@
 namespace SpacetimeDb::Internal {
 
 struct RawScheduleDefV9 {
+    SPACETIMEDB_DATA_MEMBER("name")
     std::optional<std::string> name;
+    SPACETIMEDB_DATA_MEMBER("reducer_name")
     std::string reducer_name;
+    SPACETIMEDB_DATA_MEMBER("scheduled_at_column")
     uint16_t scheduled_at_column;
 
     RawScheduleDefV9() = default;
@@ -37,4 +40,6 @@ struct RawScheduleDefV9 {
 };
 } // namespace SpacetimeDb::Internal
 #include "spacetimedb/macros.h"
+SPACETIMEDB_TYPE(RawScheduleDefV9)
+SPACETIMEDB_DATA_CONTRACT
 SPACETIMEDB_REGISTER_TYPE(RawScheduleDefV9)

@@ -16,7 +16,9 @@
 namespace SpacetimeDb::Internal {
 
 struct TableDesc {
+    SPACETIMEDB_DATA_MEMBER("schema")
     SpacetimeDb::Internal::RawTableDefV8 schema;
+    SPACETIMEDB_DATA_MEMBER("data")
     uint32_t data;
 
     TableDesc() = default;
@@ -37,4 +39,6 @@ struct TableDesc {
 };
 } // namespace SpacetimeDb::Internal
 #include "spacetimedb/macros.h"
+SPACETIMEDB_TYPE(TableDesc)
+SPACETIMEDB_DATA_CONTRACT
 SPACETIMEDB_REGISTER_TYPE(TableDesc)

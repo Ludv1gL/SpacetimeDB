@@ -15,7 +15,9 @@
 namespace SpacetimeDb::Internal {
 
 struct TypeAlias {
+    SPACETIMEDB_DATA_MEMBER("name")
     std::string name;
+    SPACETIMEDB_DATA_MEMBER("ty")
     uint32_t ty;
 
     TypeAlias() = default;
@@ -36,4 +38,6 @@ struct TypeAlias {
 };
 } // namespace SpacetimeDb::Internal
 #include "spacetimedb/macros.h"
+SPACETIMEDB_TYPE(TypeAlias)
+SPACETIMEDB_DATA_CONTRACT
 SPACETIMEDB_REGISTER_TYPE(TypeAlias)

@@ -16,7 +16,9 @@
 namespace SpacetimeDb::Internal {
 
 struct RawColumnDefV8 {
+    SPACETIMEDB_DATA_MEMBER("col_name")
     std::string col_name;
+    SPACETIMEDB_DATA_MEMBER("col_type")
     SpacetimeDb::Internal::AlgebraicType col_type;
 
     RawColumnDefV8() = default;
@@ -37,4 +39,6 @@ struct RawColumnDefV8 {
 };
 } // namespace SpacetimeDb::Internal
 #include "spacetimedb/macros.h"
+SPACETIMEDB_TYPE(RawColumnDefV8)
+SPACETIMEDB_DATA_CONTRACT
 SPACETIMEDB_REGISTER_TYPE(RawColumnDefV8)

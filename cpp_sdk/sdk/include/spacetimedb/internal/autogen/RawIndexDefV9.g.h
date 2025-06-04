@@ -16,8 +16,11 @@
 namespace SpacetimeDb::Internal {
 
 struct RawIndexDefV9 {
+    SPACETIMEDB_DATA_MEMBER("name")
     std::optional<std::string> name;
+    SPACETIMEDB_DATA_MEMBER("accessor_name")
     std::optional<std::string> accessor_name;
+    SPACETIMEDB_DATA_MEMBER("algorithm")
     SpacetimeDb::Internal::RawIndexAlgorithm algorithm;
 
     RawIndexDefV9() = default;
@@ -38,4 +41,6 @@ struct RawIndexDefV9 {
 };
 } // namespace SpacetimeDb::Internal
 #include "spacetimedb/macros.h"
+SPACETIMEDB_TYPE(RawIndexDefV9)
+SPACETIMEDB_DATA_CONTRACT
 SPACETIMEDB_REGISTER_TYPE(RawIndexDefV9)

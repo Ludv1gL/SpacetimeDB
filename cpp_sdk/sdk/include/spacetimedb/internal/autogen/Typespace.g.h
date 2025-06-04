@@ -16,6 +16,7 @@
 namespace SpacetimeDb::Internal {
 
 struct Typespace {
+    SPACETIMEDB_DATA_MEMBER("types")
     std::vector<SpacetimeDb::Internal::AlgebraicType> types;
 
     Typespace() = default;
@@ -36,4 +37,6 @@ struct Typespace {
 };
 } // namespace SpacetimeDb::Internal
 #include "spacetimedb/macros.h"
+SPACETIMEDB_TYPE(Typespace)
+SPACETIMEDB_DATA_CONTRACT
 SPACETIMEDB_REGISTER_TYPE(Typespace)

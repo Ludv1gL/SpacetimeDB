@@ -15,11 +15,17 @@
 namespace SpacetimeDb::Internal {
 
 struct RawSequenceDefV9 {
+    SPACETIMEDB_DATA_MEMBER("name")
     std::optional<std::string> name;
+    SPACETIMEDB_DATA_MEMBER("column")
     uint16_t column;
+    SPACETIMEDB_DATA_MEMBER("start")
     std::optional<spacetimedb::u128> start;
+    SPACETIMEDB_DATA_MEMBER("min_value")
     std::optional<spacetimedb::u128> min_value;
+    SPACETIMEDB_DATA_MEMBER("max_value")
     std::optional<spacetimedb::u128> max_value;
+    SPACETIMEDB_DATA_MEMBER("increment")
     spacetimedb::u128 increment;
 
     RawSequenceDefV9() = default;
@@ -40,4 +46,6 @@ struct RawSequenceDefV9 {
 };
 } // namespace SpacetimeDb::Internal
 #include "spacetimedb/macros.h"
+SPACETIMEDB_TYPE(RawSequenceDefV9)
+SPACETIMEDB_DATA_CONTRACT
 SPACETIMEDB_REGISTER_TYPE(RawSequenceDefV9)

@@ -16,8 +16,11 @@
 namespace SpacetimeDb::Internal {
 
 struct RawTypeDefV9 {
+    SPACETIMEDB_DATA_MEMBER("name")
     SpacetimeDb::Internal::RawScopedTypeNameV9 name;
+    SPACETIMEDB_DATA_MEMBER("ty")
     uint32_t ty;
+    SPACETIMEDB_DATA_MEMBER("custom_ordering")
     bool custom_ordering;
 
     RawTypeDefV9() = default;
@@ -38,4 +41,6 @@ struct RawTypeDefV9 {
 };
 } // namespace SpacetimeDb::Internal
 #include "spacetimedb/macros.h"
+SPACETIMEDB_TYPE(RawTypeDefV9)
+SPACETIMEDB_DATA_CONTRACT
 SPACETIMEDB_REGISTER_TYPE(RawTypeDefV9)

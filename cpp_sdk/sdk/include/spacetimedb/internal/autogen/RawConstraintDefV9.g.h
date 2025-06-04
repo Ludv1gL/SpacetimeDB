@@ -16,7 +16,9 @@
 namespace SpacetimeDb::Internal {
 
 struct RawConstraintDefV9 {
+    SPACETIMEDB_DATA_MEMBER("name")
     std::optional<std::string> name;
+    SPACETIMEDB_DATA_MEMBER("data")
     SpacetimeDb::Internal::RawConstraintDataV9 data;
 
     RawConstraintDefV9() = default;
@@ -37,4 +39,6 @@ struct RawConstraintDefV9 {
 };
 } // namespace SpacetimeDb::Internal
 #include "spacetimedb/macros.h"
+SPACETIMEDB_TYPE(RawConstraintDefV9)
+SPACETIMEDB_DATA_CONTRACT
 SPACETIMEDB_REGISTER_TYPE(RawConstraintDefV9)

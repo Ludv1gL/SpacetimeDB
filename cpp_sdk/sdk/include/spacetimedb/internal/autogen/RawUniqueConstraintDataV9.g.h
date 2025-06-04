@@ -15,6 +15,7 @@
 namespace SpacetimeDb::Internal {
 
 struct RawUniqueConstraintDataV9 {
+    SPACETIMEDB_DATA_MEMBER("columns")
     std::vector<uint16_t> columns;
 
     RawUniqueConstraintDataV9() = default;
@@ -35,4 +36,6 @@ struct RawUniqueConstraintDataV9 {
 };
 } // namespace SpacetimeDb::Internal
 #include "spacetimedb/macros.h"
+SPACETIMEDB_TYPE(RawUniqueConstraintDataV9)
+SPACETIMEDB_DATA_CONTRACT
 SPACETIMEDB_REGISTER_TYPE(RawUniqueConstraintDataV9)

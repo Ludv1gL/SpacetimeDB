@@ -15,6 +15,7 @@
 namespace SpacetimeDb::Internal {
 
 struct RawRowLevelSecurityDefV9 {
+    SPACETIMEDB_DATA_MEMBER("sql")
     std::string sql;
 
     RawRowLevelSecurityDefV9() = default;
@@ -35,4 +36,6 @@ struct RawRowLevelSecurityDefV9 {
 };
 } // namespace SpacetimeDb::Internal
 #include "spacetimedb/macros.h"
+SPACETIMEDB_TYPE(RawRowLevelSecurityDefV9)
+SPACETIMEDB_DATA_CONTRACT
 SPACETIMEDB_REGISTER_TYPE(RawRowLevelSecurityDefV9)

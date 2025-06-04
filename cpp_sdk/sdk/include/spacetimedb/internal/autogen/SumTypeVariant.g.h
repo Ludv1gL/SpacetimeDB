@@ -16,7 +16,9 @@
 namespace SpacetimeDb::Internal {
 
 struct SumTypeVariant {
+    SPACETIMEDB_DATA_MEMBER("name")
     std::optional<std::string> name;
+    SPACETIMEDB_DATA_MEMBER("algebraic_type")
     SpacetimeDb::Internal::AlgebraicType algebraic_type;
 
     SumTypeVariant() = default;
@@ -37,4 +39,6 @@ struct SumTypeVariant {
 };
 } // namespace SpacetimeDb::Internal
 #include "spacetimedb/macros.h"
+SPACETIMEDB_TYPE(SumTypeVariant)
+SPACETIMEDB_DATA_CONTRACT
 SPACETIMEDB_REGISTER_TYPE(SumTypeVariant)

@@ -16,7 +16,9 @@
 namespace SpacetimeDb::Internal {
 
 struct ReducerDef {
+    SPACETIMEDB_DATA_MEMBER("name")
     std::string name;
+    SPACETIMEDB_DATA_MEMBER("args")
     std::vector<SpacetimeDb::Internal::ProductTypeElement> args;
 
     ReducerDef() = default;
@@ -37,4 +39,6 @@ struct ReducerDef {
 };
 } // namespace SpacetimeDb::Internal
 #include "spacetimedb/macros.h"
+SPACETIMEDB_TYPE(ReducerDef)
+SPACETIMEDB_DATA_CONTRACT
 SPACETIMEDB_REGISTER_TYPE(ReducerDef)
