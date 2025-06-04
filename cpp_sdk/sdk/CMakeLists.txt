@@ -22,6 +22,8 @@ set(SDK_SOURCES
     src/wasi_shims.cpp
     src/internal/Module.cpp
     src/internal/FFI.cpp
+    src/transaction.cpp
+    src/versioning.cpp
 )
 
 # Create the SDK library
