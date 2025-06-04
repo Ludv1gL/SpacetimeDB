@@ -248,21 +248,14 @@ namespace index_utils {
  * Macros for index definition
  */
 
-// Single column B-tree index
-#define SPACETIMEDB_INDEX_BTREE(table_type, column_name) \
-    static constexpr auto _index_btree_##column_name = true;
-
-// Multi-column B-tree index with custom name
-#define SPACETIMEDB_INDEX_BTREE_MULTI(table_type, index_name, ...) \
-    static constexpr auto _index_btree_multi_##index_name = true;
-
-// Unique constraint
-#define SPACETIMEDB_INDEX_UNIQUE(table_type, column_name) \
-    static constexpr auto _index_unique_##column_name = true;
-
-// Primary key (unique + primary constraint)
-#define SPACETIMEDB_INDEX_PRIMARY_KEY(table_type, column_name) \
-    static constexpr auto _index_primary_##column_name = true;
+// Note: Index definition macros have been consolidated in macros.h
+// Use SPACETIMEDB_INDEX_BTREE, SPACETIMEDB_INDEX_UNIQUE etc from macros.h
+// These marker variables are for internal use by the index system
+namespace internal {
+    template<typename T> struct index_markers {
+        // Markers will be set by macros in macros.h
+    };
+}
 
 } // namespace spacetimedb
 

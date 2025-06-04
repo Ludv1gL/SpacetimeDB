@@ -44,33 +44,33 @@ public:
         buffer.push_back(val);
     }
     
-    void write_u16(uint16_t val) {
+    void write_u16_le(uint16_t val) {
         buffer.push_back(val & 0xFF);
         buffer.push_back((val >> 8) & 0xFF);
     }
     
-    void write_u32(uint32_t val) {
+    void write_u32_le(uint32_t val) {
         buffer.push_back(val & 0xFF);
         buffer.push_back((val >> 8) & 0xFF);
         buffer.push_back((val >> 16) & 0xFF);
         buffer.push_back((val >> 24) & 0xFF);
     }
     
-    void write_u64(uint64_t val) {
+    void write_u64_le(uint64_t val) {
         for (int i = 0; i < 8; i++) {
             buffer.push_back((val >> (i * 8)) & 0xFF);
         }
     }
     
     void write_string(const std::string& str) {
-        write_u32(str.length());
+        write_u32_le(str.length());
         for (char c : str) {
             buffer.push_back(static_cast<uint8_t>(c));
         }
     }
     
     void write_vec_len(size_t len) {
-        write_u32(static_cast<uint32_t>(len));
+        write_u32_le(static_cast<uint32_t>(len));
     }
     
     std::vector<uint8_t>& get_buffer() { return buffer; }
@@ -84,9 +84,9 @@ struct TestData {
     int32_t value;
     
     void serialize(SimpleWriter& writer) const {
-        writer.write_u32(id);
+        writer.write_u32_le(id);
         writer.write_string(name);
-        writer.write_u32(static_cast<uint32_t>(value));
+        writer.write_u32_le(static_cast<uint32_t>(value));
     }
 };
 
@@ -98,6 +98,8 @@ extern "C" {
         
         // RawModuleDef::V9 tag
         w.write_u8(1);
+        
+        // Typespace - just write the types vec and names vec
         
         // 1. Typespace
         // types: Vec<AlgebraicType>
@@ -126,13 +128,13 @@ extern "C" {
         w.write_vec_len(1);
         w.write_vec_len(0); // scope
         w.write_string("TestData");
-        w.write_u32(0); // type ref
+        w.write_u32_le(0); // type ref
         
         // 2. tables: Vec<RawTableDefV9>
         w.write_vec_len(1); // 1 table
         
         w.write_string("test_data"); // name
-        w.write_u32(0); // product_type_ref
+        w.write_u32_le(0); // product_type_ref
         w.write_u8(1); // primary_key: None
         w.write_vec_len(0); // indexes
         w.write_vec_len(0); // constraints
@@ -179,8 +181,41 @@ extern "C" {
     }
 }
 
-// The SDK provides __call_reducer__ and __describe_module__ exports
-// We just need to register our reducers with the module system
+// Forward declarations for reducers
+extern "C" {
+    void __init__(uint32_t source, uint32_t sink);
+    void test_insert(uint32_t source, uint32_t sink);
+    void test_count(uint32_t source, uint32_t sink);
+}
+
+// Module's call reducer implementation
+extern "C" {
+    __attribute__((export_name("__call_reducer__")))
+    int16_t __call_reducer__(
+        uint32_t reducer_id,
+        uint64_t sender_0, uint64_t sender_1, uint64_t sender_2, uint64_t sender_3,
+        uint64_t conn_id_0, uint64_t conn_id_1,
+        uint64_t timestamp_us,
+        uint32_t args_source,
+        uint32_t error_sink
+    ) {
+        // Simple dispatch based on reducer ID
+        switch (reducer_id) {
+            case 0: // __init__
+                __init__(args_source, error_sink);
+                return 0;
+            case 1: // test_insert
+                test_insert(args_source, error_sink);
+                return 0;
+            case 2: // test_count
+                test_count(args_source, error_sink);
+                return 0;
+            default:
+                log_info("Unknown reducer ID: " + std::to_string(reducer_id));
+                return -1; // NO_SUCH_REDUCER
+        }
+    }
+}
 
 // Reducers
 extern "C" {

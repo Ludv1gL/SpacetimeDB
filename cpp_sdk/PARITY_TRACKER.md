@@ -1,6 +1,8 @@
 # C++ SDK Feature Parity Tracker
 
-## 🎉 Status: 100% Feature Parity Achieved! 🎉
+## ⚠️ Status: 100% Feature Parity (API Level) - Compilation Blocked ⚠️
+
+### Critical Issue: The SDK has namespace conflicts preventing compilation
 
 | Feature Category | Status | Progress | Notes |
 |-----------------|--------|----------|-------|
@@ -139,8 +141,49 @@ With 100% feature parity achieved, the C++ SDK is ready for production use. Futu
 - ✅ Type-safe and memory-safe
 - ✅ Production-ready implementation
 
+## Known Issues
+
+### 1. Namespace Conflicts (BLOCKING)
+- Mixed use of `spacetimedb` vs `SpacetimeDb` namespaces
+- Types defined in one namespace, referenced in another
+- Prevents SDK compilation
+
+### 2. Build System Issues
+- SDK is not header-only
+- Requires linking ~15 source files
+- No CMake configuration provided
+- Missing build documentation
+
+### 3. Module Publishing
+- SDK-generated modules fail to publish
+- Module description encoding issues
+- Manual implementation required for working modules
+
+## Current Workaround
+
+Modules must be implemented manually without using the SDK:
+```cpp
+// Direct FFI implementation bypassing SDK
+extern "C" {
+    __attribute__((export_name("__describe_module__")))
+    void __describe_module__(uint32_t sink) { /* ... */ }
+    
+    __attribute__((export_name("__call_reducer__")))
+    int16_t __call_reducer__(...) { /* ... */ }
+}
+```
+
 ## Conclusion
 
-The SpacetimeDB C++ SDK now offers complete feature parity with the C# and Rust SDKs. Developers can leverage the full power of SpacetimeDB using modern C++ with all advanced features including BSATN type generation, reducer arguments, field renaming, and row-level security.
+The SpacetimeDB C++ SDK has achieved complete feature parity at the API level with the C# and Rust SDKs. All features are implemented including BSATN type generation, reducer arguments, field renaming, and row-level security.
 
-**The C++ SDK is ready for production use!** 🚀
+**However, the SDK is currently unusable due to namespace conflicts and build system issues.** These technical debt issues must be resolved before the SDK can be used in production.
+
+### Next Steps Required:
+1. Fix namespace inconsistencies (standardize on `SpacetimeDb`)
+2. Fix compilation errors
+3. Create proper build system
+4. Add working examples
+5. Test module publishing
+
+**Current Status: Feature Complete but Non-Functional** ⚠️
