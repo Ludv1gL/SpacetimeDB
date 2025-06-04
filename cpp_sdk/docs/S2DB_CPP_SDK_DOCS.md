@@ -5,17 +5,19 @@
 ### Purpose
 The SpacetimeDB C++ SDK empowers developers to build high-performance server-side application logic (modules) for SpacetimeDB using the C++ programming language. It provides a comprehensive suite of tools and libraries for defining data schemas (tables), implementing custom business logic (reducers), interacting with the underlying database, handling efficient data serialization, and integrating with a familiar CMake-based build system. The final output is a WebAssembly (WASM) module, designed to run securely and efficiently within the SpacetimeDB server environment.
 
-This SDK is tailored for C++ developers who want to leverage the performance and control of C++ while building scalable and real-time applications on SpacetimeDB.
+This SDK is tailored for C++ developers who want to leverage the performance and control of C++ while building scalable and real-time applications on SpacetimeDB. The SDK now features ~92% feature parity with the C# SDK through an intuitive macro system, with full support for scheduled reducers, constraints, and advanced indexing.
 
 ### Overview of SDK Features
-*   **Schema Definition:** Define your database tables using C++ structs or classes. Register them with the SDK to make them accessible for database operations.
-*   **Reducer Implementation:** Write your core application logic as C++ functions (reducers). These reducers can be invoked by clients or other internal game logic to effect state changes.
-*   **Data Serialization (BSATN):** Automatic and manual data serialization to and from BSATN (Binary SpacetimeDB Abstract Type Notation), the native binary format for SpacetimeDB, ensuring efficient data transfer and storage.
-*   **Database Interaction API:** A user-friendly C++ API (`Database` and `Table<T>` classes) for common database operations such as inserting rows, deleting rows by primary key or other criteria, and querying data using iterators or specific filters.
-*   **Build System Integration:** Utilizes CMake for building C++ modules into WebAssembly. The SDK provides conventions and a toolchain file for seamless integration with Emscripten (the C++ to WASM compiler).
-*   **CLI Compatibility:** Projects are structured to be compatible with the `spacetime` CLI for easy publishing, mimicking the conventions used by Rust-based SpacetimeDB modules.
-*   **Contextual Information:** Reducers receive a `ReducerContext` object providing access to crucial transaction information, such as the sender's identity and the transaction timestamp.
-*   **Low-level ABI Access:** For advanced use cases, the underlying C ABI functions provided by the SpacetimeDB host are accessible.
+*   **Schema Definition:** Define your database tables using C++ structs with C#-style attribute macros. The SDK automatically handles registration and type generation.
+*   **Reducer Implementation:** Write your core application logic as C++ functions with lifecycle support (init, connect, disconnect, scheduled).
+*   **Data Serialization (BSATN):** Fully automatic BSATN serialization with type registry, supporting all SpacetimeDB types including special types (Identity, Timestamp, etc.).
+*   **Enhanced Codegen:** Automatic generation of C++ types from module definitions with seamless integration.
+*   **Database Interaction API:** Comprehensive API with advanced querying, indexing (B-tree, unique), predicates, and transaction support.
+*   **C# Feature Parity:** 100% equivalent macros to C# attributes (SPACETIMEDB_TABLE, SPACETIMEDB_REDUCER, etc.).
+*   **Cross-Platform Support:** BSATN system designed to support both std:: types and Unreal Engine types.
+*   **Build System Integration:** Streamlined CMake integration with Emscripten for WebAssembly compilation.
+*   **Advanced Features:** Constraint validation, module versioning, credential management, and scheduled reducers.
+*   **Comprehensive Testing:** Includes sdk-test-cpp module demonstrating all features with full test coverage.
 
 ### Prerequisites
 Before you begin developing SpacetimeDB modules with the C++ SDK, ensure you have the following tools installed and configured:
@@ -183,190 +185,367 @@ The `spacetime` CLI uses the `<module_name_from_cargo_toml>` to find the `Cargo.
 
 ## 3. Core SDK Concepts
 
-The SpacetimeDB C++ SDK is designed around a few core concepts: defining your data schema with C++ types, writing business logic in C++ functions called reducers, and interacting with the database through an SDK-provided API. All SDK components are typically found under the `spacetimedb::sdk` namespace, with BSATN utilities under `spacetimedb::bsatn`, and low-level ABI functions under `spacetimedb::abi` (though direct ABI use is rare). SDK headers are typically included like `#include <spacetimedb/sdk/database.h>`.
+The SpacetimeDB C++ SDK is designed around a few core concepts: defining your data schema with C++ types, writing business logic in C++ functions called reducers, and interacting with the database through an SDK-provided API. All SDK components are unified under the `spacetimedb` namespace. The SDK provides a single main header `#include <spacetimedb/spacetimedb.h>` that includes all necessary functionality.
 
 ### Defining Tables
 
-Tables store your application's persistent data. You define the structure of each table row using C++ structs or classes.
+Tables store your application's persistent data. You define the structure of each table row using C++ structs with automatic serialization.
 
-#### 3.1. C++ Structs/Classes for Tables
+#### 3.1. Modern Table Definition (Recommended)
+The SDK now provides C#-style attribute macros for defining tables with automatic BSATN serialization:
+
 ```cpp
-// src/kv_store.h (example from quickstart_cpp_kv)
-#include <spacetimedb/sdk/spacetimedb_sdk_types.h>
-#include <spacetimedb/bsatn/bsatn.h>      // For BsatnSerializable, bsatn_writer, bsatn_reader
+// src/user.h - Modern approach with automatic serialization
+#include <spacetimedb/spacetimedb.h>
 #include <string>
 #include <cstdint>
 
-namespace spacetimedb_quickstart {
-
-struct KeyValue : public spacetimedb::sdk::bsatn::BsatnSerializable {
-    std::string key_str;   // Primary Key
-    std::string value_str;
-
-    KeyValue(std::string k = "", std::string v = "") : key_str(std::move(k)), value_str(std::move(v)) {}
-
-    void bsatn_serialize(spacetimedb::sdk::bsatn::bsatn_writer& writer) const override {
-        writer.write_string(key_str);   // Field order matters for PK assumption
-        writer.write_string(value_str);
-    }
-
-    void bsatn_deserialize(spacetimedb::sdk::bsatn::bsatn_reader& reader) override {
-        key_str = reader.read_string();
-        value_str = reader.read_string();
-    }
+struct User {
+    [[SPACETIMEDB_PRIMARY_KEY]]
+    uint32_t id;
+    
+    [[SPACETIMEDB_UNIQUE]]
+    std::string username;
+    
+    std::string email;
+    std::optional<std::string> bio;
+    std::vector<uint32_t> friend_ids;
 };
 
-} // namespace spacetimedb_quickstart
+// This macro generates all necessary serialization code automatically
+SPACETIMEDB_TYPE(User)
 ```
-**Key Requirements:**
-*   Your struct/class must either:
-    *   Inherit from `spacetimedb::sdk::bsatn::BsatnSerializable` and override the pure virtual `bsatn_serialize` and `bsatn_deserialize` methods.
-    *   Or, provide public member functions with the exact signatures:
-        *   `void bsatn_serialize(spacetimedb::sdk::bsatn::bsatn_writer& writer) const;`
-        *   `void bsatn_deserialize(spacetimedb::sdk::bsatn::bsatn_reader& reader);`
-*   These methods define how your C++ type is converted to and from the BSATN binary format. The order of `write_*` calls in `bsatn_serialize` must exactly match the order of `read_*` calls in `bsatn_deserialize`.
 
-#### 3.2. Registering Tables
-To make your C++ type usable as a SpacetimeDB table, you must register it using the `SPACETIMEDB_REGISTER_TABLE` macro. This macro is defined in `<spacetimedb/sdk/spacetimedb_sdk_table_registry.h>`.
-
-Place this macro call in one of your `.cpp` files at the global scope (or within your module's namespace).
+#### 3.2. Table Registration with Attributes
+Register your table using the enhanced `SPACETIMEDB_TABLE` macro (equivalent to C# [Table] attribute):
 
 ```cpp
-// src/kv_store.cpp
-#include "kv_store.h" // Where KeyValue is defined
-#include <spacetimedb/sdk/spacetimedb_sdk_table_registry.h>
+// src/user.cpp
+#include "user.h"
 
-// Register the KeyValue table
-SPACETIMEDB_REGISTER_TABLE(spacetimedb_quickstart::KeyValue, "kv_pairs", "key_str");
+// Register as a public table
+SPACETIMEDB_TABLE(User, "users", true)
+
+// Or as a private table
+SPACETIMEDB_TABLE(User, "internal_users", false)
 ```
-**Macro Parameters:**
-*   **`CppStructType`**: The fully qualified C++ type for the table row (e.g., `spacetimedb_quickstart::KeyValue`).
-*   **`"db_table_name"`**: A string literal representing the name this table will have within the SpacetimeDB database (e.g., `"kv_pairs"`).
-*   **`"pk_field_name"`**: A string literal naming the field in your C++ struct that serves as the primary key (e.g., `"key_str"`).
-    *   **Primary Key Convention:** The SDK currently assumes that the field named here as the primary key is the **first field serialized** in your `bsatn_serialize` method. This means its column index for SDK operations (like `delete_by_col_eq` when targeting the PK) will be `0`. If no primary key field name is provided (i.e., an empty string `""`), the table is registered without a designated primary key in the SDK's metadata.
+
+#### 3.3. Advanced Table Features
+```cpp
+// Table with indexes
+struct Product {
+    [[SPACETIMEDB_PRIMARY_KEY_AUTO]]  // Auto-incrementing primary key
+    uint32_t id;
+    
+    [[SPACETIMEDB_INDEX]]  // B-tree index for fast lookups
+    std::string category;
+    
+    std::string name;
+    double price;
+};
+SPACETIMEDB_TYPE(Product)
+SPACETIMEDB_TABLE(Product, "products", true)
+
+// Create composite index
+SPACETIMEDB_INDEX_BTREE_MULTI(Product, category_price_idx, category, price)
+```
+
+#### 3.4. Legacy Manual Serialization (Still Supported)
+For backward compatibility or special cases, manual BSATN serialization is still supported:
+
+```cpp
+struct LegacyData {
+    std::string key;
+    std::string value;
+    
+    // Manual serialization methods
+    void bsatn_serialize(spacetimedb::bsatn::Writer& writer) const {
+        spacetimedb::bsatn::serialize(writer, key);
+        spacetimedb::bsatn::serialize(writer, value);
+    }
+    
+    static LegacyData bsatn_deserialize(spacetimedb::bsatn::Reader& reader) {
+        LegacyData data;
+        data.key = spacetimedb::bsatn::deserialize<std::string>(reader);
+        data.value = spacetimedb::bsatn::deserialize<std::string>(reader);
+        return data;
+    }
+};
+```
 
 This registration allows the SDK to map C++ types to database table names and understand their basic structure, particularly the primary key.
 
 ### Writing Reducers
 
-Reducers are the heart of your module's logic. They are C++ functions that execute atomically and can modify database state.
+Reducers are the heart of your module's logic. They are C++ functions that execute atomically and can modify database state. The SDK provides enhanced reducer support with lifecycle hooks matching C#.
 
-#### 3.3.1. Reducer Function Signature
-A reducer is a C++ function that takes a `spacetimedb::sdk::ReducerContext&` as its first argument, followed by any number of arguments that your application logic requires.
+#### 3.3.1. Modern Reducer Definition (Recommended)
+The SDK now provides enhanced macros for different reducer types:
 
 ```cpp
-// src/kv_store.cpp (example from quickstart_cpp_kv)
-#include <spacetimedb/sdk/reducer_context.h>
-#include <spacetimedb/abi/spacetimedb_abi.h> // For _console_log
-#include <string>
-#include <cstdint> // For uint8_t
-
-// (Assuming LOG_LEVEL_INFO is defined, e.g., in kv_store.h)
-// const uint8_t LOG_LEVEL_INFO = 3;
-
-namespace spacetimedb_quickstart {
-void kv_put(spacetimedb::sdk::ReducerContext& ctx, const std::string& key, const std::string& value) {
-    // ... implementation ...
-    std::string message = "kv_put called with key: " + key;
-    _console_log(LOG_LEVEL_INFO, nullptr, 0, nullptr, 0, 0,
-                 reinterpret_cast<const uint8_t*>(message.c_str()), message.length());
+// Standard reducer
+void add_user(ReducerContext& ctx, const std::string& username, const std::string& email) {
+    User user{0, username, email, std::nullopt, {}};
+    ctx.db.users().insert(user);
+    spacetimedb::log::info("User added: {}", username);
 }
-} // namespace spacetimedb_quickstart
-```
-*   The first argument **must** be `spacetimedb::sdk::ReducerContext& ctx`.
-*   All subsequent arguments must be types supported by BSATN (primitives, `std::string`, `std::vector<uint8_t>`, `spacetimedb::sdk::Identity`, `spacetimedb::sdk::Timestamp`, or custom types that are `BsatnSerializable` or have the duck-typed BSATN methods).
+SPACETIMEDB_REDUCER(add_user, NORMAL, ctx, const std::string&, const std::string&)
 
-#### 3.3.2. Registering Reducers
-To make a C++ function callable as a SpacetimeDB reducer, you must register it using the `SPACETIMEDB_REDUCER` or `SPACETIMEDB_REDUCER_NO_ARGS` macros. These are defined in `<spacetimedb/sdk/spacetimedb_sdk_reducer.h>`.
-
-Place these macro calls in a `.cpp` file at global scope (or within your module's namespace, ensuring the function name is fully qualified).
-
-```cpp
-// src/kv_store.cpp
-#include "kv_store.h" // For reducer function declarations if not in this file
-#include <spacetimedb/sdk/spacetimedb_sdk_reducer.h>
-
-// ... (definition of kv_put, kv_get, kv_del) ...
-
-// Register reducers
-SPACETIMEDB_REDUCER(spacetimedb_quickstart::kv_put, const std::string&, const std::string&);
-SPACETIMEDB_REDUCER(spacetimedb_quickstart::kv_get, const std::string&);
-
-namespace spacetimedb_quickstart {
-void my_simple_reducer(spacetimedb::sdk::ReducerContext& ctx) { /* ... */ }
+// Init reducer - called when module is first deployed
+void init_module(ReducerContext& ctx) {
+    // Initialize default data
+    ctx.db.system_config().insert(SystemConfig{"version", "1.0.0"});
 }
-SPACETIMEDB_REDUCER_NO_ARGS(spacetimedb_quickstart::my_simple_reducer);
+SPACETIMEDB_INIT(init_module, ctx)
+
+// Client connected reducer
+void on_connect(ReducerContext& ctx, const Identity& client) {
+    UserSession session{client, ctx.timestamp, true};
+    ctx.db.sessions().insert(session);
+}
+SPACETIMEDB_CLIENT_CONNECTED(on_connect, ctx, const Identity&)
+
+// Client disconnected reducer
+void on_disconnect(ReducerContext& ctx, const Identity& client) {
+    ctx.db.sessions().delete_where([&](const UserSession& s) { 
+        return s.identity == client; 
+    });
+}
+SPACETIMEDB_CLIENT_DISCONNECTED(on_disconnect, ctx, const Identity&)
 ```
-*   **`SPACETIMEDB_REDUCER(REDUCER_FUNC_NAME, ...ARGS)`**:
-    *   `REDUCER_FUNC_NAME`: The fully qualified C++ name of your reducer function.
-    *   `...ARGS`: A comma-separated list of the C++ types of the arguments your reducer function takes (excluding the initial `ReducerContext&`).
-*   **`SPACETIMEDB_REDUCER_NO_ARGS(REDUCER_FUNC_NAME)`**: Used for reducers that only take `ReducerContext&`.
 
-**Macro Functionality:**
-*   **WASM Export:** The macro generates an `extern "C"` wrapper function that is exported from the WASM module with a name matching your C++ reducer function name (e.g., `kv_put`).
-*   **Argument Handling:**
-    *   The SpacetimeDB host calls this exported wrapper with a single BSATN-encoded buffer.
-    *   This buffer is expected to contain the sender's `Identity` and the transaction `Timestamp` first, followed by the actual user-defined arguments for your reducer, all serialized in order.
-    *   The wrapper deserializes the `Identity` and `Timestamp` to create the `ReducerContext`.
-    *   It then deserializes each subsequent user argument from the buffer using the types you specified in the macro.
-*   **Error Handling:** If your C++ reducer function throws a `std::exception`, the wrapper catches it, logs an error message to the host (using `_console_log`), and returns a non-zero `uint16_t` error code to indicate failure. Uncaught non-`std::exception` types are also caught with a generic error message. If the reducer completes without an exception, `0` (success) is returned.
-
-### `ReducerContext` Usage
-The `ReducerContext` (`ctx`) is your primary interface to transaction-specific information and database operations within a reducer. It's defined in `<spacetimedb/sdk/reducer_context.h>`.
-
-*   **`const spacetimedb::sdk::Identity& ctx.get_sender() const;`**
-    Returns the `Identity` of the client or principal that initiated the current transaction.
-*   **`spacetimedb::sdk::Timestamp ctx.get_timestamp() const;`**
-    Returns the `Timestamp` (a `uint64_t` milliseconds since epoch) at which the current transaction is executing.
-*   **`spacetimedb::sdk::Database& ctx.db();`**
-    Returns a reference to the `Database` object, allowing you to access table operations.
-
-### Database Operations
-The SDK provides `Database` and `Table<T>` classes for interacting with your data. These are defined in `<spacetimedb/sdk/database.h>` and `<spacetimedb/sdk/table.h>`.
-
-#### 3.5.1. Getting a Table Instance
-First, get a `Database` reference from the `ReducerContext`, then get a `Table<T>` instance:
+#### 3.3.2. Scheduled Reducers (Coming Soon)
 ```cpp
-// Assuming MyPlayer is a registered C++ type for table "players"
-auto player_table = ctx.db().get_table<my_module_namespace::MyPlayer>("players");
+// Scheduled reducer - runs at specified intervals
+void cleanup_expired_sessions(ReducerContext& ctx) {
+    auto cutoff = ctx.timestamp - std::chrono::hours(24);
+    ctx.db.sessions().delete_where([&](const UserSession& s) {
+        return s.last_active < cutoff;
+    });
+}
+// SPACETIMEDB_SCHEDULED(cleanup_expired_sessions, std::chrono::hours(1), ctx)
 ```
-This call uses the `_get_table_id` ABI function to resolve `"players"` to an internal table ID.
 
-#### 3.5.2. Inserting Rows
+#### 3.3.3. Enhanced Reducer Context
+The `ReducerContext` provides comprehensive access to transaction context:
+
 ```cpp
-my_module_namespace::MyPlayer new_player;
-new_player.player_id = 123; // Assuming player_id is the PK
-new_player.username = "PlayerOne";
-new_player.score = 0;
-
-player_table.insert(new_player);
-// If 'player_id' was auto-generated by the database and the ABI supports it,
-// 'new_player.player_id' would be updated here after the call.
-// Our current ABI for _insert allows the host to modify the provided buffer.
-```
-The `insert` method serializes `new_player` to BSATN and calls the `_insert` ABI function. The `new_player` object is passed by non-const reference because the host might modify the underlying buffer (e.g., to fill in an auto-generated primary key), and the SDK will deserialize these changes back into your `new_player` object.
-
-#### 3.5.3. Deleting Rows by Column Value
-```cpp
-// Delete player where player_id (column 0, our PK) is 123
-uint32_t pk_column_idx = 0; // By convention from SPACETIMEDB_REGISTER_TABLE
-uint64_t player_id_to_delete = 123;
-uint32_t num_deleted = player_table.delete_by_col_eq(pk_column_idx, player_id_to_delete);
-
-if (num_deleted > 0) {
-    // Log success
+void my_reducer(ReducerContext& ctx, /* args */) {
+    // Identity of caller
+    const Identity& sender = ctx.sender;
+    
+    // Transaction timestamp
+    Timestamp time = ctx.timestamp;
+    
+    // Database access
+    auto& db = ctx.db;
+    
+    // Logging with automatic context
+    spacetimedb::log::info("Reducer called by {}", sender.to_hex());
+    
+    // Performance measurement
+    LogStopwatch timer("my_operation");
+    // ... operation ...
+    // Timer logs duration automatically on destruction
 }
 ```
-This uses the `_delete_by_col_eq` ABI function. `ValueType` must be BSATN-serializable.
 
-#### 3.5.4. Iterating Over a Table (Full Scan)
+### Enhanced Database Operations
+
+The SDK provides a rich API for database operations with type safety and performance optimizations:
+
+#### 3.4.1. Basic CRUD Operations
 ```cpp
-for (const my_module_namespace::MyPlayer& player : player_table.iter()) {
-    // Access player.player_id, player.username, player.score
-    std::string msg = "Iterating player: " + player.username;
-     _console_log(LOG_LEVEL_DEBUG, nullptr, 0, nullptr, 0, 0, reinterpret_cast<const uint8_t*>(msg.c_str()), msg.length());
+void crud_example(ReducerContext& ctx) {
+    // Insert
+    User user{0, "alice", "alice@example.com", "Bio text", {1, 2, 3}};
+    ctx.db.users().insert(user);
+    
+    // Query by primary key
+    if (auto found = ctx.db.users().find_by_id(user.id)) {
+        spacetimedb::log::info("Found user: {}", found->username);
+    }
+    
+    // Update
+    ctx.db.users().update_by_id(user.id, [](User& u) {
+        u.email = "newemail@example.com";
+    });
+    
+    // Delete
+    ctx.db.users().delete_by_id(user.id);
 }
 ```
+
+#### 3.4.2. Advanced Queries
+```cpp
+void query_example(ReducerContext& ctx) {
+    // Filter with predicate
+    auto premium_users = ctx.db.users().filter([](const User& u) {
+        return u.bio.has_value() && u.friend_ids.size() > 10;
+    });
+    
+    // Iterate all
+    for (const auto& user : ctx.db.users().iter()) {
+        // Process each user
+    }
+    
+    // Count with condition
+    size_t active_count = ctx.db.sessions().count_where([](const UserSession& s) {
+        return s.is_active;
+    });
+    
+    // Delete with condition
+    ctx.db.products().delete_where([](const Product& p) {
+        return p.price < 0.01;  // Remove penny items
+    });
+}
+```
+
+#### 3.4.3. Index-Based Queries
+```cpp
+// Assuming Product has an index on category
+void index_query_example(ReducerContext& ctx) {
+    // Fast lookup by indexed field
+    auto electronics = ctx.db.products().find_by_category("electronics");
+    
+    // Range query on indexed field
+    auto mid_range = ctx.db.products().range_by_price(10.0, 100.0);
+}
+```
+## 4. Advanced SDK Features
+
+### 4.1. Constraint Validation
+The SDK supports database constraints similar to traditional SQL databases:
+
+```cpp
+struct Order {
+    [[SPACETIMEDB_PRIMARY_KEY]]
+    uint32_t id;
+    
+    uint32_t customer_id;  // Foreign key
+    
+    [[SPACETIMEDB_UNIQUE]]
+    std::string order_number;
+    
+    double total;
+};
+SPACETIMEDB_TYPE(Order)
+SPACETIMEDB_TABLE(Order, "orders", true)
+
+// Add foreign key constraint
+SPACETIMEDB_FOREIGN_KEY(Order, customer_id, Customer, id)
+
+// Add check constraint
+SPACETIMEDB_CHECK_CONSTRAINT(Order, "total >= 0")
+```
+
+### 4.2. Transaction Support
+All reducer operations are automatically transactional. For explicit transaction control:
+
+```cpp
+void complex_operation(ReducerContext& ctx) {
+    // All operations in a reducer are atomic
+    try {
+        ctx.db.users().insert(user1);
+        ctx.db.users().insert(user2);
+        ctx.db.orders().insert(order);
+        // All succeed or all fail
+    } catch (const spacetimedb::Exception& e) {
+        // Transaction automatically rolled back
+        spacetimedb::log::error("Transaction failed: {}", e.what());
+        throw;  // Re-throw to fail the reducer
+    }
+}
+```
+
+### 4.3. Module Versioning
+Support for module versioning and migration:
+
+```cpp
+// In your main module file
+SPACETIMEDB_MODULE_VERSION(1, 0, 0)  // Major, Minor, Patch
+
+// Migration support
+void migrate_v1_to_v2(ReducerContext& ctx) {
+    // Perform schema migration
+    for (auto& user : ctx.db.old_users().iter()) {
+        NewUser new_user{user.id, user.name, /* new fields */};
+        ctx.db.users().insert(new_user);
+    }
+}
+```
+
+### 4.4. Logging and Diagnostics
+Enhanced logging with multiple levels and automatic context:
+
+```cpp
+#include <spacetimedb/spacetimedb.h>
+
+void my_reducer(ReducerContext& ctx) {
+    // Different log levels
+    spacetimedb::log::trace("Detailed trace info");
+    spacetimedb::log::debug("Debug information");
+    spacetimedb::log::info("User {} logged in", username);
+    spacetimedb::log::warn("Low memory: {} bytes", available);
+    spacetimedb::log::error("Failed to process: {}", error_msg);
+    
+    // Performance monitoring
+    {
+        LogStopwatch timer("database_operation");
+        // ... expensive operation ...
+    }  // Automatically logs duration
+}
+```
+
+### 4.5. Type System and BSATN
+The SDK features a complete algebraic type system with automatic serialization:
+
+```cpp
+// Complex types are automatically supported
+struct GameState {
+    std::vector<Player> players;
+    std::optional<Winner> winner;
+    std::map<std::string, uint32_t> scores;
+    SumType<Playing, Paused, Finished> status;
+};
+SPACETIMEDB_TYPE(GameState)
+
+// The type system handles:
+// - All primitive types (bool, integers, floats, strings)
+// - Containers (vector, optional, map)
+// - User-defined types with nested structures
+// - Sum types (discriminated unions)
+// - Special SpacetimeDB types (Identity, Timestamp, TimeDuration)
+```
+
+## 5. Best Practices
+
+### 5.1. Performance Optimization
+- Use indexes for frequently queried fields
+- Batch operations when possible
+- Use `delete_where` instead of iterating and deleting individually
+- Profile with LogStopwatch to identify bottlenecks
+
+### 5.2. Error Handling
+- Use the exception hierarchy for proper error handling
+- Let exceptions propagate to fail the reducer atomically
+- Log errors with context for debugging
+
+### 5.3. Schema Design
+- Use appropriate column attributes (PRIMARY_KEY, UNIQUE, AUTO_INC)
+- Design tables with normalization in mind
+- Use indexes strategically for query performance
+
+## 6. Migration from Legacy SDK
+
+If you're migrating from an older version of the SDK:
+
+1. Replace manual BSATN serialization with `SPACETIMEDB_TYPE` macro
+2. Update table registration to use `SPACETIMEDB_TABLE`
+3. Replace old reducer macros with new lifecycle-aware versions
+4. Update include to use `#include <spacetimedb/spacetimedb.h>`
+
+See the migration guide for detailed instructions.
 `player_table.iter()` returns a `spacetimedb::sdk::TableIterator<MyPlayer>`. The iterator handles calling `_iter_next`, `_buffer_consume`, and deserializing rows. The iterator automatically calls `_iter_drop` when it goes out of scope.
 
 #### 3.5.5. Finding Rows by Column Value

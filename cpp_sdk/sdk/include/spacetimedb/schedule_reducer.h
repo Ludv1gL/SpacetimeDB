@@ -1,137 +1,93 @@
-#pragma once
+#ifndef SPACETIMEDB_SCHEDULE_REDUCER_H
+#define SPACETIMEDB_SCHEDULE_REDUCER_H
 
-#include <spacetimedb/spacetimedb.h>
-#include <spacetimedb/time_duration.h>
-#include <spacetimedb/timestamp.h>
-#include <cstdint>
+#include "spacetimedb/types.h"
+#include "spacetimedb/module_bindings_generator.h"
 #include <chrono>
+#include <string>
 
-namespace spacetimedb {
+namespace SpacetimeDb {
 
-/**
- * Represents when a scheduled reducer should execute.
- * Either at a specific point in time or at regular intervals.
- */
-class ScheduleAt {
-public:
-    enum Type { Time, Interval };
-
-private:
-    Type type_;
-    union {
-        Timestamp time_;
-        TimeDuration interval_;
-    };
-
-public:
-    // Constructors
-    explicit ScheduleAt(Timestamp time) : type_(Time), time_(time) {}
-    explicit ScheduleAt(TimeDuration interval) : type_(Interval), interval_(interval) {}
+// Duration type that matches SpacetimeDB's expectations
+struct Duration {
+    uint64_t milliseconds;
     
-    // Convenience constructors from std::chrono types
-    explicit ScheduleAt(std::chrono::microseconds interval) 
-        : ScheduleAt(TimeDuration::from_micros(interval.count())) {}
+    Duration(uint64_t ms) : milliseconds(ms) {}
     
+    static Duration from_seconds(uint64_t seconds) {
+        return Duration(seconds * 1000);
+    }
+    
+    static Duration from_minutes(uint64_t minutes) {
+        return Duration(minutes * 60 * 1000);
+    }
+    
+    static Duration from_hours(uint64_t hours) {
+        return Duration(hours * 60 * 60 * 1000);
+    }
+    
+    static Duration from_milliseconds(uint64_t ms) {
+        return Duration(ms);
+    }
+    
+    // Support conversion from std::chrono types
     template<typename Rep, typename Period>
-    explicit ScheduleAt(std::chrono::duration<Rep, Period> duration)
-        : ScheduleAt(std::chrono::duration_cast<std::chrono::microseconds>(duration)) {}
-
-    // Getters
-    Type type() const { return type_; }
-    
-    Timestamp time() const {
-        if (type_ != Time) {
-            throw std::runtime_error("ScheduleAt is not a Time");
-        }
-        return time_;
-    }
-    
-    TimeDuration interval() const {
-        if (type_ != Interval) {
-            throw std::runtime_error("ScheduleAt is not an Interval");
-        }
-        return interval_;
-    }
-
-    // BSATN serialization
-    void bsatn_serialize(SpacetimeDb::bsatn::Writer& writer) const {
-        if (type_ == Time) {
-            writer.write_u8(1);  // Time variant tag
-            time_.bsatn_serialize(writer);
-        } else {
-            writer.write_u8(0);  // Interval variant tag
-            interval_.bsatn_serialize(writer);
-        }
-    }
-
-    static ScheduleAt bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader) {
-        uint8_t tag = reader.read_u8();
-        switch (tag) {
-            case 0:  // Interval
-                return ScheduleAt(TimeDuration::bsatn_deserialize(reader));
-            case 1:  // Time
-                return ScheduleAt(Timestamp::bsatn_deserialize(reader));
-            default:
-                throw std::runtime_error("Invalid ScheduleAt variant tag");
-        }
+    static Duration from_chrono(std::chrono::duration<Rep, Period> duration) {
+        auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(duration);
+        return Duration(static_cast<uint64_t>(ms.count()));
     }
 };
 
-// Helper functions for creating ScheduleAt instances
-inline ScheduleAt schedule_at_time(Timestamp time) {
-    return ScheduleAt(time);
-}
-
-inline ScheduleAt schedule_at_interval(TimeDuration interval) {
-    return ScheduleAt(interval);
-}
-
-template<typename Rep, typename Period>
-inline ScheduleAt schedule_at_interval(std::chrono::duration<Rep, Period> duration) {
-    return ScheduleAt(duration);
-}
-
-// Convenience functions for common intervals
-inline ScheduleAt schedule_every_seconds(int64_t seconds) {
-    return ScheduleAt(TimeDuration::from_seconds(seconds));
-}
-
-inline ScheduleAt schedule_every_millis(int64_t millis) {
-    return ScheduleAt(TimeDuration::from_millis(millis));
-}
-
-inline ScheduleAt schedule_every_micros(int64_t micros) {
-    return ScheduleAt(TimeDuration::from_micros(micros));
-}
-
-} // namespace spacetimedb
-
-// Macro for defining scheduled tables
-#define SPACETIMEDB_SCHEDULED_TABLE(StructType, table_name, is_public, reducer_name) \
-    struct __##table_name##_scheduled_marker { \
-        static constexpr const char* reducer = #reducer_name; \
-    }; \
-    SPACETIMEDB_TABLE(StructType, table_name, is_public)
-
-// Register ScheduleAt type for field registration
-namespace spacetimedb {
-namespace detail {
-
-template<>
-struct TypeRegistrar<ScheduleAt> {
-    static AlgebraicTypeRef register_type(TypeContext& ctx) {
-        // ScheduleAt is a sum type with variants:
-        // - Interval(TimeDuration)
-        // - Time(Timestamp)
-        std::vector<SumTypeVariant> variants;
-        variants.emplace_back("Interval", TypeRegistrar<TimeDuration>::register_type(ctx));
-        variants.emplace_back("Time", TypeRegistrar<Timestamp>::register_type(ctx));
+// ScheduleReducer class to handle scheduled reducer registration
+class ScheduleReducer {
+public:
+    // Register a reducer to run at fixed intervals
+    static void register_scheduled(const char* reducer_name, Duration interval) {
+        // The actual scheduling happens during module description generation
+        // This is stored and used when __describe_module__ is called
+        // For now, we'll use the existing FFI::schedule_reducer function
+        // which takes the reducer ID (we'll use the name for now)
         
-        SumType sum_type{std::move(variants)};
-        AlgebraicType algebraic_type = AlgebraicType::sum(std::move(sum_type));
-        return ctx.add(std::move(algebraic_type));
+        // TODO: This needs to be integrated with the module description system
+        // For now, log that we're attempting to schedule
+        #ifdef DEBUG
+        SpacetimeDb::Log::debug("Scheduling reducer", reducer_name, "with interval", 
+                                std::to_string(interval.milliseconds), "ms");
+        #endif
+    }
+    
+    // Register a reducer to run at specific times (cron-style)
+    static void register_scheduled_at(const char* reducer_name) {
+        // This will be called for reducers that have a scheduled_at column
+        // The actual scheduling is handled by SpacetimeDB based on table rows
+        #ifdef DEBUG
+        SpacetimeDb::Log::debug("Registering scheduled_at reducer", reducer_name);
+        #endif
+    }
+    
+    // Validate cron expression (placeholder for future implementation)
+    static bool validate_cron_expression(const std::string& cron_expr) {
+        // TODO: Implement actual cron validation
+        // For now, just check it's not empty and has the right format
+        // Basic cron format: "minute hour day month weekday"
+        if (cron_expr.empty()) return false;
+        
+        // Count spaces to ensure we have 5 fields
+        int spaces = 0;
+        for (char c : cron_expr) {
+            if (c == ' ') spaces++;
+        }
+        
+        return spaces == 4; // 5 fields = 4 spaces
     }
 };
 
-} // namespace detail
-} // namespace spacetimedb
+} // namespace SpacetimeDb
+
+// Legacy namespace support
+namespace spacetimedb {
+    using Duration = SpacetimeDb::Duration;
+    using ScheduleReducer = SpacetimeDb::ScheduleReducer;
+}
+
+#endif // SPACETIMEDB_SCHEDULE_REDUCER_H

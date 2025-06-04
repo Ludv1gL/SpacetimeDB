@@ -440,6 +440,93 @@ public:
     size_t constraint_count() const { return validator_.validator_count(); }
 };
 
+// =============================================================================
+// SIMPLE CONSTRAINT REGISTRATION FOR MACROS
+// =============================================================================
+
+/**
+ * @brief Simple constraint registration interface for macro usage.
+ * This provides a simpler API that the macros can use to register constraints
+ * with the module description system.
+ */
+class ConstraintValidation {
+public:
+    // Foreign key constraint registration
+    static void register_foreign_key(
+        const char* table_name,
+        const char* field_name,
+        const char* ref_table_name,
+        const char* ref_field_name
+    ) {
+        // Store foreign key information for module description
+        ForeignKeyInfo fk{
+            table_name,
+            field_name,
+            ref_table_name,
+            ref_field_name
+        };
+        
+        foreign_keys_.push_back(fk);
+    }
+    
+    // Check constraint registration
+    static void register_check_constraint(
+        const char* table_name,
+        const char* constraint_sql
+    ) {
+        // Store check constraint for module description
+        CheckConstraintInfo check{
+            table_name,
+            constraint_sql
+        };
+        
+        check_constraints_.push_back(check);
+    }
+    
+    // Get all registered foreign keys
+    static const std::vector<ForeignKeyInfo>& get_foreign_keys() {
+        return foreign_keys_;
+    }
+    
+    // Get all registered check constraints
+    static const std::vector<CheckConstraintInfo>& get_check_constraints() {
+        return check_constraints_;
+    }
+    
+    // Clear all constraints (useful for testing)
+    static void clear() {
+        foreign_keys_.clear();
+        check_constraints_.clear();
+    }
+
+    // Structures to hold constraint information
+    struct ForeignKeyInfo {
+        std::string table_name;
+        std::string field_name;
+        std::string ref_table_name;
+        std::string ref_field_name;
+    };
+    
+    struct CheckConstraintInfo {
+        std::string table_name;
+        std::string constraint_sql;
+    };
+
+private:
+    // Static storage for constraints
+    static std::vector<ForeignKeyInfo> foreign_keys_;
+    static std::vector<CheckConstraintInfo> check_constraints_;
+};
+
+// Static member definitions
+inline std::vector<ConstraintValidation::ForeignKeyInfo> ConstraintValidation::foreign_keys_;
+inline std::vector<ConstraintValidation::CheckConstraintInfo> ConstraintValidation::check_constraints_;
+
 } // namespace spacetimedb
+
+// Add SpacetimeDb namespace alias for macro compatibility
+namespace SpacetimeDb {
+    using ConstraintValidation = spacetimedb::ConstraintValidation;
+}
 
 #endif // SPACETIMEDB_CONSTRAINT_VALIDATION_H
