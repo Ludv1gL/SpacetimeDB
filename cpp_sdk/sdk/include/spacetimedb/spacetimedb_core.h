@@ -42,6 +42,10 @@ extern "C" {
     __attribute__((import_module("spacetime_10.0"), import_name("bytes_source_read")))
     int16_t bytes_source_read(uint32_t source, uint8_t* buffer_ptr, size_t* buffer_len_ptr);
     
+    // Identity operations
+    __attribute__((import_module("spacetime_10.0"), import_name("identity")))
+    void identity(uint8_t* out_ptr);
+    
     // Module exports (these will be implemented by user modules)
     void __describe_module__(uint32_t description);
     int16_t __call_reducer__(uint32_t id, 
@@ -60,6 +64,61 @@ namespace spacetimedb {
 // Forward declarations
 struct ReducerContext;
 class ModuleDatabase;
+
+// Identity type - 32 bytes (256 bits)
+struct Identity {
+    uint8_t data[32];
+    
+    // Default constructor - zero identity
+    Identity() {
+        std::memset(data, 0, sizeof(data));
+    }
+    
+    // Constructor from byte array
+    explicit Identity(const uint8_t* bytes) {
+        std::memcpy(data, bytes, sizeof(data));
+    }
+    
+    // Get the module's identity
+    static Identity module_identity() {
+        Identity id;
+        identity(id.data);
+        return id;
+    }
+    
+    // Equality comparison
+    bool operator==(const Identity& other) const {
+        return std::memcmp(data, other.data, sizeof(data)) == 0;
+    }
+    
+    bool operator!=(const Identity& other) const {
+        return !(*this == other);
+    }
+};
+
+// ConnectionId type - 128 bits
+struct ConnectionId {
+    uint64_t high;
+    uint64_t low;
+    
+    ConnectionId() : high(0), low(0) {}
+    ConnectionId(uint64_t h, uint64_t l) : high(h), low(l) {}
+    
+    bool operator==(const ConnectionId& other) const {
+        return high == other.high && low == other.low;
+    }
+    
+    bool operator!=(const ConnectionId& other) const {
+        return !(*this == other);
+    }
+    
+    bool is_valid() const {
+        return high != 0 || low != 0;
+    }
+};
+
+// Timestamp type - microseconds since Unix epoch
+using Timestamp = uint64_t;
 
 // Log levels matching SpacetimeDB
 enum class LogLevel : uint32_t {
@@ -137,10 +196,23 @@ private:
 // Basic reducer context
 struct ReducerContext {
     ModuleDatabase* db;
+    Identity sender;
+    Timestamp timestamp;
+    std::optional<ConnectionId> connection_id;
     
-    ReducerContext(ModuleDatabase* database) : db(database) {}
+    ReducerContext(ModuleDatabase* database) 
+        : db(database), timestamp(0) {}
     
-    // TODO: Add timestamp() and sender() methods once we have the FFI functions
+    ReducerContext(ModuleDatabase* database, 
+                   const Identity& sender_identity,
+                   Timestamp ts,
+                   const std::optional<ConnectionId>& conn_id)
+        : db(database), sender(sender_identity), timestamp(ts), connection_id(conn_id) {}
+    
+    // Get the module's identity
+    Identity identity() const {
+        return Identity::module_identity();
+    }
 };
 
 // Module database interface
@@ -472,6 +544,20 @@ public:
 // GLOBAL EXPORTS
 // =============================================================================
 
+// Utility function to construct Identity from __call_reducer__ parameters
+inline spacetimedb::Identity identity_from_params(uint64_t sender_0, uint64_t sender_1, 
+                                                  uint64_t sender_2, uint64_t sender_3) {
+    uint8_t identity_bytes[32];
+    
+    // Pack the 4 uint64_t values into 32 bytes (little-endian)
+    std::memcpy(identity_bytes, &sender_0, 8);
+    std::memcpy(identity_bytes + 8, &sender_1, 8);
+    std::memcpy(identity_bytes + 16, &sender_2, 8);
+    std::memcpy(identity_bytes + 24, &sender_3, 8);
+    
+    return spacetimedb::Identity(identity_bytes);
+}
+
 // Note: Global exports (__describe_module__ and __call_reducer__) should be implemented 
 // in user modules that include this header.
 
@@ -508,42 +594,56 @@ public:
     } \
     void spacetimedb_reducer_##name##_impl(__VA_ARGS__)
 
-// Built-in reducer registration
+// Init reducer registration (lifecycle = 0)
 #define SPACETIMEDB_INIT(name) \
+    void spacetimedb_init_##name##_impl(spacetimedb::ReducerContext ctx); \
     namespace { \
-        struct reducer_##name##_registrar { \
-            reducer_##name##_registrar() { \
+        struct init_##name##_registrar { \
+            init_##name##_registrar() { \
                 spacetimedb::ModuleRegistry::instance().register_reducer(#name, {}, 0); \
+                spacetimedb::ReducerDispatcher::instance().register_reducer(#name, \
+                    [](spacetimedb::ReducerContext ctx, uint32_t args) { \
+                        spacetimedb_init_##name##_impl(ctx); \
+                    }); \
             } \
         }; \
-        static reducer_##name##_registrar reducer_##name##_reg_; \
+        static init_##name##_registrar init_##name##_reg_; \
     } \
-    extern "C" void spacetimedb_reducer_##name(spacetimedb::ReducerContext ctx); \
-    void spacetimedb_reducer_##name(spacetimedb::ReducerContext ctx)
+    void spacetimedb_init_##name##_impl(spacetimedb::ReducerContext ctx)
 
+// Client connected reducer registration (lifecycle = 1)
 #define SPACETIMEDB_CLIENT_CONNECTED(name) \
+    void spacetimedb_connected_##name##_impl(spacetimedb::ReducerContext ctx); \
     namespace { \
-        struct reducer_##name##_registrar { \
-            reducer_##name##_registrar() { \
+        struct connected_##name##_registrar { \
+            connected_##name##_registrar() { \
                 spacetimedb::ModuleRegistry::instance().register_reducer(#name, {}, 1); \
+                spacetimedb::ReducerDispatcher::instance().register_reducer(#name, \
+                    [](spacetimedb::ReducerContext ctx, uint32_t args) { \
+                        spacetimedb_connected_##name##_impl(ctx); \
+                    }); \
             } \
         }; \
-        static reducer_##name##_registrar reducer_##name##_reg_; \
+        static connected_##name##_registrar connected_##name##_reg_; \
     } \
-    extern "C" void spacetimedb_reducer_##name(spacetimedb::ReducerContext ctx); \
-    void spacetimedb_reducer_##name(spacetimedb::ReducerContext ctx)
+    void spacetimedb_connected_##name##_impl(spacetimedb::ReducerContext ctx)
 
+// Client disconnected reducer registration (lifecycle = 2)
 #define SPACETIMEDB_CLIENT_DISCONNECTED(name) \
+    void spacetimedb_disconnected_##name##_impl(spacetimedb::ReducerContext ctx); \
     namespace { \
-        struct reducer_##name##_registrar { \
-            reducer_##name##_registrar() { \
+        struct disconnected_##name##_registrar { \
+            disconnected_##name##_registrar() { \
                 spacetimedb::ModuleRegistry::instance().register_reducer(#name, {}, 2); \
+                spacetimedb::ReducerDispatcher::instance().register_reducer(#name, \
+                    [](spacetimedb::ReducerContext ctx, uint32_t args) { \
+                        spacetimedb_disconnected_##name##_impl(ctx); \
+                    }); \
             } \
         }; \
-        static reducer_##name##_registrar reducer_##name##_reg_; \
+        static disconnected_##name##_registrar disconnected_##name##_reg_; \
     } \
-    extern "C" void spacetimedb_reducer_##name(spacetimedb::ReducerContext ctx); \
-    void spacetimedb_reducer_##name(spacetimedb::ReducerContext ctx)
+    void spacetimedb_disconnected_##name##_impl(spacetimedb::ReducerContext ctx)
 
 // Field serialization - to be implemented by user
 #define SPACETIMEDB_FIELD_SERIALIZATION(type) \
