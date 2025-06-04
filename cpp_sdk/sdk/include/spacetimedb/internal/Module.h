@@ -130,14 +130,14 @@ public:
     static void RegisterClientVisibilityFilter(const std::string& sql);
     
     // FFI exports
-    static void __describe_module__(FFI::BytesSink description);
+    static void __describe_module__(uint32_t description);
     static FFI::Errno __call_reducer__(
         uint32_t id,
         uint64_t sender_0, uint64_t sender_1, uint64_t sender_2, uint64_t sender_3,
         uint64_t conn_id_0, uint64_t conn_id_1,
         sdk::Timestamp timestamp,
-        FFI::BytesSource args,
-        FFI::BytesSink error
+        uint32_t args,
+        uint32_t error
     );
     
     // Type registration - needs to be public for macros

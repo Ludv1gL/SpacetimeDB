@@ -160,7 +160,7 @@ void Module::RegisterClientVisibilityFilter(const std::string& sql) {
 }
 
 // FFI exports
-void Module::__describe_module__(FFI::BytesSink description) {
+void Module::__describe_module__(uint32_t description) {
     try {
         auto& instance = Instance();
         
@@ -186,8 +186,8 @@ FFI::Errno Module::__call_reducer__(
     uint64_t sender_0, uint64_t sender_1, uint64_t sender_2, uint64_t sender_3,
     uint64_t conn_id_0, uint64_t conn_id_1,
     Timestamp timestamp,
-    FFI::BytesSource args,
-    FFI::BytesSink error
+    uint32_t args,
+    uint32_t error
 ) {
     try {
         auto& instance = Instance();
@@ -246,7 +246,7 @@ FFI::Errno Module::__call_reducer__(
 
 // Helper implementations
 std::vector<uint8_t> ConsumeBytes(FFI::BytesSource source) {
-    if (source.handle == FFI::BytesSource::INVALID.handle) {
+    if (source == FFI::INVALID_BYTES_SOURCE) {
         return {};
     }
     
@@ -297,9 +297,9 @@ void WriteBytes(FFI::BytesSink sink, const std::vector<uint8_t>& bytes) {
         size_t remaining = bytes.size() - start;
         const uint8_t* read_ptr = bytes.data() + start;
         
-        auto result = FFI::bytes_sink_write(sink, read_ptr, &remaining);
-        if (result != FFI::Errno::OK) {
-            throw std::runtime_error("Error writing to bytes sink: " + std::to_string(static_cast<uint16_t>(result)));
+        uint16_t result = ::bytes_sink_write(sink.handle, read_ptr, &remaining);
+        if (result != 0) {
+            throw std::runtime_error("Error writing to bytes sink: " + std::to_string(result));
         }
         start += remaining;
     }
@@ -316,27 +316,31 @@ bool RawTableIterBase<T>::Iterator::MoveNext() {
     
     while (true) {
         uint32_t buffer_len = static_cast<uint32_t>(buffer.size());
-        auto ret = FFI::row_iter_bsatn_advance(handle, buffer.data(), &buffer_len);
+        int16_t ret = ::row_iter_bsatn_advance(handle.handle, buffer.data(), &buffer_len);
         
-        if (ret == FFI::Errno::EXHAUSTED) {
-            handle = FFI::RowIter::INVALID;
+        // Check for exhausted iterator
+        if (ret == -1) { // EXHAUSTED
+            handle = FFI::INVALID_ROW_ITER;
+            return false;
         }
         
-        switch (ret) {
-            case FFI::Errno::EXHAUSTED:
-            case FFI::Errno::OK:
-                current.assign(buffer.begin(), buffer.begin() + buffer_len);
-                return buffer_len != 0;
-                
-            case FFI::Errno::NO_SUCH_ITER:
-                throw std::runtime_error("No such iterator");
-                
-            case FFI::Errno::BUFFER_TOO_SMALL:
-                buffer.resize(buffer_len);
-                continue;
-                
-            default:
-                throw std::runtime_error("Unknown error in iterator");
+        if (ret >= 0) {
+            // Success - we got data
+            current.assign(buffer.begin(), buffer.begin() + buffer_len);
+            return buffer_len != 0;
+        } else {
+            // Error occurred
+            switch (static_cast<uint16_t>(-ret)) {
+                case 6: // NO_SUCH_ITER
+                    throw std::runtime_error("No such iterator");
+                    
+                case 11: // BUFFER_TOO_SMALL
+                    buffer.resize(buffer_len);
+                    continue;
+                    
+                default:
+                    throw std::runtime_error("Unknown error in iterator: " + std::to_string(ret));
+            }
         }
     }
 }
