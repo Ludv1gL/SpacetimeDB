@@ -15,6 +15,11 @@ add_executable(sdk-test-cpp
     src/lib.cpp
 )
 
+# Add module that uses macros
+add_executable(sdk-test-cpp-macros
+    src/lib_with_macros.cpp
+)
+
 # Link the Module Library
 file(GLOB_RECURSE MODULE_LIBRARY_SOURCES
     "${MODULE_LIBRARY_DIR}/src/*.cpp"
@@ -25,17 +30,25 @@ add_library(spacetimedb_module_library STATIC ${MODULE_LIBRARY_SOURCES})
 target_include_directories(spacetimedb_module_library PUBLIC ${MODULE_LIBRARY_DIR}/include)
 target_compile_definitions(spacetimedb_module_library PUBLIC SPACETIMEDB_MODULE_LIBRARY)
 
-# Link the module library to our module (includes WASI shims)
+# Link the module library to our modules (includes WASI shims)
 target_link_libraries(sdk-test-cpp spacetimedb_module_library)
+target_link_libraries(sdk-test-cpp-macros spacetimedb_module_library)
 
-# Set output name to match expected WASM module name
+# Set output names to match expected WASM module names
 set_target_properties(sdk-test-cpp PROPERTIES OUTPUT_NAME "sdk_test_cpp")
+set_target_properties(sdk-test-cpp-macros PROPERTIES OUTPUT_NAME "sdk_test_cpp_macros")
 
 # If using Emscripten, add appropriate flags
 if(EMSCRIPTEN)
     set_target_properties(sdk-test-cpp PROPERTIES
         SUFFIX ".wasm"
         COMPILE_FLAGS ""
-        LINK_FLAGS "-s STANDALONE_WASM=1 -s EXPORTED_FUNCTIONS=['_malloc','_free'] -s ERROR_ON_UNDEFINED_SYMBOLS=0 -s DISABLE_EXCEPTION_CATCHING=1 -s DISABLE_EXCEPTION_THROWING=1 -s WASM=1 --no-entry -s FILESYSTEM=0 -s INITIAL_MEMORY=16MB -s ALLOW_MEMORY_GROWTH=1 -s ALLOW_TABLE_GROWTH=1"
+        LINK_FLAGS "-s STANDALONE_WASM=1 -s EXPORTED_FUNCTIONS=['_malloc','_free'] -s ERROR_ON_UNDEFINED_SYMBOLS=0 -s DISABLE_EXCEPTION_CATCHING=1 -s DISABLE_EXCEPTION_THROWING=1 -s WASM=1 --no-entry -s FILESYSTEM=0 -s INITIAL_MEMORY=16MB -s ALLOW_MEMORY_GROWTH=0 -s SUPPORT_LONGJMP=0 -s SUPPORT_ERRNO=0"
+    )
+    
+    set_target_properties(sdk-test-cpp-macros PROPERTIES
+        SUFFIX ".wasm"
+        COMPILE_FLAGS ""
+        LINK_FLAGS "-s STANDALONE_WASM=1 -s EXPORTED_FUNCTIONS=['_malloc','_free'] -s ERROR_ON_UNDEFINED_SYMBOLS=0 -s DISABLE_EXCEPTION_CATCHING=1 -s DISABLE_EXCEPTION_THROWING=1 -s WASM=1 --no-entry -s FILESYSTEM=0 -s INITIAL_MEMORY=16MB -s ALLOW_MEMORY_GROWTH=0 -s SUPPORT_LONGJMP=0 -s SUPPORT_ERRNO=0"
     )
 endif()

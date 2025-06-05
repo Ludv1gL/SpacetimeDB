@@ -1,10 +1,16 @@
-// Minimal SpacetimeDB C++ Module - Direct Implementation
+// SpacetimeDB C++ Module using Module Library
 #include <cstdint>
-#include <vector>
 #include <string>
 
-// Import functions from SpacetimeDB
+// Define a simple User struct
+struct User {
+    uint32_t id;
+    std::string name;
+};
+
+// Module exports using manual registration
 extern "C" {
+    // Import functions from SpacetimeDB
     __attribute__((import_module("spacetime_10.0"), import_name("bytes_sink_write")))
     uint16_t bytes_sink_write(uint32_t sink, const uint8_t* data, size_t* len);
     
@@ -12,12 +18,35 @@ extern "C" {
     void console_log(uint8_t log_level, const uint8_t* target, uint32_t target_len,
                      const uint8_t* filename, uint32_t filename_len, uint32_t line_number,
                      const uint8_t* message, uint32_t message_len);
+    
+    __attribute__((import_module("spacetime_10.0"), import_name("table_row_insert")))
+    uint16_t table_row_insert(uint32_t table_id, const uint8_t* row_ptr, size_t row_len);
+    
+    // Module description - manual implementation
+    __attribute__((export_name("__describe_module__")))
+    void __describe_module__(uint32_t sink);
+    
+    // Reducer calls
+    __attribute__((export_name("__call_reducer__")))
+    int32_t __call_reducer__(
+        uint32_t id,
+        uint64_t sender_0, uint64_t sender_1, uint64_t sender_2, uint64_t sender_3,
+        uint64_t conn_id_0, uint64_t conn_id_1,
+        uint64_t timestamp, 
+        uint32_t args, 
+        uint32_t error
+    );
 }
 
 // Helper to write to bytes sink
 void write_to_sink(uint32_t sink, const uint8_t* data, size_t len) {
     size_t written = len;
     bytes_sink_write(sink, data, &written);
+}
+
+// Helper to write a u8
+void write_u8(uint32_t sink, uint8_t value) {
+    write_to_sink(sink, &value, 1);
 }
 
 // Helper to write a u32 in little-endian
@@ -37,34 +66,30 @@ void write_string(uint32_t sink, const std::string& str) {
     write_to_sink(sink, reinterpret_cast<const uint8_t*>(str.data()), str.length());
 }
 
-// Module exports
-extern "C" {
-
-// Describe module - minimal module with one reducer
-__attribute__((export_name("__describe_module__")))
+// Module description implementation
 void __describe_module__(uint32_t sink) {
-    // RawModuleDef::V9 (variant 1)
-    uint8_t version = 1;
-    write_to_sink(sink, &version, 1);
+    // Let me copy the exact format from the working minimal_module.cpp
     
-    // Empty typespace (0 types)
+    // RawModuleDef::V9 tag
+    write_u8(sink, 1);
+    
+    // Empty typespace
     write_u32_le(sink, 0);
     
-    // Empty tables (0 tables)
+    // Empty tables
     write_u32_le(sink, 0);
     
     // 1 reducer
     write_u32_le(sink, 1);
     
-    // Reducer: "hello_world"
-    write_string(sink, "hello_world");
+    // Reducer: "test_library"
+    write_string(sink, "test_library");
     
     // params: empty ProductType (0 elements)
     write_u32_le(sink, 0);
     
     // lifecycle: None
-    uint8_t has_lifecycle = 1; // None
-    write_to_sink(sink, &has_lifecycle, 1);
+    write_u8(sink, 1); // None
     
     // Empty arrays for the rest
     write_u32_le(sink, 0); // types
@@ -72,8 +97,7 @@ void __describe_module__(uint32_t sink) {
     write_u32_le(sink, 0); // row_level_security
 }
 
-// Handle reducer calls
-__attribute__((export_name("__call_reducer__")))
+// Reducer implementation
 int32_t __call_reducer__(
     uint32_t id,
     uint64_t sender_0, uint64_t sender_1, uint64_t sender_2, uint64_t sender_3,
@@ -82,8 +106,8 @@ int32_t __call_reducer__(
     uint32_t args, 
     uint32_t error
 ) {
-    if (id == 0) { // hello_world reducer
-        std::string message = "Hello from C++ Module!";
+    if (id == 0) { // test_library reducer
+        std::string message = "Testing module library integration!";
         console_log(2, // INFO level
                    reinterpret_cast<const uint8_t*>("module"), 6,
                    reinterpret_cast<const uint8_t*>(__FILE__), sizeof(__FILE__) - 1,
@@ -94,5 +118,3 @@ int32_t __call_reducer__(
     
     return -999; // No such reducer
 }
-
-} // extern "C"

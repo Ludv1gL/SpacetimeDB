@@ -1,4 +1,4 @@
-// Minimal SpacetimeDB C++ Module - Direct Implementation
+// SpacetimeDB C++ Module with Table
 #include <cstdint>
 #include <vector>
 #include <string>
@@ -18,6 +18,11 @@ extern "C" {
 void write_to_sink(uint32_t sink, const uint8_t* data, size_t len) {
     size_t written = len;
     bytes_sink_write(sink, data, &written);
+}
+
+// Helper to write a u8
+void write_u8(uint32_t sink, uint8_t value) {
+    write_to_sink(sink, &value, 1);
 }
 
 // Helper to write a u32 in little-endian
@@ -40,31 +45,79 @@ void write_string(uint32_t sink, const std::string& str) {
 // Module exports
 extern "C" {
 
-// Describe module - minimal module with one reducer
+// Describe module - module with one table and one reducer
 __attribute__((export_name("__describe_module__")))
 void __describe_module__(uint32_t sink) {
     // RawModuleDef::V9 (variant 1)
-    uint8_t version = 1;
-    write_to_sink(sink, &version, 1);
+    write_u8(sink, 1);
     
-    // Empty typespace (0 types)
-    write_u32_le(sink, 0);
+    // Typespace with 1 type (for our table)
+    write_u32_le(sink, 1);
     
-    // Empty tables (0 tables)
+    // Type 0: ProductType for User table
+    // AlgebraicType::Product (variant 2)
+    write_u8(sink, 2);
+    
+    // ProductType with 2 elements
+    write_u32_le(sink, 2);
+    
+    // Element 0: id (u32)
+    // name: Some("id")
+    write_u8(sink, 0); // Some
+    write_string(sink, "id");
+    // type: AlgebraicType::U32 (variant 9)
+    write_u8(sink, 9);
+    
+    // Element 1: name (String)
+    // name: Some("name")
+    write_u8(sink, 0); // Some
+    write_string(sink, "name");
+    // type: AlgebraicType::String (variant 17)
+    write_u8(sink, 17);
+    
+    // 1 table
+    write_u32_le(sink, 1);
+    
+    // Table: User
+    // name
+    write_string(sink, "User");
+    // product_type_ref: type 0
     write_u32_le(sink, 0);
+    // primary_key: [0] (column 0 is primary key)
+    write_u32_le(sink, 1); // 1 column in primary key
+    write_u32_le(sink, 0); // column 0
+    // indexes: empty
+    write_u32_le(sink, 0);
+    // constraints: empty
+    write_u32_le(sink, 0);
+    // sequences: empty
+    write_u32_le(sink, 0);
+    // schedule: None
+    write_u8(sink, 1); // None
+    // table_type: User (1)
+    write_u8(sink, 1);
+    // table_access: Public (0)
+    write_u8(sink, 0);
     
     // 1 reducer
     write_u32_le(sink, 1);
     
-    // Reducer: "hello_world"
-    write_string(sink, "hello_world");
+    // Reducer: "add_user"
+    write_string(sink, "add_user");
     
-    // params: empty ProductType (0 elements)
-    write_u32_le(sink, 0);
+    // params: ProductType with 2 elements
+    write_u32_le(sink, 2);
+    // Element 0: id (u32)
+    write_u8(sink, 0); // Some
+    write_string(sink, "id");
+    write_u8(sink, 9); // U32
+    // Element 1: name (String)
+    write_u8(sink, 0); // Some
+    write_string(sink, "name");
+    write_u8(sink, 17); // String
     
     // lifecycle: None
-    uint8_t has_lifecycle = 1; // None
-    write_to_sink(sink, &has_lifecycle, 1);
+    write_u8(sink, 1); // None
     
     // Empty arrays for the rest
     write_u32_le(sink, 0); // types
@@ -82,13 +135,15 @@ int32_t __call_reducer__(
     uint32_t args, 
     uint32_t error
 ) {
-    if (id == 0) { // hello_world reducer
-        std::string message = "Hello from C++ Module!";
+    if (id == 0) { // add_user reducer
+        std::string message = "add_user reducer called!";
         console_log(2, // INFO level
                    reinterpret_cast<const uint8_t*>("module"), 6,
                    reinterpret_cast<const uint8_t*>(__FILE__), sizeof(__FILE__) - 1,
                    __LINE__,
                    reinterpret_cast<const uint8_t*>(message.c_str()), message.length());
+        
+        // TODO: Actually insert into the table
         return 0; // Success
     }
     
