@@ -13,32 +13,43 @@ The SpacetimeDB C++ Module Library provides everything you need to build databas
 
 ## Quick Start
 
+### Building C++ Modules
+
+The primary way to build C++ modules is using the centralized CMake build system:
+
+```bash
+# Navigate to the test module directory
+cd modules/sdk-test-cpp
+
+# Build a specific module (e.g., the working example)
+emcmake cmake -B build -DMODULE_NAME=lib_simple_table_test
+cmake --build build
+
+# Publish to SpacetimeDB
+spacetime publish . -b build/lib_simple_table_test.wasm --name my-module
+```
+
+### Module Example (Working Implementation)
+
 ```cpp
 #include <spacetimedb/spacetimedb.h>
 
-// Define a table
+// Note: The macro-based API shown below is under development.
+// Currently, modules must manually implement BSATN serialization.
+// See modules/sdk-test-cpp/src/lib_simple_table_test.cpp for a working example.
+
+// Define a table (planned API)
 SPACETIMEDB_TABLE(User, users, public, 
     autoinc<uint32_t> id;
     std::string username;
     std::string email
 );
 
-// Define a reducer (like a stored procedure)
+// Define a reducer (planned API)
 SPACETIMEDB_REDUCER(create_user, ctx, std::string username, std::string email) {
     User user{.username = username, .email = email};
     ctx.insert(user);
     spacetimedb::log("Created user: " + username);
-}
-
-// Query data
-SPACETIMEDB_REDUCER(find_user, ctx, std::string username) {
-    auto users = ctx.select<User>([&](const User& u) {
-        return u.username == username;
-    });
-    
-    if (!users.empty()) {
-        spacetimedb::log("Found user: " + users[0].email);
-    }
 }
 ```
 
@@ -80,34 +91,57 @@ source ./emsdk_env.sh  # Add to your shell profile for persistence
 
 ### Building a Module
 
-1. Create a new module:
+The primary way to build C++ modules is using the centralized CMake build system in `modules/sdk-test-cpp/`:
+
+1. Navigate to the module directory:
 ```bash
-spacetime init --lang cpp mymodule
+cd modules/sdk-test-cpp
 ```
 
-2. Write your module code in `src/lib.cpp`
-
-3. Build with Emscripten:
+2. Build a specific module:
 ```bash
-mkdir -p build && cd build
-emcmake cmake ..
-emmake make
+# See CMakeLists.txt for available modules
+emcmake cmake -B build -DMODULE_NAME=lib_simple_table_test
+cmake --build build
+
+# For optimized release build:
+emcmake cmake -B build -DMODULE_NAME=lib_simple_table_test -DCMAKE_BUILD_TYPE=Release
+cmake --build build
 ```
 
-4. Publish to SpacetimeDB:
+3. Publish to SpacetimeDB:
 ```bash
 # Make sure SpacetimeDB is running
 spacetime start
 
 # Publish the module
-spacetime publish mymodule -b <module_name>.wasm
+spacetime publish . -b build/lib_simple_table_test.wasm --name mymodule
 ```
 
-5. Verify the module:
+4. Verify and test the module:
 ```bash
 # Check the module schema
 spacetime describe mymodule --json
+
+# View logs
+spacetime logs mymodule -f
+
+# Call a reducer (if available)
+spacetime call mymodule add_person '{"name": "Alice", "age": 30}'
+
+# Query tables
+spacetime sql mymodule "SELECT * FROM Person"
 ```
+
+### Creating Your Own Module
+
+1. Add your source file to `modules/sdk-test-cpp/src/`
+2. Add an entry to `CMakeLists.txt`:
+   ```cmake
+   set(MODULE_SOURCES_my_module "src/my_module.cpp")
+   ```
+3. If your module provides its own `__describe_module__` and `__call_reducer__`, add it to the `MODULES_WITHOUT_LIBRARY` list
+4. Build using the steps above
 
 ### Important Build Configuration
 

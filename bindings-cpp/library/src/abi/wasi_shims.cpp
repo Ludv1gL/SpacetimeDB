@@ -6,11 +6,11 @@
 #include <cstddef>
 
 // SpacetimeDB imports we need for console output
-extern "C" {
+// Import from spacetime_10.0 module as required by SpacetimeDB ABI
+extern "C" __attribute__((import_module("spacetime_10.0"), import_name("console_log")))
 void console_log(uint8_t log_level, const uint8_t* target, uint32_t target_len,
                  const uint8_t* filename, uint32_t filename_len, uint32_t line_number,
                  const uint8_t* message, uint32_t message_len);
-}
 
 // Helper macro for string literals
 #define CSTR(s) (uint8_t*)s, sizeof(s) - 1

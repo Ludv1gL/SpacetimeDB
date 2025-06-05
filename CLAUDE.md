@@ -61,9 +61,44 @@ spacetime identity           # Show current identity
 
 ### C++ Module Development
 
-#### Building with Emscripten (Direct)
+#### Primary Build Method: CMake with Central Build System
+The primary way to build C++ modules is using the centralized CMakeLists.txt located at `modules/sdk-test-cpp/CMakeLists.txt`. This system automatically detects the SpacetimeDB root directory and handles all library dependencies.
+
 ```bash
-# Basic compilation
+# Navigate to the module directory
+cd modules/sdk-test-cpp
+
+# Configure and build a specific module
+emcmake cmake -B build -DMODULE_NAME=lib_simple_table_test
+cmake --build build
+
+# The WASM file will be in build/lib_simple_table_test.wasm
+
+# Available modules:
+# - lib                      # Basic module
+# - lib_with_macros          # Module using SPACETIMEDB macros
+# - lib_empty_with_library   # Empty module with library linked
+# - lib_abi_only             # Minimal module with ABI only
+# - lib_simple_table_test    # Working example with table and reducer
+# - lib_minimal              # Minimal module implementation
+# - And more...
+
+# To build for release (with optimizations):
+emcmake cmake -B build -DMODULE_NAME=lib_simple_table_test -DCMAKE_BUILD_TYPE=Release
+cmake --build build
+```
+
+The CMake system automatically:
+- Finds the SpacetimeDB root directory regardless of where it's placed
+- Builds the module library once as a static library
+- Determines whether to link the module library based on module type
+- Uses consistent WASM compilation flags
+- Disables memory growth to ensure compatibility
+
+#### Alternative: Direct Emscripten Compilation
+For quick tests or custom builds, you can compile directly:
+```bash
+# Basic compilation without library
 emcc src/lib.cpp -o module.wasm \
   -s STANDALONE_WASM=1 \
   -s EXPORTED_FUNCTIONS=['_malloc','_free'] \
@@ -74,25 +109,9 @@ emcc src/lib.cpp -o module.wasm \
   --no-entry \
   -s FILESYSTEM=0 \
   -s INITIAL_MEMORY=16MB \
-  -s ALLOW_MEMORY_GROWTH=1 \
+  -s ALLOW_MEMORY_GROWTH=0 \  # Important: Must be 0
   -I../../bindings-cpp/library/include \
   -std=c++20
-
-# With module library (includes WASI shims)
-emcc src/lib.cpp ../../bindings-cpp/library/src/**/*.cpp -o module.wasm \
-  [same flags as above]
-```
-
-#### Building with CMake
-```bash
-# Configure with Emscripten
-emcmake cmake -B build -S . \
-  -DCMAKE_TOOLCHAIN_FILE=../../bindings-cpp/toolchains/wasm_toolchain.cmake
-
-# Build
-cmake --build build
-
-# The WASM file will be in build/module_name.wasm
 ```
 
 ### Rust Module Development
@@ -188,13 +207,57 @@ cargo run --example regen-csharp-moduledef
 
 ### Common Workflows
 
+#### Building and Testing C++ Modules
+1. Navigate to the C++ test module directory:
+   ```bash
+   cd modules/sdk-test-cpp
+   ```
+
+2. Choose a module to build from the available examples:
+   - `lib_simple_table_test` - Working example with table and reducer
+   - `lib_abi_only` - Minimal module using only ABI header
+   - `lib_with_macros` - Module attempting to use SPACETIMEDB macros
+   - See CMakeLists.txt for full list
+
+3. Build the module:
+   ```bash
+   emcmake cmake -B build -DMODULE_NAME=lib_simple_table_test
+   cmake --build build
+   ```
+
+4. Start the SpacetimeDB server:
+   ```bash
+   spacetime start
+   ```
+
+5. Publish the module:
+   ```bash
+   spacetime publish . -b build/lib_simple_table_test.wasm --name test-module
+   ```
+
+6. Verify the module:
+   ```bash
+   spacetime describe test-module --json
+   spacetime logs test-module -f  # In another terminal
+   ```
+
+7. Test the module:
+   ```bash
+   # Call a reducer
+   spacetime call test-module add_person '{"name": "Alice", "age": 30}'
+   
+   # Query the table
+   spacetime sql test-module "SELECT * FROM Person"
+   ```
+
 #### Adding a New C++ Module
-1. Create module directory with CMakeLists.txt
-2. Write module code with SPACETIMEDB_TABLE and SPACETIMEDB_REDUCER macros
-3. Build with: `emcmake cmake -B build && cmake --build build`
-4. Start server: `spacetime start`
-5. Publish: `spacetime publish . -b build/module.wasm --name my-module`
-6. Test: `spacetime describe my-module --json`
+1. Add your source file to `modules/sdk-test-cpp/src/`
+2. Add an entry to CMakeLists.txt:
+   ```cmake
+   set(MODULE_SOURCES_my_module "src/my_module.cpp")
+   ```
+3. If your module provides its own exports, add it to MODULES_WITHOUT_LIBRARY
+4. Build and test as above
 
 #### Debugging Module Issues
 1. Check compilation errors in build output
