@@ -11,6 +11,8 @@ set(MODULE_LIBRARY_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../bindings-cpp/library")
 include_directories(${MODULE_LIBRARY_DIR}/include)
 
 # Add the main module source file
+# Use lib_minimal.cpp for now as it compiles without WASI dependencies
+# Switch to lib.cpp once WASI issues are resolved
 add_executable(sdk-test-cpp src/lib_minimal.cpp)
 
 # Link the Module Library
@@ -34,6 +36,6 @@ if(EMSCRIPTEN)
     set_target_properties(sdk-test-cpp PROPERTIES
         SUFFIX ".wasm"
         COMPILE_FLAGS ""
-        LINK_FLAGS "-s STANDALONE_WASM=1 -s EXPORT_ALL=1 -s ERROR_ON_UNDEFINED_SYMBOLS=0 -s ALLOW_MEMORY_GROWTH=1 -fexceptions"
+        LINK_FLAGS "-s STANDALONE_WASM=1 -s EXPORT_ALL=1 -s ERROR_ON_UNDEFINED_SYMBOLS=0 -s DISABLE_EXCEPTION_CATCHING=1 -s MALLOC=emmalloc -s WASM=1 --no-entry -s FILESYSTEM=0 -s INITIAL_MEMORY=16MB -s ALLOW_MEMORY_GROWTH=0"
     )
 endif()

@@ -65,6 +65,18 @@ SPACETIMEDB_REDUCER(find_user, ctx, std::string username) {
 - C++20 compatible compiler
 - CMake 3.20 or higher
 - SpacetimeDB CLI
+- Emscripten SDK (for WebAssembly compilation)
+
+### Installing Emscripten
+
+```bash
+# Clone and install Emscripten
+git clone https://github.com/emscripten-core/emsdk.git
+cd emsdk
+./emsdk install latest
+./emsdk activate latest
+source ./emsdk_env.sh  # Add to your shell profile for persistence
+```
 
 ### Building a Module
 
@@ -75,16 +87,39 @@ spacetime init --lang cpp mymodule
 
 2. Write your module code in `src/lib.cpp`
 
-3. Build:
+3. Build with Emscripten:
 ```bash
-mkdir build && cd build
-cmake ..
-make
+mkdir -p build && cd build
+emcmake cmake ..
+emmake make
 ```
 
 4. Publish to SpacetimeDB:
 ```bash
-spacetime publish mymodule
+# Make sure SpacetimeDB is running
+spacetime start
+
+# Publish the module
+spacetime publish mymodule -b <module_name>.wasm
+```
+
+5. Verify the module:
+```bash
+# Check the module schema
+spacetime describe mymodule --json
+```
+
+### Important Build Configuration
+
+For successful compilation without WASI dependencies, ensure your CMakeLists.txt includes:
+
+```cmake
+if(EMSCRIPTEN)
+    set_target_properties(your_module PROPERTIES
+        SUFFIX ".wasm"
+        LINK_FLAGS "-s STANDALONE_WASM=1 -s EXPORT_ALL=1 -s ERROR_ON_UNDEFINED_SYMBOLS=0 -s DISABLE_EXCEPTION_CATCHING=1 -s MALLOC=emmalloc -s WASM=1 --no-entry -s FILESYSTEM=0"
+    )
+endif()
 ```
 
 ## Documentation

@@ -36,9 +36,10 @@ This module is a comprehensive test suite for the SpacetimeDB C++ Module Library
 ## Building
 
 ### Prerequisites
-- Emscripten SDK
+- Emscripten SDK (properly activated with `source emsdk_env.sh`)
 - CMake 3.20+
 - C++20 compiler
+- SpacetimeDB CLI
 
 ### Build Steps
 
@@ -47,12 +48,38 @@ This module is a comprehensive test suite for the SpacetimeDB C++ Module Library
 ./build.sh
 
 # Or manually
-mkdir build && cd build
+mkdir -p build && cd build
 emcmake cmake ..
 emmake make
 ```
 
 The output WASM module will be at `build/sdk_test_cpp.wasm`.
+
+### Publishing and Verification
+
+1. **Start SpacetimeDB** (if not already running):
+   ```bash
+   spacetime start
+   ```
+
+2. **Publish the module**:
+   ```bash
+   spacetime publish sdktestcpp -b build/sdk_test_cpp.wasm
+   ```
+
+3. **Verify the module**:
+   ```bash
+   spacetime describe sdktestcpp --json
+   ```
+
+### Current Status
+
+The module currently includes:
+- A minimal implementation (`lib_minimal.cpp`) that demonstrates basic module structure
+- Proper WASM compilation without WASI dependencies
+- Correct SpacetimeDB ABI exports (`__describe_module__`, `__call_reducer__`)
+
+The full implementation with tables and reducers is in progress.
 
 ## Module Structure
 

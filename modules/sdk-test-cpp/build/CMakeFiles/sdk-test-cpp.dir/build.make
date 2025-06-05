@@ -93,8 +93,6 @@ sdk__test__cpp_EXTERNAL_OBJECTS =
 
 sdk_test_cpp.wasm: CMakeFiles/sdk-test-cpp.dir/src/lib_minimal.cpp.o
 sdk_test_cpp.wasm: CMakeFiles/sdk-test-cpp.dir/build.make
-sdk_test_cpp.wasm: libspacetimedb_module_library.a
-sdk_test_cpp.wasm: CMakeFiles/sdk-test-cpp.dir/linkLibs.rsp
 sdk_test_cpp.wasm: CMakeFiles/sdk-test-cpp.dir/objects1.rsp
 sdk_test_cpp.wasm: CMakeFiles/sdk-test-cpp.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable sdk_test_cpp.wasm"

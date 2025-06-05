@@ -108,6 +108,14 @@ public:
         )> ctor
     );
     
+    // Register a reducer (macro version)
+    static void RegisterReducer(const std::string& name, 
+                               std::function<void(const std::string&, uint32_t, size_t)> wrapper,
+                               int kind) {
+        // For now, we'll register a simple reducer
+        // This is a placeholder implementation
+    }
+    
     // Register a reducer with a simpler pattern
     template<typename R>
     static void RegisterReducer() {
@@ -125,6 +133,15 @@ public:
     static void RegisterTableDirect(const std::string& name, 
                                    TableAccess access,
                                    std::function<std::vector<uint8_t>()> typeGen) {
+        Instance().RegisterTableDirectImpl(name, access, typeGen);
+    }
+    
+    // Register a table (macro version)
+    static void RegisterTable(const std::string& name, 
+                              TableAccess access,
+                              const char* scheduled_reducer,
+                              const char* scheduled_at,
+                              std::function<std::vector<uint8_t>()> typeGen) {
         Instance().RegisterTableDirectImpl(name, access, typeGen);
     }
     

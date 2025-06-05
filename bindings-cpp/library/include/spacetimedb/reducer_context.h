@@ -26,6 +26,24 @@ struct ReducerContext {
     
     ReducerContext(Identity s, std::optional<ConnectionId> cid, Timestamp ts)
         : sender(s), connection_id(cid), timestamp(ts) {}
+    
+    // Table operations
+    template<typename T>
+    void insert(const T& row) {
+        // This is a placeholder - in a real implementation this would
+        // call the FFI functions to insert into the database
+        // For now, we'll do nothing to allow compilation
+    }
+    
+    template<typename T>
+    void update(const T& row) {
+        // Placeholder for table updates
+    }
+    
+    template<typename T>
+    void delete_row(const T& row) {
+        // Placeholder for table deletes
+    }
 };
 
 } // namespace SpacetimeDb
