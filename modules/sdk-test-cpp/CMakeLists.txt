@@ -11,9 +11,7 @@ set(MODULE_LIBRARY_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../bindings-cpp/library")
 include_directories(${MODULE_LIBRARY_DIR}/include)
 
 # Add the main module source file
-# Use lib_minimal.cpp for now as it compiles without WASI dependencies
-# Switch to lib.cpp once WASI issues are resolved
-add_executable(sdk-test-cpp src/lib_minimal.cpp)
+add_executable(sdk-test-cpp src/lib.cpp)
 
 # Link the Module Library
 file(GLOB_RECURSE MODULE_LIBRARY_SOURCES
@@ -26,7 +24,8 @@ target_include_directories(spacetimedb_module_library PUBLIC ${MODULE_LIBRARY_DI
 target_compile_definitions(spacetimedb_module_library PUBLIC SPACETIMEDB_MODULE_LIBRARY)
 
 # Link the module library to our module
-target_link_libraries(sdk-test-cpp spacetimedb_module_library)
+# Temporarily disabled to avoid WASI dependencies
+# target_link_libraries(sdk-test-cpp spacetimedb_module_library)
 
 # Set output name to match expected WASM module name
 set_target_properties(sdk-test-cpp PROPERTIES OUTPUT_NAME "sdk_test_cpp")

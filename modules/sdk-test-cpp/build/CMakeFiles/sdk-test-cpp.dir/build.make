@@ -69,29 +69,29 @@ include CMakeFiles/sdk-test-cpp.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/sdk-test-cpp.dir/flags.make
 
-CMakeFiles/sdk-test-cpp.dir/src/lib_minimal.cpp.o: CMakeFiles/sdk-test-cpp.dir/flags.make
-CMakeFiles/sdk-test-cpp.dir/src/lib_minimal.cpp.o: CMakeFiles/sdk-test-cpp.dir/includes_CXX.rsp
-CMakeFiles/sdk-test-cpp.dir/src/lib_minimal.cpp.o: /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/src/lib_minimal.cpp
-CMakeFiles/sdk-test-cpp.dir/src/lib_minimal.cpp.o: CMakeFiles/sdk-test-cpp.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/sdk-test-cpp.dir/src/lib_minimal.cpp.o"
-	/home/ludvi/emsdk/upstream/emscripten/em++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/sdk-test-cpp.dir/src/lib_minimal.cpp.o -MF CMakeFiles/sdk-test-cpp.dir/src/lib_minimal.cpp.o.d -o CMakeFiles/sdk-test-cpp.dir/src/lib_minimal.cpp.o -c /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/src/lib_minimal.cpp
+CMakeFiles/sdk-test-cpp.dir/src/lib.cpp.o: CMakeFiles/sdk-test-cpp.dir/flags.make
+CMakeFiles/sdk-test-cpp.dir/src/lib.cpp.o: CMakeFiles/sdk-test-cpp.dir/includes_CXX.rsp
+CMakeFiles/sdk-test-cpp.dir/src/lib.cpp.o: /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/src/lib.cpp
+CMakeFiles/sdk-test-cpp.dir/src/lib.cpp.o: CMakeFiles/sdk-test-cpp.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/sdk-test-cpp.dir/src/lib.cpp.o"
+	/home/ludvi/emsdk/upstream/emscripten/em++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/sdk-test-cpp.dir/src/lib.cpp.o -MF CMakeFiles/sdk-test-cpp.dir/src/lib.cpp.o.d -o CMakeFiles/sdk-test-cpp.dir/src/lib.cpp.o -c /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/src/lib.cpp
 
-CMakeFiles/sdk-test-cpp.dir/src/lib_minimal.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/sdk-test-cpp.dir/src/lib_minimal.cpp.i"
-	/home/ludvi/emsdk/upstream/emscripten/em++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/src/lib_minimal.cpp > CMakeFiles/sdk-test-cpp.dir/src/lib_minimal.cpp.i
+CMakeFiles/sdk-test-cpp.dir/src/lib.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/sdk-test-cpp.dir/src/lib.cpp.i"
+	/home/ludvi/emsdk/upstream/emscripten/em++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/src/lib.cpp > CMakeFiles/sdk-test-cpp.dir/src/lib.cpp.i
 
-CMakeFiles/sdk-test-cpp.dir/src/lib_minimal.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/sdk-test-cpp.dir/src/lib_minimal.cpp.s"
-	/home/ludvi/emsdk/upstream/emscripten/em++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/src/lib_minimal.cpp -o CMakeFiles/sdk-test-cpp.dir/src/lib_minimal.cpp.s
+CMakeFiles/sdk-test-cpp.dir/src/lib.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/sdk-test-cpp.dir/src/lib.cpp.s"
+	/home/ludvi/emsdk/upstream/emscripten/em++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/src/lib.cpp -o CMakeFiles/sdk-test-cpp.dir/src/lib.cpp.s
 
 # Object files for target sdk-test-cpp
 sdk__test__cpp_OBJECTS = \
-"CMakeFiles/sdk-test-cpp.dir/src/lib_minimal.cpp.o"
+"CMakeFiles/sdk-test-cpp.dir/src/lib.cpp.o"
 
 # External object files for target sdk-test-cpp
 sdk__test__cpp_EXTERNAL_OBJECTS =
 
-sdk_test_cpp.wasm: CMakeFiles/sdk-test-cpp.dir/src/lib_minimal.cpp.o
+sdk_test_cpp.wasm: CMakeFiles/sdk-test-cpp.dir/src/lib.cpp.o
 sdk_test_cpp.wasm: CMakeFiles/sdk-test-cpp.dir/build.make
 sdk_test_cpp.wasm: CMakeFiles/sdk-test-cpp.dir/objects1.rsp
 sdk_test_cpp.wasm: CMakeFiles/sdk-test-cpp.dir/link.txt

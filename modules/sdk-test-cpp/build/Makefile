@@ -598,29 +598,29 @@ home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/wasi_shims.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/wasi_shims.cpp.s
 .PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/wasi_shims.cpp.s
 
-src/lib_minimal.o: src/lib_minimal.cpp.o
-.PHONY : src/lib_minimal.o
+src/lib.o: src/lib.cpp.o
+.PHONY : src/lib.o
 
 # target to build an object file
-src/lib_minimal.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/sdk-test-cpp.dir/build.make CMakeFiles/sdk-test-cpp.dir/src/lib_minimal.cpp.o
-.PHONY : src/lib_minimal.cpp.o
+src/lib.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sdk-test-cpp.dir/build.make CMakeFiles/sdk-test-cpp.dir/src/lib.cpp.o
+.PHONY : src/lib.cpp.o
 
-src/lib_minimal.i: src/lib_minimal.cpp.i
-.PHONY : src/lib_minimal.i
+src/lib.i: src/lib.cpp.i
+.PHONY : src/lib.i
 
 # target to preprocess a source file
-src/lib_minimal.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/sdk-test-cpp.dir/build.make CMakeFiles/sdk-test-cpp.dir/src/lib_minimal.cpp.i
-.PHONY : src/lib_minimal.cpp.i
+src/lib.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sdk-test-cpp.dir/build.make CMakeFiles/sdk-test-cpp.dir/src/lib.cpp.i
+.PHONY : src/lib.cpp.i
 
-src/lib_minimal.s: src/lib_minimal.cpp.s
-.PHONY : src/lib_minimal.s
+src/lib.s: src/lib.cpp.s
+.PHONY : src/lib.s
 
 # target to generate assembly for a file
-src/lib_minimal.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/sdk-test-cpp.dir/build.make CMakeFiles/sdk-test-cpp.dir/src/lib_minimal.cpp.s
-.PHONY : src/lib_minimal.cpp.s
+src/lib.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sdk-test-cpp.dir/build.make CMakeFiles/sdk-test-cpp.dir/src/lib.cpp.s
+.PHONY : src/lib.cpp.s
 
 # Help Target
 help:
@@ -689,9 +689,9 @@ help:
 	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/wasi_shims.o"
 	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/wasi_shims.i"
 	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/wasi_shims.s"
-	@echo "... src/lib_minimal.o"
-	@echo "... src/lib_minimal.i"
-	@echo "... src/lib_minimal.s"
+	@echo "... src/lib.o"
+	@echo "... src/lib.i"
+	@echo "... src/lib.s"
 .PHONY : help
 
 
