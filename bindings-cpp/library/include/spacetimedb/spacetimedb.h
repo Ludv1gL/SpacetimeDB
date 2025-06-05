@@ -62,23 +62,23 @@
 // =============================================================================
 
 #ifndef LOG_TRACE
-#define LOG_TRACE(msg) spacetimedb::log_trace(msg, __func__, __FILE__, __LINE__)
+#define LOG_TRACE(msg) SpacetimeDb::log_trace(msg, __func__, __FILE__, __LINE__)
 #endif
 
 #ifndef LOG_DEBUG  
-#define LOG_DEBUG(msg) spacetimedb::log_debug(msg, __func__, __FILE__, __LINE__)
+#define LOG_DEBUG(msg) SpacetimeDb::log_debug(msg, __func__, __FILE__, __LINE__)
 #endif
 
 #ifndef LOG_INFO
-#define LOG_INFO(msg) spacetimedb::log_info(msg, __func__, __FILE__, __LINE__)
+#define LOG_INFO(msg) SpacetimeDb::log_info(msg, __func__, __FILE__, __LINE__)
 #endif
 
 #ifndef LOG_WARN
-#define LOG_WARN(msg) spacetimedb::log_warn(msg, __func__, __FILE__, __LINE__)
+#define LOG_WARN(msg) SpacetimeDb::log_warn(msg, __func__, __FILE__, __LINE__)
 #endif
 
 #ifndef LOG_ERROR
-#define LOG_ERROR(msg) spacetimedb::log_error(msg, __func__, __FILE__, __LINE__)
+#define LOG_ERROR(msg) SpacetimeDb::log_error(msg, __func__, __FILE__, __LINE__)
 #endif
 
 // FFI declarations are provided by abi/spacetimedb_abi.h and internal/FFI.h
@@ -94,7 +94,7 @@
 // CORE SPACETIMEDB NAMESPACE
 // =============================================================================
 
-namespace spacetimedb {
+namespace SpacetimeDb {
 
 // -----------------------------------------------------------------------------
 // Type Aliases and Forward Declarations
@@ -215,7 +215,7 @@ struct ModuleDef {
     struct Reducer {
         std::string name;
         std::function<void(std::vector<uint8_t>&)> write_params;
-        std::function<void(spacetimedb::ReducerContext&, uint32_t)> handler;
+        std::function<void(SpacetimeDb::ReducerContext&, uint32_t)> handler;
         std::optional<Lifecycle> lifecycle;
     };
     
@@ -234,7 +234,7 @@ struct ModuleDef {
     }
 };
 
-} // namespace spacetimedb
+} // namespace SpacetimeDb
 
 // -----------------------------------------------------------------------------
 // Table Iterator
@@ -276,7 +276,7 @@ private:
         current_batch_.clear();
         size_t pos = 0;
         
-        auto& module = spacetimedb::ModuleDef::instance();
+        auto& module = SpacetimeDb::ModuleDef::instance();
         auto it = module.table_indices.find(&typeid(T));
         if (it == module.table_indices.end()) {
             done_ = true;
@@ -381,7 +381,7 @@ class TableHandle {
     void resolve_table_id() const {
         if (id_resolved_) return;
         
-        auto& module = spacetimedb::ModuleDef::instance();
+        auto& module = SpacetimeDb::ModuleDef::instance();
         auto it = module.table_indices.find(&typeid(T));
         if (it == module.table_indices.end()) return;
         
@@ -399,7 +399,7 @@ public:
     T insert(const T& row) {
         resolve_table_id();
         
-        auto& module = spacetimedb::ModuleDef::instance();
+        auto& module = SpacetimeDb::ModuleDef::instance();
         auto it = module.table_indices.find(&typeid(T));
         if (it == module.table_indices.end()) return row;
         
@@ -445,7 +445,7 @@ public:
     bool delete_by_value(const T& value) {
         resolve_table_id();
         
-        auto& module = spacetimedb::ModuleDef::instance();
+        auto& module = SpacetimeDb::ModuleDef::instance();
         auto it = module.table_indices.find(&typeid(T));
         if (it == module.table_indices.end()) return false;
         
@@ -491,7 +491,7 @@ public:
     }
     
     bool has_table(const char* name) const {
-        using namespace spacetimedb::detail;
+        using namespace SpacetimeDb::detail;
         for (size_t i = 0; i < table_count; ++i) {
             if (table_names[i] && std::strcmp(table_names[i], name) == 0) {
                 return true;
@@ -501,7 +501,7 @@ public:
     }
     
     size_t get_table_count() const {
-        return spacetimedb::detail::table_count;
+        return SpacetimeDb::detail::table_count;
     }
 };
 
@@ -527,7 +527,7 @@ public:
     #undef X
 };
 
-namespace spacetimedb {
+namespace SpacetimeDb {
 
 // -----------------------------------------------------------------------------
 // Table Registration
@@ -653,8 +653,8 @@ T read_arg(uint32_t& source) {
 }
 
 template<typename... Args>
-void spacetimedb_reducer_wrapper(void (*func)(spacetimedb::ReducerContext, Args...), 
-                                spacetimedb::ReducerContext& ctx, uint32_t args_source) {
+void spacetimedb_reducer_wrapper(void (*func)(SpacetimeDb::ReducerContext, Args...), 
+                                SpacetimeDb::ReducerContext& ctx, uint32_t args_source) {
     if constexpr (sizeof...(Args) == 0) {
         func(ctx);
     } else if constexpr (sizeof...(Args) == 1) {
@@ -695,10 +695,10 @@ void write_params_for_types(std::vector<uint8_t>& buf) {
 }
 
 template<typename... Args>
-void register_reducer_impl(const std::string& name, void (*func)(spacetimedb::ReducerContext, Args...)) {
+void register_reducer_impl(const std::string& name, void (*func)(SpacetimeDb::ReducerContext, Args...)) {
     ModuleDef::Reducer reducer;
     reducer.name = name;
-    reducer.handler = [func](spacetimedb::ReducerContext& ctx, uint32_t args) {
+    reducer.handler = [func](SpacetimeDb::ReducerContext& ctx, uint32_t args) {
         spacetimedb_reducer_wrapper(func, ctx, args);
     };
     reducer.write_params = [](std::vector<uint8_t>& buf) {
@@ -710,11 +710,11 @@ void register_reducer_impl(const std::string& name, void (*func)(spacetimedb::Re
 }
 
 // Specialized registration for init reducer
-inline void register_init_reducer(void (*func)(spacetimedb::ReducerContext)) {
+inline void register_init_reducer(void (*func)(SpacetimeDb::ReducerContext)) {
     ModuleDef::Reducer reducer;
     reducer.name = "init";
     reducer.lifecycle = Lifecycle::Init;
-    reducer.handler = [func](spacetimedb::ReducerContext& ctx, uint32_t) {
+    reducer.handler = [func](SpacetimeDb::ReducerContext& ctx, uint32_t) {
         func(ctx);
     };
     reducer.write_params = [](std::vector<uint8_t>& buf) {
@@ -724,11 +724,11 @@ inline void register_init_reducer(void (*func)(spacetimedb::ReducerContext)) {
 }
 
 // Specialized registration for client_connected reducer
-inline void register_client_connected_reducer(void (*func)(spacetimedb::ReducerContext, Identity)) {
+inline void register_client_connected_reducer(void (*func)(SpacetimeDb::ReducerContext, Identity)) {
     ModuleDef::Reducer reducer;
     reducer.name = "client_connected";
     reducer.lifecycle = Lifecycle::OnConnect;
-    reducer.handler = [func](spacetimedb::ReducerContext& ctx, uint32_t) {
+    reducer.handler = [func](SpacetimeDb::ReducerContext& ctx, uint32_t) {
         Identity sender(g_sender_parts[0], g_sender_parts[1], g_sender_parts[2], g_sender_parts[3]);
         func(ctx, sender);
     };
@@ -739,11 +739,11 @@ inline void register_client_connected_reducer(void (*func)(spacetimedb::ReducerC
 }
 
 // Specialized registration for client_disconnected reducer
-inline void register_client_disconnected_reducer(void (*func)(spacetimedb::ReducerContext, Identity)) {
+inline void register_client_disconnected_reducer(void (*func)(SpacetimeDb::ReducerContext, Identity)) {
     ModuleDef::Reducer reducer;
     reducer.name = "client_disconnected";
     reducer.lifecycle = Lifecycle::OnDisconnect;
-    reducer.handler = [func](spacetimedb::ReducerContext& ctx, uint32_t) {
+    reducer.handler = [func](SpacetimeDb::ReducerContext& ctx, uint32_t) {
         Identity sender(g_sender_parts[0], g_sender_parts[1], g_sender_parts[2], g_sender_parts[3]);
         func(ctx, sender);
     };
@@ -759,8 +759,8 @@ struct ReducerRegistrar {
 };
 
 template<typename... Args>
-struct ReducerRegistrar<void (*)(spacetimedb::ReducerContext, Args...)> {
-    static void register_func(const char* name, void (*func)(spacetimedb::ReducerContext, Args...)) {
+struct ReducerRegistrar<void (*)(SpacetimeDb::ReducerContext, Args...)> {
+    static void register_func(const char* name, void (*func)(SpacetimeDb::ReducerContext, Args...)) {
         register_reducer_impl(name, func);
     }
 };
@@ -850,7 +850,7 @@ inline int16_t spacetimedb_call_reducer(uint32_t id, uint32_t args,
         g_sender_parts[2] = sender_2;
         g_sender_parts[3] = sender_3;
         
-        spacetimedb::ReducerContext ctx;
+        SpacetimeDb::ReducerContext ctx;
         module.reducers[id].handler(ctx, args);
         return 0;
     }
@@ -908,7 +908,7 @@ inline void initialize_module() {
     DeferredRegistry::register_all();
 }
 
-} // namespace spacetimedb
+} // namespace SpacetimeDb
 
 // =============================================================================
 // REGISTRATION MACROS
@@ -918,8 +918,8 @@ inline void initialize_module() {
 #define X(TypeName, table_name, is_public) \
     __attribute__((export_name("__preinit__20_table_" #table_name))) \
     extern "C" void SPACETIMEDB_CAT(_preinit_register_table_, table_name)() { \
-        spacetimedb::register_table_impl<TypeName>(#table_name, is_public); \
-        spacetimedb::detail::register_table_name(#table_name); \
+        SpacetimeDb::register_table_impl<TypeName>(#table_name, is_public); \
+        SpacetimeDb::detail::register_table_name(#table_name); \
     }
 SPACETIMEDB_TABLES_LIST
 #undef X
@@ -933,8 +933,8 @@ SPACETIMEDB_TABLES_LIST
 extern "C" {
     __attribute__((export_name("__describe_module__")))
     void __describe_module__(uint32_t sink) {
-        spacetimedb::initialize_module();
-        spacetimedb::spacetimedb_write_module_def(sink);
+        SpacetimeDb::initialize_module();
+        SpacetimeDb::spacetimedb_write_module_def(sink);
     }
     
     __attribute__((export_name("__call_reducer__")))
@@ -946,8 +946,8 @@ extern "C" {
         uint32_t args_source, 
         uint32_t error_sink
     ) {
-        spacetimedb::initialize_module();
-        return spacetimedb::spacetimedb_call_reducer(id, args_source, sender_0, sender_1, sender_2, sender_3);
+        SpacetimeDb::initialize_module();
+        return SpacetimeDb::spacetimedb_call_reducer(id, args_source, sender_0, sender_1, sender_2, sender_3);
     }
 }
 
@@ -955,7 +955,7 @@ extern "C" {
 // CONVENIENCE ALIASES
 // =============================================================================
 
-namespace spacetimedb {
+namespace SpacetimeDb {
     using Context = ReducerContext;
     using DB = ModuleDatabase;
 }
@@ -967,18 +967,18 @@ namespace spacetimedb {
 // Helper macro to register a single field
 #define SPACETIMEDB_AUTO_FIELD(struct_type, field_name, field_type) \
     { \
-        spacetimedb::FieldDescriptor desc; \
+        SpacetimeDb::FieldDescriptor desc; \
         desc.name = #field_name; \
         desc.offset = offsetof(struct_type, field_name); \
         desc.size = sizeof(field_type); \
         desc.write_type = [](std::vector<uint8_t>& buf) { \
-            spacetimedb::write_field_type<field_type>(buf); \
+            SpacetimeDb::write_field_type<field_type>(buf); \
         }; \
         desc.serialize = [](std::vector<uint8_t>& buf, const void* obj) { \
             const struct_type* typed_obj = static_cast<const struct_type*>(obj); \
-            spacetimedb::serialize_value(buf, typed_obj->field_name); \
+            SpacetimeDb::serialize_value(buf, typed_obj->field_name); \
         }; \
-        spacetimedb::get_table_descriptors()[&typeid(struct_type)].fields.push_back(desc); \
+        SpacetimeDb::get_table_descriptors()[&typeid(struct_type)].fields.push_back(desc); \
     }
 
 // Macro to define a struct and automatically register its fields

@@ -18,7 +18,7 @@ SPACETIMEDB_TABLE(OneU8, one_u8, true)
 // MINIMAL REDUCERS
 // =============================================================================
 
-SPACETIMEDB_REDUCER(insert_one_u8, spacetimedb::ReducerContext ctx) {
+SPACETIMEDB_REDUCER(insert_one_u8, SpacetimeDb::ReducerContext ctx) {
     OneU8 row{42};
     
     auto table_id = ctx.db->table<OneU8>("one_u8").get_table_id();
@@ -35,7 +35,7 @@ SPACETIMEDB_REDUCER(insert_one_u8, spacetimedb::ReducerContext ctx) {
     }
 }
 
-SPACETIMEDB_REDUCER(no_op_succeeds, spacetimedb::ReducerContext ctx) {
+SPACETIMEDB_REDUCER(no_op_succeeds, SpacetimeDb::ReducerContext ctx) {
     LOG_INFO("No-op reducer succeeded");
 }
 
@@ -49,7 +49,7 @@ SPACETIMEDB_INIT(init) {
 
 std::vector<uint8_t> build_minimal_module_definition() {
     std::vector<uint8_t> module_bytes;
-    spacetimedb::BsatnWriter writer(module_bytes);
+    SpacetimeDb::BsatnWriter writer(module_bytes);
     
     // RawModuleDef::V9 tag
     writer.write_u8(1);
@@ -149,19 +149,19 @@ int16_t __call_reducer__(uint32_t id,
         auto sender_identity = identity_from_params(sender_0, sender_1, sender_2, sender_3);
         
         // Construct connection ID if valid
-        std::optional<spacetimedb::ConnectionId> conn_id;
+        std::optional<SpacetimeDb::ConnectionId> conn_id;
         if (conn_id_0 != 0 || conn_id_1 != 0) {
-            conn_id = spacetimedb::ConnectionId(conn_id_0, conn_id_1);
+            conn_id = SpacetimeDb::ConnectionId(conn_id_0, conn_id_1);
         }
         
         // Create reducer context
-        spacetimedb::ReducerContext ctx(spacetimedb::get_module_db(), 
+        SpacetimeDb::ReducerContext ctx(SpacetimeDb::get_module_db(), 
                                        sender_identity, 
                                        timestamp, 
                                        conn_id);
         
         // Dispatch to reducers
-        if (!spacetimedb::ReducerDispatcher::instance().call_reducer(id, ctx, args)) {
+        if (!SpacetimeDb::ReducerDispatcher::instance().call_reducer(id, ctx, args)) {
             LOG_ERROR("Unknown reducer ID: " + std::to_string(id));
             return 1;
         }

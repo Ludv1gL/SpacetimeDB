@@ -1,7 +1,7 @@
 #include <spacetimedb/spacetimedb.h>
 #include <spacetimedb/spacetimedb_autogen.h>
 
-using namespace spacetimedb;
+using namespace SpacetimeDb;
 
 // Example: Document management system with row-level security
 struct Document {
@@ -43,13 +43,13 @@ SPACETIMEDB_TABLE(TeamMember, "team_members", true)
 
 // SELECT: Users can see documents they own, public documents, or team documents they're members of
 SPACETIMEDB_RLS_SELECT(documents, view_documents, 
-    spacetimedb::rls::or_conditions({
+    SpacetimeDb::rls::or_conditions({
         // User owns the document
-        spacetimedb::rls::user_owns("owner_id"),
+        SpacetimeDb::rls::user_owns("owner_id"),
         // Document is public
         "visibility = 'public'",
         // User is member of the team
-        spacetimedb::rls::and_conditions({
+        SpacetimeDb::rls::and_conditions({
             "visibility = 'team'",
             "EXISTS (SELECT 1 FROM team_members WHERE team_members.team_id = documents.team_id AND team_members.user_id = current_user_identity())"
         })
@@ -58,16 +58,16 @@ SPACETIMEDB_RLS_SELECT(documents, view_documents,
 
 // INSERT: Users can only create documents they own
 SPACETIMEDB_RLS_INSERT(documents, create_documents,
-    spacetimedb::rls::user_owns("owner_id")
+    SpacetimeDb::rls::user_owns("owner_id")
 )
 
 // UPDATE: Users can only update their own documents or team documents where they're admin
 SPACETIMEDB_RLS_UPDATE(documents, update_documents,
-    spacetimedb::rls::or_conditions({
+    SpacetimeDb::rls::or_conditions({
         // User owns the document
-        spacetimedb::rls::user_owns("owner_id"),
+        SpacetimeDb::rls::user_owns("owner_id"),
         // User is admin of the team
-        spacetimedb::rls::and_conditions({
+        SpacetimeDb::rls::and_conditions({
             "visibility = 'team'",
             "EXISTS (SELECT 1 FROM team_members WHERE team_members.team_id = documents.team_id " 
             "AND team_members.user_id = current_user_identity() AND team_members.role = 'admin')"
@@ -77,7 +77,7 @@ SPACETIMEDB_RLS_UPDATE(documents, update_documents,
 
 // DELETE: Only document owners can delete
 SPACETIMEDB_RLS_DELETE(documents, delete_documents,
-    spacetimedb::rls::user_owns("owner_id")
+    SpacetimeDb::rls::user_owns("owner_id")
 )
 
 // RLS Policies for TeamMember table
@@ -101,7 +101,7 @@ SPACETIMEDB_RLS_UPDATE(team_members, update_team_members,
 
 // DELETE: Team admins can remove members, members can remove themselves
 SPACETIMEDB_RLS_DELETE(team_members, remove_team_members,
-    spacetimedb::rls::or_conditions({
+    SpacetimeDb::rls::or_conditions({
         // User is admin of the team
         "EXISTS (SELECT 1 FROM team_members tm WHERE tm.team_id = team_members.team_id " 
         "AND tm.user_id = current_user_identity() AND tm.role = 'admin')",
@@ -125,19 +125,19 @@ SPACETIMEDB_TABLE(SystemConfig, "system_config", false)  // Private table
 
 // Only system admins can access this table
 SPACETIMEDB_RLS_SELECT(system_config, admin_only_read,
-    spacetimedb::rls::user_has_role("system_admin")
+    SpacetimeDb::rls::user_has_role("system_admin")
 )
 
 SPACETIMEDB_RLS_INSERT(system_config, admin_only_write,
-    spacetimedb::rls::user_has_role("system_admin")
+    SpacetimeDb::rls::user_has_role("system_admin")
 )
 
 SPACETIMEDB_RLS_UPDATE(system_config, admin_only_update,
-    spacetimedb::rls::user_has_role("system_admin")
+    SpacetimeDb::rls::user_has_role("system_admin")
 )
 
 SPACETIMEDB_RLS_DELETE(system_config, admin_only_delete,
-    spacetimedb::rls::user_has_role("system_admin")
+    SpacetimeDb::rls::user_has_role("system_admin")
 )
 
 // Reducers

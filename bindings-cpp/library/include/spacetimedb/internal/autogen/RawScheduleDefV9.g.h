@@ -11,6 +11,7 @@
 #include <optional>
 #include <memory>
 #include "spacetimedb/bsatn/bsatn.h"
+#include "spacetimedb/data_member_macro.h"
 
 namespace SpacetimeDb::Internal {
 

@@ -15,7 +15,7 @@
 #include <string>
 #include <vector> // Though not directly used in KeyValue, often useful
 
-namespace spacetimedb_quickstart {
+namespace SpacetimeDb_quickstart {
 
 // Log levels for direct _console_log usage
 // These should ideally match any enum or constants defined by the host or ABI for clarity
@@ -63,10 +63,10 @@ SPACETIMEDB_TYPE_STRUCT_WITH_FIELDS(
 );
 
 // Reducer function declarations
-void kv_put(spacetimedb::sdk::ReducerContext& ctx, const std::string& key, const std::string& value);
-void kv_get(spacetimedb::sdk::ReducerContext& ctx, const std::string& key);
-void kv_del(spacetimedb::sdk::ReducerContext& ctx, const std::string& key);
+void kv_put(SpacetimeDb::sdk::ReducerContext& ctx, const std::string& key, const std::string& value);
+void kv_get(SpacetimeDb::sdk::ReducerContext& ctx, const std::string& key);
+void kv_del(SpacetimeDb::sdk::ReducerContext& ctx, const std::string& key);
 
-} // namespace spacetimedb_quickstart
+} // namespace SpacetimeDb_quickstart
 
 #endif // KV_STORE_H

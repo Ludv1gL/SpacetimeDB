@@ -7,7 +7,7 @@
 #include <memory>
 #include <map>
 
-namespace spacetimedb {
+namespace SpacetimeDb {
 
 /**
  * Semantic version representation for module versioning
@@ -257,14 +257,14 @@ public:
  * Helper macros for defining module versions and migrations
  */
 #define SPACETIMEDB_MODULE_VERSION(major, minor, patch) \
-    static const spacetimedb::ModuleVersion MODULE_VERSION{major, minor, patch};
+    static const SpacetimeDb::ModuleVersion MODULE_VERSION{major, minor, patch};
 
 #define SPACETIMEDB_MODULE_METADATA(name, author, desc, license) \
-    static const spacetimedb::ModuleMetadata MODULE_METADATA{ \
+    static const SpacetimeDb::ModuleMetadata MODULE_METADATA{ \
         name, MODULE_VERSION, author, desc, license, {} \
     };
 
 // Helper function to include version info in module description
 void add_version_to_module_def(void* module_def_builder, const ModuleMetadata& metadata);
 
-} // namespace spacetimedb
+} // namespace SpacetimeDb

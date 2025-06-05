@@ -8,10 +8,10 @@
 #include <variant>
 #include <optional>
 
-namespace spacetimedb::bsatn {
+namespace SpacetimeDb::bsatn {
 
 // Forward declarations
-struct SumType;
+struct SumTypeSchema;
 struct ProductType;
 struct ProductTypeElement;
 struct SumTypeVariant;
@@ -73,10 +73,10 @@ struct SumTypeVariant {
  * Each variant has a name and can contain data.
  * Aligned with Rust/C# naming conventions.
  */
-struct SumType {
+struct SumTypeSchema {
     std::vector<SumTypeVariant> variants;
     
-    explicit SumType(std::vector<SumTypeVariant> v) : variants(std::move(v)) {}
+    explicit SumTypeSchema(std::vector<SumTypeVariant> v) : variants(std::move(v)) {}
 };
 
 /**
@@ -112,11 +112,11 @@ struct ArrayType {
 class AlgebraicType {
 public:
     using DataType = std::variant<
-        uint32_t,                      // Ref - type reference
-        std::unique_ptr<SumType>,      // Sum type
-        std::unique_ptr<ProductType>,  // Product type
-        std::unique_ptr<ArrayType>,    // Array type
-        std::monostate                 // Primitive types (no additional data)
+        uint32_t,                          // Ref - type reference
+        std::unique_ptr<SumTypeSchema>,    // Sum type
+        std::unique_ptr<ProductType>,      // Product type
+        std::unique_ptr<ArrayType>,        // Array type
+        std::monostate                     // Primitive types (no additional data)
     >;
 
 private:
@@ -129,7 +129,7 @@ public:
         return AlgebraicType(AlgebraicTypeTag::Ref, type_id);
     }
     
-    static AlgebraicType make_sum(std::unique_ptr<SumType> sum) {
+    static AlgebraicType make_sum(std::unique_ptr<SumTypeSchema> sum) {
         return AlgebraicType(AlgebraicTypeTag::Sum, std::move(sum));
     }
     
@@ -224,9 +224,9 @@ public:
         return std::get<uint32_t>(data_);
     }
     
-    const SumType& as_sum() const {
+    const SumTypeSchema& as_sum() const {
         if (!is_sum()) throw std::runtime_error("Type is not a Sum");
-        return *std::get<std::unique_ptr<SumType>>(data_);
+        return *std::get<std::unique_ptr<SumTypeSchema>>(data_);
     }
     
     const ProductType& as_product() const {
@@ -265,7 +265,7 @@ public:
         std::vector<SumTypeVariant> variants;
         variants.emplace_back("none", 0);  // Unit type at index 0
         variants.emplace_back("some", some_type_id);
-        return make_sum(std::make_unique<SumType>(std::move(variants)));
+        return make_sum(std::make_unique<SumTypeSchema>(std::move(variants)));
     }
     static AlgebraicType Product(std::vector<std::pair<std::string, uint32_t>> fields) {
         std::vector<ProductTypeElement> elements;
@@ -279,7 +279,7 @@ public:
         for (const auto& [name, type_id] : variants) {
             sum_variants.emplace_back(name, type_id);
         }
-        return make_sum(std::make_unique<SumType>(std::move(sum_variants)));
+        return make_sum(std::make_unique<SumTypeSchema>(std::move(sum_variants)));
     }
 
 private:
@@ -363,11 +363,11 @@ template<typename T> struct algebraic_type_of<std::optional<T>> {
 // Backward compatibility aliases for old naming
 using AggregateElement = ProductTypeElement;  // Legacy name
 
-} // namespace spacetimedb::bsatn
+} // namespace SpacetimeDb::bsatn
 
 // Legacy namespace alias for backward compatibility
 namespace SpacetimeDb::bsatn {
-    using namespace ::spacetimedb::bsatn;
+    using namespace ::SpacetimeDb::bsatn;
 }
 
 #endif // SPACETIMEDB_BSATN_ALGEBRAIC_TYPE_H

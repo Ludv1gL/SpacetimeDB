@@ -11,7 +11,7 @@
 #include <memory>    // For std::unique_ptr in iterator if needed
 // #include <iostream>  // For temporary debugging if needed (remove for final)
 
-namespace spacetimedb {
+namespace SpacetimeDb {
 namespace library {
 
 // Forward declare Table for TableIterator friending or use.
@@ -290,6 +290,6 @@ private:
 };
 
 } // namespace library
-} // namespace spacetimedb
+} // namespace SpacetimeDb
 
 #endif // SPACETIMEDB_LIBRARY_TABLE_H

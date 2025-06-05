@@ -11,7 +11,7 @@
 #include <map>
 #include <typeinfo>
 
-namespace spacetimedb {
+namespace SpacetimeDb {
 
 // Extended type system for BSATN
 namespace bsatn_type {
@@ -453,18 +453,18 @@ void serialize_value(std::vector<uint8_t>& buf, const std::vector<T>& val) {
 // Macro to register a single field
 #define SPACETIMEDB_FIELD(struct_type, field_name, field_type) \
     { \
-        spacetimedb::FieldDescriptor desc; \
+        SpacetimeDb::FieldDescriptor desc; \
         desc.name = #field_name; \
         desc.offset = offsetof(struct_type, field_name); \
         desc.size = sizeof(field_type); \
         desc.write_type = [](std::vector<uint8_t>& buf) { \
-            spacetimedb::write_field_type<field_type>(buf); \
+            SpacetimeDb::write_field_type<field_type>(buf); \
         }; \
         desc.serialize = [](std::vector<uint8_t>& buf, const void* obj) { \
             const struct_type* typed_obj = static_cast<const struct_type*>(obj); \
-            spacetimedb::serialize_value(buf, typed_obj->field_name); \
+            SpacetimeDb::serialize_value(buf, typed_obj->field_name); \
         }; \
-        spacetimedb::get_table_descriptors()[&typeid(struct_type)].fields.push_back(desc); \
+        SpacetimeDb::get_table_descriptors()[&typeid(struct_type)].fields.push_back(desc); \
     }
 
 // Macro to register all fields of a struct
@@ -478,6 +478,6 @@ void serialize_value(std::vector<uint8_t>& buf, const std::vector<T>& val) {
         static struct_type##_field_registrar struct_type##_field_registrar_instance; \
     }
 
-} // namespace spacetimedb
+} // namespace SpacetimeDb
 
 #endif // SPACETIMEDB_FIELD_REGISTRATION_H

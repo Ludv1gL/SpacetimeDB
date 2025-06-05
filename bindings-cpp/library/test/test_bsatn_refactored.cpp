@@ -7,7 +7,7 @@
 #include <iostream>
 #include <cassert>
 
-using namespace spacetimedb::bsatn;
+using namespace SpacetimeDb::bsatn;
 
 // Convenience functions for testing
 template<typename T>

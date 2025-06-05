@@ -4,7 +4,7 @@
 extern "C" __attribute__((export_name("__describe_module__"))) 
 void __describe_module__(uint32_t description) {
     std::vector<uint8_t> module_bytes;
-    spacetimedb::BsatnWriter writer(module_bytes);
+    SpacetimeDb::BsatnWriter writer(module_bytes);
     
     // RawModuleDef::V9 tag
     writer.write_u8(1);

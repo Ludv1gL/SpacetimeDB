@@ -13,7 +13,7 @@ struct PrimitiveOnly {
 SPACETIMEDB_TABLE(PrimitiveOnly, primitive_only, true)
 
 // Test reducers with only primitives
-SPACETIMEDB_REDUCER(insert_primitive, spacetimedb::ReducerContext ctx, uint32_t id, uint8_t value) {
+SPACETIMEDB_REDUCER(insert_primitive, SpacetimeDb::ReducerContext ctx, uint32_t id, uint8_t value) {
     LOG_INFO("Testing verified primitive types");
     LOG_INFO("Inserting id=" + std::to_string(id) + ", value=" + std::to_string(value));
     
@@ -23,7 +23,7 @@ SPACETIMEDB_REDUCER(insert_primitive, spacetimedb::ReducerContext ctx, uint32_t 
     LOG_INFO("Primitive insertion successful");
 }
 
-SPACETIMEDB_REDUCER(test_logging_integration, spacetimedb::ReducerContext ctx) {
+SPACETIMEDB_REDUCER(test_logging_integration, SpacetimeDb::ReducerContext ctx) {
     LOG_INFO("Testing logging integration");
     LOG_DEBUG("Debug message test");
     LOG_WARN("Warning message test");  
@@ -42,7 +42,7 @@ SPACETIMEDB_REDUCER(test_logging_integration, spacetimedb::ReducerContext ctx) {
     LOG_INFO("Logging integration test completed");
 }
 
-SPACETIMEDB_REDUCER(test_error_handling, spacetimedb::ReducerContext ctx, uint8_t error_type) {
+SPACETIMEDB_REDUCER(test_error_handling, SpacetimeDb::ReducerContext ctx, uint8_t error_type) {
     LOG_INFO("Testing error handling integration");
     
     try {
@@ -69,7 +69,7 @@ SPACETIMEDB_REDUCER(test_error_handling, spacetimedb::ReducerContext ctx, uint8_
     }
 }
 
-SPACETIMEDB_REDUCER(init_verified_test, spacetimedb::ReducerContext ctx) {
+SPACETIMEDB_REDUCER(init_verified_test, SpacetimeDb::ReducerContext ctx) {
     SpacetimeDB::LogStopwatch timer("verified_test_init");
     LOG_INFO("Initializing verified primitives test");
     

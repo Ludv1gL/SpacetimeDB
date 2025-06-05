@@ -11,7 +11,7 @@ struct OneU8 {
 };
 
 // Test reducer using enhanced context
-void test_enhanced_context(spacetimedb::ReducerContext ctx) {
+void test_enhanced_context(SpacetimeDb::ReducerContext ctx) {
     LOG_INFO("Testing enhanced reducer context");
     
     // Log the timestamp
@@ -40,7 +40,7 @@ void test_enhanced_context(spacetimedb::ReducerContext ctx) {
 }
 
 // Init reducer
-void init_reducer(spacetimedb::ReducerContext ctx) {
+void init_reducer(SpacetimeDb::ReducerContext ctx) {
     LOG_INFO("Module initialized");
     
     // Get module identity
@@ -57,7 +57,7 @@ void init_reducer(spacetimedb::ReducerContext ctx) {
 extern "C" __attribute__((export_name("__describe_module__"))) 
 void __describe_module__(uint32_t description) {
     std::vector<uint8_t> module_bytes;
-    spacetimedb::BsatnWriter writer(module_bytes);
+    SpacetimeDb::BsatnWriter writer(module_bytes);
     
     // RawModuleDef::V9 tag
     writer.write_u8(1);
@@ -146,13 +146,13 @@ int16_t __call_reducer__(uint32_t id,
         auto sender_identity = identity_from_params(sender_0, sender_1, sender_2, sender_3);
         
         // Construct connection ID if valid
-        std::optional<spacetimedb::ConnectionId> conn_id;
+        std::optional<SpacetimeDb::ConnectionId> conn_id;
         if (conn_id_0 != 0 || conn_id_1 != 0) {
-            conn_id = spacetimedb::ConnectionId(conn_id_0, conn_id_1);
+            conn_id = SpacetimeDb::ConnectionId(conn_id_0, conn_id_1);
         }
         
         // Create reducer context with all information
-        spacetimedb::ReducerContext ctx(spacetimedb::get_module_db(), 
+        SpacetimeDb::ReducerContext ctx(SpacetimeDb::get_module_db(), 
                                        sender_identity, 
                                        timestamp, 
                                        conn_id);

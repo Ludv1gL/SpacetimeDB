@@ -8,7 +8,7 @@
 // In production, you would use a proper Blake3 library
 // #include <openssl/sha.h>
 
-namespace spacetimedb {
+namespace SpacetimeDb {
 
 // Static constant definitions for identity extensions
 namespace identity_extensions {
@@ -218,7 +218,7 @@ std::optional<Identity> Credentials::extract_identity(const AuthToken& token) {
     return claims->identity;
 }
 
-} // namespace spacetimedb
+} // namespace SpacetimeDb
 
 // FFI implementation
 extern "C" {

@@ -32,7 +32,7 @@ struct ReducerContext {
 } // namespace SpacetimeDb
 
 // Alias for consistency with old code
-namespace spacetimedb {
+namespace SpacetimeDb {
     using ReducerContext = SpacetimeDb::library::ReducerContext;
 }
 

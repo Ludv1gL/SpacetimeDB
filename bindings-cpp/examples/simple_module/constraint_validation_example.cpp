@@ -4,7 +4,7 @@
 #include <iostream>
 #include <iomanip>
 
-using namespace spacetimedb;
+using namespace SpacetimeDb;
 
 // Example 1: User table with various constraints
 struct User {
@@ -248,7 +248,7 @@ std::unique_ptr<ValidatedTable<Order>> setup_order_table(uint32_t table_id) {
 }
 
 // Demo reducer: Test constraint validation
-SPACETIMEDB_REDUCER(test_constraints, spacetimedb::ReducerContext ctx) {
+SPACETIMEDB_REDUCER(test_constraints, SpacetimeDb::ReducerContext ctx) {
     std::cout << "\n=== SpacetimeDB C++ Constraint Validation Demo ===\n" << std::endl;
     
     // Create validated tables (in real code, these would be managed by the module)
@@ -376,12 +376,12 @@ SPACETIMEDB_REDUCER(test_constraints, spacetimedb::ReducerContext ctx) {
 }
 
 // Main entry point
-SPACETIMEDB_REDUCER(__init__, spacetimedb::ReducerContext ctx) {
+SPACETIMEDB_REDUCER(__init__, SpacetimeDb::ReducerContext ctx) {
     std::cout << "Constraint Validation Module Initialized" << std::endl;
 }
 
 // Helper reducer to show table schemas with constraints
-SPACETIMEDB_REDUCER(show_constraints, spacetimedb::ReducerContext ctx) {
+SPACETIMEDB_REDUCER(show_constraints, SpacetimeDb::ReducerContext ctx) {
     std::cout << "\n=== Table Constraint Definitions ===\n" << std::endl;
     
     std::cout << "Users Table:" << std::endl;

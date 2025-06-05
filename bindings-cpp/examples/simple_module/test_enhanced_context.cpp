@@ -14,7 +14,7 @@ struct OneU8 {
 SPACETIMEDB_TABLE(OneU8, one_u8, true)
 
 // Test reducer using enhanced context
-SPACETIMEDB_REDUCER(test_context, spacetimedb::ReducerContext ctx) {
+SPACETIMEDB_REDUCER(test_context, SpacetimeDb::ReducerContext ctx) {
     LOG_INFO("Testing enhanced reducer context");
     
     // Log the timestamp
@@ -57,7 +57,7 @@ SPACETIMEDB_INIT(init) {
     LOG_INFO("Module initialized");
     
     // Get module identity
-    auto module_id = spacetimedb::Identity::module_identity();
+    auto module_id = SpacetimeDb::Identity::module_identity();
     
     // Log first few bytes of module identity
     char id_buf[128];
@@ -70,7 +70,7 @@ SPACETIMEDB_INIT(init) {
 extern "C" __attribute__((export_name("__describe_module__"))) 
 void __describe_module__(uint32_t description) {
     // Build the module definition
-    auto module_def = spacetimedb::ModuleRegistry::instance().build_module_def();
+    auto module_def = SpacetimeDb::ModuleRegistry::instance().build_module_def();
     
     // Write to sink
     size_t total_size = module_def.size();
@@ -103,19 +103,19 @@ int16_t __call_reducer__(uint32_t id,
         auto sender_identity = identity_from_params(sender_0, sender_1, sender_2, sender_3);
         
         // Construct connection ID if valid
-        std::optional<spacetimedb::ConnectionId> conn_id;
+        std::optional<SpacetimeDb::ConnectionId> conn_id;
         if (conn_id_0 != 0 || conn_id_1 != 0) {
-            conn_id = spacetimedb::ConnectionId(conn_id_0, conn_id_1);
+            conn_id = SpacetimeDb::ConnectionId(conn_id_0, conn_id_1);
         }
         
         // Create reducer context with all information
-        spacetimedb::ReducerContext ctx(spacetimedb::get_module_db(), 
+        SpacetimeDb::ReducerContext ctx(SpacetimeDb::get_module_db(), 
                                        sender_identity, 
                                        timestamp, 
                                        conn_id);
         
         // Dispatch to the appropriate reducer
-        if (spacetimedb::ReducerDispatcher::instance().call_reducer(id, ctx, args)) {
+        if (SpacetimeDb::ReducerDispatcher::instance().call_reducer(id, ctx, args)) {
             return 0; // Success
         } else {
             return 1; // Unknown reducer

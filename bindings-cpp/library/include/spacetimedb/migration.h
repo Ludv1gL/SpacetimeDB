@@ -5,7 +5,7 @@
 #include <functional>
 #include <memory>
 
-namespace spacetimedb {
+namespace SpacetimeDb {
 
 /**
  * Migration context provides access to database during migrations
@@ -218,19 +218,19 @@ public:
  */
 #define DEFINE_MIGRATION(name, from_maj, from_min, from_patch, \
                         to_maj, to_min, to_patch) \
-    class name : public spacetimedb::Migration { \
+    class name : public SpacetimeDb::Migration { \
     public: \
         name() : Migration(ModuleVersion{from_maj, from_min, from_patch}, \
                           ModuleVersion{to_maj, to_min, to_patch}) {} \
-        void up(spacetimedb::MigrationContext& ctx) override; \
-        void down(spacetimedb::MigrationContext& ctx) override; \
+        void up(SpacetimeDb::MigrationContext& ctx) override; \
+        void down(SpacetimeDb::MigrationContext& ctx) override; \
         std::string description() const override; \
     };
 
 #define REGISTER_MIGRATION(migration_class) \
     static bool _reg_##migration_class = []() { \
         auto m = std::make_unique<migration_class>(); \
-        spacetimedb::MigrationRegistry::instance().register_migration( \
+        SpacetimeDb::MigrationRegistry::instance().register_migration( \
             m->from_version(), m->to_version(), std::move(m)); \
         return true; \
     }();
@@ -240,13 +240,13 @@ public:
  */
 
 // Called when module needs migration
-SPACETIMEDB_REDUCER(__migrate__, spacetimedb::ReducerContext ctx, 
+SPACETIMEDB_REDUCER(__migrate__, SpacetimeDb::ReducerContext ctx, 
                    std::string from_version, std::string to_version);
 
 // Get current module version
-SPACETIMEDB_REDUCER(__get_module_version__, spacetimedb::ReducerContext ctx);
+SPACETIMEDB_REDUCER(__get_module_version__, SpacetimeDb::ReducerContext ctx);
 
 // List available migrations
-SPACETIMEDB_REDUCER(__list_migrations__, spacetimedb::ReducerContext ctx);
+SPACETIMEDB_REDUCER(__list_migrations__, SpacetimeDb::ReducerContext ctx);
 
-} // namespace spacetimedb
+} // namespace SpacetimeDb

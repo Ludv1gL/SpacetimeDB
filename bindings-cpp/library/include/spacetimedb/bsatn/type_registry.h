@@ -3,6 +3,7 @@
 
 #include "algebraic_type.h"
 #include "traits.h"
+#include "ITypeRegistrar.h"
 #include <map>
 #include <vector>
 #include <string>
@@ -10,10 +11,9 @@
 #include <typeinfo>
 #include <mutex>
 
-namespace spacetimedb::bsatn {
+namespace SpacetimeDb::bsatn {
 
 // Forward declarations
-class ITypeRegistrar;
 class TypeRegistry;
 
 /**
@@ -186,7 +186,7 @@ std::unique_ptr<ProductType> build_product_type() {
  *   };
  */
 #define SPACETIMEDB_BSATN_REGISTER_TYPE(Type, ...) \
-    static void register_fields(spacetimedb::bsatn::ProductTypeBuilder& builder) { \
+    static void register_fields(SpacetimeDb::bsatn::ProductTypeBuilder& builder) { \
         SPACETIMEDB_BSATN_REGISTER_TYPE_FIELDS(Type, builder, __VA_ARGS__) \
     }
 
@@ -196,11 +196,11 @@ std::unique_ptr<ProductType> build_product_type() {
 #define SPACETIMEDB_BSATN_REGISTER_TYPE_FIELDS(Type, builder, ...) \
     SPACETIMEDB_FOR_EACH_ARG(SPACETIMEDB_BSATN_REGISTER_TYPE_FIELD, Type, builder, __VA_ARGS__)
 
-} // namespace spacetimedb::bsatn
+} // namespace SpacetimeDb::bsatn
 
 // Legacy namespace alias
 namespace SpacetimeDb::bsatn {
-    using namespace ::spacetimedb::bsatn;
+    using namespace ::SpacetimeDb::bsatn;
 }
 
 #endif // SPACETIMEDB_BSATN_TYPE_REGISTRY_H

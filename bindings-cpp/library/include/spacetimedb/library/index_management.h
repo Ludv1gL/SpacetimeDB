@@ -8,7 +8,7 @@
 #include <memory>
 #include <type_traits>
 
-namespace spacetimedb {
+namespace SpacetimeDb {
 
 // Forward declarations
 using IndexId = uint32_t;
@@ -257,6 +257,6 @@ namespace internal {
     };
 }
 
-} // namespace spacetimedb
+} // namespace SpacetimeDb
 
 #endif // SPACETIMEDB_LIBRARY_INDEX_MANAGEMENT_H

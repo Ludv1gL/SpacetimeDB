@@ -84,7 +84,7 @@ struct ScheduledTable {
     uint64_t scheduled_id;
     
     SPACETIMEDB_DATA_MEMBER("scheduled_at")
-    spacetimedb::Timestamp scheduled_at;
+    SpacetimeDb::Timestamp scheduled_at;
     
     SPACETIMEDB_DATA_MEMBER("text")
     std::string text;
@@ -97,24 +97,24 @@ SPACETIMEDB_TABLE(ScheduledTable, "scheduled_table", true, "send_message", "sche
 // =============================================================================
 
 // C# Equivalent: [SpacetimeDB.Reducer]
-SPACETIMEDB_REDUCER(insert_one_u8, SpacetimeDb::ReducerKind::UserDefined, spacetimedb::ReducerContext ctx, uint8_t n) {
+SPACETIMEDB_REDUCER(insert_one_u8, SpacetimeDb::ReducerKind::UserDefined, SpacetimeDb::ReducerContext ctx, uint8_t n) {
     OneU8 row{n};
     ctx.db.table<OneU8>("one_u8").insert(row);
 }
 
 // C# Equivalent: [SpacetimeDB.Reducer]
-SPACETIMEDB_REDUCER(insert_person, SpacetimeDb::ReducerKind::UserDefined, spacetimedb::ReducerContext ctx, std::string name, uint8_t age) {
+SPACETIMEDB_REDUCER(insert_person, SpacetimeDb::ReducerKind::UserDefined, SpacetimeDb::ReducerContext ctx, std::string name, uint8_t age) {
     Person person{0, name, age};  // id auto-generated
     ctx.db.table<Person>("person").insert(person);
 }
 
 // C# Equivalent: [SpacetimeDB.Reducer(Kind = ReducerKind.Init)]
-SPACETIMEDB_INIT(initialize_module, spacetimedb::ReducerContext ctx) {
+SPACETIMEDB_INIT(initialize_module, SpacetimeDb::ReducerContext ctx) {
     // Module initialization logic
 }
 
 // C# Equivalent: [SpacetimeDB.Reducer(Kind = ReducerKind.ClientConnected)]
-SPACETIMEDB_CLIENT_CONNECTED(on_client_connected, spacetimedb::ReducerContext ctx) {
+SPACETIMEDB_CLIENT_CONNECTED(on_client_connected, SpacetimeDb::ReducerContext ctx) {
     // Handle client connection
     auto connection_id = ctx.connection_id;
     auto sender = ctx.sender;
@@ -122,7 +122,7 @@ SPACETIMEDB_CLIENT_CONNECTED(on_client_connected, spacetimedb::ReducerContext ct
 }
 
 // C# Equivalent: [SpacetimeDB.Reducer(Kind = ReducerKind.ClientDisconnected)]
-SPACETIMEDB_CLIENT_DISCONNECTED(on_client_disconnected, spacetimedb::ReducerContext ctx) {
+SPACETIMEDB_CLIENT_DISCONNECTED(on_client_disconnected, SpacetimeDb::ReducerContext ctx) {
     // Handle client disconnection
     auto connection_id = ctx.connection_id;
     auto sender = ctx.sender;
@@ -130,9 +130,9 @@ SPACETIMEDB_CLIENT_DISCONNECTED(on_client_disconnected, spacetimedb::ReducerCont
 }
 
 // Scheduled reducer - called by scheduled table
-SPACETIMEDB_REDUCER(send_message, SpacetimeDb::ReducerKind::UserDefined, spacetimedb::ReducerContext ctx, ScheduledTable arg) {
+SPACETIMEDB_REDUCER(send_message, SpacetimeDb::ReducerKind::UserDefined, SpacetimeDb::ReducerContext ctx, ScheduledTable arg) {
     uint64_t id = arg.scheduled_id;
-    spacetimedb::Timestamp schedule_at = arg.scheduled_at;
+    SpacetimeDb::Timestamp schedule_at = arg.scheduled_at;
     std::string text = arg.text;
     
     // Process scheduled message

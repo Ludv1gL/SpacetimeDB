@@ -7,7 +7,7 @@
 #include <chrono>
 #include <ctime>
 
-namespace spacetimedb {
+namespace SpacetimeDb {
 
 /**
  * Represents a point in time as microseconds since the Unix epoch.
@@ -110,10 +110,10 @@ inline Timestamp operator+(const TimeDuration& duration, const Timestamp& timest
     return timestamp + duration;
 }
 
-} // namespace spacetimedb
+} // namespace SpacetimeDb
 
 // Register Timestamp for type registration
-namespace spacetimedb {
+namespace SpacetimeDb {
 namespace detail {
 
 template<>
@@ -125,4 +125,4 @@ struct TypeRegistrar<Timestamp> {
 };
 
 } // namespace detail
-} // namespace spacetimedb
+} // namespace SpacetimeDb

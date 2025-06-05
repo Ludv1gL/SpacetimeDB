@@ -1,7 +1,7 @@
 #include <spacetimedb/library/reducer_context.h>
 #include <spacetimedb/library/database.h> // Required for the Database& member
 
-namespace spacetimedb {
+namespace SpacetimeDb {
 namespace library {
 
 ReducerContext::ReducerContext(Identity sender, Timestamp timestamp, Database& db_instance)
@@ -26,4 +26,4 @@ const Database& ReducerContext::db() const {
 }
 
 } // namespace library
-} // namespace spacetimedb
+} // namespace SpacetimeDb

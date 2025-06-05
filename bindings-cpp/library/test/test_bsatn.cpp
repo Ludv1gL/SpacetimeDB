@@ -14,7 +14,7 @@
 #include <random>
 #include <iomanip>
 
-using namespace spacetimedb::bsatn;
+using namespace SpacetimeDb::bsatn;
 
 // Convenience functions for testing
 template<typename T>
@@ -39,8 +39,8 @@ constexpr int RANDOM_TEST_COUNT = 100;
 #define TEST(name) if (VERBOSE) std::cout << "  " << #name << "... "; test_##name(); if (VERBOSE) std::cout << "✓\n"
 #define ASSERT_EQ(a, b) assert((a) == (b))
 #define ASSERT_ROUNDTRIP(value) do { \
-    auto serialized = ::spacetimedb::bsatn::to_vec(value); \
-    auto result = ::spacetimedb::bsatn::from_vec<decltype(value)>(serialized); \
+    auto serialized = ::SpacetimeDb::bsatn::to_vec(value); \
+    auto result = ::SpacetimeDb::bsatn::from_vec<decltype(value)>(serialized); \
     ASSERT_EQ(value, result); \
 } while(0)
 
@@ -188,7 +188,7 @@ void test_sum_types() {
 void test_binary_format() {
     // Verify exact binary encoding matches specification
     auto check_encoding = [](auto value, std::initializer_list<uint8_t> expected) {
-        auto buf = ::spacetimedb::bsatn::to_vec(value);
+        auto buf = ::SpacetimeDb::bsatn::to_vec(value);
         assert(buf.size() == expected.size());
         assert(std::equal(buf.begin(), buf.end(), expected.begin()));
     };
@@ -214,7 +214,7 @@ void test_error_handling() {
     // Buffer underrun
     try {
         std::vector<uint8_t> small = {1, 2};
-        ::spacetimedb::bsatn::from_vec<uint64_t>(small);
+        ::SpacetimeDb::bsatn::from_vec<uint64_t>(small);
         assert(false);
     } catch (...) {
         // Expected
@@ -223,7 +223,7 @@ void test_error_handling() {
     // Invalid Option tag
     try {
         std::vector<uint8_t> bad = {99};  // Invalid tag
-        ::spacetimedb::bsatn::from_vec<Option<int32_t>>(bad);
+        ::SpacetimeDb::bsatn::from_vec<Option<int32_t>>(bad);
         assert(false);
     } catch (...) {
         // Expected

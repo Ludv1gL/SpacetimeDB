@@ -16,7 +16,7 @@
 #include <cassert>
 #include <vector>
 
-using namespace spacetimedb::bsatn;
+using namespace SpacetimeDb::bsatn;
 
 // Test configuration
 constexpr bool VERBOSE = true;

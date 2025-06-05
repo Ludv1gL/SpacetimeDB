@@ -13,7 +13,7 @@ SPACETIMEDB_BSATN_STRUCT(IntegrationTestData, id, value, category)
 SPACETIMEDB_TABLE(IntegrationTestData, integration_test_data, true)
 
 // Test advanced features that don't require custom BSATN
-SPACETIMEDB_REDUCER(comprehensive_logging_test, spacetimedb::ReducerContext ctx) {
+SPACETIMEDB_REDUCER(comprehensive_logging_test, SpacetimeDb::ReducerContext ctx) {
     LOG_INFO("=== Comprehensive Logging Test ===");
     
     // Test all log levels
@@ -39,7 +39,7 @@ SPACETIMEDB_REDUCER(comprehensive_logging_test, spacetimedb::ReducerContext ctx)
     LOG_INFO("Comprehensive logging test completed");
 }
 
-SPACETIMEDB_REDUCER(error_handling_safe_test, spacetimedb::ReducerContext ctx, uint8_t error_scenario) {
+SPACETIMEDB_REDUCER(error_handling_safe_test, SpacetimeDb::ReducerContext ctx, uint8_t error_scenario) {
     LOG_INFO("=== Safe Error Handling Test ===");
     
     // Safe error handling that doesn't crash WASM
@@ -103,7 +103,7 @@ SPACETIMEDB_REDUCER(error_handling_safe_test, spacetimedb::ReducerContext ctx, u
     }
 }
 
-SPACETIMEDB_REDUCER(advanced_features_demo, spacetimedb::ReducerContext ctx, uint32_t demo_type) {
+SPACETIMEDB_REDUCER(advanced_features_demo, SpacetimeDb::ReducerContext ctx, uint32_t demo_type) {
     LOG_INFO("=== Advanced Features Demonstration ===");
     
     switch (demo_type) {
@@ -157,7 +157,7 @@ SPACETIMEDB_REDUCER(advanced_features_demo, spacetimedb::ReducerContext ctx, uin
     LOG_INFO("Advanced features demonstration completed");
 }
 
-SPACETIMEDB_REDUCER(performance_validation_test, spacetimedb::ReducerContext ctx, uint32_t operation_count) {
+SPACETIMEDB_REDUCER(performance_validation_test, SpacetimeDb::ReducerContext ctx, uint32_t operation_count) {
     LOG_INFO("=== Performance Validation Test ===");
     
     SpacetimeDB::LogStopwatch total_timer("performance_test_total");
@@ -202,7 +202,7 @@ SPACETIMEDB_REDUCER(performance_validation_test, spacetimedb::ReducerContext ctx
     // total_timer destructor will log total elapsed time
 }
 
-SPACETIMEDB_REDUCER(integration_summary, spacetimedb::ReducerContext ctx) {
+SPACETIMEDB_REDUCER(integration_summary, SpacetimeDb::ReducerContext ctx) {
     LOG_INFO("=== C++ SDK Integration Summary ===");
     
     LOG_INFO("🎉 VERIFIED WORKING FEATURES:");
@@ -231,7 +231,7 @@ SPACETIMEDB_REDUCER(integration_summary, spacetimedb::ReducerContext ctx) {
     LOG_INFO("Integration summary completed successfully");
 }
 
-SPACETIMEDB_REDUCER(init_integration_test, spacetimedb::ReducerContext ctx) {
+SPACETIMEDB_REDUCER(init_integration_test, SpacetimeDb::ReducerContext ctx) {
     SpacetimeDB::LogStopwatch timer("integration_test_init");
     LOG_INFO("Initializing comprehensive integration test database");
     

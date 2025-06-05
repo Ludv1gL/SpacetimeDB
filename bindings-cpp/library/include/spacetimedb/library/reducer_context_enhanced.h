@@ -9,7 +9,7 @@
 #include <memory>
 #include <chrono>
 
-namespace spacetimedb {
+namespace SpacetimeDb {
 
 // Forward declarations and type aliases
 class ModuleDatabase;
@@ -205,6 +205,6 @@ struct ReducerContext {
     }
 };
 
-} // namespace spacetimedb
+} // namespace SpacetimeDb
 
 #endif // REDUCER_CONTEXT_ENHANCED_H

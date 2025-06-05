@@ -13,7 +13,7 @@ struct OneU8 {
 SPACETIMEDB_TABLE(OneU8, one_u8, true)
 
 // Reducer that takes a uint8_t argument
-SPACETIMEDB_REDUCER(insert_one_u8, spacetimedb::ReducerContext ctx) {
+SPACETIMEDB_REDUCER(insert_one_u8, SpacetimeDb::ReducerContext ctx) {
     LOG_INFO("insert_one_u8 called");
     
     OneU8 row{42}; // Hard-coded for now
@@ -33,7 +33,7 @@ SPACETIMEDB_INIT(init_db) {
 
 // Required exports for SpacetimeDB modules
 extern "C" __attribute__((export_name("__describe_module__"))) void __describe_module__(uint32_t description) {
-    std::vector<uint8_t> module_bytes = spacetimedb::ModuleRegistry::instance().build_module_def();
+    std::vector<uint8_t> module_bytes = SpacetimeDb::ModuleRegistry::instance().build_module_def();
     
     // Write bytes to description sink
     size_t total_size = module_bytes.size();
@@ -61,9 +61,9 @@ extern "C" __attribute__((export_name("__call_reducer__"))) int16_t __call_reduc
                                    uint64_t timestamp,
                                    uint32_t args, uint32_t error) {
     try {
-        spacetimedb::ReducerContext ctx(spacetimedb::get_module_db());
+        SpacetimeDb::ReducerContext ctx(SpacetimeDb::get_module_db());
         
-        bool success = spacetimedb::ReducerDispatcher::instance().call_reducer(id, ctx, args);
+        bool success = SpacetimeDb::ReducerDispatcher::instance().call_reducer(id, ctx, args);
         return success ? 0 : 1;
     } catch (const std::exception& e) {
         return 1; // Error

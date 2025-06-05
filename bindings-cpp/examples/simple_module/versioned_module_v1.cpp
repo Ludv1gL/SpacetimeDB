@@ -39,13 +39,13 @@ SPACETIMEDB_TABLE(User, users, true)
 
 // Module state for version tracking
 struct ModuleState {
-    static spacetimedb::ModuleVersionManager version_manager;
+    static SpacetimeDb::ModuleVersionManager version_manager;
 };
 
-spacetimedb::ModuleVersionManager ModuleState::version_manager(MODULE_METADATA);
+SpacetimeDb::ModuleVersionManager ModuleState::version_manager(MODULE_METADATA);
 
 // Reducers
-SPACETIMEDB_REDUCER(create_user, spacetimedb::ReducerContext ctx, 
+SPACETIMEDB_REDUCER(create_user, SpacetimeDb::ReducerContext ctx, 
                    std::string username, std::string email) {
     // Auto-increment ID (in real implementation, use sequences)
     static uint64_t next_id = 1;
@@ -59,38 +59,38 @@ SPACETIMEDB_REDUCER(create_user, spacetimedb::ReducerContext ctx,
     
     ctx.db.table<User>("users").insert(user);
     
-    spacetimedb::log("Created user: " + username);
+    SpacetimeDb::log("Created user: " + username);
 }
 
-SPACETIMEDB_REDUCER(get_user_by_username, spacetimedb::ReducerContext ctx,
+SPACETIMEDB_REDUCER(get_user_by_username, SpacetimeDb::ReducerContext ctx,
                    std::string username) {
     auto users_table = ctx.db.table<User>("users");
     
     // In a real implementation, you'd use proper query methods
     // For now, this is a placeholder showing the concept
-    spacetimedb::log("Looking up user: " + username);
+    SpacetimeDb::log("Looking up user: " + username);
 }
 
-SPACETIMEDB_REDUCER(list_users, spacetimedb::ReducerContext ctx) {
+SPACETIMEDB_REDUCER(list_users, SpacetimeDb::ReducerContext ctx) {
     auto users_table = ctx.db.table<User>("users");
     
-    spacetimedb::log("Listing all users");
+    SpacetimeDb::log("Listing all users");
     // In real implementation, iterate through users
 }
 
 // Version management reducer
-SPACETIMEDB_REDUCER(get_module_info, spacetimedb::ReducerContext ctx) {
+SPACETIMEDB_REDUCER(get_module_info, SpacetimeDb::ReducerContext ctx) {
     auto& metadata = ModuleState::version_manager.metadata();
     
-    spacetimedb::log("Module: " + metadata.name);
-    spacetimedb::log("Version: " + metadata.version.to_string());
-    spacetimedb::log("Author: " + metadata.author);
-    spacetimedb::log("Description: " + metadata.description);
+    SpacetimeDb::log("Module: " + metadata.name);
+    SpacetimeDb::log("Version: " + metadata.version.to_string());
+    SpacetimeDb::log("Author: " + metadata.author);
+    SpacetimeDb::log("Description: " + metadata.description);
 }
 
 // Module initialization
-SPACETIMEDB_REDUCER(__init__, spacetimedb::ReducerContext ctx) {
-    spacetimedb::log("Initializing UserManagement module v1.0.0");
+SPACETIMEDB_REDUCER(__init__, SpacetimeDb::ReducerContext ctx) {
+    SpacetimeDb::log("Initializing UserManagement module v1.0.0");
     
     // Register this version
     ModuleState::version_manager.register_version(

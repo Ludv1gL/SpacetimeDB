@@ -33,7 +33,7 @@ SPACETIMEDB_UNIQUE_INDEX(products, idx_name, name)
 // Advanced Query Examples
 // -----------------------------------------------------------------------------
 
-SPACETIMEDB_REDUCER(find_products_in_category, spacetimedb::ReducerContext ctx, std::string category) {
+SPACETIMEDB_REDUCER(find_products_in_category, SpacetimeDb::ReducerContext ctx, std::string category) {
     auto products = ctx.db.enhanced_table<Product>("products");
     
     // Use filter to find products in category
@@ -44,7 +44,7 @@ SPACETIMEDB_REDUCER(find_products_in_category, spacetimedb::ReducerContext ctx, 
     LOG_INFO("Found " + std::to_string(results.count()) + " products in category: " + category);
 }
 
-SPACETIMEDB_REDUCER(update_product_prices, spacetimedb::ReducerContext ctx, std::string category, double percent_change) {
+SPACETIMEDB_REDUCER(update_product_prices, SpacetimeDb::ReducerContext ctx, std::string category, double percent_change) {
     auto products = ctx.db.enhanced_table<Product>("products");
     
     // Update all products in category
@@ -56,7 +56,7 @@ SPACETIMEDB_REDUCER(update_product_prices, spacetimedb::ReducerContext ctx, std:
     LOG_INFO("Updated prices for " + std::to_string(updated) + " products");
 }
 
-SPACETIMEDB_REDUCER(remove_out_of_stock, spacetimedb::ReducerContext ctx) {
+SPACETIMEDB_REDUCER(remove_out_of_stock, SpacetimeDb::ReducerContext ctx) {
     auto products = ctx.db.enhanced_table<Product>("products");
     
     // Delete products with no stock
@@ -71,7 +71,7 @@ SPACETIMEDB_REDUCER(remove_out_of_stock, spacetimedb::ReducerContext ctx) {
 // Index-based Queries
 // -----------------------------------------------------------------------------
 
-SPACETIMEDB_REDUCER(find_products_by_price_range, spacetimedb::ReducerContext ctx, double min_price, double max_price) {
+SPACETIMEDB_REDUCER(find_products_by_price_range, SpacetimeDb::ReducerContext ctx, double min_price, double max_price) {
     auto products = ctx.db.enhanced_table<Product>("products");
     auto price_index = products.btree_index<double>("idx_price");
     
@@ -89,7 +89,7 @@ SPACETIMEDB_REDUCER(find_products_by_price_range, spacetimedb::ReducerContext ct
     LOG_INFO("Found " + std::to_string(count) + " products in price range");
 }
 
-SPACETIMEDB_REDUCER(check_product_exists, spacetimedb::ReducerContext ctx, std::string name) {
+SPACETIMEDB_REDUCER(check_product_exists, SpacetimeDb::ReducerContext ctx, std::string name) {
     auto products = ctx.db.enhanced_table<Product>("products");
     auto name_index = products.unique_index<std::string>("idx_name");
     
@@ -107,7 +107,7 @@ SPACETIMEDB_REDUCER(check_product_exists, spacetimedb::ReducerContext ctx, std::
 // Query Builder Examples
 // -----------------------------------------------------------------------------
 
-SPACETIMEDB_REDUCER(complex_product_search, spacetimedb::ReducerContext ctx, std::string category, double max_price) {
+SPACETIMEDB_REDUCER(complex_product_search, SpacetimeDb::ReducerContext ctx, std::string category, double max_price) {
     auto products = ctx.db.enhanced_table<Product>("products");
     
     // Build complex query
@@ -130,7 +130,7 @@ void define_schema() {
     // This demonstrates the schema definition API
     // In a real implementation, this would integrate with module registration
     
-    spacetimedb::define_table<Product>("products")
+    SpacetimeDb::define_table<Product>("products")
         .primary_key("id")
         .auto_increment("id")
         .unique("name")

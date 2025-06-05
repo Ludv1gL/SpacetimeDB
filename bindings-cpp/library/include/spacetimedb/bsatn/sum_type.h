@@ -8,7 +8,7 @@
 #include <type_traits>
 #include <utility>
 
-namespace spacetimedb::bsatn {
+namespace SpacetimeDb::bsatn {
 
 /**
  * SumType (discriminated union) implementation for BSATN.
@@ -261,7 +261,7 @@ struct bsatn_traits<Option<T>> {
     static void serialize(Writer& writer, const Option<T>& opt) {
         if (opt.has_value()) {
             writer.write_u8(1);  // Some
-            spacetimedb::bsatn::serialize(writer, opt.value());
+            SpacetimeDb::bsatn::serialize(writer, opt.value());
         } else {
             writer.write_u8(0);  // None
         }
@@ -272,7 +272,7 @@ struct bsatn_traits<Option<T>> {
         if (tag == 0) {
             return Option<T>();  // None
         } else if (tag == 1) {
-            return Option<T>(spacetimedb::bsatn::deserialize<T>(reader));  // Some
+            return Option<T>(SpacetimeDb::bsatn::deserialize<T>(reader));  // Some
         } else {
             throw std::runtime_error("Invalid Option tag: " + std::to_string(tag));
         }
@@ -293,11 +293,11 @@ using Sum = SumType<Ts...>;
 template<typename... Variants>
 using TaggedSum = TaggedSumType<Variants...>;
 
-} // namespace spacetimedb::bsatn
+} // namespace SpacetimeDb::bsatn
 
 // Legacy namespace alias for compatibility
 namespace SpacetimeDb::bsatn {
-    using namespace ::spacetimedb::bsatn;
+    using namespace ::SpacetimeDb::bsatn;
 }
 
 #endif // SPACETIMEDB_BSATN_SUM_TYPE_H

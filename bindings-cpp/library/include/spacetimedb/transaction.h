@@ -8,7 +8,7 @@
 #include <chrono>
 #include <exception>
 
-namespace spacetimedb {
+namespace SpacetimeDb {
 
 // Forward declarations
 class ModuleDatabase;
@@ -223,4 +223,4 @@ private:
     TransactionState state_ = TransactionState::Active;
 };
 
-} // namespace spacetimedb
+} // namespace SpacetimeDb

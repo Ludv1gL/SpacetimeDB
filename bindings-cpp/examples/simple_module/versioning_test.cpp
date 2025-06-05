@@ -6,7 +6,7 @@
 #include <cassert>
 #include <iostream>
 
-using namespace spacetimedb;
+using namespace SpacetimeDb;
 
 void test_version_parsing() {
     std::cout << "Testing version parsing..." << std::endl;

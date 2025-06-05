@@ -4,6 +4,7 @@
 #include "algebraic_type.h"
 #include "reader.h"
 #include "writer.h"
+#include "ITypeRegistrar.h"
 #include <type_traits>
 #if __cplusplus >= 202002L
 #include <concepts>
@@ -94,26 +95,7 @@ public:
     }
 };
 
-/**
- * Type registrar interface for registering types with the type system.
- * This is similar to C#'s ITypeRegistrar.
- */
-class ITypeRegistrar {
-public:
-    virtual ~ITypeRegistrar() = default;
-    
-    // Register a type and return its ID
-    virtual uint32_t register_type(AlgebraicType type) = 0;
-    
-    // Get a type by ID
-    virtual const AlgebraicType& get_type(uint32_t type_id) const = 0;
-    
-    // Register a named type
-    virtual uint32_t register_named_type(const std::string& name, AlgebraicType type) = 0;
-    
-    // Find type ID by name
-    virtual std::optional<uint32_t> find_type(const std::string& name) const = 0;
-};
+// ITypeRegistrar is defined in ITypeRegistrar.h
 
 /**
  * Helper class for building product types with named fields.
@@ -174,8 +156,8 @@ public:
         return *this;
     }
     
-    std::unique_ptr<SumType> build() {
-        return std::make_unique<SumType>(std::move(variants_));
+    std::unique_ptr<SumTypeSchema> build() {
+        return std::make_unique<SumTypeSchema>(std::move(variants_));
     }
 };
 

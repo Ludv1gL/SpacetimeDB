@@ -42,7 +42,7 @@ struct OneString {
 SPACETIMEDB_TABLE(OneString, one_string, true)
 
 struct OneIdentity {
-    spacetimedb::Identity i;
+    SpacetimeDb::Identity i;
     
     static void spacetimedb_serialize(std::vector<uint8_t>& buffer, const OneIdentity& value) {
         buffer.insert(buffer.end(), value.i.data, value.i.data + 32);
@@ -54,7 +54,7 @@ SPACETIMEDB_TABLE(OneIdentity, one_identity, true)
 // SIMPLE REDUCERS
 // =============================================================================
 
-SPACETIMEDB_REDUCER(insert_one_u8, spacetimedb::ReducerContext ctx) {
+SPACETIMEDB_REDUCER(insert_one_u8, SpacetimeDb::ReducerContext ctx) {
     OneU8 row{42};
     
     auto table_id = ctx.db->table<OneU8>("one_u8").get_table_id();
@@ -71,7 +71,7 @@ SPACETIMEDB_REDUCER(insert_one_u8, spacetimedb::ReducerContext ctx) {
     }
 }
 
-SPACETIMEDB_REDUCER(insert_one_u32, spacetimedb::ReducerContext ctx) {
+SPACETIMEDB_REDUCER(insert_one_u32, SpacetimeDb::ReducerContext ctx) {
     OneU32 row{123456};
     
     auto table_id = ctx.db->table<OneU32>("one_u32").get_table_id();
@@ -88,7 +88,7 @@ SPACETIMEDB_REDUCER(insert_one_u32, spacetimedb::ReducerContext ctx) {
     }
 }
 
-SPACETIMEDB_REDUCER(insert_one_string, spacetimedb::ReducerContext ctx) {
+SPACETIMEDB_REDUCER(insert_one_string, SpacetimeDb::ReducerContext ctx) {
     OneString row{"Hello from C++ SDK test!"};
     
     auto table_id = ctx.db->table<OneString>("one_string").get_table_id();
@@ -105,7 +105,7 @@ SPACETIMEDB_REDUCER(insert_one_string, spacetimedb::ReducerContext ctx) {
     }
 }
 
-SPACETIMEDB_REDUCER(insert_caller_identity, spacetimedb::ReducerContext ctx) {
+SPACETIMEDB_REDUCER(insert_caller_identity, SpacetimeDb::ReducerContext ctx) {
     OneIdentity row{ctx.sender};
     
     auto table_id = ctx.db->table<OneIdentity>("one_identity").get_table_id();
@@ -122,7 +122,7 @@ SPACETIMEDB_REDUCER(insert_caller_identity, spacetimedb::ReducerContext ctx) {
     }
 }
 
-SPACETIMEDB_REDUCER(no_op_succeeds, spacetimedb::ReducerContext ctx) {
+SPACETIMEDB_REDUCER(no_op_succeeds, SpacetimeDb::ReducerContext ctx) {
     LOG_INFO("No-op reducer succeeded");
 }
 
@@ -148,7 +148,7 @@ SPACETIMEDB_INIT(init) {
 
 std::vector<uint8_t> build_simple_module_definition() {
     std::vector<uint8_t> module_bytes;
-    spacetimedb::BsatnWriter writer(module_bytes);
+    SpacetimeDb::BsatnWriter writer(module_bytes);
     
     // RawModuleDef::V9 tag
     writer.write_u8(1);
@@ -315,19 +315,19 @@ int16_t __call_reducer__(uint32_t id,
         auto sender_identity = identity_from_params(sender_0, sender_1, sender_2, sender_3);
         
         // Construct connection ID if valid
-        std::optional<spacetimedb::ConnectionId> conn_id;
+        std::optional<SpacetimeDb::ConnectionId> conn_id;
         if (conn_id_0 != 0 || conn_id_1 != 0) {
-            conn_id = spacetimedb::ConnectionId(conn_id_0, conn_id_1);
+            conn_id = SpacetimeDb::ConnectionId(conn_id_0, conn_id_1);
         }
         
         // Create reducer context
-        spacetimedb::ReducerContext ctx(spacetimedb::get_module_db(), 
+        SpacetimeDb::ReducerContext ctx(SpacetimeDb::get_module_db(), 
                                        sender_identity, 
                                        timestamp, 
                                        conn_id);
         
         // Dispatch to reducers
-        if (!spacetimedb::ReducerDispatcher::instance().call_reducer(id, ctx, args)) {
+        if (!SpacetimeDb::ReducerDispatcher::instance().call_reducer(id, ctx, args)) {
             return 1; // Unknown reducer
         }
         

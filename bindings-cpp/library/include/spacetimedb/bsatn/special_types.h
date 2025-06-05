@@ -4,7 +4,7 @@
 #include "algebraic_type.h"
 #include <string_view>
 
-namespace spacetimedb::bsatn {
+namespace SpacetimeDb::bsatn {
 
 /**
  * Special type tags used by SpacetimeDB to identify built-in types.
@@ -102,11 +102,11 @@ namespace special_types {
     
 } // namespace special_types
 
-} // namespace spacetimedb::bsatn
+} // namespace SpacetimeDb::bsatn
 
 // Legacy namespace alias
 namespace SpacetimeDb::bsatn {
-    using namespace ::spacetimedb::bsatn;
+    using namespace ::SpacetimeDb::bsatn;
 }
 
 #endif // SPACETIMEDB_BSATN_SPECIAL_TYPES_H

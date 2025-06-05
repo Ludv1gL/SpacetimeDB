@@ -14,14 +14,14 @@
 #include "spacetimedb/bsatn/bsatn.h"
 
 // Make commonly used types available in global scope
-using spacetimedb::bsatn::Reader;
-using spacetimedb::bsatn::Writer;
-using spacetimedb::bsatn::Option;
-using spacetimedb::bsatn::SumType;
-using spacetimedb::bsatn::AlgebraicType;
-using spacetimedb::bsatn::ProductType;
-using spacetimedb::bsatn::serialize;
-using spacetimedb::bsatn::deserialize;
+using SpacetimeDb::bsatn::Reader;
+using SpacetimeDb::bsatn::Writer;
+using SpacetimeDb::bsatn::Option;
+using SpacetimeDb::bsatn::SumType;
+using SpacetimeDb::bsatn::AlgebraicType;
+using SpacetimeDb::bsatn::ProductType;
+using SpacetimeDb::bsatn::serialize;
+using SpacetimeDb::bsatn::deserialize;
 
 // Backward compatibility aliases
-using spacetimedb::bsatn::Sum;  // Legacy name for SumType
+using SpacetimeDb::bsatn::Sum;  // Legacy name for SumType

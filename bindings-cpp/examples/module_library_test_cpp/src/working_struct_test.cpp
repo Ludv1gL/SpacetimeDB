@@ -38,7 +38,7 @@ namespace SpacetimeDb::bsatn {
 SPACETIMEDB_TABLE(SimpleData, simple_data, true)
 
 // Test reducers
-SPACETIMEDB_REDUCER(test_working_struct, spacetimedb::ReducerContext ctx, uint32_t id, uint8_t value) {
+SPACETIMEDB_REDUCER(test_working_struct, SpacetimeDb::ReducerContext ctx, uint32_t id, uint8_t value) {
     LOG_INFO("Testing working struct serialization");
     
     SimpleData data{id, value};
@@ -47,7 +47,7 @@ SPACETIMEDB_REDUCER(test_working_struct, spacetimedb::ReducerContext ctx, uint32
     LOG_INFO("Working struct inserted successfully");
 }
 
-SPACETIMEDB_REDUCER(init_working_test, spacetimedb::ReducerContext ctx) {
+SPACETIMEDB_REDUCER(init_working_test, SpacetimeDb::ReducerContext ctx) {
     SpacetimeDB::LogStopwatch timer("working_test_init");
     LOG_INFO("Initializing working struct test database");
     

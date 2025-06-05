@@ -26,7 +26,7 @@ namespace bsatn {
 }
 }
 
-namespace spacetimedb {
+namespace SpacetimeDb {
 
 // Forward declarations
 class Timestamp;
@@ -621,4 +621,4 @@ struct BsatnSerializer<std::vector<T>> {
 // TimeDuration BSATN methods will be provided as free functions in a separate header
 // that includes both types.h and bsatn.h
 
-} // namespace spacetimedb
+} // namespace SpacetimeDb

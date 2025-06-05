@@ -41,7 +41,7 @@ SPACETIMEDB_TABLE(IndexedData, indexed_data, true)
 // Future: SPACETIMEDB_INDEX_UNIQUE(IndexedData, id)
 
 // Test reducers for index functionality
-SPACETIMEDB_REDUCER(insert_indexed_data, spacetimedb::ReducerContext ctx, uint32_t id, std::string name, uint8_t category) {
+SPACETIMEDB_REDUCER(insert_indexed_data, SpacetimeDb::ReducerContext ctx, uint32_t id, std::string name, uint8_t category) {
     LOG_INFO("Inserting indexed data: id=" + std::to_string(id) + ", name=" + name + ", category=" + std::to_string(category));
     
     IndexedData data{id, name, category};
@@ -50,7 +50,7 @@ SPACETIMEDB_REDUCER(insert_indexed_data, spacetimedb::ReducerContext ctx, uint32
     LOG_INFO("Indexed data inserted successfully");
 }
 
-SPACETIMEDB_REDUCER(test_index_operations, spacetimedb::ReducerContext ctx, std::string search_name) {
+SPACETIMEDB_REDUCER(test_index_operations, SpacetimeDb::ReducerContext ctx, std::string search_name) {
     LOG_INFO("Testing index operations (placeholder)");
     LOG_INFO("Would search for name: " + search_name);
     
@@ -62,15 +62,15 @@ SPACETIMEDB_REDUCER(test_index_operations, spacetimedb::ReducerContext ctx, std:
     LOG_INFO("Index operations test completed (infrastructure ready)");
 }
 
-SPACETIMEDB_REDUCER(test_range_queries, spacetimedb::ReducerContext ctx, uint32_t min_id, uint32_t max_id) {
+SPACETIMEDB_REDUCER(test_range_queries, SpacetimeDb::ReducerContext ctx, uint32_t min_id, uint32_t max_id) {
     LOG_INFO("Testing range queries (placeholder)");
     LOG_INFO("Would search for id range: " + std::to_string(min_id) + " to " + std::to_string(max_id));
     
     // Future range query operations:
     // auto id_index = ctx.db.table<IndexedData>("indexed_data").index_id();
-    // spacetimedb::Range<uint32_t> range(
-    //     spacetimedb::Bound<uint32_t>::Inclusive(min_id),
-    //     spacetimedb::Bound<uint32_t>::Inclusive(max_id)
+    // SpacetimeDb::Range<uint32_t> range(
+    //     SpacetimeDb::Bound<uint32_t>::Inclusive(min_id),
+    //     SpacetimeDb::Bound<uint32_t>::Inclusive(max_id)
     // );
     // auto results = id_index.FilterRange(range);
     // LOG_INFO("Found " + std::to_string(results.size()) + " results in range");
@@ -78,7 +78,7 @@ SPACETIMEDB_REDUCER(test_range_queries, spacetimedb::ReducerContext ctx, uint32_
     LOG_INFO("Range queries test completed (infrastructure ready)");
 }
 
-SPACETIMEDB_REDUCER(init_index_test, spacetimedb::ReducerContext ctx) {
+SPACETIMEDB_REDUCER(init_index_test, SpacetimeDb::ReducerContext ctx) {
     SpacetimeDB::LogStopwatch timer("index_test_init");
     LOG_INFO("Initializing index management test database");
     

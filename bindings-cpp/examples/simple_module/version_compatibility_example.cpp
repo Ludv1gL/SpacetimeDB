@@ -69,8 +69,8 @@ SPACETIMEDB_TABLE(ProductTag, product_tags, true)     // Added in 1.2.0
 // Version compatibility helper
 class VersionCompatibility {
 public:
-    static bool check_compatibility(const spacetimedb::ModuleVersion& client_version,
-                                  const spacetimedb::ModuleVersion& module_version) {
+    static bool check_compatibility(const SpacetimeDb::ModuleVersion& client_version,
+                                  const SpacetimeDb::ModuleVersion& module_version) {
         // Same major version = compatible
         if (client_version.major == module_version.major) {
             // Client can use older module version
@@ -83,8 +83,8 @@ public:
         return false;
     }
     
-    static std::string get_compatibility_message(const spacetimedb::ModuleVersion& client_version,
-                                               const spacetimedb::ModuleVersion& module_version) {
+    static std::string get_compatibility_message(const SpacetimeDb::ModuleVersion& client_version,
+                                               const SpacetimeDb::ModuleVersion& module_version) {
         if (check_compatibility(client_version, module_version)) {
             return "Versions are compatible";
         }
@@ -103,16 +103,16 @@ struct FeatureFlags {
     bool has_tags = true;           // Added in 1.2.0
     bool has_bulk_import = false;   // Planned for 1.3.0
     
-    static FeatureFlags for_version(const spacetimedb::ModuleVersion& version) {
+    static FeatureFlags for_version(const SpacetimeDb::ModuleVersion& version) {
         FeatureFlags flags;
         
         // Categories added in 1.1.0
-        if (version < spacetimedb::ModuleVersion{1, 1, 0}) {
+        if (version < SpacetimeDb::ModuleVersion{1, 1, 0}) {
             flags.has_categories = false;
         }
         
         // Tags added in 1.2.0
-        if (version < spacetimedb::ModuleVersion{1, 2, 0}) {
+        if (version < SpacetimeDb::ModuleVersion{1, 2, 0}) {
             flags.has_tags = false;
         }
         
@@ -121,7 +121,7 @@ struct FeatureFlags {
 };
 
 // Reducers with version awareness
-SPACETIMEDB_REDUCER(create_product, spacetimedb::ReducerContext ctx,
+SPACETIMEDB_REDUCER(create_product, SpacetimeDb::ReducerContext ctx,
                    std::string name, std::string description, uint64_t price_cents) {
     static uint64_t next_id = 1;
     
@@ -134,11 +134,11 @@ SPACETIMEDB_REDUCER(create_product, spacetimedb::ReducerContext ctx,
     };
     
     ctx.db.table<Product>("products").insert(product);
-    spacetimedb::log("Created product: " + name);
+    SpacetimeDb::log("Created product: " + name);
 }
 
 // Added in 1.1.0
-SPACETIMEDB_REDUCER(create_category, spacetimedb::ReducerContext ctx,
+SPACETIMEDB_REDUCER(create_category, SpacetimeDb::ReducerContext ctx,
                    std::string name, std::optional<uint64_t> parent_id) {
     static uint64_t next_id = 1;
     
@@ -149,11 +149,11 @@ SPACETIMEDB_REDUCER(create_category, spacetimedb::ReducerContext ctx,
     };
     
     ctx.db.table<ProductCategory>("categories").insert(category);
-    spacetimedb::log("Created category: " + name);
+    SpacetimeDb::log("Created category: " + name);
 }
 
 // Added in 1.2.0
-SPACETIMEDB_REDUCER(tag_product, spacetimedb::ReducerContext ctx,
+SPACETIMEDB_REDUCER(tag_product, SpacetimeDb::ReducerContext ctx,
                    uint64_t product_id, std::string tag) {
     ProductTag product_tag{
         .product_id = product_id,
@@ -161,65 +161,65 @@ SPACETIMEDB_REDUCER(tag_product, spacetimedb::ReducerContext ctx,
     };
     
     ctx.db.table<ProductTag>("product_tags").insert(product_tag);
-    spacetimedb::log("Tagged product " + std::to_string(product_id) + " with: " + tag);
+    SpacetimeDb::log("Tagged product " + std::to_string(product_id) + " with: " + tag);
 }
 
 // Version negotiation reducer
-SPACETIMEDB_REDUCER(negotiate_version, spacetimedb::ReducerContext ctx,
+SPACETIMEDB_REDUCER(negotiate_version, SpacetimeDb::ReducerContext ctx,
                    std::string client_version_str) {
-    auto client_version = spacetimedb::ModuleVersion::parse(client_version_str);
+    auto client_version = SpacetimeDb::ModuleVersion::parse(client_version_str);
     auto module_version = MODULE_VERSION;
     
     bool compatible = VersionCompatibility::check_compatibility(client_version, module_version);
     std::string message = VersionCompatibility::get_compatibility_message(client_version, module_version);
     
-    spacetimedb::log("Client version: " + client_version_str);
-    spacetimedb::log("Module version: " + module_version.to_string());
-    spacetimedb::log("Compatibility: " + message);
+    SpacetimeDb::log("Client version: " + client_version_str);
+    SpacetimeDb::log("Module version: " + module_version.to_string());
+    SpacetimeDb::log("Compatibility: " + message);
     
     // Return available features for client version
     auto features = FeatureFlags::for_version(client_version);
-    spacetimedb::log("Available features:");
-    spacetimedb::log("  - Categories: " + std::string(features.has_categories ? "yes" : "no"));
-    spacetimedb::log("  - Tags: " + std::string(features.has_tags ? "yes" : "no"));
+    SpacetimeDb::log("Available features:");
+    SpacetimeDb::log("  - Categories: " + std::string(features.has_categories ? "yes" : "no"));
+    SpacetimeDb::log("  - Tags: " + std::string(features.has_tags ? "yes" : "no"));
 }
 
 // Schema evolution helper
-SPACETIMEDB_REDUCER(get_schema_version_info, spacetimedb::ReducerContext ctx) {
-    spacetimedb::log("Schema Version History:");
-    spacetimedb::log("1.0.0 - Initial release with products table");
-    spacetimedb::log("1.1.0 - Added categories table (backward compatible)");
-    spacetimedb::log("1.2.0 - Added product tags table (backward compatible)");
-    spacetimedb::log("");
-    spacetimedb::log("Current version: " + MODULE_VERSION.to_string());
+SPACETIMEDB_REDUCER(get_schema_version_info, SpacetimeDb::ReducerContext ctx) {
+    SpacetimeDb::log("Schema Version History:");
+    SpacetimeDb::log("1.0.0 - Initial release with products table");
+    SpacetimeDb::log("1.1.0 - Added categories table (backward compatible)");
+    SpacetimeDb::log("1.2.0 - Added product tags table (backward compatible)");
+    SpacetimeDb::log("");
+    SpacetimeDb::log("Current version: " + MODULE_VERSION.to_string());
     
     // Show what changes are backward compatible
-    spacetimedb::log("");
-    spacetimedb::log("Backward compatible changes:");
-    spacetimedb::log("- Adding new tables");
-    spacetimedb::log("- Adding new reducers");
-    spacetimedb::log("- Adding optional fields to existing tables");
-    spacetimedb::log("- Adding new indexes");
+    SpacetimeDb::log("");
+    SpacetimeDb::log("Backward compatible changes:");
+    SpacetimeDb::log("- Adding new tables");
+    SpacetimeDb::log("- Adding new reducers");
+    SpacetimeDb::log("- Adding optional fields to existing tables");
+    SpacetimeDb::log("- Adding new indexes");
     
-    spacetimedb::log("");
-    spacetimedb::log("Breaking changes (require major version bump):");
-    spacetimedb::log("- Removing tables or columns");
-    spacetimedb::log("- Changing column types");
-    spacetimedb::log("- Removing or changing reducer signatures");
-    spacetimedb::log("- Making optional fields required");
+    SpacetimeDb::log("");
+    SpacetimeDb::log("Breaking changes (require major version bump):");
+    SpacetimeDb::log("- Removing tables or columns");
+    SpacetimeDb::log("- Changing column types");
+    SpacetimeDb::log("- Removing or changing reducer signatures");
+    SpacetimeDb::log("- Making optional fields required");
 }
 
 // Module initialization with version check
-SPACETIMEDB_REDUCER(__init__, spacetimedb::ReducerContext ctx) {
-    spacetimedb::log("Initializing CompatibleEvolution module " + MODULE_VERSION.to_string());
+SPACETIMEDB_REDUCER(__init__, SpacetimeDb::ReducerContext ctx) {
+    SpacetimeDb::log("Initializing CompatibleEvolution module " + MODULE_VERSION.to_string());
     
     // In a real implementation, check if this is an upgrade
     // and perform any necessary data migrations
     
     // Log feature availability
     auto features = FeatureFlags::for_version(MODULE_VERSION);
-    spacetimedb::log("Module features enabled:");
-    spacetimedb::log("  - Categories: " + std::string(features.has_categories ? "yes" : "no"));
-    spacetimedb::log("  - Tags: " + std::string(features.has_tags ? "yes" : "no"));
-    spacetimedb::log("  - Bulk import: " + std::string(features.has_bulk_import ? "yes" : "no"));
+    SpacetimeDb::log("Module features enabled:");
+    SpacetimeDb::log("  - Categories: " + std::string(features.has_categories ? "yes" : "no"));
+    SpacetimeDb::log("  - Tags: " + std::string(features.has_tags ? "yes" : "no"));
+    SpacetimeDb::log("  - Bulk import: " + std::string(features.has_bulk_import ? "yes" : "no"));
 }

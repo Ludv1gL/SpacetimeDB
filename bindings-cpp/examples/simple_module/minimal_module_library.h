@@ -7,7 +7,7 @@
 #include <functional>
 
 // Forward declarations to avoid conflicts
-namespace spacetimedb {
+namespace SpacetimeDb {
     class ReducerContext;
 }
 
@@ -34,7 +34,7 @@ public:
 };
 
 // Simple ReducerContext
-namespace spacetimedb {
+namespace SpacetimeDb {
     class ReducerContext {
     public:
         // Minimal implementation for testing
@@ -111,7 +111,7 @@ void LOG_INFO(const std::string& msg);
 
 // Macro to register a reducer (simplified)
 #define SPACETIMEDB_REDUCER(name, ctx_param) \
-    void name##_impl(const spacetimedb::ReducerContext& ctx_param); \
-    void name##_impl(const spacetimedb::ReducerContext& ctx_param)
+    void name##_impl(const SpacetimeDb::ReducerContext& ctx_param); \
+    void name##_impl(const SpacetimeDb::ReducerContext& ctx_param)
 
 #endif // MINIMAL_SDK_H

@@ -3,7 +3,7 @@
 #include <iostream>
 #include <sstream>
 
-using namespace spacetimedb;
+using namespace SpacetimeDb;
 
 // Table to store user credentials and permissions
 struct UserCredential {
@@ -53,7 +53,7 @@ uint64_t get_current_timestamp() {
 }
 
 // Helper function to check if a user has a specific role
-bool has_role(spacetimedb::ReducerContext& ctx, const Identity& identity, const std::string& required_role) {
+bool has_role(SpacetimeDb::ReducerContext& ctx, const Identity& identity, const std::string& required_role) {
     auto credentials = ctx.db.table<UserCredential>("user_credentials");
     
     // Look for the user's credential
@@ -67,7 +67,7 @@ bool has_role(spacetimedb::ReducerContext& ctx, const Identity& identity, const 
 }
 
 // Log a permission check
-void log_permission_check(spacetimedb::ReducerContext& ctx, const Identity& actor, 
+void log_permission_check(SpacetimeDb::ReducerContext& ctx, const Identity& actor, 
                          const std::string& action, bool allowed, const std::string& reason) {
     static uint64_t next_id = 1;
     
@@ -84,7 +84,7 @@ void log_permission_check(spacetimedb::ReducerContext& ctx, const Identity& acto
 }
 
 // Initialize the module with a default admin
-SPACETIMEDB_REDUCER(init, spacetimedb::ReducerContext ctx) {
+SPACETIMEDB_REDUCER(init, SpacetimeDb::ReducerContext ctx) {
     // Get module identity to make it the initial admin
     Identity module_id = get_module_identity();
     
@@ -103,7 +103,7 @@ SPACETIMEDB_REDUCER(init, spacetimedb::ReducerContext ctx) {
 }
 
 // Create a new user credential (admin only)
-SPACETIMEDB_REDUCER(create_user_credential, spacetimedb::ReducerContext ctx, 
+SPACETIMEDB_REDUCER(create_user_credential, SpacetimeDb::ReducerContext ctx, 
                    std::string username, std::string role) {
     // Check if caller is admin
     if (!has_role(ctx, ctx.sender, "admin")) {
@@ -131,7 +131,7 @@ SPACETIMEDB_REDUCER(create_user_credential, spacetimedb::ReducerContext ctx,
 }
 
 // Revoke a user credential (admin only)
-SPACETIMEDB_REDUCER(revoke_credential, spacetimedb::ReducerContext ctx, std::string username) {
+SPACETIMEDB_REDUCER(revoke_credential, SpacetimeDb::ReducerContext ctx, std::string username) {
     // Check if caller is admin
     if (!has_role(ctx, ctx.sender, "admin")) {
         log_permission_check(ctx, ctx.sender, "revoke_credential", false, "Not an admin");
@@ -160,7 +160,7 @@ SPACETIMEDB_REDUCER(revoke_credential, spacetimedb::ReducerContext ctx, std::str
 }
 
 // Perform an action that requires specific role
-SPACETIMEDB_REDUCER(perform_privileged_action, spacetimedb::ReducerContext ctx, 
+SPACETIMEDB_REDUCER(perform_privileged_action, SpacetimeDb::ReducerContext ctx, 
                    std::string action, std::string required_role) {
     if (has_role(ctx, ctx.sender, required_role)) {
         log_permission_check(ctx, ctx.sender, action, true, "Has required role: " + required_role);
@@ -172,7 +172,7 @@ SPACETIMEDB_REDUCER(perform_privileged_action, spacetimedb::ReducerContext ctx,
 }
 
 // Check current user's permissions
-SPACETIMEDB_REDUCER(check_my_permissions, spacetimedb::ReducerContext ctx) {
+SPACETIMEDB_REDUCER(check_my_permissions, SpacetimeDb::ReducerContext ctx) {
     auto credentials = ctx.db.table<UserCredential>("user_credentials");
     
     bool found = false;
@@ -194,7 +194,7 @@ SPACETIMEDB_REDUCER(check_my_permissions, spacetimedb::ReducerContext ctx) {
 }
 
 // View permission logs (admin only)
-SPACETIMEDB_REDUCER(view_permission_logs, spacetimedb::ReducerContext ctx, uint32_t limit) {
+SPACETIMEDB_REDUCER(view_permission_logs, SpacetimeDb::ReducerContext ctx, uint32_t limit) {
     if (!has_role(ctx, ctx.sender, "admin")) {
         log_permission_check(ctx, ctx.sender, "view_permission_logs", false, "Not an admin");
         throw std::runtime_error("Only admins can view permission logs");

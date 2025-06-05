@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-using namespace spacetimedb;
+using namespace SpacetimeDb;
 
 // Example tables for demonstrating transactions
 
@@ -79,14 +79,14 @@ SPACETIMEDB_REDUCER(basic_transaction_example, ReducerContext ctx, uint32_t acco
         }
         
         if (!target_account) {
-            spacetimedb::log("Account not found", LogLevel::Error);
+            SpacetimeDb::log("Account not found", LogLevel::Error);
             tx.rollback();  // Explicit rollback
             return;
         }
         
         // Check if sufficient balance
         if (target_account->balance < amount) {
-            spacetimedb::log("Insufficient balance", LogLevel::Error);
+            SpacetimeDb::log("Insufficient balance", LogLevel::Error);
             tx.rollback();
             return;
         }
@@ -108,10 +108,10 @@ SPACETIMEDB_REDUCER(basic_transaction_example, ReducerContext ctx, uint32_t acco
         
         // Commit the transaction
         tx.commit();
-        spacetimedb::log("Transaction committed successfully", LogLevel::Info);
+        SpacetimeDb::log("Transaction committed successfully", LogLevel::Info);
         
     } catch (const TransactionError& e) {
-        spacetimedb::log(std::string("Transaction error: ") + e.what(), LogLevel::Error);
+        SpacetimeDb::log(std::string("Transaction error: ") + e.what(), LogLevel::Error);
     }
 }
 
@@ -162,7 +162,7 @@ SPACETIMEDB_REDUCER(transfer_with_guard, ReducerContext ctx, uint32_t from_id, u
         guard.commit();
         
     } catch (const std::exception& e) {
-        spacetimedb::log(std::string("Transfer failed: ") + e.what(), LogLevel::Error);
+        SpacetimeDb::log(std::string("Transfer failed: ") + e.what(), LogLevel::Error);
     }
 }
 
@@ -189,7 +189,7 @@ SPACETIMEDB_REDUCER(complex_operation_with_savepoints, ReducerContext ctx) {
         } catch (const std::exception& e) {
             // Rollback to savepoint, keeping the first account
             guard->rollback_to_savepoint("after_account_creation");
-            spacetimedb::log("Rolled back risky operation", LogLevel::Info);
+            SpacetimeDb::log("Rolled back risky operation", LogLevel::Info);
         }
         
         // Continue with other operations
@@ -199,7 +199,7 @@ SPACETIMEDB_REDUCER(complex_operation_with_savepoints, ReducerContext ctx) {
         guard.commit();
         
     } catch (const TransactionError& e) {
-        spacetimedb::log(std::string("Transaction failed: ") + e.what(), LogLevel::Error);
+        SpacetimeDb::log(std::string("Transaction failed: ") + e.what(), LogLevel::Error);
     }
 }
 
@@ -239,11 +239,11 @@ SPACETIMEDB_REDUCER(transfer_with_retry, ReducerContext ctx, uint32_t from_id, u
         });
         
         if (result) {
-            spacetimedb::log("Transfer completed successfully", LogLevel::Info);
+            SpacetimeDb::log("Transfer completed successfully", LogLevel::Info);
         }
         
     } catch (const std::exception& e) {
-        spacetimedb::log(std::string("Transfer failed after retries: ") + e.what(), LogLevel::Error);
+        SpacetimeDb::log(std::string("Transfer failed after retries: ") + e.what(), LogLevel::Error);
     }
 }
 
@@ -258,18 +258,18 @@ SPACETIMEDB_REDUCER(generate_balance_report, ReducerContext ctx) {
         for (const auto& account : account_table.iter()) {
             total_balance += account.balance;
             account_count++;
-            spacetimedb::log("Account " + std::to_string(account.id) + 
+            SpacetimeDb::log("Account " + std::to_string(account.id) + 
                            " (" + account.owner + "): $" + 
                            std::to_string(account.balance), LogLevel::Info);
         }
         
-        spacetimedb::log("Total accounts: " + std::to_string(account_count), LogLevel::Info);
-        spacetimedb::log("Total balance: $" + std::to_string(total_balance), LogLevel::Info);
+        SpacetimeDb::log("Total accounts: " + std::to_string(account_count), LogLevel::Info);
+        SpacetimeDb::log("Total balance: $" + std::to_string(total_balance), LogLevel::Info);
         
         // Get transaction metrics
         auto metrics = tx.metrics();
-        spacetimedb::log("Rows read: " + std::to_string(metrics.rows_read), LogLevel::Debug);
-        spacetimedb::log("Index seeks: " + std::to_string(metrics.index_seeks), LogLevel::Debug);
+        SpacetimeDb::log("Rows read: " + std::to_string(metrics.rows_read), LogLevel::Debug);
+        SpacetimeDb::log("Index seeks: " + std::to_string(metrics.index_seeks), LogLevel::Debug);
         
         return 0;
     });
@@ -316,15 +316,15 @@ SPACETIMEDB_REDUCER(update_inventory_optimistic, ReducerContext ctx, uint32_t it
             inventory_table.update(*item);
             
             guard.commit();
-            spacetimedb::log("Inventory updated successfully", LogLevel::Info);
+            SpacetimeDb::log("Inventory updated successfully", LogLevel::Info);
             break;  // Success, exit retry loop
             
         } catch (const SerializationError&) {
             if (retry == max_retries - 1) {
-                spacetimedb::log("Failed to update inventory after max retries", LogLevel::Error);
+                SpacetimeDb::log("Failed to update inventory after max retries", LogLevel::Error);
                 throw;
             }
-            spacetimedb::log("Version conflict detected, retrying...", LogLevel::Debug);
+            SpacetimeDb::log("Version conflict detected, retrying...", LogLevel::Debug);
             std::this_thread::sleep_for(std::chrono::milliseconds(10 * (1 << retry)));
         }
     }
@@ -357,12 +357,12 @@ SPACETIMEDB_REDUCER(snapshot_isolation_example, ReducerContext ctx) {
             total += acc.balance;
         }
         
-        spacetimedb::log("Snapshot total: $" + std::to_string(total), LogLevel::Info);
+        SpacetimeDb::log("Snapshot total: $" + std::to_string(total), LogLevel::Info);
         
         tx.commit();
         
     } catch (const TransactionError& e) {
-        spacetimedb::log(std::string("Snapshot read failed: ") + e.what(), LogLevel::Error);
+        SpacetimeDb::log(std::string("Snapshot read failed: ") + e.what(), LogLevel::Error);
     }
 }
 
@@ -396,9 +396,9 @@ SPACETIMEDB_REDUCER(init_transaction_demo, ReducerContext ctx) {
         }
         
         guard.commit();
-        spacetimedb::log("Demo data initialized", LogLevel::Info);
+        SpacetimeDb::log("Demo data initialized", LogLevel::Info);
         
     } catch (const std::exception& e) {
-        spacetimedb::log(std::string("Initialization failed: ") + e.what(), LogLevel::Error);
+        SpacetimeDb::log(std::string("Initialization failed: ") + e.what(), LogLevel::Error);
     }
 }

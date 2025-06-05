@@ -21,7 +21,7 @@
 #define SPACETIMEDB_CAT_IMPL(a, b) a##b
 #define SPACETIMEDB_CAT(a, b) SPACETIMEDB_CAT_IMPL(a, b)
 
-namespace spacetimedb {
+namespace SpacetimeDb {
 
 // -----------------------------------------------------------------------------
 // Identity Type for Built-in Reducers
@@ -106,15 +106,15 @@ inline std::optional<Lifecycle> get_lifecycle_for_name(const std::string& name) 
 
 // Specialized reducer wrapper for built-in reducers
 template<typename Func>
-void builtin_reducer_wrapper(Func func, spacetimedb::ReducerContext& ctx, 
+void builtin_reducer_wrapper(Func func, SpacetimeDb::ReducerContext& ctx, 
                            uint64_t sender_0, uint64_t sender_1, 
                            uint64_t sender_2, uint64_t sender_3) {
     Identity sender(sender_0, sender_1, sender_2, sender_3);
     
-    if constexpr (std::is_invocable_v<Func, spacetimedb::ReducerContext>) {
+    if constexpr (std::is_invocable_v<Func, SpacetimeDb::ReducerContext>) {
         // init reducer - no sender
         func(ctx);
-    } else if constexpr (std::is_invocable_v<Func, spacetimedb::ReducerContext, Identity>) {
+    } else if constexpr (std::is_invocable_v<Func, SpacetimeDb::ReducerContext, Identity>) {
         // client_connected/disconnected - includes sender
         func(ctx, sender);
     }
@@ -122,7 +122,7 @@ void builtin_reducer_wrapper(Func func, spacetimedb::ReducerContext& ctx,
 
 } // namespace detail
 
-} // namespace spacetimedb
+} // namespace SpacetimeDb
 
 // -----------------------------------------------------------------------------
 // Built-in Reducer Macros
@@ -130,29 +130,29 @@ void builtin_reducer_wrapper(Func func, spacetimedb::ReducerContext& ctx,
 
 // Macro for the init reducer
 #define SPACETIMEDB_INIT(function_name) \
-    void function_name(spacetimedb::ReducerContext ctx); \
+    void function_name(SpacetimeDb::ReducerContext ctx); \
     __attribute__((export_name("__preinit__20_reducer_init"))) \
     extern "C" void SPACETIMEDB_CAT(_preinit_register_init_reducer_, function_name)() { \
-        spacetimedb::register_init_reducer(function_name); \
+        SpacetimeDb::register_init_reducer(function_name); \
     } \
-    void function_name(spacetimedb::ReducerContext ctx)
+    void function_name(SpacetimeDb::ReducerContext ctx)
 
 // Macro for client_connected reducer
 #define SPACETIMEDB_CLIENT_CONNECTED(function_name) \
-    void function_name(spacetimedb::ReducerContext ctx, spacetimedb::Identity sender); \
+    void function_name(SpacetimeDb::ReducerContext ctx, SpacetimeDb::Identity sender); \
     __attribute__((export_name("__preinit__20_reducer_client_connected"))) \
     extern "C" void SPACETIMEDB_CAT(_preinit_register_client_connected_, function_name)() { \
-        spacetimedb::register_client_connected_reducer(function_name); \
+        SpacetimeDb::register_client_connected_reducer(function_name); \
     } \
-    void function_name(spacetimedb::ReducerContext ctx, spacetimedb::Identity sender)
+    void function_name(SpacetimeDb::ReducerContext ctx, SpacetimeDb::Identity sender)
 
 // Macro for client_disconnected reducer
 #define SPACETIMEDB_CLIENT_DISCONNECTED(function_name) \
-    void function_name(spacetimedb::ReducerContext ctx, spacetimedb::Identity sender); \
+    void function_name(SpacetimeDb::ReducerContext ctx, SpacetimeDb::Identity sender); \
     __attribute__((export_name("__preinit__20_reducer_client_disconnected"))) \
     extern "C" void SPACETIMEDB_CAT(_preinit_register_client_disconnected_, function_name)() { \
-        spacetimedb::register_client_disconnected_reducer(function_name); \
+        SpacetimeDb::register_client_disconnected_reducer(function_name); \
     } \
-    void function_name(spacetimedb::ReducerContext ctx, spacetimedb::Identity sender)
+    void function_name(SpacetimeDb::ReducerContext ctx, SpacetimeDb::Identity sender)
 
 #endif // SPACETIMEDB_BUILTIN_REDUCERS_H

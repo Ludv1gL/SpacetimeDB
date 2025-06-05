@@ -2,7 +2,7 @@
 #include <map> // Ensure map is included for the definition
 // #include <mutex> // Not strictly needed for typical WASM single-thread, but good for general C++ static init
 
-namespace spacetimedb {
+namespace SpacetimeDb {
 namespace library {
 namespace registry {
 
@@ -53,4 +53,4 @@ uint32_t get_pk_column_index_by_cpp_type_name(const std::string& cpp_type_name_m
 
 } // namespace registry
 } // namespace library
-} // namespace spacetimedb
+} // namespace SpacetimeDb

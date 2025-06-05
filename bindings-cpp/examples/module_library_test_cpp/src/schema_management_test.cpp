@@ -138,7 +138,7 @@ namespace schema_validation_demo {
 }
 
 // Test reducers for schema management functionality
-SPACETIMEDB_REDUCER(create_user_account, spacetimedb::ReducerContext ctx, 
+SPACETIMEDB_REDUCER(create_user_account, SpacetimeDb::ReducerContext ctx, 
                    std::string username, std::string email, uint32_t initial_reputation) {
     LOG_INFO("Creating user account: " + username + " (" + email + ")");
     
@@ -157,7 +157,7 @@ SPACETIMEDB_REDUCER(create_user_account, spacetimedb::ReducerContext ctx,
     LOG_INFO("User account created with ID: " + std::to_string(account.user_id));
 }
 
-SPACETIMEDB_REDUCER(create_product_item, spacetimedb::ReducerContext ctx,
+SPACETIMEDB_REDUCER(create_product_item, SpacetimeDb::ReducerContext ctx,
                    uint32_t product_id, std::string name, std::string category, 
                    uint64_t price_cents, uint32_t stock) {
     LOG_INFO("Creating product: " + name + " in category: " + category);
@@ -174,10 +174,10 @@ SPACETIMEDB_REDUCER(create_product_item, spacetimedb::ReducerContext ctx,
     LOG_INFO("Product created with ID: " + std::to_string(product_id));
 }
 
-SPACETIMEDB_REDUCER(test_schema_builder, spacetimedb::ReducerContext ctx) {
+SPACETIMEDB_REDUCER(test_schema_builder, SpacetimeDb::ReducerContext ctx) {
     LOG_INFO("Testing schema builder functionality");
     
-    using namespace spacetimedb;
+    using namespace SpacetimeDb;
     
     // Demonstrate schema builder pattern
     auto user_schema = SchemaBuilder("user_accounts", 0, TableAccess::Public)
@@ -203,10 +203,10 @@ SPACETIMEDB_REDUCER(test_schema_builder, spacetimedb::ReducerContext ctx) {
     LOG_INFO("Schema builder test completed successfully");
 }
 
-SPACETIMEDB_REDUCER(test_column_attributes, spacetimedb::ReducerContext ctx) {
+SPACETIMEDB_REDUCER(test_column_attributes, SpacetimeDb::ReducerContext ctx) {
     LOG_INFO("Testing column attribute system");
     
-    using namespace spacetimedb;
+    using namespace SpacetimeDb;
     
     // Test attribute flag operations
     ColumnAttrs basic_attrs = ColumnAttrs::Indexed;
@@ -232,10 +232,10 @@ SPACETIMEDB_REDUCER(test_column_attributes, spacetimedb::ReducerContext ctx) {
     LOG_INFO("Column attributes test completed successfully");
 }
 
-SPACETIMEDB_REDUCER(test_constraint_management, spacetimedb::ReducerContext ctx) {
+SPACETIMEDB_REDUCER(test_constraint_management, SpacetimeDb::ReducerContext ctx) {
     LOG_INFO("Testing constraint management system");
     
-    using namespace spacetimedb;
+    using namespace SpacetimeDb;
     
     // Create unique constraint
     auto unique_constraint_data = RawUniqueConstraintDataV9({1, 2}); // Columns 1,2
@@ -264,12 +264,12 @@ SPACETIMEDB_REDUCER(test_constraint_management, spacetimedb::ReducerContext ctx)
 }
 
 // Future: Scheduled reducer for testing scheduled tables
-// SPACETIMEDB_REDUCER(process_scheduled_task, spacetimedb::ReducerContext ctx, uint64_t task_id) {
+// SPACETIMEDB_REDUCER(process_scheduled_task, SpacetimeDb::ReducerContext ctx, uint64_t task_id) {
 //     LOG_INFO("Processing scheduled task: " + std::to_string(task_id));
 //     // Implementation would update the task status
 // }
 
-SPACETIMEDB_REDUCER(init_schema_test, spacetimedb::ReducerContext ctx) {
+SPACETIMEDB_REDUCER(init_schema_test, SpacetimeDb::ReducerContext ctx) {
     SpacetimeDB::LogStopwatch timer("schema_test_init");
     LOG_INFO("Initializing schema management test database");
     

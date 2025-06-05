@@ -16,7 +16,7 @@ struct OneU8 {
         // Field n
         w.write_u8(0); // Some
         w.write_string("n");
-        w.write_u8(static_cast<uint8_t>(spacetimedb::AlgebraicTypeTag::U8));
+        w.write_u8(static_cast<uint8_t>(SpacetimeDb::AlgebraicTypeTag::U8));
     }
 };
 
@@ -24,13 +24,13 @@ struct OneU8 {
 SPACETIMEDB_TABLE(OneU8, one_u8, true)
 
 // Define a reducer
-SPACETIMEDB_REDUCER(insert_one_u8, spacetimedb::ReducerContext ctx, uint8_t n) {
-    spacetimedb::log_info("insert_one_u8 called with n=" + std::to_string(n));
+SPACETIMEDB_REDUCER(insert_one_u8, SpacetimeDb::ReducerContext ctx, uint8_t n) {
+    SpacetimeDb::log_info("insert_one_u8 called with n=" + std::to_string(n));
     
     OneU8 row{n};
     ctx.db.table<OneU8>("one_u8").insert(row);
     
-    spacetimedb::log_info("Successfully inserted value");
+    SpacetimeDb::log_info("Successfully inserted value");
 }
 
 // Module exports - use the improved SDK's module description generation
@@ -43,7 +43,7 @@ extern "C" {
         w.write_u8(1);
         
         // Typespace
-        auto& registry = spacetimedb::ModuleRegistry::instance();
+        auto& registry = SpacetimeDb::ModuleRegistry::instance();
         w.write_u32_le(registry.get_tables().size());
         
         // Write types for tables
@@ -88,9 +88,9 @@ extern "C" {
                             uint64_t sender_0, uint64_t sender_1, uint64_t sender_2, uint64_t sender_3,
                             uint64_t conn_id_0, uint64_t conn_id_1,
                             uint64_t timestamp, uint32_t args, uint32_t error) {
-        auto& registry = spacetimedb::ModuleRegistry::instance();
+        auto& registry = SpacetimeDb::ModuleRegistry::instance();
         if (id < registry.get_reducers().size()) {
-            spacetimedb::ReducerContext ctx;
+            SpacetimeDb::ReducerContext ctx;
             registry.get_reducers()[id].handler(ctx, args, error);
             return 0;
         }

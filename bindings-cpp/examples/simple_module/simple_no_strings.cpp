@@ -3,18 +3,18 @@
 // Simple table without strings
 struct OneU8 { 
     uint8_t n; 
-    void serialize(spacetimedb::Writer& w) const { w.write_u8(n); }
-    void deserialize(spacetimedb::Reader& r) { n = r.read_u8(); }
+    void serialize(SpacetimeDb::Writer& w) const { w.write_u8(n); }
+    void deserialize(SpacetimeDb::Reader& r) { n = r.read_u8(); }
 };
 
 struct OneU32 { 
     uint32_t n; 
-    void serialize(spacetimedb::Writer& w) const { w.write_u32(n); }
-    void deserialize(spacetimedb::Reader& r) { n = r.read_u32(); }
+    void serialize(SpacetimeDb::Writer& w) const { w.write_u32(n); }
+    void deserialize(SpacetimeDb::Reader& r) { n = r.read_u32(); }
 };
 
 // Mark types as having custom serialization
-namespace spacetimedb {
+namespace SpacetimeDb {
     template<> struct has_custom_serialize<OneU8> : std::true_type {};
     template<> struct has_custom_serialize<OneU32> : std::true_type {};
 }
@@ -24,17 +24,17 @@ SPACETIMEDB_TABLE(OneU8, one_u8, true);
 SPACETIMEDB_TABLE(OneU32, one_u32, true);
 
 // Reducers
-void insert_one_u8_impl(spacetimedb::ReducerContext& ctx, uint8_t n) {
+void insert_one_u8_impl(SpacetimeDb::ReducerContext& ctx, uint8_t n) {
     OneU8 row{n};
     ctx.db.table<OneU8>("one_u8").insert(row);
 }
 
-void insert_one_u32_impl(spacetimedb::ReducerContext& ctx, uint32_t n) {
+void insert_one_u32_impl(SpacetimeDb::ReducerContext& ctx, uint32_t n) {
     OneU32 row{n};
     ctx.db.table<OneU32>("one_u32").insert(row);
 }
 
-void count_one_u8_impl(spacetimedb::ReducerContext& ctx) {
+void count_one_u8_impl(SpacetimeDb::ReducerContext& ctx) {
     auto count = ctx.db.table<OneU8>("one_u8").count();
     // Can't log without strings, but the reducer will still work
 }
@@ -43,7 +43,7 @@ void count_one_u8_impl(spacetimedb::ReducerContext& ctx) {
 namespace {
     struct ReducerRegistrations {
         ReducerRegistrations() {
-            using namespace spacetimedb;
+            using namespace SpacetimeDb;
             register_reducer<uint8_t>("insert_one_u8", 
                 std::function<void(ReducerContext&, uint8_t)>(insert_one_u8_impl));
             register_reducer<uint32_t>("insert_one_u32", 
@@ -190,5 +190,5 @@ extern "C" void __describe_module__(uint8_t* buffer, size_t* len) {
 // Implementation of __call_reducer__
 extern "C" void __call_reducer__(const char* name, size_t name_len, const uint8_t* args, size_t args_len) {
     std::string reducer_name(name, name_len);
-    spacetimedb::ReducerRegistry::instance().dispatch(reducer_name, args, args_len);
+    SpacetimeDb::ReducerRegistry::instance().dispatch(reducer_name, args, args_len);
 }

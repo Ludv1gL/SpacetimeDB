@@ -12,7 +12,7 @@
 // Forward declaration if TableMetadata needs to know about BsatnSerializable, though not directly.
 // class BsatnSerializable;
 
-namespace spacetimedb {
+namespace SpacetimeDb {
 namespace library {
 namespace registry { // Encapsulate registry specific components
 
@@ -73,7 +73,7 @@ struct TableRegistrar {
 // If PrimaryKeyFieldAsString is empty, it means no PK or PK is not the first field / not named here.
 #define SPACETIMEDB_REGISTER_TABLE(CppStructType, TableNameInDbString, PrimaryKeyFieldAsString) \
     namespace { /* Anonymous namespace to ensure unique registrar_instance per TU */ \
-        static spacetimedb::sdk::registry::TableRegistrar \
+        static SpacetimeDb::sdk::registry::TableRegistrar \
             registrar_instance_##CppStructType( \
                 typeid(CppStructType).name(), \
                 TableNameInDbString, \
@@ -95,6 +95,6 @@ uint32_t get_pk_column_index() {
 
 
 } // namespace library
-} // namespace spacetimedb
+} // namespace SpacetimeDb
 
 #endif // SPACETIMEDB_LIBRARY_TABLE_REGISTRY_H

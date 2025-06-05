@@ -4,7 +4,7 @@
 #include <unordered_map>
 #include <unordered_set>
 
-using namespace spacetimedb;
+using namespace SpacetimeDb;
 
 /**
  * @brief Foreign key validator that checks references to other tables.
@@ -408,7 +408,7 @@ std::unique_ptr<ValidatedTable<EmployeeProject>> setup_employee_project_table(
 }
 
 // Test foreign key validation
-SPACETIMEDB_REDUCER(test_foreign_keys, spacetimedb::ReducerContext ctx) {
+SPACETIMEDB_REDUCER(test_foreign_keys, SpacetimeDb::ReducerContext ctx) {
     std::cout << "\n=== Foreign Key Validation Demo ===\n" << std::endl;
     
     ForeignKeyManager fk_manager;
@@ -534,7 +534,7 @@ SPACETIMEDB_REDUCER(test_foreign_keys, spacetimedb::ReducerContext ctx) {
 }
 
 // Helper reducer to show foreign key relationships
-SPACETIMEDB_REDUCER(show_relationships, spacetimedb::ReducerContext ctx) {
+SPACETIMEDB_REDUCER(show_relationships, SpacetimeDb::ReducerContext ctx) {
     std::cout << "\n=== Database Relationship Map ===\n" << std::endl;
     
     std::cout << "departments" << std::endl;

@@ -6,9 +6,7 @@
  * This ensures consistent access patterns across the SDK.
  */
 
-// Namespace aliases to handle inconsistencies
-namespace spacetimedb {
-    namespace bsatn = ::SpacetimeDb::bsatn;
-}
+// This file provides compatibility for the BSATN namespace
+// No aliases needed as we're using SpacetimeDb::bsatn consistently
 
 #endif // SPACETIMEDB_BSATN_COMPAT_H

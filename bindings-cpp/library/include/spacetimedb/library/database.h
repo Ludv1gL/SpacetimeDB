@@ -7,7 +7,7 @@
 #include <spacetimedb/abi/spacetimedb_abi.h> // For ABI function calls
 #include <spacetimedb/bsatn_all.h> // For BSATN serialization
 
-namespace spacetimedb {
+namespace SpacetimeDb {
 namespace library {
 
 class Database {
@@ -91,6 +91,6 @@ bool table_delete_by_pk(const std::string& table_name, const TPK& pk_value) {
 
 
 } // namespace library
-} // namespace spacetimedb
+} // namespace SpacetimeDb
 
 #endif // SPACETIMEDB_LIBRARY_DATABASE_H

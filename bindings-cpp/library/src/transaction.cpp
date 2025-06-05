@@ -4,7 +4,7 @@
 #include <thread>
 #include <unordered_map>
 
-namespace spacetimedb {
+namespace SpacetimeDb {
 
 // Internal transaction implementation
 class TransactionImpl {
@@ -66,7 +66,7 @@ public:
         state_ = TransactionState::Committed;
         
         // Log transaction completion
-        spacetimedb::log("Transaction committed", spacetimedb::LogLevel::Debug);
+        SpacetimeDb::log("Transaction committed", SpacetimeDb::LogLevel::Debug);
     }
     
     void rollback() {
@@ -81,7 +81,7 @@ public:
         // Clear all savepoints
         savepoints_.clear();
         
-        spacetimedb::log("Transaction rolled back", spacetimedb::LogLevel::Debug);
+        SpacetimeDb::log("Transaction rolled back", SpacetimeDb::LogLevel::Debug);
         
         // To actually rollback in SpacetimeDB, we need to make the reducer fail
         throw TransactionError("Transaction explicitly rolled back");
@@ -150,7 +150,7 @@ public:
         }
         
         // Note: Actual data rollback would require SpacetimeDB support
-        spacetimedb::log("Rolled back to savepoint: " + name, spacetimedb::LogLevel::Debug);
+        SpacetimeDb::log("Rolled back to savepoint: " + name, SpacetimeDb::LogLevel::Debug);
     }
     
     ModuleDatabase& database() {
@@ -271,8 +271,8 @@ Transaction TransactionManager::begin(ReducerContext& ctx, const TransactionOpti
         case IsolationLevel::Serializable: isolation_str = "Serializable"; break;
     }
     
-    spacetimedb::log("Beginning transaction with isolation level: " + isolation_str, 
-                     spacetimedb::LogLevel::Debug);
+    SpacetimeDb::log("Beginning transaction with isolation level: " + isolation_str, 
+                     SpacetimeDb::LogLevel::Debug);
     
     return Transaction(std::move(impl));
 }
@@ -339,4 +339,4 @@ void DistributedTransaction::add_participant(const std::string& participant_id) 
     participants_.push_back(participant_id);
 }
 
-} // namespace spacetimedb
+} // namespace SpacetimeDb

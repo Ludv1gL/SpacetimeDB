@@ -1,0 +1,4 @@
+/home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/build/CMakeFiles/sdk-test-cpp.dir
+/home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/build/CMakeFiles/spacetimedb_module_library.dir
+/home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/build/CMakeFiles/edit_cache.dir
+/home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/build/CMakeFiles/rebuild_cache.dir

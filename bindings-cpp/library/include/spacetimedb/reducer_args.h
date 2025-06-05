@@ -6,7 +6,7 @@
 #include <tuple>
 #include <utility>
 
-namespace spacetimedb {
+namespace SpacetimeDb {
 
 // Helper to deserialize multiple arguments from BSATN
 template<typename... Args>
@@ -115,4 +115,4 @@ private:
     }
 };
 
-} // namespace spacetimedb
+} // namespace SpacetimeDb

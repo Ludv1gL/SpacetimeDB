@@ -13,7 +13,7 @@ struct OneU8 {
 SPACETIMEDB_TABLE(OneU8, one_u8, true)
 
 // Test reducer without arguments
-SPACETIMEDB_REDUCER(test_basic, spacetimedb::ReducerContext ctx) {
+SPACETIMEDB_REDUCER(test_basic, SpacetimeDb::ReducerContext ctx) {
     LOG_INFO("test_basic called");
     
     OneU8 row{42};
@@ -36,7 +36,7 @@ extern "C" __attribute__((export_name("__describe_module__")))
 void __describe_module__(uint32_t description) {
     // First, let's manually create a simple module definition to test
     std::vector<uint8_t> module_bytes;
-    spacetimedb::BsatnWriter writer(module_bytes);
+    SpacetimeDb::BsatnWriter writer(module_bytes);
     
     // RawModuleDef::V9 tag
     writer.write_u8(1);
@@ -125,7 +125,7 @@ int16_t __call_reducer__(uint32_t id,
                         uint64_t timestamp,
                         uint32_t args, uint32_t error) {
     try {
-        spacetimedb::ReducerContext ctx(spacetimedb::get_module_db());
+        SpacetimeDb::ReducerContext ctx(SpacetimeDb::get_module_db());
         
         // Simple dispatch based on ID
         if (id == 0) {

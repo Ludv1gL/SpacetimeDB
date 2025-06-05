@@ -16,7 +16,7 @@
 #include <spacetimedb/schedule_reducer.h>
 #include <spacetimedb/versioning.h>
 
-using namespace spacetimedb;
+using namespace SpacetimeDb;
 
 // =============================================================================
 // MODULE METADATA
@@ -359,7 +359,7 @@ SPACETIMEDB_REDUCER(send_private_message, UserDefined, ctx,
     std::string message)
 {
     // Use built-in message sending
-    spacetimedb::send_message_to_identity(recipient_id, message);
+    SpacetimeDb::send_message_to_identity(recipient_id, message);
     LOG_INFO("Sent private message");
 }
 

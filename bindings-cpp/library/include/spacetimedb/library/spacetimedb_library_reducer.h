@@ -14,7 +14,7 @@
 #include <memory>
 #include <cstring> // For std::strlen (used in macro for error messages)
 
-namespace spacetimedb {
+namespace SpacetimeDb {
 namespace library {
 
 // Global database instance for reducers
@@ -87,10 +87,10 @@ std::tuple<Args...> deserialize_all_args(SpacetimeDb::bsatn::Reader& reader) {
 
 // Macro to define and register a reducer
 #define SPACETIMEDB_REDUCER(REDUCER_FUNC_NAME, ...) \
-    extern void REDUCER_FUNC_NAME(spacetimedb::library::ReducerContext& ctx, ##__VA_ARGS__); \
+    extern void REDUCER_FUNC_NAME(SpacetimeDb::library::ReducerContext& ctx, ##__VA_ARGS__); \
     extern "C" __attribute__((export_name(#REDUCER_FUNC_NAME))) \
     uint16_t _spacetimedb_reducer_wrapper_##REDUCER_FUNC_NAME(const uint8_t* args_data, size_t args_len) { \
-        if (!spacetimedb::library::global_db_instance_ptr_for_reducers) { \
+        if (!SpacetimeDb::library::global_db_instance_ptr_for_reducers) { \
             const char* err_msg = "Critical Error: Module Library Database not initialized before calling reducer " #REDUCER_FUNC_NAME ". Host must call _spacetimedb_library_init."; \
             _console_log(0 /*FATAL like level*/, nullptr, 0, nullptr, 0, 0, reinterpret_cast<const uint8_t*>(err_msg), std::strlen(err_msg)); \
             return 100; /* Distinct error code for uninitialized Module Library */ \
@@ -101,10 +101,10 @@ std::tuple<Args...> deserialize_all_args(SpacetimeDb::bsatn::Reader& reader) {
             sender.bsatn_deserialize(reader); \
             SpacetimeDb::library::Timestamp timestamp; \
             timestamp.bsatn_deserialize(reader); \
-            spacetimedb::library::ReducerContext ctx(sender, timestamp, *spacetimedb::library::global_db_instance_ptr_for_reducers); \
+            SpacetimeDb::library::ReducerContext ctx(sender, timestamp, *SpacetimeDb::library::global_db_instance_ptr_for_reducers); \
             using UserArgsTuple = std::tuple<__VA_ARGS__>; \
             if constexpr (std::tuple_size_v<UserArgsTuple> > 0) { \
-                auto deserialized_args_tuple = spacetimedb::library::deserialize_all_args<__VA_ARGS__>(reader); \
+                auto deserialized_args_tuple = SpacetimeDb::library::deserialize_all_args<__VA_ARGS__>(reader); \
                 std::apply([&](auto&&... args) { \
                     REDUCER_FUNC_NAME(ctx, std::forward<decltype(args)>(args)...); \
                 }, std::move(deserialized_args_tuple)); \
@@ -126,21 +126,21 @@ std::tuple<Args...> deserialize_all_args(SpacetimeDb::bsatn::Reader& reader) {
     }
 
 #define SPACETIMEDB_REDUCER_NO_ARGS(REDUCER_FUNC_NAME) \
-    extern void REDUCER_FUNC_NAME(spacetimedb::library::ReducerContext& ctx); \
+    extern void REDUCER_FUNC_NAME(SpacetimeDb::library::ReducerContext& ctx); \
     extern "C" __attribute__((export_name(#REDUCER_FUNC_NAME))) \
     uint16_t _spacetimedb_reducer_wrapper_##REDUCER_FUNC_NAME(const uint8_t* args_data, size_t args_len) { \
-        if (!spacetimedb::library::global_db_instance_ptr_for_reducers) { \
+        if (!SpacetimeDb::library::global_db_instance_ptr_for_reducers) { \
              const char* err_msg = "Critical Error: Module Library Database not initialized before calling reducer " #REDUCER_FUNC_NAME ". Host must call _spacetimedb_library_init."; \
             _console_log(0 /*FATAL like level*/, nullptr, 0, nullptr, 0, 0, reinterpret_cast<const uint8_t*>(err_msg), std::strlen(err_msg)); \
             return 100; \
         } \
         try { \
-            spacetimedb::bsatn::bsatn_reader reader(args_data, args_len); \
-            spacetimedb::sdk::Identity sender; \
+            SpacetimeDb::bsatn::bsatn_reader reader(args_data, args_len); \
+            SpacetimeDb::sdk::Identity sender; \
             sender.bsatn_deserialize(reader); \
-            spacetimedb::sdk::Timestamp timestamp; \
+            SpacetimeDb::sdk::Timestamp timestamp; \
             timestamp.bsatn_deserialize(reader); \
-            spacetimedb::library::ReducerContext ctx(sender, timestamp, *spacetimedb::library::global_db_instance_ptr_for_reducers); \
+            SpacetimeDb::library::ReducerContext ctx(sender, timestamp, *SpacetimeDb::library::global_db_instance_ptr_for_reducers); \
             REDUCER_FUNC_NAME(ctx); \
             return 0; /* Success */ \
         } catch (const std::exception& e) { \
@@ -157,6 +157,6 @@ std::tuple<Args...> deserialize_all_args(SpacetimeDb::bsatn::Reader& reader) {
     }
 
 } // namespace library
-} // namespace spacetimedb
+} // namespace SpacetimeDb
 
 #endif // SPACETIMEDB_LIBRARY_REDUCER_H

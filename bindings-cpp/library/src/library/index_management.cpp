@@ -3,7 +3,7 @@
 #include "spacetimedb/bsatn/bsatn.h"
 #include <stdexcept>
 
-namespace spacetimedb {
+namespace SpacetimeDb {
 
 namespace index_utils {
     std::string GenerateIndexName(const std::string& table_name, 
@@ -91,4 +91,4 @@ std::pair<std::vector<uint8_t>, std::vector<uint8_t>> SerializeRange(const Range
     return {std::move(start_bytes), std::move(end_bytes)};
 }
 
-} // namespace spacetimedb
+} // namespace SpacetimeDb

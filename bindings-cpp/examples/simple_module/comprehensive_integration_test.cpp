@@ -34,7 +34,7 @@ struct User {
     std::string username;
     std::string email;
     uint32_t age;
-    spacetimedb::Timestamp created_at;
+    SpacetimeDb::Timestamp created_at;
     bool is_active;
 };
 
@@ -43,7 +43,7 @@ struct Post {
     uint64_t user_id;  // Foreign key to User
     std::string title;
     std::string content;
-    spacetimedb::Timestamp posted_at;
+    SpacetimeDb::Timestamp posted_at;
     uint32_t view_count;
 };
 
@@ -74,14 +74,14 @@ struct UserProfileV2 {
 struct ScheduledTask {
     uint64_t id;
     std::string task_name;
-    spacetimedb::Timestamp scheduled_at;
+    SpacetimeDb::Timestamp scheduled_at;
     bool completed;
 };
 
 // Permission test
 struct SecureData {
     uint64_t id;
-    spacetimedb::Identity owner_id;
+    SpacetimeDb::Identity owner_id;
     std::string data;
     bool is_public;
 };
@@ -95,7 +95,7 @@ SPACETIMEDB_REGISTER_FIELDS(User,
     SPACETIMEDB_FIELD(User, username, std::string);
     SPACETIMEDB_FIELD(User, email, std::string);
     SPACETIMEDB_FIELD(User, age, uint32_t);
-    SPACETIMEDB_FIELD(User, created_at, spacetimedb::Timestamp);
+    SPACETIMEDB_FIELD(User, created_at, SpacetimeDb::Timestamp);
     SPACETIMEDB_FIELD(User, is_active, bool);
 )
 
@@ -104,7 +104,7 @@ SPACETIMEDB_REGISTER_FIELDS(Post,
     SPACETIMEDB_FIELD(Post, user_id, uint64_t);
     SPACETIMEDB_FIELD(Post, title, std::string);
     SPACETIMEDB_FIELD(Post, content, std::string);
-    SPACETIMEDB_FIELD(Post, posted_at, spacetimedb::Timestamp);
+    SPACETIMEDB_FIELD(Post, posted_at, SpacetimeDb::Timestamp);
     SPACETIMEDB_FIELD(Post, view_count, uint32_t);
 )
 
@@ -133,13 +133,13 @@ SPACETIMEDB_REGISTER_FIELDS(UserProfileV2,
 SPACETIMEDB_REGISTER_FIELDS(ScheduledTask,
     SPACETIMEDB_FIELD(ScheduledTask, id, uint64_t);
     SPACETIMEDB_FIELD(ScheduledTask, task_name, std::string);
-    SPACETIMEDB_FIELD(ScheduledTask, scheduled_at, spacetimedb::Timestamp);
+    SPACETIMEDB_FIELD(ScheduledTask, scheduled_at, SpacetimeDb::Timestamp);
     SPACETIMEDB_FIELD(ScheduledTask, completed, bool);
 )
 
 SPACETIMEDB_REGISTER_FIELDS(SecureData,
     SPACETIMEDB_FIELD(SecureData, id, uint64_t);
-    SPACETIMEDB_FIELD(SecureData, owner_id, spacetimedb::Identity);
+    SPACETIMEDB_FIELD(SecureData, owner_id, SpacetimeDb::Identity);
     SPACETIMEDB_FIELD(SecureData, data, std::string);
     SPACETIMEDB_FIELD(SecureData, is_public, bool);
 )
@@ -185,9 +185,9 @@ uint64_t generate_id() {
 
 void log_test(const std::string& test_name, bool passed) {
     if (passed) {
-        spacetimedb::log::info("✓ TEST PASSED: " + test_name);
+        SpacetimeDb::log::info("✓ TEST PASSED: " + test_name);
     } else {
-        spacetimedb::log::error("✗ TEST FAILED: " + test_name);
+        SpacetimeDb::log::error("✗ TEST FAILED: " + test_name);
     }
 }
 
@@ -196,7 +196,7 @@ void log_test(const std::string& test_name, bool passed) {
 // =============================================================================
 
 SPACETIMEDB_INIT() {
-    spacetimedb::log::info("=== Module Initialization ===");
+    SpacetimeDb::log::info("=== Module Initialization ===");
     
     // Create default admin user
     User admin{
@@ -204,20 +204,20 @@ SPACETIMEDB_INIT() {
         .username = "admin",
         .email = "admin@example.com",
         .age = 30,
-        .created_at = spacetimedb::Timestamp::now(),
+        .created_at = SpacetimeDb::Timestamp::now(),
         .is_active = true
     };
     
     try {
-        spacetimedb::ModuleDatabase::get_instance().table<User>("users").insert(admin);
-        spacetimedb::log::info("Admin user created successfully");
+        SpacetimeDb::ModuleDatabase::get_instance().table<User>("users").insert(admin);
+        SpacetimeDb::log::info("Admin user created successfully");
     } catch (const std::exception& e) {
-        spacetimedb::log::error("Failed to create admin user: " + std::string(e.what()));
+        SpacetimeDb::log::error("Failed to create admin user: " + std::string(e.what()));
     }
 }
 
-SPACETIMEDB_CLIENT_CONNECTED(spacetimedb::ReducerContext ctx) {
-    spacetimedb::log::info("Client connected: " + ctx.sender.to_hex());
+SPACETIMEDB_CLIENT_CONNECTED(SpacetimeDb::ReducerContext ctx) {
+    SpacetimeDb::log::info("Client connected: " + ctx.sender.to_hex());
     
     // Track connection in secure data
     SecureData connection_record{
@@ -230,8 +230,8 @@ SPACETIMEDB_CLIENT_CONNECTED(spacetimedb::ReducerContext ctx) {
     ctx.db.table<SecureData>("secure_data").insert(connection_record);
 }
 
-SPACETIMEDB_CLIENT_DISCONNECTED(spacetimedb::ReducerContext ctx) {
-    spacetimedb::log::info("Client disconnected: " + ctx.sender.to_hex());
+SPACETIMEDB_CLIENT_DISCONNECTED(SpacetimeDb::ReducerContext ctx) {
+    SpacetimeDb::log::info("Client disconnected: " + ctx.sender.to_hex());
     
     // Clean up any session data
     auto secure_table = ctx.db.table<SecureData>("secure_data");
@@ -245,8 +245,8 @@ SPACETIMEDB_CLIENT_DISCONNECTED(spacetimedb::ReducerContext ctx) {
 // =============================================================================
 
 // Test 1: Basic CRUD operations
-SPACETIMEDB_REDUCER(test_basic_crud, spacetimedb::ReducerContext ctx) {
-    spacetimedb::log::info("=== Test 1: Basic CRUD Operations ===");
+SPACETIMEDB_REDUCER(test_basic_crud, SpacetimeDb::ReducerContext ctx) {
+    SpacetimeDb::log::info("=== Test 1: Basic CRUD Operations ===");
     
     auto users_table = ctx.db.table<User>("users");
     bool test_passed = true;
@@ -263,14 +263,14 @@ SPACETIMEDB_REDUCER(test_basic_crud, spacetimedb::ReducerContext ctx) {
         };
         
         users_table.insert(new_user);
-        spacetimedb::log::info("CREATE: User inserted successfully");
+        SpacetimeDb::log::info("CREATE: User inserted successfully");
         
         // READ
         auto user_opt = users_table.find_by_unique("username", "testuser");
         if (user_opt && user_opt->email == "test@example.com") {
-            spacetimedb::log::info("READ: User found successfully");
+            SpacetimeDb::log::info("READ: User found successfully");
         } else {
-            spacetimedb::log::error("READ: Failed to find user");
+            SpacetimeDb::log::error("READ: Failed to find user");
             test_passed = false;
         }
         
@@ -279,17 +279,17 @@ SPACETIMEDB_REDUCER(test_basic_crud, spacetimedb::ReducerContext ctx) {
             User updated_user = *user_opt;
             updated_user.age = 26;
             users_table.update(updated_user);
-            spacetimedb::log::info("UPDATE: User updated successfully");
+            SpacetimeDb::log::info("UPDATE: User updated successfully");
         }
         
         // DELETE
         users_table.delete_where([](const User& u) {
             return u.username == "testuser";
         });
-        spacetimedb::log::info("DELETE: User deleted successfully");
+        SpacetimeDb::log::info("DELETE: User deleted successfully");
         
     } catch (const std::exception& e) {
-        spacetimedb::log::error("CRUD test failed: " + std::string(e.what()));
+        SpacetimeDb::log::error("CRUD test failed: " + std::string(e.what()));
         test_passed = false;
     }
     
@@ -297,8 +297,8 @@ SPACETIMEDB_REDUCER(test_basic_crud, spacetimedb::ReducerContext ctx) {
 }
 
 // Test 2: Constraint validation
-SPACETIMEDB_REDUCER(test_constraints, spacetimedb::ReducerContext ctx) {
-    spacetimedb::log::info("=== Test 2: Constraint Validation ===");
+SPACETIMEDB_REDUCER(test_constraints, SpacetimeDb::ReducerContext ctx) {
+    SpacetimeDb::log::info("=== Test 2: Constraint Validation ===");
     
     auto users_table = ctx.db.table<User>("users");
     bool test_passed = true;
@@ -316,10 +316,10 @@ SPACETIMEDB_REDUCER(test_constraints, spacetimedb::ReducerContext ctx) {
         
         try {
             users_table.insert(duplicate_user);
-            spacetimedb::log::error("Unique constraint test failed - duplicate allowed");
+            SpacetimeDb::log::error("Unique constraint test failed - duplicate allowed");
             test_passed = false;
-        } catch (const spacetimedb::ConstraintViolationException& e) {
-            spacetimedb::log::info("Unique constraint correctly enforced");
+        } catch (const SpacetimeDb::ConstraintViolationException& e) {
+            SpacetimeDb::log::info("Unique constraint correctly enforced");
         }
         
         // Test check constraint violation
@@ -334,14 +334,14 @@ SPACETIMEDB_REDUCER(test_constraints, spacetimedb::ReducerContext ctx) {
         
         try {
             users_table.insert(young_user);
-            spacetimedb::log::error("Check constraint test failed - invalid age allowed");
+            SpacetimeDb::log::error("Check constraint test failed - invalid age allowed");
             test_passed = false;
-        } catch (const spacetimedb::ConstraintViolationException& e) {
-            spacetimedb::log::info("Check constraint correctly enforced");
+        } catch (const SpacetimeDb::ConstraintViolationException& e) {
+            SpacetimeDb::log::info("Check constraint correctly enforced");
         }
         
     } catch (const std::exception& e) {
-        spacetimedb::log::error("Constraint test failed: " + std::string(e.what()));
+        SpacetimeDb::log::error("Constraint test failed: " + std::string(e.what()));
         test_passed = false;
     }
     
@@ -349,8 +349,8 @@ SPACETIMEDB_REDUCER(test_constraints, spacetimedb::ReducerContext ctx) {
 }
 
 // Test 3: Foreign key relationships
-SPACETIMEDB_REDUCER(test_foreign_keys, spacetimedb::ReducerContext ctx) {
-    spacetimedb::log::info("=== Test 3: Foreign Key Relationships ===");
+SPACETIMEDB_REDUCER(test_foreign_keys, SpacetimeDb::ReducerContext ctx) {
+    SpacetimeDb::log::info("=== Test 3: Foreign Key Relationships ===");
     
     bool test_passed = true;
     
@@ -391,13 +391,13 @@ SPACETIMEDB_REDUCER(test_foreign_keys, spacetimedb::ReducerContext ctx) {
         ctx.db.table<PostTag>("post_tags").insert(pt1);
         ctx.db.table<PostTag>("post_tags").insert(pt2);
         
-        spacetimedb::log::info("Foreign key relationships created successfully");
+        SpacetimeDb::log::info("Foreign key relationships created successfully");
         
         // Test cascade delete (if supported)
         // Note: This would depend on FK cascade settings
         
     } catch (const std::exception& e) {
-        spacetimedb::log::error("Foreign key test failed: " + std::string(e.what()));
+        SpacetimeDb::log::error("Foreign key test failed: " + std::string(e.what()));
         test_passed = false;
     }
     
@@ -405,8 +405,8 @@ SPACETIMEDB_REDUCER(test_foreign_keys, spacetimedb::ReducerContext ctx) {
 }
 
 // Test 4: Advanced queries (requires advanced header)
-SPACETIMEDB_REDUCER(test_advanced_queries, spacetimedb::ReducerContext ctx) {
-    spacetimedb::log::info("=== Test 4: Advanced Queries ===");
+SPACETIMEDB_REDUCER(test_advanced_queries, SpacetimeDb::ReducerContext ctx) {
+    SpacetimeDb::log::info("=== Test 4: Advanced Queries ===");
     
     bool test_passed = true;
     
@@ -425,12 +425,12 @@ SPACETIMEDB_REDUCER(test_advanced_queries, spacetimedb::ReducerContext ctx) {
         }
         
         // Test filter query
-        auto enhanced_users = spacetimedb::EnhancedTableHandle<User>("users");
+        auto enhanced_users = SpacetimeDb::EnhancedTableHandle<User>("users");
         auto active_users = enhanced_users.filter([](const User& u) {
             return u.is_active;
         });
         
-        spacetimedb::log::info("Found " + std::to_string(active_users.size()) + " active users");
+        SpacetimeDb::log::info("Found " + std::to_string(active_users.size()) + " active users");
         
         // Test update_where
         size_t updated = enhanced_users.update_where(
@@ -438,17 +438,17 @@ SPACETIMEDB_REDUCER(test_advanced_queries, spacetimedb::ReducerContext ctx) {
             [](User& u) { u.is_active = false; }
         );
         
-        spacetimedb::log::info("Updated " + std::to_string(updated) + " users");
+        SpacetimeDb::log::info("Updated " + std::to_string(updated) + " users");
         
         // Test aggregation
         auto stats = enhanced_users.aggregate<double>(
             [](const User& u) { return static_cast<double>(u.age); }
         );
         
-        spacetimedb::log::info("Average age: " + std::to_string(stats.average));
+        SpacetimeDb::log::info("Average age: " + std::to_string(stats.average));
         
     } catch (const std::exception& e) {
-        spacetimedb::log::error("Advanced query test failed: " + std::string(e.what()));
+        SpacetimeDb::log::error("Advanced query test failed: " + std::string(e.what()));
         test_passed = false;
     }
     
@@ -456,14 +456,14 @@ SPACETIMEDB_REDUCER(test_advanced_queries, spacetimedb::ReducerContext ctx) {
 }
 
 // Test 5: Transactions
-SPACETIMEDB_REDUCER(test_transactions, spacetimedb::ReducerContext ctx) {
-    spacetimedb::log::info("=== Test 5: Transactions ===");
+SPACETIMEDB_REDUCER(test_transactions, SpacetimeDb::ReducerContext ctx) {
+    SpacetimeDb::log::info("=== Test 5: Transactions ===");
     
     bool test_passed = true;
     
     try {
         // Start a transaction
-        auto tx = spacetimedb::Transaction::begin();
+        auto tx = SpacetimeDb::Transaction::begin();
         
         try {
             // Create multiple related records
@@ -494,15 +494,15 @@ SPACETIMEDB_REDUCER(test_transactions, spacetimedb::ReducerContext ctx) {
             
             // Commit transaction
             tx.commit();
-            spacetimedb::log::info("Transaction committed successfully");
+            SpacetimeDb::log::info("Transaction committed successfully");
             
         } catch (const std::exception& e) {
             tx.rollback();
-            spacetimedb::log::info("Transaction rolled back: " + std::string(e.what()));
+            SpacetimeDb::log::info("Transaction rolled back: " + std::string(e.what()));
         }
         
         // Test rollback scenario
-        auto tx2 = spacetimedb::Transaction::begin();
+        auto tx2 = SpacetimeDb::Transaction::begin();
         try {
             User bad_user{
                 .id = generate_id(),
@@ -515,16 +515,16 @@ SPACETIMEDB_REDUCER(test_transactions, spacetimedb::ReducerContext ctx) {
             tx2.table<User>("users").insert(bad_user);
             tx2.commit();
             
-            spacetimedb::log::error("Transaction should have failed");
+            SpacetimeDb::log::error("Transaction should have failed");
             test_passed = false;
             
         } catch (const std::exception& e) {
             tx2.rollback();
-            spacetimedb::log::info("Transaction correctly rolled back on constraint violation");
+            SpacetimeDb::log::info("Transaction correctly rolled back on constraint violation");
         }
         
     } catch (const std::exception& e) {
-        spacetimedb::log::error("Transaction test failed: " + std::string(e.what()));
+        SpacetimeDb::log::error("Transaction test failed: " + std::string(e.what()));
         test_passed = false;
     }
     
@@ -532,12 +532,12 @@ SPACETIMEDB_REDUCER(test_transactions, spacetimedb::ReducerContext ctx) {
 }
 
 // Test 6: Scheduled reducers
-SPACETIMEDB_SCHEDULED_REDUCER(cleanup_old_tasks, spacetimedb::Schedule::every_minutes(5)) {
-    spacetimedb::ReducerContext ctx;
-    spacetimedb::log::info("=== Scheduled Cleanup Task Running ===");
+SPACETIMEDB_SCHEDULED_REDUCER(cleanup_old_tasks, SpacetimeDb::Schedule::every_minutes(5)) {
+    SpacetimeDb::ReducerContext ctx;
+    SpacetimeDb::log::info("=== Scheduled Cleanup Task Running ===");
     
     auto tasks = ctx.db.table<ScheduledTask>("scheduled_tasks");
-    auto now = spacetimedb::Timestamp::now();
+    auto now = SpacetimeDb::Timestamp::now();
     
     // Mark overdue tasks as completed
     size_t completed = 0;
@@ -549,11 +549,11 @@ SPACETIMEDB_SCHEDULED_REDUCER(cleanup_old_tasks, spacetimedb::Schedule::every_mi
         }
     });
     
-    spacetimedb::log::info("Completed " + std::to_string(completed) + " overdue tasks");
+    SpacetimeDb::log::info("Completed " + std::to_string(completed) + " overdue tasks");
 }
 
-SPACETIMEDB_REDUCER(test_scheduled_tasks, spacetimedb::ReducerContext ctx) {
-    spacetimedb::log::info("=== Test 6: Scheduled Tasks ===");
+SPACETIMEDB_REDUCER(test_scheduled_tasks, SpacetimeDb::ReducerContext ctx) {
+    SpacetimeDb::log::info("=== Test 6: Scheduled Tasks ===");
     
     bool test_passed = true;
     
@@ -565,7 +565,7 @@ SPACETIMEDB_REDUCER(test_scheduled_tasks, spacetimedb::ReducerContext ctx) {
         ScheduledTask past_task{
             .id = generate_id(),
             .task_name = "Past Task",
-            .scheduled_at = spacetimedb::Timestamp::from_seconds_since_epoch(
+            .scheduled_at = SpacetimeDb::Timestamp::from_seconds_since_epoch(
                 ctx.timestamp.seconds_since_epoch() - 3600
             ),
             .completed = false
@@ -576,17 +576,17 @@ SPACETIMEDB_REDUCER(test_scheduled_tasks, spacetimedb::ReducerContext ctx) {
         ScheduledTask future_task{
             .id = generate_id(),
             .task_name = "Future Task",
-            .scheduled_at = spacetimedb::Timestamp::from_seconds_since_epoch(
+            .scheduled_at = SpacetimeDb::Timestamp::from_seconds_since_epoch(
                 ctx.timestamp.seconds_since_epoch() + 3600
             ),
             .completed = false
         };
         tasks.insert(future_task);
         
-        spacetimedb::log::info("Created scheduled tasks for cleanup test");
+        SpacetimeDb::log::info("Created scheduled tasks for cleanup test");
         
     } catch (const std::exception& e) {
-        spacetimedb::log::error("Scheduled task test failed: " + std::string(e.what()));
+        SpacetimeDb::log::error("Scheduled task test failed: " + std::string(e.what()));
         test_passed = false;
     }
     
@@ -594,8 +594,8 @@ SPACETIMEDB_REDUCER(test_scheduled_tasks, spacetimedb::ReducerContext ctx) {
 }
 
 // Test 7: Versioning and migration
-SPACETIMEDB_REDUCER(test_versioning, spacetimedb::ReducerContext ctx) {
-    spacetimedb::log::info("=== Test 7: Versioning and Migration ===");
+SPACETIMEDB_REDUCER(test_versioning, SpacetimeDb::ReducerContext ctx) {
+    SpacetimeDb::log::info("=== Test 7: Versioning and Migration ===");
     
     bool test_passed = true;
     
@@ -616,7 +616,7 @@ SPACETIMEDB_REDUCER(test_versioning, spacetimedb::ReducerContext ctx) {
         };
         
         ctx.db.table<UserProfileV2>("user_profiles").insert(profile_v2);
-        spacetimedb::log::info("Profile migrated from v1 to v2");
+        SpacetimeDb::log::info("Profile migrated from v1 to v2");
         
         // Update with v2 features
         profile_v2.avatar_url = "https://example.com/avatar.jpg";
@@ -624,10 +624,10 @@ SPACETIMEDB_REDUCER(test_versioning, spacetimedb::ReducerContext ctx) {
         profile_v2.social_links.push_back("https://github.com/user");
         
         ctx.db.table<UserProfileV2>("user_profiles").update(profile_v2);
-        spacetimedb::log::info("Profile updated with v2 features");
+        SpacetimeDb::log::info("Profile updated with v2 features");
         
     } catch (const std::exception& e) {
-        spacetimedb::log::error("Versioning test failed: " + std::string(e.what()));
+        SpacetimeDb::log::error("Versioning test failed: " + std::string(e.what()));
         test_passed = false;
     }
     
@@ -635,15 +635,15 @@ SPACETIMEDB_REDUCER(test_versioning, spacetimedb::ReducerContext ctx) {
 }
 
 // Test 8: Credentials and permissions
-SPACETIMEDB_REDUCER(test_credentials, spacetimedb::ReducerContext ctx) {
-    spacetimedb::log::info("=== Test 8: Credentials and Permissions ===");
+SPACETIMEDB_REDUCER(test_credentials, SpacetimeDb::ReducerContext ctx) {
+    SpacetimeDb::log::info("=== Test 8: Credentials and Permissions ===");
     
     bool test_passed = true;
     
     try {
         // Get current user credentials
-        auto creds = spacetimedb::Credentials::get_current();
-        spacetimedb::log::info("Current identity: " + ctx.sender.to_hex());
+        auto creds = SpacetimeDb::Credentials::get_current();
+        SpacetimeDb::log::info("Current identity: " + ctx.sender.to_hex());
         
         // Test permission check
         SecureData private_data{
@@ -662,10 +662,10 @@ SPACETIMEDB_REDUCER(test_credentials, spacetimedb::ReducerContext ctx) {
             return data.owner_id == ctx.sender || data.is_public;
         });
         
-        spacetimedb::log::info("Found " + std::to_string(my_data.size()) + " accessible records");
+        SpacetimeDb::log::info("Found " + std::to_string(my_data.size()) + " accessible records");
         
     } catch (const std::exception& e) {
-        spacetimedb::log::error("Credentials test failed: " + std::string(e.what()));
+        SpacetimeDb::log::error("Credentials test failed: " + std::string(e.what()));
         test_passed = false;
     }
     
@@ -673,8 +673,8 @@ SPACETIMEDB_REDUCER(test_credentials, spacetimedb::ReducerContext ctx) {
 }
 
 // Test 9: Error handling
-SPACETIMEDB_REDUCER(test_error_handling, spacetimedb::ReducerContext ctx) {
-    spacetimedb::log::info("=== Test 9: Error Handling ===");
+SPACETIMEDB_REDUCER(test_error_handling, SpacetimeDb::ReducerContext ctx) {
+    SpacetimeDb::log::info("=== Test 9: Error Handling ===");
     
     bool test_passed = true;
     
@@ -686,10 +686,10 @@ SPACETIMEDB_REDUCER(test_error_handling, spacetimedb::ReducerContext ctx) {
         try {
             auto result = users.find_by_unique("username", "nonexistent");
             if (!result) {
-                spacetimedb::log::info("Correctly handled missing record");
+                SpacetimeDb::log::info("Correctly handled missing record");
             }
-        } catch (const spacetimedb::RecordNotFoundException& e) {
-            spacetimedb::log::info("Record not found exception caught");
+        } catch (const SpacetimeDb::RecordNotFoundException& e) {
+            SpacetimeDb::log::info("Record not found exception caught");
         }
         
         // 2. Invalid operation
@@ -698,18 +698,18 @@ SPACETIMEDB_REDUCER(test_error_handling, spacetimedb::ReducerContext ctx) {
             User invalid_user{};  // All fields uninitialized
             users.insert(invalid_user);
             
-            spacetimedb::log::error("Invalid insert should have failed");
+            SpacetimeDb::log::error("Invalid insert should have failed");
             test_passed = false;
             
-        } catch (const spacetimedb::InvalidOperationException& e) {
-            spacetimedb::log::info("Invalid operation correctly caught");
+        } catch (const SpacetimeDb::InvalidOperationException& e) {
+            SpacetimeDb::log::info("Invalid operation correctly caught");
         }
         
         // 3. Type mismatch (would be caught at compile time in C++)
         // Testing runtime validation instead
         
     } catch (const std::exception& e) {
-        spacetimedb::log::error("Error handling test failed: " + std::string(e.what()));
+        SpacetimeDb::log::error("Error handling test failed: " + std::string(e.what()));
         test_passed = false;
     }
     
@@ -717,8 +717,8 @@ SPACETIMEDB_REDUCER(test_error_handling, spacetimedb::ReducerContext ctx) {
 }
 
 // Test 10: Performance and stress test
-SPACETIMEDB_REDUCER(test_performance, spacetimedb::ReducerContext ctx) {
-    spacetimedb::log::info("=== Test 10: Performance Test ===");
+SPACETIMEDB_REDUCER(test_performance, SpacetimeDb::ReducerContext ctx) {
+    SpacetimeDb::log::info("=== Test 10: Performance Test ===");
     
     bool test_passed = true;
     
@@ -740,26 +740,26 @@ SPACETIMEDB_REDUCER(test_performance, spacetimedb::ReducerContext ctx) {
             users.insert(perf_user);
         }
         
-        auto insert_time = spacetimedb::Timestamp::now();
-        spacetimedb::log::info("Inserted " + std::to_string(RECORD_COUNT) + " records");
+        auto insert_time = SpacetimeDb::Timestamp::now();
+        SpacetimeDb::log::info("Inserted " + std::to_string(RECORD_COUNT) + " records");
         
         // Query performance test
-        auto enhanced_users = spacetimedb::EnhancedTableHandle<User>("users");
+        auto enhanced_users = SpacetimeDb::EnhancedTableHandle<User>("users");
         auto active_count = enhanced_users.count([](const User& u) {
             return u.is_active;
         });
         
-        spacetimedb::log::info("Found " + std::to_string(active_count) + " active users");
+        SpacetimeDb::log::info("Found " + std::to_string(active_count) + " active users");
         
         // Cleanup
         users.delete_where([](const User& u) {
             return u.username.find("perf_user_") == 0;
         });
         
-        spacetimedb::log::info("Performance test completed");
+        SpacetimeDb::log::info("Performance test completed");
         
     } catch (const std::exception& e) {
-        spacetimedb::log::error("Performance test failed: " + std::string(e.what()));
+        SpacetimeDb::log::error("Performance test failed: " + std::string(e.what()));
         test_passed = false;
     }
     
@@ -767,10 +767,10 @@ SPACETIMEDB_REDUCER(test_performance, spacetimedb::ReducerContext ctx) {
 }
 
 // Master test runner
-SPACETIMEDB_REDUCER(run_all_tests, spacetimedb::ReducerContext ctx) {
-    spacetimedb::log::info("==================================================");
-    spacetimedb::log::info("Running Comprehensive Integration Test Suite");
-    spacetimedb::log::info("==================================================");
+SPACETIMEDB_REDUCER(run_all_tests, SpacetimeDb::ReducerContext ctx) {
+    SpacetimeDb::log::info("==================================================");
+    SpacetimeDb::log::info("Running Comprehensive Integration Test Suite");
+    SpacetimeDb::log::info("==================================================");
     
     // Run all tests in sequence
     test_basic_crud(ctx);
@@ -784,7 +784,7 @@ SPACETIMEDB_REDUCER(run_all_tests, spacetimedb::ReducerContext ctx) {
     test_error_handling(ctx);
     test_performance(ctx);
     
-    spacetimedb::log::info("==================================================");
-    spacetimedb::log::info("Integration Test Suite Completed");
-    spacetimedb::log::info("==================================================");
+    SpacetimeDb::log::info("==================================================");
+    SpacetimeDb::log::info("Integration Test Suite Completed");
+    SpacetimeDb::log::info("==================================================");
 }

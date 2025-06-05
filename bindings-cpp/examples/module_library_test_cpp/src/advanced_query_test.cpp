@@ -43,7 +43,7 @@ namespace SpacetimeDb::bsatn {
 SPACETIMEDB_TABLE(QueryTestData, query_test_data, true)
 
 // Test reducers for advanced query functionality
-SPACETIMEDB_REDUCER(populate_test_data, spacetimedb::ReducerContext ctx, uint32_t count) {
+SPACETIMEDB_REDUCER(populate_test_data, SpacetimeDb::ReducerContext ctx, uint32_t count) {
     LOG_INFO("Populating test data with " + std::to_string(count) + " records");
     
     for (uint32_t i = 1; i <= count; ++i) {
@@ -60,7 +60,7 @@ SPACETIMEDB_REDUCER(populate_test_data, spacetimedb::ReducerContext ctx, uint32_
     LOG_INFO("Test data populated successfully");
 }
 
-SPACETIMEDB_REDUCER(test_table_scanning, spacetimedb::ReducerContext ctx) {
+SPACETIMEDB_REDUCER(test_table_scanning, SpacetimeDb::ReducerContext ctx) {
     LOG_INFO("Testing table scanning and iteration");
     
     // Test: Count all rows (placeholder - would use AdvancedTableHandle)
@@ -71,19 +71,19 @@ SPACETIMEDB_REDUCER(test_table_scanning, spacetimedb::ReducerContext ctx) {
     LOG_INFO("✅ Advanced filtering predicates available");
     
     // Future: When AdvancedTableHandle is integrated
-    // auto advanced_table = spacetimedb::AdvancedTableHandle<QueryTestData>("query_test_data");
+    // auto advanced_table = SpacetimeDb::AdvancedTableHandle<QueryTestData>("query_test_data");
     // uint64_t total_count = advanced_table.count();
     // LOG_INFO("Total rows: " + std::to_string(total_count));
     
     LOG_INFO("Table scanning test completed");
 }
 
-SPACETIMEDB_REDUCER(test_advanced_filtering, spacetimedb::ReducerContext ctx, uint8_t target_category, uint32_t min_score) {
+SPACETIMEDB_REDUCER(test_advanced_filtering, SpacetimeDb::ReducerContext ctx, uint8_t target_category, uint32_t min_score) {
     LOG_INFO("Testing advanced filtering operations");
     LOG_INFO("Filter criteria: category=" + std::to_string(target_category) + ", score>=" + std::to_string(min_score));
     
     // Demonstrate predicate usage patterns
-    using namespace spacetimedb::query_utils;
+    using namespace SpacetimeDb::query_utils;
     
     // Example predicates (would be used with AdvancedTableHandle)
     auto category_filter = equals(&QueryTestData::category, target_category);
@@ -104,7 +104,7 @@ SPACETIMEDB_REDUCER(test_advanced_filtering, spacetimedb::ReducerContext ctx, ui
     LOG_INFO("Advanced filtering test completed");
 }
 
-SPACETIMEDB_REDUCER(test_update_operations, spacetimedb::ReducerContext ctx, uint32_t score_boost) {
+SPACETIMEDB_REDUCER(test_update_operations, SpacetimeDb::ReducerContext ctx, uint32_t score_boost) {
     LOG_INFO("Testing update operations");
     LOG_INFO("Score boost: " + std::to_string(score_boost));
     
@@ -129,7 +129,7 @@ SPACETIMEDB_REDUCER(test_update_operations, spacetimedb::ReducerContext ctx, uin
     LOG_INFO("Update operations test completed");
 }
 
-SPACETIMEDB_REDUCER(test_delete_operations, spacetimedb::ReducerContext ctx, uint32_t max_score) {
+SPACETIMEDB_REDUCER(test_delete_operations, SpacetimeDb::ReducerContext ctx, uint32_t max_score) {
     LOG_INFO("Testing delete operations");
     LOG_INFO("Delete threshold: score > " + std::to_string(max_score));
     
@@ -149,7 +149,7 @@ SPACETIMEDB_REDUCER(test_delete_operations, spacetimedb::ReducerContext ctx, uin
     LOG_INFO("Delete operations test completed");
 }
 
-SPACETIMEDB_REDUCER(test_query_builder, spacetimedb::ReducerContext ctx, uint32_t limit_rows) {
+SPACETIMEDB_REDUCER(test_query_builder, SpacetimeDb::ReducerContext ctx, uint32_t limit_rows) {
     LOG_INFO("Testing query builder pattern");
     LOG_INFO("Query limit: " + std::to_string(limit_rows));
     
@@ -173,7 +173,7 @@ SPACETIMEDB_REDUCER(test_query_builder, spacetimedb::ReducerContext ctx, uint32_
     LOG_INFO("Query builder test completed");
 }
 
-SPACETIMEDB_REDUCER(init_advanced_query_test, spacetimedb::ReducerContext ctx) {
+SPACETIMEDB_REDUCER(init_advanced_query_test, SpacetimeDb::ReducerContext ctx) {
     SpacetimeDB::LogStopwatch timer("advanced_query_test_init");
     LOG_INFO("Initializing advanced query capabilities test database");
     

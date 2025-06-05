@@ -7,7 +7,7 @@
 struct Player {
     uint32_t id;
     std::string name;
-    spacetimedb::Identity identity;
+    SpacetimeDb::Identity identity;
     uint32_t score;
     uint64_t joined_at;  // timestamp in microseconds
 };
@@ -31,7 +31,7 @@ struct ChatMessage {
 SPACETIMEDB_REGISTER_FIELDS(Player,
     SPACETIMEDB_FIELD(Player, id, uint32_t);
     SPACETIMEDB_FIELD(Player, name, std::string);
-    SPACETIMEDB_FIELD(Player, identity, spacetimedb::Identity);
+    SPACETIMEDB_FIELD(Player, identity, SpacetimeDb::Identity);
     SPACETIMEDB_FIELD(Player, score, uint32_t);
     SPACETIMEDB_FIELD(Player, joined_at, uint64_t);
 )
@@ -57,20 +57,20 @@ SPACETIMEDB_TABLE(GameSession, game_session, true)
 SPACETIMEDB_TABLE(ChatMessage, chat_message, true)
 
 // Initialize the module
-SPACETIMEDB_REDUCER(init, spacetimedb::ReducerContext ctx) {
+SPACETIMEDB_REDUCER(init, SpacetimeDb::ReducerContext ctx) {
     LOG_INFO("Game module initialized");
     auto module_id = ctx.identity();
-    LOG_INFO("Module identity: 0x" + spacetimedb::bytes_to_hex(module_id.bytes.data(), module_id.bytes.size()));
+    LOG_INFO("Module identity: 0x" + SpacetimeDb::bytes_to_hex(module_id.bytes.data(), module_id.bytes.size()));
     LOG_INFO("Initialization time: " + std::to_string(ctx.timestamp_millis()) + " ms");
 }
 
 // Handle client connections
-SPACETIMEDB_REDUCER(client_connected, spacetimedb::ReducerContext ctx) {
+SPACETIMEDB_REDUCER(client_connected, SpacetimeDb::ReducerContext ctx) {
     LOG_INFO("Client connected!");
-    LOG_INFO("Client identity: 0x" + spacetimedb::bytes_to_hex(ctx.sender.bytes.data(), ctx.sender.bytes.size()));
+    LOG_INFO("Client identity: 0x" + SpacetimeDb::bytes_to_hex(ctx.sender.bytes.data(), ctx.sender.bytes.size()));
     
     if (ctx.connection_id) {
-        LOG_INFO("Connection ID: 0x" + spacetimedb::bytes_to_hex(ctx.connection_id->bytes.data(), ctx.connection_id->bytes.size()));
+        LOG_INFO("Connection ID: 0x" + SpacetimeDb::bytes_to_hex(ctx.connection_id->bytes.data(), ctx.connection_id->bytes.size()));
     }
     
     // Create a new player for this connection
@@ -87,8 +87,8 @@ SPACETIMEDB_REDUCER(client_connected, spacetimedb::ReducerContext ctx) {
 }
 
 // Handle client disconnections
-SPACETIMEDB_REDUCER(client_disconnected, spacetimedb::ReducerContext ctx) {
-    LOG_INFO("Client disconnected: 0x" + spacetimedb::bytes_to_hex(ctx.sender.bytes.data(), ctx.sender.bytes.size()));
+SPACETIMEDB_REDUCER(client_disconnected, SpacetimeDb::ReducerContext ctx) {
+    LOG_INFO("Client disconnected: 0x" + SpacetimeDb::bytes_to_hex(ctx.sender.bytes.data(), ctx.sender.bytes.size()));
     
     // Find and log the disconnecting player
     auto players = ctx.db.table<Player>("player");
@@ -102,7 +102,7 @@ SPACETIMEDB_REDUCER(client_disconnected, spacetimedb::ReducerContext ctx) {
 }
 
 // Create a new game session
-SPACETIMEDB_REDUCER(create_game, spacetimedb::ReducerContext ctx, std::string session_name) {
+SPACETIMEDB_REDUCER(create_game, SpacetimeDb::ReducerContext ctx, std::string session_name) {
     LOG_INFO("Creating game session: " + session_name);
     
     // Find the player creating the game
@@ -118,7 +118,7 @@ SPACETIMEDB_REDUCER(create_game, spacetimedb::ReducerContext ctx, std::string se
     }
     
     if (host_id == 0) {
-        LOG_ERROR("Player not found for sender: 0x" + spacetimedb::bytes_to_hex(ctx.sender.bytes.data(), ctx.sender.bytes.size()));
+        LOG_ERROR("Player not found for sender: 0x" + SpacetimeDb::bytes_to_hex(ctx.sender.bytes.data(), ctx.sender.bytes.size()));
         return;
     }
     
@@ -136,7 +136,7 @@ SPACETIMEDB_REDUCER(create_game, spacetimedb::ReducerContext ctx, std::string se
 }
 
 // Send a chat message
-SPACETIMEDB_REDUCER(send_message, spacetimedb::ReducerContext ctx, std::string message) {
+SPACETIMEDB_REDUCER(send_message, SpacetimeDb::ReducerContext ctx, std::string message) {
     // Find the player sending the message
     auto players = ctx.db.table<Player>("player");
     uint32_t player_id = 0;
@@ -168,7 +168,7 @@ SPACETIMEDB_REDUCER(send_message, spacetimedb::ReducerContext ctx, std::string m
 }
 
 // Update player score with random bonus
-SPACETIMEDB_REDUCER(update_score, spacetimedb::ReducerContext ctx, uint32_t base_points) {
+SPACETIMEDB_REDUCER(update_score, SpacetimeDb::ReducerContext ctx, uint32_t base_points) {
     auto players = ctx.db.table<Player>("player");
     
     // Find the player
@@ -195,7 +195,7 @@ SPACETIMEDB_REDUCER(update_score, spacetimedb::ReducerContext ctx, uint32_t base
 }
 
 // Generate random event
-SPACETIMEDB_REDUCER(random_event, spacetimedb::ReducerContext ctx) {
+SPACETIMEDB_REDUCER(random_event, SpacetimeDb::ReducerContext ctx) {
     LOG_INFO("Random event triggered at " + std::to_string(ctx.timestamp_millis()) + " ms");
     
     // Generate different types of events randomly
@@ -257,13 +257,13 @@ SPACETIMEDB_REDUCER(random_event, spacetimedb::ReducerContext ctx) {
 }
 
 // Debug: Show context information
-SPACETIMEDB_REDUCER(debug_context, spacetimedb::ReducerContext ctx) {
+SPACETIMEDB_REDUCER(debug_context, SpacetimeDb::ReducerContext ctx) {
     LOG_INFO("=== Reducer Context Debug Info ===");
     LOG_INFO(ctx.to_string());
     
     // Show module identity
     auto module_id = ctx.identity();
-    LOG_INFO("Module Identity: 0x" + spacetimedb::bytes_to_hex(module_id.bytes.data(), module_id.bytes.size()));
+    LOG_INFO("Module Identity: 0x" + SpacetimeDb::bytes_to_hex(module_id.bytes.data(), module_id.bytes.size()));
     
     // Test random number generation
     LOG_INFO("Random numbers:");

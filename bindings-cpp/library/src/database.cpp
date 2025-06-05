@@ -4,7 +4,7 @@
 // If not, it should be included here for any ABI calls made directly by Database methods,
 // though get_table<T> is templated and in the header.
 
-namespace spacetimedb {
+namespace SpacetimeDb {
 namespace library {
 
 Database::Database() {
@@ -29,4 +29,4 @@ Database::Database() {
 // }
 
 } // namespace library
-} // namespace spacetimedb
+} // namespace SpacetimeDb

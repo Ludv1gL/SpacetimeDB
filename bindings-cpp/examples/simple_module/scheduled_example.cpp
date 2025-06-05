@@ -5,8 +5,8 @@
 #include <iostream>
 #include <string>
 
-using namespace spacetimedb;
-using namespace spacetimedb::time_literals;
+using namespace SpacetimeDb;
+using namespace SpacetimeDb::time_literals;
 
 // Example 1: Simple scheduled task table
 struct ScheduledTask {
@@ -81,7 +81,7 @@ SPACETIMEDB_REGISTER_FIELDS(SchedulerLog,
 SPACETIMEDB_TABLE(SchedulerLog, scheduler_logs, true)
 
 // Initialize the module with some scheduled tasks
-SPACETIMEDB_REDUCER(init, spacetimedb::ReducerContext ctx) {
+SPACETIMEDB_REDUCER(init, SpacetimeDb::ReducerContext ctx) {
     // Schedule a one-time task 5 seconds from now
     Timestamp future_time = ctx.timestamp + TimeDuration::from_seconds(5);
     ctx.db.table<ScheduledTask>("scheduled_tasks").insert(ScheduledTask{
@@ -117,7 +117,7 @@ SPACETIMEDB_REDUCER(init, spacetimedb::ReducerContext ctx) {
 }
 
 // Scheduled reducer for processing tasks
-SPACETIMEDB_REDUCER(process_task, spacetimedb::ReducerContext ctx, ScheduledTask task) {
+SPACETIMEDB_REDUCER(process_task, SpacetimeDb::ReducerContext ctx, ScheduledTask task) {
     // Log that the task ran
     std::string details = "Task: " + task.task_name + ", Counter: " + std::to_string(task.counter);
     ctx.db.table<SchedulerLog>("scheduler_logs").insert(SchedulerLog{
@@ -135,7 +135,7 @@ SPACETIMEDB_REDUCER(process_task, spacetimedb::ReducerContext ctx, ScheduledTask
 }
 
 // Scheduled reducer for sending reminders
-SPACETIMEDB_REDUCER(send_reminder, spacetimedb::ReducerContext ctx, Reminder reminder) {
+SPACETIMEDB_REDUCER(send_reminder, SpacetimeDb::ReducerContext ctx, Reminder reminder) {
     // Log the reminder
     std::string details = "To: " + reminder.recipient + ", Message: " + reminder.message;
     ctx.db.table<SchedulerLog>("scheduler_logs").insert(SchedulerLog{
@@ -150,7 +150,7 @@ SPACETIMEDB_REDUCER(send_reminder, spacetimedb::ReducerContext ctx, Reminder rem
 }
 
 // Scheduled reducer for game events
-SPACETIMEDB_REDUCER(process_game_event, spacetimedb::ReducerContext ctx, GameEvent event) {
+SPACETIMEDB_REDUCER(process_game_event, SpacetimeDb::ReducerContext ctx, GameEvent event) {
     std::string details = "Event: " + event.event_type + 
                          ", Player: " + std::to_string(event.player_id) +
                          ", Value: " + std::to_string(event.value);
@@ -163,7 +163,7 @@ SPACETIMEDB_REDUCER(process_game_event, spacetimedb::ReducerContext ctx, GameEve
 }
 
 // Manual reducer to schedule a reminder
-SPACETIMEDB_REDUCER(schedule_reminder, spacetimedb::ReducerContext ctx, 
+SPACETIMEDB_REDUCER(schedule_reminder, SpacetimeDb::ReducerContext ctx, 
                    std::string recipient, std::string message, int64_t delay_seconds) {
     Timestamp remind_at = ctx.timestamp + TimeDuration::from_seconds(delay_seconds);
     ctx.db.table<Reminder>("reminders").insert(Reminder{
@@ -175,7 +175,7 @@ SPACETIMEDB_REDUCER(schedule_reminder, spacetimedb::ReducerContext ctx,
 }
 
 // Manual reducer to schedule a repeating game event
-SPACETIMEDB_REDUCER(schedule_game_event, spacetimedb::ReducerContext ctx,
+SPACETIMEDB_REDUCER(schedule_game_event, SpacetimeDb::ReducerContext ctx,
                    std::string event_type, uint32_t player_id, 
                    int32_t value, int64_t interval_millis) {
     ctx.db.table<GameEvent>("game_events").insert(GameEvent{
@@ -188,7 +188,7 @@ SPACETIMEDB_REDUCER(schedule_game_event, spacetimedb::ReducerContext ctx,
 }
 
 // Reducer to cancel a scheduled task
-SPACETIMEDB_REDUCER(cancel_scheduled_task, spacetimedb::ReducerContext ctx, uint64_t task_id) {
+SPACETIMEDB_REDUCER(cancel_scheduled_task, SpacetimeDb::ReducerContext ctx, uint64_t task_id) {
     auto& tasks = ctx.db.table<ScheduledTask>("scheduled_tasks");
     // In a real implementation, you would use:
     // tasks.scheduled_id().delete(task_id);
@@ -202,7 +202,7 @@ SPACETIMEDB_REDUCER(cancel_scheduled_task, spacetimedb::ReducerContext ctx, uint
 }
 
 // Reducer to view all scheduled tasks
-SPACETIMEDB_REDUCER(list_scheduled_tasks, spacetimedb::ReducerContext ctx) {
+SPACETIMEDB_REDUCER(list_scheduled_tasks, SpacetimeDb::ReducerContext ctx) {
     auto& tasks = ctx.db.table<ScheduledTask>("scheduled_tasks");
     int count = 0;
     // In a real implementation, you would iterate:

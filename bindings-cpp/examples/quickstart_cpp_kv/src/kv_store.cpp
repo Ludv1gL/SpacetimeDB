@@ -16,15 +16,15 @@
 // and will be exported. The host calls it to initialize the SDK, including the
 // global database instance needed by the ReducerContext.
 
-namespace spacetimedb_quickstart {
+namespace SpacetimeDb_quickstart {
 
 // KeyValue BSATN implementation
-// void KeyValue::bsatn_serialize(spacetimedb::sdk::bsatn::bsatn_writer& writer) const {
+// void KeyValue::bsatn_serialize(SpacetimeDb::sdk::bsatn::bsatn_writer& writer) const {
 //     writer.write_string(key_str);   // First field, assumed PK (index 0)
 //     writer.write_string(value_str); // Second field
 // }
 
-// void KeyValue::bsatn_deserialize(spacetimedb::sdk::bsatn::bsatn_reader& reader) {
+// void KeyValue::bsatn_deserialize(SpacetimeDb::sdk::bsatn::bsatn_reader& reader) {
 //     key_str = reader.read_string();
 //     value_str = reader.read_string();
 // }
@@ -55,7 +55,7 @@ static void log_message_abi(uint8_t level, const std::string& context_info, cons
 
 // Reducer Implementations
 
-void kv_put(spacetimedb::sdk::ReducerContext& ctx, const std::string& key, const std::string& value) {
+void kv_put(SpacetimeDb::sdk::ReducerContext& ctx, const std::string& key, const std::string& value) {
     std::string reducer_name = "kv_put";
     try {
         auto kv_table = ctx.db().get_table<KeyValue>("kv_pairs");
@@ -85,7 +85,7 @@ void kv_put(spacetimedb::sdk::ReducerContext& ctx, const std::string& key, const
     }
 }
 
-void kv_get(spacetimedb::sdk::ReducerContext& ctx, const std::string& key) {
+void kv_get(SpacetimeDb::sdk::ReducerContext& ctx, const std::string& key) {
     std::string reducer_name = "kv_get";
     try {
         auto kv_table = ctx.db().get_table<KeyValue>("kv_pairs");
@@ -109,7 +109,7 @@ void kv_get(spacetimedb::sdk::ReducerContext& ctx, const std::string& key) {
     }
 }
 
-void kv_del(spacetimedb::sdk::ReducerContext& ctx, const std::string& key) {
+void kv_del(SpacetimeDb::sdk::ReducerContext& ctx, const std::string& key) {
     std::string reducer_name = "kv_del";
     try {
         auto kv_table = ctx.db().get_table<KeyValue>("kv_pairs");
@@ -155,4 +155,4 @@ SPACETIMEDB_REDUCER("kv_del", spacetimedb_quickstart::kv_del,
     std::string
 );
 
-} // namespace spacetimedb_quickstart
+} // namespace SpacetimeDb_quickstart

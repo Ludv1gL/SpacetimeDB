@@ -1,30 +1,38 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.20)
 project(sdk-test-cpp)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Add the SDK include path
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../cpp_sdk/sdk/include)
+# Set the path to the C++ Module Library
+set(MODULE_LIBRARY_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../bindings-cpp/library")
 
-# Create the WASM module
-add_executable(sdk-test-cpp
-    src/lib.cpp
+# Include the Module Library headers
+include_directories(${MODULE_LIBRARY_DIR}/include)
+
+# Add the main module source file
+add_executable(sdk-test-cpp src/lib.cpp)
+
+# Link the Module Library
+file(GLOB_RECURSE MODULE_LIBRARY_SOURCES
+    "${MODULE_LIBRARY_DIR}/src/*.cpp"
 )
 
-# Set output name
+# Create a static library from Module Library sources
+add_library(spacetimedb_module_library STATIC ${MODULE_LIBRARY_SOURCES})
+target_include_directories(spacetimedb_module_library PUBLIC ${MODULE_LIBRARY_DIR}/include)
+
+# Link the module library to our module
+target_link_libraries(sdk-test-cpp spacetimedb_module_library)
+
+# Set output name to match expected WASM module name
 set_target_properties(sdk-test-cpp PROPERTIES OUTPUT_NAME "sdk_test_cpp")
 
-# WASM-specific flags
-if(CMAKE_SYSTEM_NAME STREQUAL "WASI")
-    target_compile_options(sdk-test-cpp PRIVATE
-        -fno-exceptions
-        -fno-rtti
-    )
-    
-    target_link_options(sdk-test-cpp PRIVATE
-        -Wl,--export-dynamic
-        -Wl,--no-entry
-        -Wl,--allow-undefined
+# If using Emscripten, add appropriate flags
+if(EMSCRIPTEN)
+    set_target_properties(sdk-test-cpp PROPERTIES
+        SUFFIX ".wasm"
+        COMPILE_FLAGS "-fno-exceptions"
+        LINK_FLAGS "-s STANDALONE_WASM=1 -s EXPORT_ALL=1 -s ERROR_ON_UNDEFINED_SYMBOLS=0 -s ALLOW_MEMORY_GROWTH=1"
     )
 endif()

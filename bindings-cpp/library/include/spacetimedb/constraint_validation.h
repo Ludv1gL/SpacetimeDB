@@ -14,7 +14,7 @@
 #include "spacetimedb/library/exceptions.h"
 #include "spacetimedb/library/schema_management.h"
 
-namespace spacetimedb {
+namespace SpacetimeDb {
 
 /**
  * @brief Constraint validation result containing error details.
@@ -522,11 +522,11 @@ private:
 inline std::vector<ConstraintValidation::ForeignKeyInfo> ConstraintValidation::foreign_keys_;
 inline std::vector<ConstraintValidation::CheckConstraintInfo> ConstraintValidation::check_constraints_;
 
-} // namespace spacetimedb
+} // namespace SpacetimeDb
 
 // Add SpacetimeDb namespace alias for macro compatibility
 namespace SpacetimeDb {
-    using ConstraintValidation = spacetimedb::ConstraintValidation;
+    using ConstraintValidation = SpacetimeDb::ConstraintValidation;
 }
 
 #endif // SPACETIMEDB_CONSTRAINT_VALIDATION_H

@@ -25,7 +25,7 @@ struct Person {
 SPACETIMEDB_TABLE(Person, people, true)
 
 // Simple reducer to test
-SPACETIMEDB_REDUCER(add_person, spacetimedb::ReducerContext ctx, uint32_t age) {
+SPACETIMEDB_REDUCER(add_person, SpacetimeDb::ReducerContext ctx, uint32_t age) {
     LOG_INFO("Adding person with age: " + std::to_string(age));
     
     Person p;
@@ -53,7 +53,7 @@ extern "C" {
     void __describe_module__(uint32_t description) {
         // Create minimal valid module def manually
         std::vector<uint8_t> module_def;
-        spacetimedb::BsatnWriter writer(module_def);
+        SpacetimeDb::BsatnWriter writer(module_def);
         
         // RawModuleDef::V9 tag
         writer.write_u8(1);

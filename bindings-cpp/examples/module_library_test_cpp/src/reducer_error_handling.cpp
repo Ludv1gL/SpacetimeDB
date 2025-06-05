@@ -21,7 +21,7 @@
 #include <spacetimedb/spacetimedb.h>
 #include <spacetimedb/sdk/exceptions.h>
 
-using namespace spacetimedb;
+using namespace SpacetimeDb;
 using namespace SpacetimeDB;
 
 /**

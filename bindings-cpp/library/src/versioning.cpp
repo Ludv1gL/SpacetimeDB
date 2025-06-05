@@ -4,7 +4,7 @@
 #include <regex>
 #include <queue>
 
-namespace spacetimedb {
+namespace SpacetimeDb {
 
 // ModuleVersion implementation
 ModuleVersion ModuleVersion::parse(const std::string& version_string) {
@@ -439,4 +439,4 @@ void add_version_to_module_def(void* module_def_builder, const ModuleMetadata& m
     // For now, this is a placeholder
 }
 
-} // namespace spacetimedb
+} // namespace SpacetimeDb

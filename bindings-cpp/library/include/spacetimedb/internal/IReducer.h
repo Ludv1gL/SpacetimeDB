@@ -42,7 +42,7 @@ public:
     virtual library::Timestamp GetTimestamp() const = 0;
     
     // Convert to Module Library context for user code
-    virtual spacetimedb::ReducerContext ToSdkContext() = 0;
+    virtual SpacetimeDb::ReducerContext ToSdkContext() = 0;
     
     // TODO: Add database access methods
 };

@@ -63,7 +63,7 @@
 // INTERNAL UTILITIES
 // =============================================================================
 
-namespace spacetimedb {
+namespace SpacetimeDb {
 namespace internal {
 
 // Helper to get table ID from name - cached like Rust SDK
@@ -90,7 +90,7 @@ inline uint32_t get_table_id(const std::string& name) {
 }
 
 } // namespace internal
-} // namespace spacetimedb
+} // namespace SpacetimeDb
 
 // =============================================================================
 // TYPE GENERATION AND REGISTRATION
@@ -179,7 +179,7 @@ std::vector<uint8_t> spacetimedb_generate_type() {
     struct RowType##__TableHandle { \
         SpacetimeDb::TableOps<RowType> ops; \
         \
-        RowType##__TableHandle() : ops(spacetimedb::internal::get_table_id(table_name), table_name) {} \
+        RowType##__TableHandle() : ops(SpacetimeDb::internal::get_table_id(table_name), table_name) {} \
         \
         uint64_t count() const { return ops.count(); } \
         SpacetimeDb::TableIterator<RowType> iter() const { return ops.iter(); } \
@@ -236,39 +236,39 @@ namespace SpacetimeDb {
 
 #define SPACETIMEDB_REDUCER_CALL_2(name, ctx, args, args_len, type1, name1) \
     { \
-        auto arg_tuple = spacetimedb::ReducerArgumentDeserializer<type1>::deserialize(args, args_len); \
+        auto arg_tuple = SpacetimeDb::ReducerArgumentDeserializer<type1>::deserialize(args, args_len); \
         name(ctx, std::get<0>(arg_tuple)); \
     }
 
 #define SPACETIMEDB_REDUCER_CALL_4(name, ctx, args, args_len, type1, name1, type2, name2) \
     { \
-        auto arg_tuple = spacetimedb::ReducerArgumentDeserializer<type1, type2>::deserialize(args, args_len); \
+        auto arg_tuple = SpacetimeDb::ReducerArgumentDeserializer<type1, type2>::deserialize(args, args_len); \
         name(ctx, std::get<0>(arg_tuple), std::get<1>(arg_tuple)); \
     }
 
 #define SPACETIMEDB_REDUCER_CALL_6(name, ctx, args, args_len, type1, name1, type2, name2, type3, name3) \
     { \
-        auto arg_tuple = spacetimedb::ReducerArgumentDeserializer<type1, type2, type3>::deserialize(args, args_len); \
+        auto arg_tuple = SpacetimeDb::ReducerArgumentDeserializer<type1, type2, type3>::deserialize(args, args_len); \
         name(ctx, std::get<0>(arg_tuple), std::get<1>(arg_tuple), std::get<2>(arg_tuple)); \
     }
 
 #define SPACETIMEDB_REDUCER_CALL_8(name, ctx, args, args_len, type1, name1, type2, name2, type3, name3, type4, name4) \
     { \
-        auto arg_tuple = spacetimedb::ReducerArgumentDeserializer<type1, type2, type3, type4>::deserialize(args, args_len); \
+        auto arg_tuple = SpacetimeDb::ReducerArgumentDeserializer<type1, type2, type3, type4>::deserialize(args, args_len); \
         name(ctx, std::get<0>(arg_tuple), std::get<1>(arg_tuple), std::get<2>(arg_tuple), std::get<3>(arg_tuple)); \
     }
 
 // Enhanced reducer macro with ReducerKind support
 // Usage: SPACETIMEDB_REDUCER(my_reducer, UserDefined, ctx, int arg1, std::string arg2)
 #define SPACETIMEDB_REDUCER(name, kind, ctx_param, ...) \
-    void name(spacetimedb::ReducerContext& ctx_param, ##__VA_ARGS__); \
+    void name(SpacetimeDb::ReducerContext& ctx_param, ##__VA_ARGS__); \
     namespace { \
         SpacetimeDb::Internal::FFI::Errno name##_wrapper( \
             SpacetimeDb::library::ReducerContext ctx, \
             const uint8_t* args, size_t args_len \
         ) { \
             try { \
-                spacetimedb::ReducerContext sctx(ctx); \
+                SpacetimeDb::ReducerContext sctx(ctx); \
                 SPACETIMEDB_REDUCER_CALL_##SPACETIMEDB_NARGS(__VA_ARGS__)(name, sctx, args, args_len, __VA_ARGS__) \
                 return SpacetimeDb::Internal::FFI::Errno::OK; \
             } catch (const std::exception& e) { \
@@ -287,7 +287,7 @@ namespace SpacetimeDb {
         }; \
         static Register_##name##_Reducer register_##name##_reducer_instance; \
     } \
-    void name(spacetimedb::ReducerContext& ctx_param, ##__VA_ARGS__)
+    void name(SpacetimeDb::ReducerContext& ctx_param, ##__VA_ARGS__)
 
 // Lifecycle reducer shortcuts - C# Attribute Equivalents
 #define SPACETIMEDB_INIT(name, ctx_param, ...) \
@@ -508,15 +508,15 @@ namespace SpacetimeDb {
 }
 
 // C++ attributes for field decoration
-#define SPACETIMEDB_PRIMARY_KEY [[spacetimedb::primary_key]]
-#define SPACETIMEDB_UNIQUE [[spacetimedb::unique]]
-#define SPACETIMEDB_AUTO_INC [[spacetimedb::auto_inc]]
-#define SPACETIMEDB_PRIMARY_KEY_AUTO [[spacetimedb::primary_key, spacetimedb::auto_inc]]
-#define SPACETIMEDB_INDEX [[spacetimedb::index]]
+#define SPACETIMEDB_PRIMARY_KEY [[SpacetimeDb::primary_key]]
+#define SPACETIMEDB_UNIQUE [[SpacetimeDb::unique]]
+#define SPACETIMEDB_AUTO_INC [[SpacetimeDb::auto_inc]]
+#define SPACETIMEDB_PRIMARY_KEY_AUTO [[SpacetimeDb::primary_key, SpacetimeDb::auto_inc]]
+#define SPACETIMEDB_INDEX [[SpacetimeDb::index]]
 
 // Type attributes
-#define SPACETIMEDB_DATA_CONTRACT [[spacetimedb::data_contract]]
-#define SPACETIMEDB_DATA_MEMBER(name) [[spacetimedb::data_member(#name)]]
+#define SPACETIMEDB_DATA_CONTRACT [[SpacetimeDb::data_contract]]
+#define SPACETIMEDB_DATA_MEMBER(name) [[SpacetimeDb::data_member(#name)]]
 
 // Field registration with attributes
 #define SPACETIMEDB_FIELD(struct_name, field_name, attrs) \
@@ -530,7 +530,7 @@ namespace SpacetimeDb {
     }
 
 // Rename attribute
-#define SPACETIMEDB_RENAME(new_name) [[spacetimedb::rename(new_name)]]
+#define SPACETIMEDB_RENAME(new_name) [[SpacetimeDb::rename(new_name)]]
 
 // =============================================================================
 // VISIBILITY FILTER MACRO
@@ -582,13 +582,13 @@ namespace SpacetimeDb {
     namespace { \
         struct Register_##table_name##_##policy_name##_RLS { \
             Register_##table_name##_##policy_name##_RLS() { \
-                if (!spacetimedb::validate_sql_condition(condition)) { \
+                if (!SpacetimeDb::validate_sql_condition(condition)) { \
                     static_assert(false, "Invalid SQL condition in RLS policy"); \
                 } \
-                spacetimedb::RlsPolicyRegistry::instance().register_policy( \
+                SpacetimeDb::RlsPolicyRegistry::instance().register_policy( \
                     #table_name, \
                     #policy_name, \
-                    spacetimedb::RlsOperation::operation, \
+                    SpacetimeDb::RlsOperation::operation, \
                     condition \
                 ); \
             } \

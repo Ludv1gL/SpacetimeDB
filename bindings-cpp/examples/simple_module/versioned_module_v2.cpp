@@ -63,7 +63,7 @@ SPACETIMEDB_TABLE(UserProfile, user_profiles, true)
 // Define migration from v1 to v2
 DEFINE_MIGRATION(MigrateV1ToV2, 1, 0, 0, 2, 0, 0)
 
-void MigrateV1ToV2::up(spacetimedb::MigrationContext& ctx) {
+void MigrateV1ToV2::up(SpacetimeDb::MigrationContext& ctx) {
     ctx.log_info("Starting migration from v1.0.0 to v2.0.0");
     
     // Step 1: Add new columns to users table
@@ -84,7 +84,7 @@ void MigrateV1ToV2::up(spacetimedb::MigrationContext& ctx) {
     ctx.log_info("Migration completed successfully");
 }
 
-void MigrateV1ToV2::down(spacetimedb::MigrationContext& ctx) {
+void MigrateV1ToV2::down(SpacetimeDb::MigrationContext& ctx) {
     ctx.log_info("Rolling back migration from v2.0.0 to v1.0.0");
     
     // Remove user_profiles table
@@ -102,13 +102,13 @@ REGISTER_MIGRATION(MigrateV1ToV2)
 
 // Module state
 struct ModuleState {
-    static spacetimedb::ModuleVersionManager version_manager;
+    static SpacetimeDb::ModuleVersionManager version_manager;
 };
 
-spacetimedb::ModuleVersionManager ModuleState::version_manager(MODULE_METADATA);
+SpacetimeDb::ModuleVersionManager ModuleState::version_manager(MODULE_METADATA);
 
 // Enhanced reducers for v2
-SPACETIMEDB_REDUCER(create_user, spacetimedb::ReducerContext ctx, 
+SPACETIMEDB_REDUCER(create_user, SpacetimeDb::ReducerContext ctx, 
                    std::string username, std::string email, std::string display_name) {
     static uint64_t next_id = 1;
     uint64_t now = static_cast<uint64_t>(std::time(nullptr));
@@ -135,10 +135,10 @@ SPACETIMEDB_REDUCER(create_user, spacetimedb::ReducerContext ctx,
     
     ctx.db.table<UserProfile>("user_profiles").insert(profile);
     
-    spacetimedb::log("Created user with profile: " + username);
+    SpacetimeDb::log("Created user with profile: " + username);
 }
 
-SPACETIMEDB_REDUCER(update_profile, spacetimedb::ReducerContext ctx,
+SPACETIMEDB_REDUCER(update_profile, SpacetimeDb::ReducerContext ctx,
                    uint64_t user_id, 
                    std::optional<std::string> bio,
                    std::optional<std::string> avatar_url,
@@ -146,62 +146,62 @@ SPACETIMEDB_REDUCER(update_profile, spacetimedb::ReducerContext ctx,
     auto profiles = ctx.db.table<UserProfile>("user_profiles");
     
     // Update profile (would need actual update API)
-    spacetimedb::log("Updating profile for user: " + std::to_string(user_id));
+    SpacetimeDb::log("Updating profile for user: " + std::to_string(user_id));
     
     // Also update user's updated_at timestamp
     auto users = ctx.db.table<User>("users");
     // Update user timestamp
 }
 
-SPACETIMEDB_REDUCER(add_social_link, spacetimedb::ReducerContext ctx,
+SPACETIMEDB_REDUCER(add_social_link, SpacetimeDb::ReducerContext ctx,
                    uint64_t user_id, std::string platform, std::string url) {
     auto profiles = ctx.db.table<UserProfile>("user_profiles");
     
     // Add social link to profile
-    spacetimedb::log("Adding social link for user: " + std::to_string(user_id));
+    SpacetimeDb::log("Adding social link for user: " + std::to_string(user_id));
 }
 
 // Version management reducers
-SPACETIMEDB_REDUCER(get_module_info, spacetimedb::ReducerContext ctx) {
+SPACETIMEDB_REDUCER(get_module_info, SpacetimeDb::ReducerContext ctx) {
     auto& metadata = ModuleState::version_manager.metadata();
     
-    spacetimedb::log("Module: " + metadata.name);
-    spacetimedb::log("Version: " + metadata.version.to_string());
-    spacetimedb::log("Author: " + metadata.author);
-    spacetimedb::log("Description: " + metadata.description);
+    SpacetimeDb::log("Module: " + metadata.name);
+    SpacetimeDb::log("Version: " + metadata.version.to_string());
+    SpacetimeDb::log("Author: " + metadata.author);
+    SpacetimeDb::log("Description: " + metadata.description);
 }
 
 // Migration execution reducer
-SPACETIMEDB_REDUCER(__migrate__, spacetimedb::ReducerContext ctx,
+SPACETIMEDB_REDUCER(__migrate__, SpacetimeDb::ReducerContext ctx,
                    std::string from_version_str, std::string to_version_str) {
-    auto from_version = spacetimedb::ModuleVersion::parse(from_version_str);
-    auto to_version = spacetimedb::ModuleVersion::parse(to_version_str);
+    auto from_version = SpacetimeDb::ModuleVersion::parse(from_version_str);
+    auto to_version = SpacetimeDb::ModuleVersion::parse(to_version_str);
     
-    spacetimedb::log("Migrating from " + from_version_str + " to " + to_version_str);
+    SpacetimeDb::log("Migrating from " + from_version_str + " to " + to_version_str);
     
     // Get migration path
-    auto& registry = spacetimedb::MigrationRegistry::instance();
+    auto& registry = SpacetimeDb::MigrationRegistry::instance();
     auto migrations = registry.find_migration_path(from_version, to_version);
     
     if (!migrations.has_value()) {
-        spacetimedb::log("No migration path found!");
+        SpacetimeDb::log("No migration path found!");
         return;
     }
     
     // Execute migrations
-    spacetimedb::MigrationContext migration_ctx(&ctx, from_version, to_version);
+    SpacetimeDb::MigrationContext migration_ctx(&ctx, from_version, to_version);
     
     for (auto* migration : migrations.value()) {
-        spacetimedb::log("Executing: " + migration->description());
+        SpacetimeDb::log("Executing: " + migration->description());
         migration->up(migration_ctx);
     }
     
-    spacetimedb::log("Migration completed successfully");
+    SpacetimeDb::log("Migration completed successfully");
 }
 
 // Module initialization
-SPACETIMEDB_REDUCER(__init__, spacetimedb::ReducerContext ctx) {
-    spacetimedb::log("Initializing UserManagement module v2.0.0");
+SPACETIMEDB_REDUCER(__init__, SpacetimeDb::ReducerContext ctx) {
+    SpacetimeDb::log("Initializing UserManagement module v2.0.0");
     
     // Check if this is an upgrade
     // In practice, would check stored version in database

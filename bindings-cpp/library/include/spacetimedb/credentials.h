@@ -8,7 +8,7 @@
 #include <vector>
 #include "builtin_reducers.h" // For Identity class
 
-namespace spacetimedb {
+namespace SpacetimeDb {
 
 // Extension methods for Identity class (defined in builtin_reducers.h)
 // These are implemented in credentials.cpp
@@ -104,6 +104,6 @@ inline Identity get_module_identity() {
     return Identity(bytes);
 }
 
-} // namespace spacetimedb
+} // namespace SpacetimeDb
 
 #endif // SPACETIMEDB_LIBRARY_CREDENTIALS_H

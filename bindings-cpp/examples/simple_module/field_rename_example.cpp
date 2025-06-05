@@ -1,7 +1,7 @@
 #include <spacetimedb/spacetimedb.h>
 #include <spacetimedb/spacetimedb_autogen.h>
 
-using namespace spacetimedb;
+using namespace SpacetimeDb;
 
 // Example struct with renamed fields
 struct UserProfile {
@@ -43,16 +43,16 @@ SPACETIMEDB_REDUCER(create_user_profile, UserDefined, ctx,
 // This would require C++ attribute support in the compiler
 /*
 struct ModernUserProfile {
-    [[spacetimedb::primary_key, spacetimedb::auto_inc]]
+    [[SpacetimeDb::primary_key, SpacetimeDb::auto_inc]]
     uint32_t id;
     
-    [[spacetimedb::rename("user_name"), spacetimedb::unique]]
+    [[SpacetimeDb::rename("user_name"), SpacetimeDb::unique]]
     std::string username;
     
-    [[spacetimedb::rename("email"), spacetimedb::index]]
+    [[SpacetimeDb::rename("email"), SpacetimeDb::index]]
     std::string emailAddress;
     
-    [[spacetimedb::rename("created_timestamp")]]
+    [[SpacetimeDb::rename("created_timestamp")]]
     uint64_t createdAt;
 };
 */

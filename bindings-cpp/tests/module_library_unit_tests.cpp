@@ -289,8 +289,8 @@ void test_sdk_runtime_wrappers() {
     }
 
     SpacetimeDB::Test::NestedData row_to_insert = {222, "Insert SDK Unit"};
-    // Note: spacetimedb::sdk::table_insert is in spacetimedb::sdk namespace
-    bool insert_success = spacetimedb::sdk::table_insert("MyNestedTable", row_to_insert);
+    // Note: SpacetimeDb::sdk::table_insert is in SpacetimeDb::sdk namespace
+    bool insert_success = SpacetimeDb::sdk::table_insert("MyNestedTable", row_to_insert);
     ASSERT_TRUE(insert_success, "table_insert should return true on stub success.");
     ASSERT_FALSE(g_host_table_ops_log.empty(), "table_insert should log a host table op.");
     if (!g_host_table_ops_log.empty()) {
@@ -298,7 +298,7 @@ void test_sdk_runtime_wrappers() {
     }
 
     std::string pk_to_delete = "key_to_delete_unit";
-    bool delete_success = spacetimedb::sdk::table_delete_by_pk<std::string>("AnotherTableUnit", pk_to_delete);
+    bool delete_success = SpacetimeDb::sdk::table_delete_by_pk<std::string>("AnotherTableUnit", pk_to_delete);
     ASSERT_TRUE(delete_success, "table_delete_by_pk should return true on stub success.");
     ASSERT_FALSE(g_host_table_ops_log.empty(), "table_delete_by_pk should log a host table op.");
      if (g_host_table_ops_log.size() >=2 ) {

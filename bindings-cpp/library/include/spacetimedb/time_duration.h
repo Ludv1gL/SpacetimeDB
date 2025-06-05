@@ -5,7 +5,7 @@
 #include <cstdint>
 #include <chrono>
 
-namespace spacetimedb {
+namespace SpacetimeDb {
 
 /**
  * Represents a duration of time with microsecond precision.
@@ -111,10 +111,10 @@ namespace time_literals {
     }
 }
 
-} // namespace spacetimedb
+} // namespace SpacetimeDb
 
 // Register TimeDuration for type registration
-namespace spacetimedb {
+namespace SpacetimeDb {
 namespace detail {
 
 template<>
@@ -126,4 +126,4 @@ struct TypeRegistrar<TimeDuration> {
 };
 
 } // namespace detail
-} // namespace spacetimedb
+} // namespace SpacetimeDb

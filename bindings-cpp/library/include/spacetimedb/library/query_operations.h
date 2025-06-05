@@ -8,7 +8,7 @@
 #include <optional>
 #include <functional>
 
-namespace spacetimedb {
+namespace SpacetimeDb {
 
 // Forward declarations
 using TableId = uint32_t;
@@ -395,6 +395,6 @@ namespace query_utils {
     }
 }
 
-} // namespace spacetimedb
+} // namespace SpacetimeDb
 
 #endif // SPACETIMEDB_LIBRARY_QUERY_OPERATIONS_H

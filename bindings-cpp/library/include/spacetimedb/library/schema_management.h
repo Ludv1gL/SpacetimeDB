@@ -9,7 +9,7 @@
 #include <memory>
 #include "spacetimedb/bsatn/bsatn.h"
 
-namespace spacetimedb {
+namespace SpacetimeDb {
 
 // Forward declaration for index definitions
 struct RawIndexDefV9 {
@@ -290,19 +290,19 @@ public:
 
 // Mark field as auto-increment
 #define SPACETIMEDB_AUTOINC(field_type, field_name) \
-    static_assert(spacetimedb::validate_autoinc_field<field_type>(), \
+    static_assert(SpacetimeDb::validate_autoinc_field<field_type>(), \
                   "AutoInc field " #field_name " must be integer type"); \
     static constexpr auto _autoinc_##field_name = true;
 
 // Mark field as unique
 #define SPACETIMEDB_UNIQUE(field_type, field_name) \
-    static_assert(spacetimedb::validate_unique_field<field_type>(), \
+    static_assert(SpacetimeDb::validate_unique_field<field_type>(), \
                   "Unique field " #field_name " must be equatable type"); \
     static constexpr auto _unique_##field_name = true;
 
 // Mark field as primary key
 #define SPACETIMEDB_PRIMARY_KEY(field_type, field_name) \
-    static_assert(spacetimedb::validate_primary_key_field<field_type>(), \
+    static_assert(SpacetimeDb::validate_primary_key_field<field_type>(), \
                   "Primary key field " #field_name " must be equatable type"); \
     static constexpr auto _primary_key_##field_name = true;
 
@@ -384,6 +384,6 @@ namespace schema_utils {
     }
 }
 
-} // namespace spacetimedb
+} // namespace SpacetimeDb
 
 #endif // SPACETIMEDB_LIBRARY_SCHEMA_MANAGEMENT_H

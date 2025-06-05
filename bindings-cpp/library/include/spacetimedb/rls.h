@@ -5,7 +5,7 @@
 #include <optional>
 #include "bsatn/writer.h"
 
-namespace spacetimedb {
+namespace SpacetimeDb {
 
 // RLS operation types
 enum class RlsOperation : uint8_t {
@@ -153,4 +153,4 @@ inline std::string or_conditions(const std::vector<std::string>& conditions) {
 
 } // namespace rls
 
-} // namespace spacetimedb
+} // namespace SpacetimeDb

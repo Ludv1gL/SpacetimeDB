@@ -93,9 +93,9 @@ struct EveryPrimitiveStruct {
     float n;
     double o;
     std::string p;
-    spacetimedb::Identity q;
-    spacetimedb::ConnectionId r;
-    spacetimedb::Timestamp s;
+    SpacetimeDb::Identity q;
+    SpacetimeDb::ConnectionId r;
+    SpacetimeDb::Timestamp s;
     // TimeDuration would need to be defined
     
     static void spacetimedb_serialize(std::vector<uint8_t>& buffer, const EveryPrimitiveStruct& value) {
@@ -181,7 +181,7 @@ DEFINE_SINGLE_VALUE_TABLE(OneString, std::string, s)
 
 // Special types need custom handling
 struct OneIdentity {
-    spacetimedb::Identity i;
+    SpacetimeDb::Identity i;
     
     static void spacetimedb_serialize(std::vector<uint8_t>& buffer, const OneIdentity& value) {
         buffer.insert(buffer.end(), value.i.data, value.i.data + 32);
@@ -190,7 +190,7 @@ struct OneIdentity {
 SPACETIMEDB_TABLE(OneIdentity, OneIdentity_table, true)
 
 struct OneConnectionId {
-    spacetimedb::ConnectionId a;
+    SpacetimeDb::ConnectionId a;
     
     static void spacetimedb_serialize(std::vector<uint8_t>& buffer, const OneConnectionId& value) {
         for (int i = 0; i < 8; ++i) {
@@ -204,7 +204,7 @@ struct OneConnectionId {
 SPACETIMEDB_TABLE(OneConnectionId, OneConnectionId_table, true)
 
 struct OneTimestamp {
-    spacetimedb::Timestamp t;
+    SpacetimeDb::Timestamp t;
     
     static void spacetimedb_serialize(std::vector<uint8_t>& buffer, const OneTimestamp& value) {
         for (int i = 0; i < 8; ++i) {
@@ -291,7 +291,7 @@ T get_test_value() {
 
 // Macro to define insert reducers
 #define DEFINE_INSERT_REDUCER(table_type, reducer_name, field_type, field_name) \
-SPACETIMEDB_REDUCER(reducer_name, spacetimedb::ReducerContext ctx) { \
+SPACETIMEDB_REDUCER(reducer_name, SpacetimeDb::ReducerContext ctx) { \
     /* For now, use test values since we don't have arg parsing yet */ \
     table_type row; \
     row.field_name = get_test_value<field_type>(); \
@@ -327,7 +327,7 @@ DEFINE_INSERT_REDUCER(OneF64, insert_one_f64, double, f)
 DEFINE_INSERT_REDUCER(OneString, insert_one_string, std::string, s)
 
 // Special reducers for Identity and ConnectionId
-SPACETIMEDB_REDUCER(insert_caller_one_identity, spacetimedb::ReducerContext ctx) {
+SPACETIMEDB_REDUCER(insert_caller_one_identity, SpacetimeDb::ReducerContext ctx) {
     OneIdentity row{ctx.sender};
     
     auto table_id = ctx.db->table<OneIdentity>("OneIdentity_table").get_table_id();
@@ -344,7 +344,7 @@ SPACETIMEDB_REDUCER(insert_caller_one_identity, spacetimedb::ReducerContext ctx)
     }
 }
 
-SPACETIMEDB_REDUCER(insert_caller_one_connection_id, spacetimedb::ReducerContext ctx) {
+SPACETIMEDB_REDUCER(insert_caller_one_connection_id, SpacetimeDb::ReducerContext ctx) {
     if (ctx.connection_id.has_value()) {
         OneConnectionId row{ctx.connection_id.value()};
         
@@ -365,7 +365,7 @@ SPACETIMEDB_REDUCER(insert_caller_one_connection_id, spacetimedb::ReducerContext
     }
 }
 
-SPACETIMEDB_REDUCER(insert_call_timestamp, spacetimedb::ReducerContext ctx) {
+SPACETIMEDB_REDUCER(insert_call_timestamp, SpacetimeDb::ReducerContext ctx) {
     OneTimestamp row{ctx.timestamp};
     
     auto table_id = ctx.db->table<OneTimestamp>("OneTimestamp_table").get_table_id();
@@ -383,7 +383,7 @@ SPACETIMEDB_REDUCER(insert_call_timestamp, spacetimedb::ReducerContext ctx) {
 }
 
 // No-op reducer for testing
-SPACETIMEDB_REDUCER(no_op_succeeds, spacetimedb::ReducerContext ctx) {
+SPACETIMEDB_REDUCER(no_op_succeeds, SpacetimeDb::ReducerContext ctx) {
     LOG_INFO("No-op reducer succeeded");
 }
 
@@ -406,7 +406,7 @@ SPACETIMEDB_INIT(init) {
 // Build the complete module definition with all types and tables
 std::vector<uint8_t> build_module_definition() {
     std::vector<uint8_t> module_bytes;
-    spacetimedb::BsatnWriter writer(module_bytes);
+    SpacetimeDb::BsatnWriter writer(module_bytes);
     
     // RawModuleDef::V9 tag
     writer.write_u8(1);
@@ -496,19 +496,19 @@ int16_t __call_reducer__(uint32_t id,
         auto sender_identity = identity_from_params(sender_0, sender_1, sender_2, sender_3);
         
         // Construct connection ID if valid
-        std::optional<spacetimedb::ConnectionId> conn_id;
+        std::optional<SpacetimeDb::ConnectionId> conn_id;
         if (conn_id_0 != 0 || conn_id_1 != 0) {
-            conn_id = spacetimedb::ConnectionId(conn_id_0, conn_id_1);
+            conn_id = SpacetimeDb::ConnectionId(conn_id_0, conn_id_1);
         }
         
         // Create reducer context
-        spacetimedb::ReducerContext ctx(spacetimedb::get_module_db(), 
+        SpacetimeDb::ReducerContext ctx(SpacetimeDb::get_module_db(), 
                                        sender_identity, 
                                        timestamp, 
                                        conn_id);
         
         // Dispatch to reducers
-        if (!spacetimedb::ReducerDispatcher::instance().call_reducer(id, ctx, args)) {
+        if (!SpacetimeDb::ReducerDispatcher::instance().call_reducer(id, ctx, args)) {
             return 1; // Unknown reducer
         }
         

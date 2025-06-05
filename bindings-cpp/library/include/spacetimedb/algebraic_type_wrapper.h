@@ -7,7 +7,7 @@
 
 #include "internal/autogen/AlgebraicType.g.h"
 
-namespace spacetimedb {
+namespace SpacetimeDb {
 
 // Note: AlgebraicType types are already defined in bsatn/algebraic_type.h
 // This file just includes the internal/autogen types that might be needed
@@ -15,4 +15,4 @@ namespace spacetimedb {
 // Import additional types that might not be in bsatn
 using AlgebraicTypeRef = SpacetimeDb::Internal::AlgebraicTypeRef;
 
-} // namespace spacetimedb
+} // namespace SpacetimeDb

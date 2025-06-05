@@ -58,12 +58,12 @@ protected:
 };
 
 // Forward declare the enhanced context
-namespace spacetimedb {
+namespace SpacetimeDb {
     struct ReducerContext;
 }
 
 // Reducer function type - matches Rust pattern
-using ReducerFn = std::function<FFI::Errno(spacetimedb::ReducerContext, const uint8_t*, size_t)>;
+using ReducerFn = std::function<FFI::Errno(SpacetimeDb::ReducerContext, const uint8_t*, size_t)>;
 
 // Module class - manages module definition and registration
 class Module {

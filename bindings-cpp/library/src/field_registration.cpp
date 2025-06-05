@@ -1,6 +1,6 @@
 #include "spacetimedb/field_registration.h"
 
-namespace spacetimedb {
+namespace SpacetimeDb {
 
 // Serialization implementations
 template<>
@@ -95,4 +95,4 @@ template void serialize_value<int64_t>(std::vector<uint8_t>&, const int64_t&);
 template void serialize_value<float>(std::vector<uint8_t>&, const float&);
 template void serialize_value<double>(std::vector<uint8_t>&, const double&);
 
-} // namespace spacetimedb
+} // namespace SpacetimeDb

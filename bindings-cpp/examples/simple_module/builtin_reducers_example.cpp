@@ -11,12 +11,12 @@
 
 // Define tables to track connections
 struct Connection {
-    spacetimedb::Identity identity;
+    SpacetimeDb::Identity identity;
     uint64_t connect_time;
 };
 
 struct Disconnection {
-    spacetimedb::Identity identity;
+    SpacetimeDb::Identity identity;
     uint64_t disconnect_time;
 };
 
@@ -27,12 +27,12 @@ struct InitLog {
 
 // Register fields for complex types
 SPACETIMEDB_REGISTER_FIELDS(Connection,
-    SPACETIMEDB_FIELD(Connection, identity, spacetimedb::Identity);
+    SPACETIMEDB_FIELD(Connection, identity, SpacetimeDb::Identity);
     SPACETIMEDB_FIELD(Connection, connect_time, uint64_t);
 )
 
 SPACETIMEDB_REGISTER_FIELDS(Disconnection,
-    SPACETIMEDB_FIELD(Disconnection, identity, spacetimedb::Identity);
+    SPACETIMEDB_FIELD(Disconnection, identity, SpacetimeDb::Identity);
     SPACETIMEDB_FIELD(Disconnection, disconnect_time, uint64_t);
 )
 
@@ -86,7 +86,7 @@ SPACETIMEDB_CLIENT_DISCONNECTED(on_client_disconnect) {
 }
 
 // Regular reducer to query connection history
-SPACETIMEDB_REDUCER(get_connection_count, spacetimedb::ReducerContext ctx) {
+SPACETIMEDB_REDUCER(get_connection_count, SpacetimeDb::ReducerContext ctx) {
     auto connections_table = ctx.db.table<Connection>("connections");
     auto disconnections_table = ctx.db.table<Disconnection>("disconnections");
     
@@ -99,7 +99,7 @@ SPACETIMEDB_REDUCER(get_connection_count, spacetimedb::ReducerContext ctx) {
 }
 
 // Regular reducer to check if a specific client is connected
-SPACETIMEDB_REDUCER(is_client_connected, spacetimedb::ReducerContext ctx, std::string identity_hex) {
+SPACETIMEDB_REDUCER(is_client_connected, SpacetimeDb::ReducerContext ctx, std::string identity_hex) {
     // In a real implementation, you would:
     // 1. Parse the hex string to Identity
     // 2. Check if they're in connections but not in disconnections

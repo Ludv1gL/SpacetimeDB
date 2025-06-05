@@ -1,98 +1,65 @@
-# C++ SDK Test Modules
+# SDK Test C++ Module
 
-This directory contains comprehensive test modules for the SpacetimeDB C++ SDK, providing feature parity with the Rust and C# test modules.
-
-## Modules
-
-### sdk-test-cpp
-The main comprehensive test module that exercises all C++ SDK features:
-
-- **Type System**: Tests all primitive types, vectors, optionals, and custom structs
-- **Tables**: Basic tables, constraints, indexes, and RLS policies
-- **Reducers**: Various argument patterns, lifecycle reducers, scheduled reducers
-- **BSATN Serialization**: Automatic type registration and serialization
-- **Field Renaming**: Database column mapping
-- **Row Level Security**: Policy enforcement
-
-### sdk-test-connect-disconnect-cpp
-Focused test module for connection lifecycle events:
-
-- Client connection tracking
-- Disconnection handling
-- Event logging and querying
-- Connection status management
-
-## Building
-
-To build these modules:
-
-```bash
-cd modules/sdk-test-cpp
-mkdir build && cd build
-cmake .. -DCMAKE_SYSTEM_NAME=WASI -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++
-make
-```
-
-The output will be a WASM module that can be deployed to SpacetimeDB.
+This module is a comprehensive test suite for the SpacetimeDB C++ Module Library. It replicates the functionality of `sdk-test` (Rust) and `sdk-test-cs` (C#) using the C++ Module Library.
 
 ## Features Tested
 
-### Type System
-- All primitive types (u8-u64, i8-i64, bool, f32, f64)
-- 128/256-bit integer placeholders
-- Strings and byte arrays
-- Identity, ConnectionId, Timestamp, Duration
+### Data Types
+- All primitive types (u8-u256, i8-i256, bool, f32, f64, string)
+- SpacetimeDB special types (Identity, ConnectionId, Timestamp, TimeDuration)
 - Vectors of all types
 - Optional types
-- Custom structs with field registration
+- Custom structs (unit, simple, complex)
+- Enums (simple and with payloads)
 
 ### Table Features
-- Table registration with public/private access
-- Primary keys and auto-increment
-- Unique constraints
-- Check constraints
-- Single and composite indexes
-- Row Level Security policies
+- Basic tables
+- Tables with unique constraints
+- Tables with primary keys
+- Tables with indexes (btree)
+- Auto-increment fields
 - Scheduled tables
 
-### Reducer Features
-- No-argument reducers
-- Single and multiple arguments
-- Complex type arguments (vectors, optionals)
-- Struct arguments
-- Lifecycle reducers (init, connect, disconnect)
-- Scheduled reducers
-- Full BSATN argument deserialization
+### Operations
+- Insert operations for all types
+- Update operations for unique/primary key tables
+- Delete operations
+- Batch operations
+- Complex queries
 
 ### Advanced Features
-- Field renaming (C++ name vs database column)
-- Module metadata and versioning
-- Comprehensive logging
-- Transaction-like operations
-- Query and filter operations
+- Client visibility filters
+- Scheduled reducers
+- Connection/identity tracking
+- Timestamp tracking
 
-## Comparison with Rust/C# Tests
+## Building
 
-These C++ test modules provide equivalent functionality to:
-- `modules/sdk-test` (Rust)
-- `modules/sdk-test-cs` (C#)
-- `modules/sdk-test-connect-disconnect` (Rust)
-- `modules/sdk-test-connect-disconnect-cs` (C#)
+### Prerequisites
+- Emscripten SDK
+- CMake 3.20+
+- C++20 compiler
 
-All language SDKs now have feature parity and can be tested with equivalent modules.
+### Build Steps
 
-## Running Tests
+```bash
+# Using the build script
+./build.sh
 
-1. Build the module
-2. Deploy to SpacetimeDB:
-   ```bash
-   spacetime deploy sdk-test-cpp
-   ```
-3. Run test clients or use the CLI to call reducers
-4. Verify all features work correctly
+# Or manually
+mkdir build && cd build
+emcmake cmake ..
+emmake make
+```
 
-## Notes
+The output WASM module will be at `build/sdk_test_cpp.wasm`.
 
-- The C++ SDK uses placeholders for 128/256-bit integers until native support is added
-- Enum types in C++ are simulated with tagged unions due to language limitations
-- All features match the functionality of Rust and C# SDKs
+## Module Structure
+
+- `src/lib.cpp` - Main module implementation
+- `CMakeLists.txt` - Build configuration
+- `build.sh` - Convenience build script
+
+## Testing
+
+This module is designed to be used with the SpacetimeDB SDK test suite to verify that the C++ Module Library provides the same functionality as the Rust and C# implementations.

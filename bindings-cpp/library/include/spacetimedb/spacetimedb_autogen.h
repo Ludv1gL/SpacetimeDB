@@ -15,7 +15,7 @@
 #include <typeinfo>
 #include <typeindex>
 
-namespace spacetimedb {
+namespace SpacetimeDb {
 
 // Table information for module definition
 struct TableInfo {
@@ -312,7 +312,7 @@ FieldInfo make_field(const std::string& name, FieldType T::*member_ptr) {
     };
 }
 
-} // namespace spacetimedb
+} // namespace SpacetimeDb
 
 // =============================================================================
 // ENHANCED REGISTRATION MACROS
@@ -323,8 +323,8 @@ FieldInfo make_field(const std::string& name, FieldType T::*member_ptr) {
     namespace { \
         struct type##_type_registrar { \
             type##_type_registrar() { \
-                std::vector<spacetimedb::FieldInfo> fields = { __VA_ARGS__ }; \
-                spacetimedb::AutogenModuleRegistry::instance().register_type( \
+                std::vector<SpacetimeDb::FieldInfo> fields = { __VA_ARGS__ }; \
+                SpacetimeDb::AutogenModuleRegistry::instance().register_type( \
                     std::type_index(typeid(type)), #type, fields); \
             } \
         }; \
@@ -333,25 +333,25 @@ FieldInfo make_field(const std::string& name, FieldType T::*member_ptr) {
 
 // Helper macro to define a field
 #define SPACETIMEDB_FIELD(type, field) \
-    spacetimedb::make_field<type>(#field, &type::field)
+    SpacetimeDb::make_field<type>(#field, &type::field)
 
 // Helper macro to define a field with renamed database column
 #define SPACETIMEDB_FIELD_RENAMED(type, field, db_name) \
-    spacetimedb::make_field<type>(db_name, &type::field)
+    SpacetimeDb::make_field<type>(db_name, &type::field)
 
 // Enhanced table registration that uses registered type
 #define SPACETIMEDB_TABLE_AUTO(type, name, is_public) \
     namespace { \
         struct type##_table_auto_registrar { \
             type##_table_auto_registrar() { \
-                spacetimedb::get_module_db()->register_table<type>(#name); \
-                spacetimedb::AutogenModuleRegistry::instance().register_table<type>(#name, is_public); \
+                SpacetimeDb::get_module_db()->register_table<type>(#name); \
+                SpacetimeDb::AutogenModuleRegistry::instance().register_table<type>(#name, is_public); \
             } \
         }; \
         static type##_table_auto_registrar type##_table_auto_reg_; \
     } \
     template<> \
-    struct spacetimedb::Serializer<type> { \
+    struct SpacetimeDb::Serializer<type> { \
         static void serialize(BsatnWriter& writer, const type& value) { \
             auto& registry = AutogenModuleRegistry::instance(); \
             std::type_index type_id(typeid(type)); \
@@ -361,7 +361,7 @@ FieldInfo make_field(const std::string& name, FieldType T::*member_ptr) {
     };
 
 // Serializer trait for automatic serialization
-namespace spacetimedb {
+namespace SpacetimeDb {
     template<typename T>
     struct Serializer {
         static void serialize(BsatnWriter& writer, const T& value) {

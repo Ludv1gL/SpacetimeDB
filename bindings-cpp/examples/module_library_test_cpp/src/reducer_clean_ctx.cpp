@@ -30,7 +30,7 @@
 
 #include <spacetimedb/spacetimedb.h>
 
-using namespace spacetimedb;
+using namespace SpacetimeDb;
 
 /**
  * Example table row type.

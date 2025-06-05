@@ -85,7 +85,7 @@ public:
 } // namespace SpacetimeDb
 
 // Legacy namespace support
-namespace spacetimedb {
+namespace SpacetimeDb {
     using Duration = SpacetimeDb::Duration;
     using ScheduleReducer = SpacetimeDb::ScheduleReducer;
 }

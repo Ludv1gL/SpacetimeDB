@@ -6,7 +6,7 @@
 #include <memory>
 #include <mutex>
 
-namespace spacetimedb {
+namespace SpacetimeDb {
 
 /**
  * @brief Table wrapper that performs constraint validation on operations.
@@ -262,6 +262,6 @@ auto composite_key(Field1 T::*field1, Field2 T::*field2) {
 
 } // namespace constraints
 
-} // namespace spacetimedb
+} // namespace SpacetimeDb
 
 #endif // SPACETIMEDB_VALIDATED_TABLE_H
