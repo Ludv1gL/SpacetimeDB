@@ -68,37 +68,39 @@ The primary way to build C++ modules is using the centralized CMakeLists.txt loc
 # Navigate to the module directory
 cd modules/sdk-test-cpp
 
-# Configure and build a specific module
-emcmake cmake -B build -DMODULE_NAME=lib_simple_table_test
+# Configure and build a module with library support (for std::string, std::vector, etc.)
+emcmake cmake -B build -DMODULE_SOURCE=src/my_module.cpp
 cmake --build build
 
-# The WASM file will be in build/lib_simple_table_test.wasm
+# Build without library (for modules with no std library dependencies)
+emcmake cmake -B build -DMODULE_SOURCE=src/my_module.cpp -DLINK_LIBRARY=OFF
+cmake --build build
 
-# Available modules:
-# - lib                      # Basic module
-# - lib_with_macros          # Module using SPACETIMEDB macros
-# - lib_empty_with_library   # Empty module with library linked
-# - lib_abi_only             # Minimal module with ABI only
-# - lib_simple_table_test    # Working example with table and reducer
-# - lib_minimal              # Minimal module implementation
-# - And more...
+# Specify custom output name
+emcmake cmake -B build -DMODULE_SOURCE=src/my_module.cpp -DOUTPUT_NAME=custom_name
+cmake --build build
 
 # To build for release (with optimizations):
-emcmake cmake -B build -DMODULE_NAME=lib_simple_table_test -DCMAKE_BUILD_TYPE=Release
+emcmake cmake -B build -DMODULE_SOURCE=src/my_module.cpp -DCMAKE_BUILD_TYPE=Release
 cmake --build build
 ```
 
 The CMake system automatically:
 - Finds the SpacetimeDB root directory regardless of where it's placed
 - Builds the module library once as a static library
-- Determines whether to link the module library based on module type
+- Links WASI shims when LINK_LIBRARY=ON (required for C++ stdlib)
 - Uses consistent WASM compilation flags
 - Disables memory growth to ensure compatibility
 
+#### Important: WASI Dependencies and C++ Standard Library
+- **If using std::string, std::vector, or other C++ stdlib features**: You MUST link with the SpacetimeDB module library (LINK_LIBRARY=ON, which is default)
+- **Without WASI shims**: You'll get errors like `unknown import: wasi_snapshot_preview1::fd_close`
+- **For minimal modules without stdlib**: Use LINK_LIBRARY=OFF
+
 #### Alternative: Direct Emscripten Compilation
-For quick tests or custom builds, you can compile directly:
+For quick tests or custom builds without C++ stdlib:
 ```bash
-# Basic compilation without library
+# Basic compilation without library (no std::string, std::vector, etc.)
 emcc src/lib.cpp -o module.wasm \
   -s STANDALONE_WASM=1 \
   -s EXPORTED_FUNCTIONS=['_malloc','_free'] \
@@ -113,6 +115,44 @@ emcc src/lib.cpp -o module.wasm \
   -I../../bindings-cpp/library/include \
   -std=c++20
 ```
+
+#### AlgebraicType Constants for Module Development
+When writing module schema definitions, use these type constants:
+```cpp
+// BSATN AlgebraicType tags
+enum {
+    TYPE_REF = 0,
+    TYPE_SUM = 1,
+    TYPE_PRODUCT = 2,
+    TYPE_ARRAY = 3,
+    TYPE_STRING = 4,
+    TYPE_BOOL = 5,
+    TYPE_I8 = 6,
+    TYPE_U8 = 7,
+    TYPE_I16 = 8,
+    TYPE_U16 = 9,
+    TYPE_I32 = 10,
+    TYPE_U32 = 11,
+    TYPE_I64 = 12,
+    TYPE_U64 = 13,
+    TYPE_I128 = 14,
+    TYPE_U128 = 15,
+    TYPE_I256 = 16,
+    TYPE_U256 = 17,
+    TYPE_F32 = 18,
+    TYPE_F64 = 19,
+};
+```
+
+#### Current State of C++ Macros
+- **SPACETIMEDB_TABLE**: Compiles but fails at runtime (missing algebraic_type implementation)
+- **SPACETIMEDB_REDUCER**: Does not compile (signature mismatch)
+- **Recommendation**: Use direct FFI approach until macros are fully implemented
+
+#### Working Module Examples
+- `lib_standalone_working.cpp` - Module with tables and reducers using library support
+- `lib_truly_standalone.cpp` - Module without any library dependencies
+- `lib_simple_table_test.cpp` - Minimal working example
 
 ### Rust Module Development
 ```bash
