@@ -7,6 +7,7 @@
 #include <optional>
 #include <memory>
 #include <type_traits>
+#include <spacetimedb/abi/spacetimedb_abi.h>  // For FFI function declarations
 
 namespace SpacetimeDb {
 
@@ -78,30 +79,7 @@ struct Range {
         : start(start_bound), end(end_bound) {}
 };
 
-/**
- * FFI declarations for index operations
- */
-extern "C" {
-    int32_t index_id_from_name(const uint8_t* name, uint32_t name_len, IndexId* out);
-    
-    int32_t datastore_index_scan_range_bsatn(
-        IndexId index_id, 
-        const uint8_t* prefix, uint32_t prefix_len, ColId prefix_elems,
-        const uint8_t* rstart, uint32_t rstart_len, 
-        const uint8_t* rend, uint32_t rend_len, 
-        RowIter* out);
-    
-    int32_t datastore_delete_by_index_scan_range_bsatn(
-        IndexId index_id,
-        const uint8_t* prefix, uint32_t prefix_len, ColId prefix_elems,
-        const uint8_t* rstart, uint32_t rstart_len,
-        const uint8_t* rend, uint32_t rend_len,
-        uint32_t* deleted_count);
-        
-    int32_t datastore_update_bsatn(
-        TableId table_id, IndexId index_id,
-        uint8_t* row, uint32_t* row_len);
-}
+// FFI functions are declared in spacetimedb_abi.h which is included above
 
 /**
  * Base class for all index types

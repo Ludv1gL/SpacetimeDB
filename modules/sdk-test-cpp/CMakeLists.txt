@@ -11,7 +11,7 @@ set(MODULE_LIBRARY_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../bindings-cpp/library")
 include_directories(${MODULE_LIBRARY_DIR}/include)
 
 # Add the main module source file
-add_executable(sdk-test-cpp src/lib.cpp)
+add_executable(sdk-test-cpp src/lib_minimal.cpp)
 
 # Link the Module Library
 file(GLOB_RECURSE MODULE_LIBRARY_SOURCES
@@ -21,6 +21,7 @@ file(GLOB_RECURSE MODULE_LIBRARY_SOURCES
 # Create a static library from Module Library sources
 add_library(spacetimedb_module_library STATIC ${MODULE_LIBRARY_SOURCES})
 target_include_directories(spacetimedb_module_library PUBLIC ${MODULE_LIBRARY_DIR}/include)
+target_compile_definitions(spacetimedb_module_library PUBLIC SPACETIMEDB_MODULE_LIBRARY)
 
 # Link the module library to our module
 target_link_libraries(sdk-test-cpp spacetimedb_module_library)
@@ -32,7 +33,7 @@ set_target_properties(sdk-test-cpp PROPERTIES OUTPUT_NAME "sdk_test_cpp")
 if(EMSCRIPTEN)
     set_target_properties(sdk-test-cpp PROPERTIES
         SUFFIX ".wasm"
-        COMPILE_FLAGS "-fno-exceptions"
-        LINK_FLAGS "-s STANDALONE_WASM=1 -s EXPORT_ALL=1 -s ERROR_ON_UNDEFINED_SYMBOLS=0 -s ALLOW_MEMORY_GROWTH=1"
+        COMPILE_FLAGS ""
+        LINK_FLAGS "-s STANDALONE_WASM=1 -s EXPORT_ALL=1 -s ERROR_ON_UNDEFINED_SYMBOLS=0 -s ALLOW_MEMORY_GROWTH=1 -fexceptions"
     )
 endif()

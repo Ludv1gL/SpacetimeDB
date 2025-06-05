@@ -101,8 +101,9 @@ public:
 };
 
 // Iterator for table rows - similar to Rust's TableIter
+// Implementation moved to avoid duplicate definition with library/table.h
 template<typename T>
-class TableIterator {
+class TableIteratorOps {
 private:
     Internal::FFI::RowIter handle_ = 0xFFFFFFFF;
     std::vector<uint8_t> buffer_;
@@ -142,12 +143,12 @@ private:
     }
     
 public:
-    explicit TableIterator(uint32_t table_id) {
+    explicit TableIteratorOps(uint32_t table_id) {
         Internal::FFI::datastore_table_scan_bsatn(table_id, &handle_);
         FetchNextBatch();
     }
     
-    ~TableIterator() {
+    ~TableIteratorOps() {
         if (handle_ != 0xFFFFFFFF) {
             Internal::FFI::row_iter_bsatn_close(handle_);
         }
@@ -172,11 +173,11 @@ public:
     
     // Range-for support
     class iterator {
-        TableIterator* parent_;
+        TableIteratorOps* parent_;
         std::optional<T> current_;
         
     public:
-        explicit iterator(TableIterator* parent) : parent_(parent) {
+        explicit iterator(TableIteratorOps* parent) : parent_(parent) {
             if (parent && parent->has_next()) {
                 current_ = parent->next();
             }

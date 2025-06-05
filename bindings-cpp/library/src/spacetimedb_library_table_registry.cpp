@@ -1,9 +1,8 @@
-#include <spacetimedb/library/spacetimedb_library_table_registry.h>
+#include "spacetimedb/table_registry.h"
 #include <map> // Ensure map is included for the definition
 // #include <mutex> // Not strictly needed for typical WASM single-thread, but good for general C++ static init
 
 namespace SpacetimeDb {
-namespace library {
 namespace registry {
 
 // Definition of the global table registry
@@ -52,5 +51,4 @@ uint32_t get_pk_column_index_by_cpp_type_name(const std::string& cpp_type_name_m
 }
 
 } // namespace registry
-} // namespace library
 } // namespace SpacetimeDb

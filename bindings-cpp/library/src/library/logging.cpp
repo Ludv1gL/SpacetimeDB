@@ -1,4 +1,4 @@
-#include "spacetimedb/library/logging.h"
+#include "spacetimedb/logger.h"
 #include "spacetimedb/abi/spacetimedb_abi.h" // For ABI functions
 #include <cstring>
 #include <filesystem>
@@ -36,23 +36,23 @@ void log(LogLevel level, const std::string& message) {
 }
 
 void log_error(const std::string& message) {
-    log(LogLevel::Error, message);
+    log(LogLevel::ERROR, message);
 }
 
 void log_warn(const std::string& message) {
-    log(LogLevel::Warn, message);
+    log(LogLevel::WARN, message);
 }
 
 void log_info(const std::string& message) {
-    log(LogLevel::Info, message);
+    log(LogLevel::INFO, message);
 }
 
 void log_debug(const std::string& message) {
-    log(LogLevel::Debug, message);
+    log(LogLevel::DEBUG, message);
 }
 
 void log_trace(const std::string& message) {
-    log(LogLevel::Trace, message);
+    log(LogLevel::TRACE, message);
 }
 
 // LogStopwatch implementation

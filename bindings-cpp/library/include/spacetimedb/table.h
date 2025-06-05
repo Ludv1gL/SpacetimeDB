@@ -1,7 +1,7 @@
 #ifndef SPACETIMEDB_LIBRARY_TABLE_H
 #define SPACETIMEDB_LIBRARY_TABLE_H
 
-#include <spacetimedb/library/spacetimedb_library_types.h>
+#include "spacetimedb/types.h"
 #include <spacetimedb/bsatn_all.h>
 #include <spacetimedb/abi/spacetimedb_abi.h> // For ABI function calls
 
@@ -12,7 +12,10 @@
 // #include <iostream>  // For temporary debugging if needed (remove for final)
 
 namespace SpacetimeDb {
-namespace library {
+
+// Type aliases for buffer handles from ABI
+using Buffer = uint32_t;
+using BufferIter = uint32_t;
 
 // Forward declare Table for TableIterator friending or use.
 template<typename T>
@@ -289,7 +292,6 @@ private:
     uint32_t table_id_;
 };
 
-} // namespace library
 } // namespace SpacetimeDb
 
 #endif // SPACETIMEDB_LIBRARY_TABLE_H

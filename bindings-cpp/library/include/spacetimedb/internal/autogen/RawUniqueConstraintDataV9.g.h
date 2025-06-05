@@ -11,6 +11,7 @@
 #include <optional>
 #include <memory>
 #include "spacetimedb/bsatn/bsatn.h"
+#include "spacetimedb/macros.h"
 
 namespace SpacetimeDb::Internal {
 
@@ -24,18 +25,14 @@ struct RawUniqueConstraintDataV9 {
         : columns(columns) {}
 
     // BSATN serialization support
-    void bsatn_serialize(SpacetimeDb::bsatn::Writer& writer) const;
-    void bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader);
+    void bsatn_serialize(::SpacetimeDb::bsatn::Writer& writer) const;
+    void bsatn_deserialize(::SpacetimeDb::bsatn::Reader& reader);
 
     // Static factory method for BSATN deserialization
-    static RawUniqueConstraintDataV9 from_bsatn(SpacetimeDb::bsatn::Reader& reader) {
+    static RawUniqueConstraintDataV9 from_bsatn(::SpacetimeDb::bsatn::Reader& reader) {
         RawUniqueConstraintDataV9 result;
         result.bsatn_deserialize(reader);
         return result;
     }
 };
 } // namespace SpacetimeDb::Internal
-#include "spacetimedb/macros.h"
-SPACETIMEDB_TYPE(RawUniqueConstraintDataV9)
-SPACETIMEDB_DATA_CONTRACT
-SPACETIMEDB_REGISTER_TYPE(RawUniqueConstraintDataV9)

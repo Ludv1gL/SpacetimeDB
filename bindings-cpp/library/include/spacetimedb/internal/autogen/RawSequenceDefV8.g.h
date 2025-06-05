@@ -11,6 +11,7 @@
 #include <optional>
 #include <memory>
 #include "spacetimedb/bsatn/bsatn.h"
+#include "spacetimedb/macros.h"
 
 namespace SpacetimeDb::Internal {
 
@@ -20,34 +21,30 @@ struct RawSequenceDefV8 {
     SPACETIMEDB_DATA_MEMBER("col_pos")
     uint16_t col_pos;
     SPACETIMEDB_DATA_MEMBER("increment")
-    spacetimedb::u128 increment;
+    SpacetimeDb::I128 increment;
     SPACETIMEDB_DATA_MEMBER("start")
-    std::optional<spacetimedb::u128> start;
+    std::optional<SpacetimeDb::I128> start;
     SPACETIMEDB_DATA_MEMBER("min_value")
-    std::optional<spacetimedb::u128> min_value;
+    std::optional<SpacetimeDb::I128> min_value;
     SPACETIMEDB_DATA_MEMBER("max_value")
-    std::optional<spacetimedb::u128> max_value;
+    std::optional<SpacetimeDb::I128> max_value;
     SPACETIMEDB_DATA_MEMBER("allocated")
-    spacetimedb::u128 allocated;
+    SpacetimeDb::I128 allocated;
 
     RawSequenceDefV8() = default;
 
-    RawSequenceDefV8(std::string sequence_name, uint16_t col_pos, spacetimedb::u128 increment, std::optional<spacetimedb::u128> start, std::optional<spacetimedb::u128> min_value, std::optional<spacetimedb::u128> max_value, spacetimedb::u128 allocated)
+    RawSequenceDefV8(std::string sequence_name, uint16_t col_pos, SpacetimeDb::I128 increment, std::optional<SpacetimeDb::I128> start, std::optional<SpacetimeDb::I128> min_value, std::optional<SpacetimeDb::I128> max_value, SpacetimeDb::I128 allocated)
         : sequence_name(sequence_name), col_pos(col_pos), increment(increment), start(start), min_value(min_value), max_value(max_value), allocated(allocated) {}
 
     // BSATN serialization support
-    void bsatn_serialize(SpacetimeDb::bsatn::Writer& writer) const;
-    void bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader);
+    void bsatn_serialize(::SpacetimeDb::bsatn::Writer& writer) const;
+    void bsatn_deserialize(::SpacetimeDb::bsatn::Reader& reader);
 
     // Static factory method for BSATN deserialization
-    static RawSequenceDefV8 from_bsatn(SpacetimeDb::bsatn::Reader& reader) {
+    static RawSequenceDefV8 from_bsatn(::SpacetimeDb::bsatn::Reader& reader) {
         RawSequenceDefV8 result;
         result.bsatn_deserialize(reader);
         return result;
     }
 };
 } // namespace SpacetimeDb::Internal
-#include "spacetimedb/macros.h"
-SPACETIMEDB_TYPE(RawSequenceDefV8)
-SPACETIMEDB_DATA_CONTRACT
-SPACETIMEDB_REGISTER_TYPE(RawSequenceDefV8)

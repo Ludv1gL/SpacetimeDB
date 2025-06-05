@@ -1,11 +1,10 @@
-#include <spacetimedb/library/database.h>
+#include <spacetimedb/database.h>
 
 // spacetimedb_abi.h is included via database.h -> table.h -> spacetimedb/abi/spacetimedb_abi.h
 // If not, it should be included here for any ABI calls made directly by Database methods,
 // though get_table<T> is templated and in the header.
 
 namespace SpacetimeDb {
-namespace library {
 
 Database::Database() {
     // Constructor for Database.
@@ -28,5 +27,4 @@ Database::Database() {
 //     return 0; // status code
 // }
 
-} // namespace library
 } // namespace SpacetimeDb

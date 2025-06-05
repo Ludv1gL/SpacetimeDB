@@ -10,7 +10,7 @@
 #include <type_traits>
 #include <variant>
 #include "uint128_placeholder.h"
-#include "spacetimedb/library/spacetimedb_library_types.h"
+#include "spacetimedb/types.h"
 
 namespace SpacetimeDb::bsatn {
 
@@ -19,8 +19,12 @@ namespace SpacetimeDb::bsatn {
     template<typename T> void serialize(class Writer& w, const T& value);
 
     class Writer {
+    private:
+        std::vector<uint8_t>* buffer_;
+        
     public:
-        Writer() = default;
+        Writer() : buffer_(nullptr) {}
+        explicit Writer(std::vector<uint8_t>& buffer) : buffer_(&buffer) {}
 
         void write_bool(bool value);
         void write_u8(uint8_t value);
@@ -28,8 +32,8 @@ namespace SpacetimeDb::bsatn {
         void write_u32_le(uint32_t value);
         void write_u64_le(uint64_t value);
         void write_u128_le(const SpacetimeDb::Types::uint128_t_placeholder& value);
-        void write_u256_le(const SpacetimeDb::library::u256_placeholder& value) {
-            write_bytes_raw(value.data.data(), sizeof(value.data));
+        void write_u256_le(const SpacetimeDb::u256_placeholder& value) {
+            write_bytes_raw(value.data.data(), value.data.size());
         }
 
         void write_i8(int8_t value);
@@ -37,8 +41,8 @@ namespace SpacetimeDb::bsatn {
         void write_i32_le(int32_t value);
         void write_i64_le(int64_t value);
         void write_i128_le(const SpacetimeDb::Types::int128_t_placeholder& value);
-        void write_i256_le(const SpacetimeDb::library::i256_placeholder& value) {
-            write_bytes_raw(value.data.data(), sizeof(value.data));
+        void write_i256_le(const SpacetimeDb::i256_placeholder& value) {
+            write_bytes_raw(value.data.data(), value.data.size());
         }
 
         void write_f32_le(float value);
@@ -73,9 +77,19 @@ namespace SpacetimeDb::bsatn {
         void serialize_member(const T& value) {
             SpacetimeDb::bsatn::serialize(*this, value);
         }
+        
+        void write_vec_len(size_t len) {
+            // Write length as varint
+            write_u32_le(static_cast<uint32_t>(len));
+        }
 
-        const std::vector<uint8_t>& get_buffer() const { return buffer; }
-        std::vector<uint8_t>&& take_buffer() { return std::move(buffer); }
+        const std::vector<uint8_t>& get_buffer() const { 
+            return buffer_ ? *buffer_ : buffer; 
+        }
+        
+        std::vector<uint8_t>&& take_buffer() { 
+            return std::move(buffer_ ? *buffer_ : buffer); 
+        }
 
     private:
         void write_bytes_raw(const void* data, size_t size);
@@ -126,7 +140,7 @@ namespace SpacetimeDb::bsatn {
         w.write_u128_le(value);
     }
 
-    inline void serialize(Writer& w, const SpacetimeDb::library::u256_placeholder& value) {
+    inline void serialize(Writer& w, const SpacetimeDb::u256_placeholder& value) {
         w.write_u256_le(value);
     }
 
@@ -150,7 +164,7 @@ namespace SpacetimeDb::bsatn {
         w.write_i128_le(value);
     }
 
-    inline void serialize(Writer& w, const SpacetimeDb::library::i256_placeholder& value) {
+    inline void serialize(Writer& w, const SpacetimeDb::i256_placeholder& value) {
         w.write_i256_le(value);
     }
 
@@ -174,26 +188,8 @@ namespace SpacetimeDb::bsatn {
         // Nothing to serialize for monostate
     }
 
-    // SDK type serialization
-    inline void serialize(Writer& w, const SpacetimeDb::library::Identity& value) {
-        value.bsatn_serialize(w);
-    }
-
-    inline void serialize(Writer& w, const SpacetimeDb::library::ConnectionId& value) {
-        value.bsatn_serialize(w);
-    }
-
-    inline void serialize(Writer& w, const SpacetimeDb::library::Timestamp& value) {
-        value.bsatn_serialize(w);
-    }
-
-    inline void serialize(Writer& w, const SpacetimeDb::library::TimeDuration& value) {
-        value.bsatn_serialize(w);
-    }
-
-    inline void serialize(Writer& w, const SpacetimeDb::library::ScheduleAt& value) {
-        value.bsatn_serialize(w);
-    }
+    // SDK type serialization - removed to avoid circular dependency
+    // Types with bsatn_serialize methods will be handled by the generic serialize function
 
     template<typename T>
     inline void serialize(Writer& w, const std::optional<T>& opt_value) {

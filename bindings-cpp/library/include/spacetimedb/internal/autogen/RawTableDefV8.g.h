@@ -11,10 +11,11 @@
 #include <optional>
 #include <memory>
 #include "spacetimedb/bsatn/bsatn.h"
-#include "RawConstraintDefV8.g.h"
-#include "RawSequenceDefV8.g.h"
-#include "RawIndexDefV8.g.h"
 #include "RawColumnDefV8.g.h"
+#include "RawConstraintDefV8.g.h"
+#include "RawIndexDefV8.g.h"
+#include "RawSequenceDefV8.g.h"
+#include "spacetimedb/macros.h"
 
 namespace SpacetimeDb::Internal {
 
@@ -42,18 +43,14 @@ struct RawTableDefV8 {
         : table_name(table_name), columns(columns), indexes(indexes), constraints(constraints), sequences(sequences), table_type(table_type), table_access(table_access), scheduled(scheduled) {}
 
     // BSATN serialization support
-    void bsatn_serialize(SpacetimeDb::bsatn::Writer& writer) const;
-    void bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader);
+    void bsatn_serialize(::SpacetimeDb::bsatn::Writer& writer) const;
+    void bsatn_deserialize(::SpacetimeDb::bsatn::Reader& reader);
 
     // Static factory method for BSATN deserialization
-    static RawTableDefV8 from_bsatn(SpacetimeDb::bsatn::Reader& reader) {
+    static RawTableDefV8 from_bsatn(::SpacetimeDb::bsatn::Reader& reader) {
         RawTableDefV8 result;
         result.bsatn_deserialize(reader);
         return result;
     }
 };
 } // namespace SpacetimeDb::Internal
-#include "spacetimedb/macros.h"
-SPACETIMEDB_TYPE(RawTableDefV8)
-SPACETIMEDB_DATA_CONTRACT
-SPACETIMEDB_REGISTER_TYPE(RawTableDefV8)

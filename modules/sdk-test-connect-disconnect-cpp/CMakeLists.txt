@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Add the SDK include path
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../cpp_sdk/sdk/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../bindings-cpp/library/include)
 
 # Create the WASM module
 add_executable(sdk-test-connect-disconnect-cpp

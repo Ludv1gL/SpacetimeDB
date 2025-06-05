@@ -11,8 +11,8 @@
 #include <variant>
 #include <type_traits>
 #include "spacetimedb/bsatn/bsatn.h"
-#include "spacetimedb/library/exceptions.h"
-#include "spacetimedb/library/schema_management.h"
+#include "spacetimedb/exceptions.h"
+#include "spacetimedb/schema_management.h"
 
 namespace SpacetimeDb {
 
@@ -350,9 +350,9 @@ private:
     CompositeValidator<T> validator_;
     
 public:
+    template<typename FieldType>
     ConstraintBuilder& not_null(const std::string& column, 
-                               std::function<const auto*(const T&)> getter) {
-        using FieldType = std::remove_pointer_t<decltype(getter(std::declval<T>()))>;
+                               std::function<const FieldType*(const T&)> getter) {
         validator_.add_validator(
             std::make_unique<NotNullValidator<T, FieldType>>(column, getter)
         );
@@ -378,11 +378,11 @@ public:
         return *this;
     }
     
+    template<typename FieldType>
     ConstraintBuilder& data_type(const std::string& column,
-                                std::function<const auto*(const T&)> getter,
-                                std::function<bool(const auto&)> type_checker,
+                                std::function<const FieldType*(const T&)> getter,
+                                std::function<bool(const FieldType&)> type_checker,
                                 const std::string& type_description) {
-        using FieldType = std::remove_pointer_t<decltype(getter(std::declval<T>()))>;
         validator_.add_validator(
             std::make_unique<DataTypeValidator<T, FieldType>>(
                 column, getter, type_checker, type_description
@@ -451,6 +451,19 @@ public:
  */
 class ConstraintValidation {
 public:
+    // Structures to hold constraint information
+    struct ForeignKeyInfo {
+        std::string table_name;
+        std::string field_name;
+        std::string ref_table_name;
+        std::string ref_field_name;
+    };
+    
+    struct CheckConstraintInfo {
+        std::string table_name;
+        std::string constraint_sql;
+    };
+
     // Foreign key constraint registration
     static void register_foreign_key(
         const char* table_name,
@@ -498,19 +511,6 @@ public:
         foreign_keys_.clear();
         check_constraints_.clear();
     }
-
-    // Structures to hold constraint information
-    struct ForeignKeyInfo {
-        std::string table_name;
-        std::string field_name;
-        std::string ref_table_name;
-        std::string ref_field_name;
-    };
-    
-    struct CheckConstraintInfo {
-        std::string table_name;
-        std::string constraint_sql;
-    };
 
 private:
     // Static storage for constraints

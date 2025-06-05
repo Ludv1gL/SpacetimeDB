@@ -12,6 +12,7 @@
 #include <memory>
 #include "spacetimedb/bsatn/bsatn.h"
 #include "ProductTypeElement.g.h"
+#include "spacetimedb/macros.h"
 
 namespace SpacetimeDb::Internal {
 
@@ -27,18 +28,14 @@ struct ReducerDef {
         : name(name), args(args) {}
 
     // BSATN serialization support
-    void bsatn_serialize(SpacetimeDb::bsatn::Writer& writer) const;
-    void bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader);
+    void bsatn_serialize(::SpacetimeDb::bsatn::Writer& writer) const;
+    void bsatn_deserialize(::SpacetimeDb::bsatn::Reader& reader);
 
     // Static factory method for BSATN deserialization
-    static ReducerDef from_bsatn(SpacetimeDb::bsatn::Reader& reader) {
+    static ReducerDef from_bsatn(::SpacetimeDb::bsatn::Reader& reader) {
         ReducerDef result;
         result.bsatn_deserialize(reader);
         return result;
     }
 };
 } // namespace SpacetimeDb::Internal
-#include "spacetimedb/macros.h"
-SPACETIMEDB_TYPE(ReducerDef)
-SPACETIMEDB_DATA_CONTRACT
-SPACETIMEDB_REGISTER_TYPE(ReducerDef)

@@ -1,4 +1,4 @@
-#include "spacetimedb/library/spacetimedb_library_types.h"
+#include "spacetimedb/types.h"
 #include "spacetimedb/bsatn_all.h"
 
 #include <vector>
@@ -8,7 +8,6 @@
 #include <cstddef>   // For size_t
 
 namespace SpacetimeDb {
-    namespace library {
 
         // Identity constructors
         Identity::Identity() {
@@ -39,45 +38,6 @@ namespace SpacetimeDb {
             return value < other.value;
         }
 
-        // Timestamp constructors
-        Timestamp::Timestamp() : ms_since_epoch(0) {
-        }
-        
-        Timestamp::Timestamp(uint64_t milliseconds_since_epoch) : ms_since_epoch(milliseconds_since_epoch) {
-        }
-        
-        uint64_t Timestamp::as_milliseconds() const {
-            return ms_since_epoch;
-        }
-        
-        Timestamp Timestamp::current() {
-            // TODO: Implement actual current timestamp
-            return Timestamp(0);
-        }
-        
-        bool Timestamp::operator==(const Timestamp& other) const {
-            return ms_since_epoch == other.ms_since_epoch;
-        }
-        
-        bool Timestamp::operator!=(const Timestamp& other) const {
-            return !(*this == other);
-        }
-        
-        bool Timestamp::operator<(const Timestamp& other) const {
-            return ms_since_epoch < other.ms_since_epoch;
-        }
-        
-        bool Timestamp::operator<=(const Timestamp& other) const {
-            return ms_since_epoch <= other.ms_since_epoch;
-        }
-        
-        bool Timestamp::operator>(const Timestamp& other) const {
-            return ms_since_epoch > other.ms_since_epoch;
-        }
-        
-        bool Timestamp::operator>=(const Timestamp& other) const {
-            return ms_since_epoch >= other.ms_since_epoch;
-        }
 
         // Identity
         void Identity::bsatn_serialize(::SpacetimeDb::bsatn::Writer& writer) const {
@@ -97,21 +57,6 @@ namespace SpacetimeDb {
             }
         }
 
-        // Timestamp
-        void Timestamp::bsatn_serialize(::SpacetimeDb::bsatn::Writer& writer) const {
-            writer.write_u64_le(this->ms_since_epoch);
-        }
-        void Timestamp::bsatn_deserialize(::SpacetimeDb::bsatn::Reader& reader) {
-            this->ms_since_epoch = reader.read_u64_le();
-        }
-
-        // ScheduleAt
-        void ScheduleAt::bsatn_serialize(::SpacetimeDb::bsatn::Writer& writer) const {
-            writer.write_u64_le(this->timestamp_micros);
-        }
-        void ScheduleAt::bsatn_deserialize(::SpacetimeDb::bsatn::Reader& reader) {
-            this->timestamp_micros = reader.read_u64_le();
-        }
 
         // ConnectionId
         void ConnectionId::bsatn_serialize(::SpacetimeDb::bsatn::Writer& writer) const {
@@ -122,23 +67,16 @@ namespace SpacetimeDb {
             this->id = reader.read_u64_le();
         }
 
-        // TimeDuration
-        void TimeDuration::bsatn_serialize(::SpacetimeDb::bsatn::Writer& writer) const {
-            writer.write_i64_le(this->nanoseconds);
-        }
-        void TimeDuration::bsatn_deserialize(::SpacetimeDb::bsatn::Reader& reader) {
-            this->nanoseconds = reader.read_i64_le();
-        }
 
-        // u256_placeholder
-        void u256_placeholder::bsatn_serialize(::SpacetimeDb::bsatn::Writer& writer) const {
+        // u256
+        void u256::bsatn_serialize(::SpacetimeDb::bsatn::Writer& writer) const {
             // Assuming writer has a method to write raw bytes for fixed-size arrays,
             // or u256_placeholder has a .data() and .size() like Identity for write_bytes_raw.
             // Based on writer.h, write_u256_le exists. Let's use that if available,
             // otherwise, write_bytes_raw is a fallback.
             writer.write_u256_le(*this);
         }
-        void u256_placeholder::bsatn_deserialize(::SpacetimeDb::bsatn::Reader& reader) {
+        void u256::bsatn_deserialize(::SpacetimeDb::bsatn::Reader& reader) {
             // Similar to serialize, assuming reader.read_u256_le() or fallback
             // *this = reader.read_u256_le(); // If Reader has this method
             // Fallback:
@@ -151,11 +89,11 @@ namespace SpacetimeDb {
             }
         }
 
-        // i256_placeholder
-        void i256_placeholder::bsatn_serialize(::SpacetimeDb::bsatn::Writer& writer) const {
+        // i256
+        void i256::bsatn_serialize(::SpacetimeDb::bsatn::Writer& writer) const {
             writer.write_i256_le(*this);
         }
-        void i256_placeholder::bsatn_deserialize(::SpacetimeDb::bsatn::Reader& reader) {
+        void i256::bsatn_deserialize(::SpacetimeDb::bsatn::Reader& reader) {
             // *this = reader.read_i256_le(); // If Reader has this method
             // Fallback:
             std::vector<uint8_t> bytes = reader.read_fixed_bytes(sizeof(this->data));
@@ -167,7 +105,6 @@ namespace SpacetimeDb {
             }
         }
 
-    } // namespace library
 } // namespace SpacetimeDb
 
 // Serialize functions are now defined as inline in writer.h to avoid duplicate definitions

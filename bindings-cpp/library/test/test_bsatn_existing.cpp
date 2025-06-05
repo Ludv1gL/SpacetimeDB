@@ -4,7 +4,7 @@
  */
 
 #include <spacetimedb/bsatn_all.h>
-#include <spacetimedb/library/spacetimedb_library_types.h>
+#include "spacetimedb/types.h"
 
 #include <iostream>
 #include <cassert>

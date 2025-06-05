@@ -12,6 +12,7 @@
 #include <memory>
 #include "spacetimedb/bsatn/bsatn.h"
 #include "SumTypeVariant.g.h"
+#include "spacetimedb/macros.h"
 
 namespace SpacetimeDb::Internal {
 
@@ -25,18 +26,14 @@ struct SumType {
         : variants(variants) {}
 
     // BSATN serialization support
-    void bsatn_serialize(SpacetimeDb::bsatn::Writer& writer) const;
-    void bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader);
+    void bsatn_serialize(::SpacetimeDb::bsatn::Writer& writer) const;
+    void bsatn_deserialize(::SpacetimeDb::bsatn::Reader& reader);
 
     // Static factory method for BSATN deserialization
-    static SumType from_bsatn(SpacetimeDb::bsatn::Reader& reader) {
+    static SumType from_bsatn(::SpacetimeDb::bsatn::Reader& reader) {
         SumType result;
         result.bsatn_deserialize(reader);
         return result;
     }
 };
 } // namespace SpacetimeDb::Internal
-#include "spacetimedb/macros.h"
-SPACETIMEDB_TYPE(SumType)
-SPACETIMEDB_DATA_CONTRACT
-SPACETIMEDB_REGISTER_TYPE(SumType)

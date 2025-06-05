@@ -58,7 +58,7 @@ std::optional<Identity> from_hex(const std::string& hex) {
         return std::nullopt;
     }
     
-    ByteArray bytes;
+    Identity::ByteArray bytes;
     try {
         for (size_t i = 0; i < 32; ++i) {
             uint8_t high = hex_char_to_value(cleaned[i * 2]);

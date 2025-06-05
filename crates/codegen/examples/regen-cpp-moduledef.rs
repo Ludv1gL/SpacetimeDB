@@ -12,14 +12,14 @@ fn main() -> anyhow::Result<()> {
         module.add_type::<RawModuleDef>();
     });
 
-    // Build relative path from the codegen crate to the C++ SDK autogen directory
+    // Build relative path from the codegen crate to the C++ Module Library autogen directory
     let manifest_dir = env!("CARGO_MANIFEST_DIR");
     let dir = Path::new(manifest_dir)
         .parent()
         .unwrap()
         .parent()
         .unwrap()
-        .join("cpp_sdk/sdk/include/spacetimedb/internal/autogen");
+        .join("bindings-cpp/library/include/spacetimedb/internal/autogen");
     
     println!("Target directory path: {}", dir.display());
 

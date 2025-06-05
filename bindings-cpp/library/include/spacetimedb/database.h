@@ -3,12 +3,11 @@
 
 #include <string>
 #include <stdexcept> // For std::runtime_error
-#include <spacetimedb/library/table.h> // For Table<T>
+#include <spacetimedb/table.h> // For Table<T>
 #include <spacetimedb/abi/spacetimedb_abi.h> // For ABI function calls
 #include <spacetimedb/bsatn_all.h> // For BSATN serialization
 
 namespace SpacetimeDb {
-namespace library {
 
 class Database {
 public:
@@ -89,8 +88,6 @@ bool table_delete_by_pk(const std::string& table_name, const TPK& pk_value) {
     return false;
 }
 
-
-} // namespace library
 } // namespace SpacetimeDb
 
 #endif // SPACETIMEDB_LIBRARY_DATABASE_H

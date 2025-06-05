@@ -11,6 +11,7 @@
 #include <optional>
 #include <memory>
 #include "spacetimedb/bsatn/bsatn.h"
+#include "spacetimedb/macros.h"
 
 namespace SpacetimeDb::Internal {
 
@@ -19,7 +20,3 @@ enum class TableAccess : uint8_t {
     Private = 1,
 };
 } // namespace SpacetimeDb::Internal
-#include "spacetimedb/macros.h"
-SPACETIMEDB_TYPE(TableAccess)
-SPACETIMEDB_DATA_CONTRACT
-SPACETIMEDB_REGISTER_TYPE(TableAccess)

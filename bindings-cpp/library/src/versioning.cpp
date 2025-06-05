@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <regex>
 #include <queue>
+#include <set>
 
 namespace SpacetimeDb {
 
@@ -334,18 +335,18 @@ void VersionRegistry::register_version(const ModuleVersion& version,
 void VersionRegistry::register_migration(const ModuleVersion& from, 
                                        const ModuleVersion& to,
                                        MigrationPlan plan) {
-    migrations_[{from, to}] = std::move(plan);
+    migrations_.emplace(std::make_pair(from, to), std::move(plan));
 }
 
-std::optional<std::vector<MigrationPlan*>> VersionRegistry::find_migration_path(
-    const ModuleVersion& from, const ModuleVersion& to) {
+std::optional<std::vector<const MigrationPlan*>> VersionRegistry::find_migration_path(
+    const ModuleVersion& from, const ModuleVersion& to) const {
     
     if (from == to) {
-        return std::vector<MigrationPlan*>{};
+        return std::vector<const MigrationPlan*>{};
     }
     
     // BFS to find shortest migration path
-    std::queue<std::pair<ModuleVersion, std::vector<MigrationPlan*>>> queue;
+    std::queue<std::pair<ModuleVersion, std::vector<const MigrationPlan*>>> queue;
     std::set<ModuleVersion> visited;
     
     queue.push({from, {}});
@@ -356,7 +357,7 @@ std::optional<std::vector<MigrationPlan*>> VersionRegistry::find_migration_path(
         queue.pop();
         
         // Check all possible migrations from current version
-        for (auto& [key, plan] : migrations_) {
+        for (const auto& [key, plan] : migrations_) {
             if (key.first == current_version && visited.find(key.second) == visited.end()) {
                 auto new_path = path;
                 new_path.push_back(&plan);

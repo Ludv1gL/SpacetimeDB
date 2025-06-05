@@ -25,6 +25,11 @@
 // Forward declarations are handled by proper includes
 
 namespace SpacetimeDb {
+// Forward declarations for types  
+class Timestamp;
+struct ConnectionId;
+class Identity;
+
 namespace Internal {
 
 // Forward declarations
@@ -83,6 +88,11 @@ private:
     // Type registrar
     std::unique_ptr<TypeRegistrar> typeRegistrar;
     
+    // Context constructor function
+    std::function<std::unique_ptr<IReducerContext>(
+        ::SpacetimeDb::Identity, std::optional<::SpacetimeDb::ConnectionId>, uint64_t, ::SpacetimeDb::Timestamp
+    )> newContext;
+    
     // Private constructor for singleton
     Module();
     
@@ -94,7 +104,7 @@ public:
     // Set the reducer context constructor
     static void SetReducerContextConstructor(
         std::function<std::unique_ptr<IReducerContext>(
-            sdk::Identity, std::optional<sdk::ConnectionId>, uint64_t, sdk::Timestamp
+            ::SpacetimeDb::Identity, std::optional<::SpacetimeDb::ConnectionId>, uint64_t, ::SpacetimeDb::Timestamp
         )> ctor
     );
     
@@ -135,7 +145,7 @@ public:
         uint32_t id,
         uint64_t sender_0, uint64_t sender_1, uint64_t sender_2, uint64_t sender_3,
         uint64_t conn_id_0, uint64_t conn_id_1,
-        sdk::Timestamp timestamp,
+        Timestamp timestamp,
         uint32_t args,
         uint32_t error
     );

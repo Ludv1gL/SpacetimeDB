@@ -12,6 +12,7 @@
 #include <memory>
 #include "spacetimedb/bsatn/bsatn.h"
 #include "AlgebraicType.g.h"
+#include "spacetimedb/macros.h"
 
 namespace SpacetimeDb::Internal {
 
@@ -27,18 +28,14 @@ struct RawColumnDefV8 {
         : col_name(col_name), col_type(col_type) {}
 
     // BSATN serialization support
-    void bsatn_serialize(SpacetimeDb::bsatn::Writer& writer) const;
-    void bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader);
+    void bsatn_serialize(::SpacetimeDb::bsatn::Writer& writer) const;
+    void bsatn_deserialize(::SpacetimeDb::bsatn::Reader& reader);
 
     // Static factory method for BSATN deserialization
-    static RawColumnDefV8 from_bsatn(SpacetimeDb::bsatn::Reader& reader) {
+    static RawColumnDefV8 from_bsatn(::SpacetimeDb::bsatn::Reader& reader) {
         RawColumnDefV8 result;
         result.bsatn_deserialize(reader);
         return result;
     }
 };
 } // namespace SpacetimeDb::Internal
-#include "spacetimedb/macros.h"
-SPACETIMEDB_TYPE(RawColumnDefV8)
-SPACETIMEDB_DATA_CONTRACT
-SPACETIMEDB_REGISTER_TYPE(RawColumnDefV8)

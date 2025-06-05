@@ -1,6 +1,6 @@
 #include "spacetimedb/abi/spacetimedb_abi.h"
 #include "spacetimedb/internal/Module.h"  // Use new Module API
-#include "spacetimedb/types.h"     // For Timestamp
+#include "spacetimedb/timestamp.h"     // For Timestamp
 
 #include <vector>
 #include <cstddef> // For size_t
@@ -24,9 +24,8 @@ extern "C" {
         uint32_t args,
         uint32_t error
     ) {
-        // Create timestamp
-        SpacetimeDb::library::Timestamp ts;
-        ts.microseconds_since_epoch = timestamp_us;
+        // Create timestamp - convert microseconds to milliseconds for library::Timestamp
+        SpacetimeDb::Timestamp ts(timestamp_us / 1000);
         
         // Call Module's implementation
         auto result = SpacetimeDb::Internal::Module::__call_reducer__(

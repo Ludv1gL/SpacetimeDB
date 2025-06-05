@@ -60,9 +60,9 @@ namespace SpacetimeDb::bsatn {
         return SpacetimeDb::Types::uint128_t_placeholder(low, high);
     }
 
-    SpacetimeDb::library::u256_placeholder Reader::read_u256_le() {
+    SpacetimeDb::u256_placeholder Reader::read_u256_le() {
         check_available(32);
-        SpacetimeDb::library::u256_placeholder val;
+        SpacetimeDb::u256_placeholder val;
         std::memcpy(val.data.data(), current_ptr, 32);
         advance(32);
         return val;
@@ -90,9 +90,9 @@ namespace SpacetimeDb::bsatn {
         return SpacetimeDb::Types::int128_t_placeholder(low, high);
     }
 
-    SpacetimeDb::library::i256_placeholder Reader::read_i256_le() {
+    SpacetimeDb::i256_placeholder Reader::read_i256_le() {
         check_available(32);
-        SpacetimeDb::library::i256_placeholder val;
+        SpacetimeDb::i256_placeholder val;
         std::memcpy(val.data.data(), current_ptr, 32);
         advance(32);
         return val;

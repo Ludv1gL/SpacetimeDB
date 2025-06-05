@@ -1,9 +1,15 @@
 #pragma once
 
-#include <spacetimedb/bsatn.h>
-#include <spacetimedb/algebraic_type.h>
 #include <cstdint>
 #include <chrono>
+
+// Forward declarations for BSATN
+namespace SpacetimeDb {
+namespace bsatn {
+    class Writer;
+    class Reader;
+}
+}
 
 namespace SpacetimeDb {
 
@@ -73,14 +79,9 @@ public:
         return TimeDuration(micros_ >= 0 ? micros_ : -micros_);
     }
     
-    // BSATN serialization
-    void bsatn_serialize(SpacetimeDb::bsatn::Writer& writer) const {
-        writer.write_i64_le(micros_);
-    }
-    
-    static TimeDuration bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader) {
-        return TimeDuration(reader.read_i64_le());
-    }
+    // BSATN serialization (defined out of line to avoid circular dependency)
+    void bsatn_serialize(SpacetimeDb::bsatn::Writer& writer) const;
+    static TimeDuration bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader);
 };
 
 // Convenience functions
@@ -115,15 +116,5 @@ namespace time_literals {
 
 // Register TimeDuration for type registration
 namespace SpacetimeDb {
-namespace detail {
-
-template<>
-struct TypeRegistrar<TimeDuration> {
-    static AlgebraicTypeRef register_type(TypeContext& ctx) {
-        // TimeDuration is represented as a special type in SpacetimeDB
-        return ctx.add(AlgebraicType::time_duration());
-    }
-};
-
-} // namespace detail
+// TypeRegistrar specialization removed - will be provided by the type system when needed
 } // namespace SpacetimeDb

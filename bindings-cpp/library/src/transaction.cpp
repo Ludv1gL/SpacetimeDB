@@ -66,7 +66,7 @@ public:
         state_ = TransactionState::Committed;
         
         // Log transaction completion
-        SpacetimeDb::log("Transaction committed", SpacetimeDb::LogLevel::Debug);
+        SpacetimeDb::log(SpacetimeDb::LogLevel::DEBUG, "Transaction committed");
     }
     
     void rollback() {
@@ -81,7 +81,7 @@ public:
         // Clear all savepoints
         savepoints_.clear();
         
-        SpacetimeDb::log("Transaction rolled back", SpacetimeDb::LogLevel::Debug);
+        SpacetimeDb::log(SpacetimeDb::LogLevel::DEBUG, "Transaction rolled back");
         
         // To actually rollback in SpacetimeDB, we need to make the reducer fail
         throw TransactionError("Transaction explicitly rolled back");
@@ -150,15 +150,17 @@ public:
         }
         
         // Note: Actual data rollback would require SpacetimeDB support
-        SpacetimeDb::log("Rolled back to savepoint: " + name, SpacetimeDb::LogLevel::Debug);
+        SpacetimeDb::log(SpacetimeDb::LogLevel::DEBUG, "Rolled back to savepoint: " + name);
     }
     
     ModuleDatabase& database() {
-        return ctx_.db;
+        // TODO: Implement database access through ReducerContext
+        throw TransactionError("Database access not yet implemented");
     }
     
     const ModuleDatabase& database() const {
-        return ctx_.db;
+        // TODO: Implement database access through ReducerContext
+        throw TransactionError("Database access not yet implemented");
     }
     
     // Static method to get current transaction for a thread
@@ -271,8 +273,8 @@ Transaction TransactionManager::begin(ReducerContext& ctx, const TransactionOpti
         case IsolationLevel::Serializable: isolation_str = "Serializable"; break;
     }
     
-    SpacetimeDb::log("Beginning transaction with isolation level: " + isolation_str, 
-                     SpacetimeDb::LogLevel::Debug);
+    SpacetimeDb::log(SpacetimeDb::LogLevel::DEBUG,
+                     "Beginning transaction with isolation level: " + isolation_str);
     
     return Transaction(std::move(impl));
 }

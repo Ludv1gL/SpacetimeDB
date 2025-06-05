@@ -11,6 +11,7 @@
 #include <optional>
 #include <memory>
 #include "spacetimedb/bsatn/bsatn.h"
+#include "spacetimedb/macros.h"
 
 namespace SpacetimeDb::Internal {
 
@@ -20,7 +21,3 @@ enum class Lifecycle : uint8_t {
     OnDisconnect = 2,
 };
 } // namespace SpacetimeDb::Internal
-#include "spacetimedb/macros.h"
-SPACETIMEDB_TYPE(Lifecycle)
-SPACETIMEDB_DATA_CONTRACT
-SPACETIMEDB_REGISTER_TYPE(Lifecycle)

@@ -1,5 +1,5 @@
-#include "spacetimedb/library/index_management.h"
-#include "spacetimedb/library/logging.h"
+#include "spacetimedb/index_management.h"
+#include "spacetimedb/logger.h"
 #include "spacetimedb/bsatn/bsatn.h"
 #include <stdexcept>
 

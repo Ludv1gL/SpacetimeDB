@@ -194,8 +194,8 @@ public:
                           MigrationPlan plan);
     
     // Find migration path between versions
-    std::optional<std::vector<MigrationPlan*>> find_migration_path(
-        const ModuleVersion& from, const ModuleVersion& to);
+    std::optional<std::vector<const MigrationPlan*>> find_migration_path(
+        const ModuleVersion& from, const ModuleVersion& to) const;
     
     // Get all registered versions
     std::vector<ModuleVersion> get_versions() const;

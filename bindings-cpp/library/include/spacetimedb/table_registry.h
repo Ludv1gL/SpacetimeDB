@@ -13,7 +13,6 @@
 // class BsatnSerializable;
 
 namespace SpacetimeDb {
-namespace library {
 namespace registry { // Encapsulate registry specific components
 
 struct TableMetadata {
@@ -67,13 +66,11 @@ struct TableRegistrar {
     }
 };
 
-} // namespace registry
-
 // User-facing macro
 // If PrimaryKeyFieldAsString is empty, it means no PK or PK is not the first field / not named here.
 #define SPACETIMEDB_REGISTER_TABLE(CppStructType, TableNameInDbString, PrimaryKeyFieldAsString) \
     namespace { /* Anonymous namespace to ensure unique registrar_instance per TU */ \
-        static SpacetimeDb::sdk::registry::TableRegistrar \
+        static SpacetimeDb::registry::TableRegistrar \
             registrar_instance_##CppStructType( \
                 typeid(CppStructType).name(), \
                 TableNameInDbString, \
@@ -81,6 +78,7 @@ struct TableRegistrar {
             ); \
     }
 
+} // namespace registry
 
 // Inline accessor template for convenience, using typeid directly
 template<typename T>
@@ -93,8 +91,6 @@ uint32_t get_pk_column_index() {
      return registry::get_pk_column_index_by_cpp_type_name(typeid(T).name());
 }
 
-
-} // namespace library
 } // namespace SpacetimeDb
 
 #endif // SPACETIMEDB_LIBRARY_TABLE_REGISTRY_H

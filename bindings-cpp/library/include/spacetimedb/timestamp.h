@@ -1,8 +1,8 @@
 #pragma once
 
-#include <spacetimedb/bsatn.h>
-#include <spacetimedb/algebraic_type.h>
-#include <spacetimedb/time_duration.h>
+#include <spacetimedb/bsatn/bsatn.h>
+#include <spacetimedb/bsatn/algebraic_type.h>
+#include <spacetimedb/types.h>  // For TimeDuration
 #include <cstdint>
 #include <chrono>
 #include <ctime>
@@ -95,14 +95,9 @@ public:
         return TimeDuration::from_micros(micros_since_epoch_ - earlier.micros_since_epoch_);
     }
     
-    // BSATN serialization
-    void bsatn_serialize(SpacetimeDb::bsatn::Writer& writer) const {
-        writer.write_u64_le(static_cast<uint64_t>(micros_since_epoch_));
-    }
-    
-    static Timestamp bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader) {
-        return Timestamp(static_cast<int64_t>(reader.read_u64_le()));
-    }
+    // BSATN serialization (defined in timestamp_bsatn.h to avoid circular dependency)
+    void bsatn_serialize(SpacetimeDb::bsatn::Writer& writer) const;
+    static Timestamp bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader);
 };
 
 // Convenience operators
@@ -112,17 +107,4 @@ inline Timestamp operator+(const TimeDuration& duration, const Timestamp& timest
 
 } // namespace SpacetimeDb
 
-// Register Timestamp for type registration
-namespace SpacetimeDb {
-namespace detail {
-
-template<>
-struct TypeRegistrar<Timestamp> {
-    static AlgebraicTypeRef register_type(TypeContext& ctx) {
-        // Timestamp is represented as a special type in SpacetimeDB
-        return ctx.add(AlgebraicType::timestamp());
-    }
-};
-
-} // namespace detail
-} // namespace SpacetimeDb
+// TypeRegistrar specialization will be provided by the type system when needed

@@ -11,7 +11,7 @@
 #include <optional>
 #include <memory>
 #include "spacetimedb/bsatn/bsatn.h"
-#include "spacetimedb/data_member_macro.h"
+#include "spacetimedb/macros.h"
 
 namespace SpacetimeDb::Internal {
 
@@ -29,18 +29,14 @@ struct RawScheduleDefV9 {
         : name(name), reducer_name(reducer_name), scheduled_at_column(scheduled_at_column) {}
 
     // BSATN serialization support
-    void bsatn_serialize(SpacetimeDb::bsatn::Writer& writer) const;
-    void bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader);
+    void bsatn_serialize(::SpacetimeDb::bsatn::Writer& writer) const;
+    void bsatn_deserialize(::SpacetimeDb::bsatn::Reader& reader);
 
     // Static factory method for BSATN deserialization
-    static RawScheduleDefV9 from_bsatn(SpacetimeDb::bsatn::Reader& reader) {
+    static RawScheduleDefV9 from_bsatn(::SpacetimeDb::bsatn::Reader& reader) {
         RawScheduleDefV9 result;
         result.bsatn_deserialize(reader);
         return result;
     }
 };
 } // namespace SpacetimeDb::Internal
-#include "spacetimedb/macros.h"
-SPACETIMEDB_TYPE(RawScheduleDefV9)
-SPACETIMEDB_DATA_CONTRACT
-SPACETIMEDB_REGISTER_TYPE(RawScheduleDefV9)

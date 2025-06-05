@@ -14,7 +14,7 @@
 #include <cstring>
 #include <variant>
 #include "uint128_placeholder.h"
-#include "spacetimedb/library/spacetimedb_library_types.h"
+#include "spacetimedb/types.h"
 
 namespace SpacetimeDb::bsatn {
 
@@ -47,14 +47,14 @@ namespace SpacetimeDb::bsatn {
         uint32_t read_u32_le();
         uint64_t read_u64_le();
         SpacetimeDb::Types::uint128_t_placeholder read_u128_le();
-        SpacetimeDb::library::u256_placeholder read_u256_le();
+        SpacetimeDb::u256_placeholder read_u256_le();
 
         int8_t read_i8();
         int16_t read_i16_le();
         int32_t read_i32_le();
         int64_t read_i64_le();
         SpacetimeDb::Types::int128_t_placeholder read_i128_le();
-        SpacetimeDb::library::i256_placeholder read_i256_le();
+        SpacetimeDb::i256_placeholder read_i256_le();
 
         float read_f32_le();
         double read_f64_le();
@@ -137,26 +137,10 @@ namespace SpacetimeDb::bsatn {
             return r.read_optional<typename T::value_type>();
         } else if constexpr (is_std_vector_v<T>) {
             return r.read_vector<typename T::value_type>();
-        } else if constexpr (std::is_same_v<T, SpacetimeDb::library::Identity>) {
-            SpacetimeDb::library::Identity result;
-            result.bsatn_deserialize(r);
-            return result;
-        } else if constexpr (std::is_same_v<T, SpacetimeDb::library::Timestamp>) {
-            SpacetimeDb::library::Timestamp result;
-            result.bsatn_deserialize(r);
-            return result;
-        } else if constexpr (std::is_same_v<T, SpacetimeDb::library::ConnectionId>) {
-            SpacetimeDb::library::ConnectionId result;
-            result.bsatn_deserialize(r);
-            return result;
-        } else if constexpr (std::is_same_v<T, SpacetimeDb::library::TimeDuration>) {
-            SpacetimeDb::library::TimeDuration result;
-            result.bsatn_deserialize(r);
-            return result;
-        } else if constexpr (std::is_same_v<T, SpacetimeDb::library::ScheduleAt>) {
-            SpacetimeDb::library::ScheduleAt result;
-            result.bsatn_deserialize(r);
-            return result;
+        } else if constexpr (std::is_same_v<T, SpacetimeDb::Identity>) {
+            return T::bsatn_deserialize(r);
+        } else if constexpr (std::is_same_v<T, SpacetimeDb::ConnectionId>) {
+            return T::bsatn_deserialize(r);
         } else {
             // For other types, try to use bsatn_traits
             return bsatn_traits<T>::deserialize(r);

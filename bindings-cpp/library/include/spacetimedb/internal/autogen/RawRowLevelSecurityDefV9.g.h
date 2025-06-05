@@ -11,6 +11,7 @@
 #include <optional>
 #include <memory>
 #include "spacetimedb/bsatn/bsatn.h"
+#include "spacetimedb/macros.h"
 
 namespace SpacetimeDb::Internal {
 
@@ -24,18 +25,14 @@ struct RawRowLevelSecurityDefV9 {
         : sql(sql) {}
 
     // BSATN serialization support
-    void bsatn_serialize(SpacetimeDb::bsatn::Writer& writer) const;
-    void bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader);
+    void bsatn_serialize(::SpacetimeDb::bsatn::Writer& writer) const;
+    void bsatn_deserialize(::SpacetimeDb::bsatn::Reader& reader);
 
     // Static factory method for BSATN deserialization
-    static RawRowLevelSecurityDefV9 from_bsatn(SpacetimeDb::bsatn::Reader& reader) {
+    static RawRowLevelSecurityDefV9 from_bsatn(::SpacetimeDb::bsatn::Reader& reader) {
         RawRowLevelSecurityDefV9 result;
         result.bsatn_deserialize(reader);
         return result;
     }
 };
 } // namespace SpacetimeDb::Internal
-#include "spacetimedb/macros.h"
-SPACETIMEDB_TYPE(RawRowLevelSecurityDefV9)
-SPACETIMEDB_DATA_CONTRACT
-SPACETIMEDB_REGISTER_TYPE(RawRowLevelSecurityDefV9)

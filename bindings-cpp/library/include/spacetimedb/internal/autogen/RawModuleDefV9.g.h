@@ -11,12 +11,13 @@
 #include <optional>
 #include <memory>
 #include "spacetimedb/bsatn/bsatn.h"
-#include "RawTableDefV9.g.h"
-#include "RawMiscModuleExportV9.g.h"
-#include "RawRowLevelSecurityDefV9.g.h"
-#include "RawTypeDefV9.g.h"
 #include "RawReducerDefV9.g.h"
+#include "RawTableDefV9.g.h"
+#include "RawTypeDefV9.g.h"
+#include "RawMiscModuleExportV9.g.h"
 #include "Typespace.g.h"
+#include "RawRowLevelSecurityDefV9.g.h"
+#include "spacetimedb/macros.h"
 
 namespace SpacetimeDb::Internal {
 
@@ -40,18 +41,14 @@ struct RawModuleDefV9 {
         : typespace(typespace), tables(tables), reducers(reducers), types(types), misc_exports(misc_exports), row_level_security(row_level_security) {}
 
     // BSATN serialization support
-    void bsatn_serialize(SpacetimeDb::bsatn::Writer& writer) const;
-    void bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader);
+    void bsatn_serialize(::SpacetimeDb::bsatn::Writer& writer) const;
+    void bsatn_deserialize(::SpacetimeDb::bsatn::Reader& reader);
 
     // Static factory method for BSATN deserialization
-    static RawModuleDefV9 from_bsatn(SpacetimeDb::bsatn::Reader& reader) {
+    static RawModuleDefV9 from_bsatn(::SpacetimeDb::bsatn::Reader& reader) {
         RawModuleDefV9 result;
         result.bsatn_deserialize(reader);
         return result;
     }
 };
 } // namespace SpacetimeDb::Internal
-#include "spacetimedb/macros.h"
-SPACETIMEDB_TYPE(RawModuleDefV9)
-SPACETIMEDB_DATA_CONTRACT
-SPACETIMEDB_REGISTER_TYPE(RawModuleDefV9)

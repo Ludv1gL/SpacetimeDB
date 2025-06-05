@@ -17,6 +17,7 @@
 #include <string>
 #include <cstring>
 #include <type_traits>
+#include <spacetimedb/time_duration.h>  // For TimeDuration
 
 // Forward declarations for BSATN
 namespace SpacetimeDb {
@@ -30,8 +31,59 @@ namespace SpacetimeDb {
 
 // Forward declarations
 class Timestamp;
-class Identity;
-struct ConnectionId;
+
+// =============================================================================
+// IDENTITY TYPE
+// =============================================================================
+
+#define IDENTITY_SIZE 32
+
+class Identity {
+public:
+    static constexpr size_t SIZE = IDENTITY_SIZE;
+    using ByteArray = std::array<uint8_t, IDENTITY_SIZE>;
+    
+private:
+    std::array<uint8_t, IDENTITY_SIZE> value;
+    
+public:
+    // Constructors
+    Identity();
+    Identity(const std::array<uint8_t, IDENTITY_SIZE>& bytes);
+    
+    // Accessors
+    const std::array<uint8_t, IDENTITY_SIZE>& get_bytes() const;
+    const ByteArray& to_byte_array() const { return value; }
+    std::string to_hex_string() const;
+    
+    // Operators
+    bool operator==(const Identity& other) const;
+    bool operator!=(const Identity& other) const;
+    bool operator<(const Identity& other) const;
+    
+    // BSATN serialization
+    void bsatn_serialize(::SpacetimeDb::bsatn::Writer& writer) const;
+    void bsatn_deserialize(::SpacetimeDb::bsatn::Reader& reader);
+};
+
+// =============================================================================
+// CONNECTION ID TYPE
+// =============================================================================
+
+struct ConnectionId {
+    uint64_t id;
+    
+    ConnectionId() : id(0) {}
+    explicit ConnectionId(uint64_t connection_id) : id(connection_id) {}
+    
+    bool operator==(const ConnectionId& other) const { return id == other.id; }
+    bool operator!=(const ConnectionId& other) const { return id != other.id; }
+    bool operator<(const ConnectionId& other) const { return id < other.id; }
+    
+    // BSATN serialization
+    void bsatn_serialize(::SpacetimeDb::bsatn::Writer& writer) const;
+    void bsatn_deserialize(::SpacetimeDb::bsatn::Reader& reader);
+};
 
 // =============================================================================
 // TYPE ALIASES FOR COMMON SPACETIMEDB TYPES
@@ -198,6 +250,10 @@ struct u256 {
     static u256 deserialize(const uint8_t* bytes) {
         return u256(bytes);
     }
+    
+    // BSATN methods
+    void bsatn_serialize(::SpacetimeDb::bsatn::Writer& writer) const;
+    void bsatn_deserialize(::SpacetimeDb::bsatn::Reader& reader);
 };
 
 // 256-bit signed integer
@@ -237,13 +293,32 @@ struct i256 {
     static i256 deserialize(const uint8_t* bytes) {
         return i256(bytes);
     }
+    
+    // BSATN methods
+    void bsatn_serialize(::SpacetimeDb::bsatn::Writer& writer) const;
+    void bsatn_deserialize(::SpacetimeDb::bsatn::Reader& reader);
 };
+
+// Type aliases with uppercase names for compatibility
+using U128 = u128;
+using I128 = i128;
+using U256 = u256;
+using I256 = i256;
+
+// Placeholder type aliases for BSATN compatibility
+using u256_placeholder = u256;
+using i256_placeholder = i256;
+
+// Address is an alias for Identity in the current implementation
+class Identity;  // Forward declaration
+using Address = Identity;
 
 // =============================================================================
 // TIME DURATION TYPE
 // =============================================================================
 
-// Time duration in microseconds
+// Time duration is defined in time_duration.h
+/*
 struct TimeDuration {
     uint64_t micros;
     
@@ -302,6 +377,7 @@ struct TimeDuration {
     // void bsatn_serialize(SpacetimeDb::bsatn::Writer& writer) const;
     // static TimeDuration bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader);
 };
+*/
 
 // Timestamp operations with TimeDuration are already defined in timestamp.h
 // We'll use the existing Timestamp class operations
@@ -536,7 +612,8 @@ struct BsatnSerializer<i256> {
     }
 };
 
-// TimeDuration
+// TimeDuration serializer commented out since TimeDuration is defined in time_duration.h
+/*
 template<>
 struct BsatnSerializer<TimeDuration> {
     static void serialize(std::vector<uint8_t>& buffer, const TimeDuration& value) {
@@ -549,6 +626,7 @@ struct BsatnSerializer<TimeDuration> {
         return result;
     }
 };
+*/
 
 // Identity and ConnectionId serializers are already defined in their respective headers
 

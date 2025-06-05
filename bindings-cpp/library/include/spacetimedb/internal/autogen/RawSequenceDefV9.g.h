@@ -11,6 +11,7 @@
 #include <optional>
 #include <memory>
 #include "spacetimedb/bsatn/bsatn.h"
+#include "spacetimedb/macros.h"
 
 namespace SpacetimeDb::Internal {
 
@@ -20,32 +21,28 @@ struct RawSequenceDefV9 {
     SPACETIMEDB_DATA_MEMBER("column")
     uint16_t column;
     SPACETIMEDB_DATA_MEMBER("start")
-    std::optional<spacetimedb::u128> start;
+    std::optional<SpacetimeDb::I128> start;
     SPACETIMEDB_DATA_MEMBER("min_value")
-    std::optional<spacetimedb::u128> min_value;
+    std::optional<SpacetimeDb::I128> min_value;
     SPACETIMEDB_DATA_MEMBER("max_value")
-    std::optional<spacetimedb::u128> max_value;
+    std::optional<SpacetimeDb::I128> max_value;
     SPACETIMEDB_DATA_MEMBER("increment")
-    spacetimedb::u128 increment;
+    SpacetimeDb::I128 increment;
 
     RawSequenceDefV9() = default;
 
-    RawSequenceDefV9(std::optional<std::string> name, uint16_t column, std::optional<spacetimedb::u128> start, std::optional<spacetimedb::u128> min_value, std::optional<spacetimedb::u128> max_value, spacetimedb::u128 increment)
+    RawSequenceDefV9(std::optional<std::string> name, uint16_t column, std::optional<SpacetimeDb::I128> start, std::optional<SpacetimeDb::I128> min_value, std::optional<SpacetimeDb::I128> max_value, SpacetimeDb::I128 increment)
         : name(name), column(column), start(start), min_value(min_value), max_value(max_value), increment(increment) {}
 
     // BSATN serialization support
-    void bsatn_serialize(SpacetimeDb::bsatn::Writer& writer) const;
-    void bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader);
+    void bsatn_serialize(::SpacetimeDb::bsatn::Writer& writer) const;
+    void bsatn_deserialize(::SpacetimeDb::bsatn::Reader& reader);
 
     // Static factory method for BSATN deserialization
-    static RawSequenceDefV9 from_bsatn(SpacetimeDb::bsatn::Reader& reader) {
+    static RawSequenceDefV9 from_bsatn(::SpacetimeDb::bsatn::Reader& reader) {
         RawSequenceDefV9 result;
         result.bsatn_deserialize(reader);
         return result;
     }
 };
 } // namespace SpacetimeDb::Internal
-#include "spacetimedb/macros.h"
-SPACETIMEDB_TYPE(RawSequenceDefV9)
-SPACETIMEDB_DATA_CONTRACT
-SPACETIMEDB_REGISTER_TYPE(RawSequenceDefV9)

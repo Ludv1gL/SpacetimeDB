@@ -12,6 +12,7 @@
 #include <memory>
 #include "spacetimedb/bsatn/bsatn.h"
 #include "RawTableDefV8.g.h"
+#include "spacetimedb/macros.h"
 
 namespace SpacetimeDb::Internal {
 
@@ -27,18 +28,14 @@ struct TableDesc {
         : schema(schema), data(data) {}
 
     // BSATN serialization support
-    void bsatn_serialize(SpacetimeDb::bsatn::Writer& writer) const;
-    void bsatn_deserialize(SpacetimeDb::bsatn::Reader& reader);
+    void bsatn_serialize(::SpacetimeDb::bsatn::Writer& writer) const;
+    void bsatn_deserialize(::SpacetimeDb::bsatn::Reader& reader);
 
     // Static factory method for BSATN deserialization
-    static TableDesc from_bsatn(SpacetimeDb::bsatn::Reader& reader) {
+    static TableDesc from_bsatn(::SpacetimeDb::bsatn::Reader& reader) {
         TableDesc result;
         result.bsatn_deserialize(reader);
         return result;
     }
 };
 } // namespace SpacetimeDb::Internal
-#include "spacetimedb/macros.h"
-SPACETIMEDB_TYPE(TableDesc)
-SPACETIMEDB_DATA_CONTRACT
-SPACETIMEDB_REGISTER_TYPE(TableDesc)

@@ -1,7 +1,7 @@
 #include "spacetimedb/constraint_validation.h"
-#include "spacetimedb/library/exceptions.h"
+#include "spacetimedb/exceptions.h"
 
-namespace SpacetimeDb {
+namespace SpacetimeDB {
 
 // Implementation of throw_error function for exception handling
 void throw_error(Errno error_code, const std::string& message) {
@@ -39,4 +39,4 @@ void throw_error(Errno error_code, const std::string& message) {
     }
 }
 
-} // namespace SpacetimeDb
+} // namespace SpacetimeDB

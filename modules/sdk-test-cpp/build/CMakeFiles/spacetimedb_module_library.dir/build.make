@@ -249,41 +249,11 @@ CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindin
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/logging.cpp.s"
 	/home/ludvi/emsdk/upstream/emscripten/em++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/logging.cpp -o CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/logging.cpp.s
 
-CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/logging.cpp.o: CMakeFiles/spacetimedb_module_library.dir/flags.make
-CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/logging.cpp.o: CMakeFiles/spacetimedb_module_library.dir/includes_CXX.rsp
-CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/logging.cpp.o: /home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/logging.cpp
-CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/logging.cpp.o: CMakeFiles/spacetimedb_module_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/logging.cpp.o"
-	/home/ludvi/emsdk/upstream/emscripten/em++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/logging.cpp.o -MF CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/logging.cpp.o.d -o CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/logging.cpp.o -c /home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/logging.cpp
-
-CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/logging.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/logging.cpp.i"
-	/home/ludvi/emsdk/upstream/emscripten/em++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/logging.cpp > CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/logging.cpp.i
-
-CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/logging.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/logging.cpp.s"
-	/home/ludvi/emsdk/upstream/emscripten/em++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/logging.cpp -o CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/logging.cpp.s
-
-CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/reducer_context.cpp.o: CMakeFiles/spacetimedb_module_library.dir/flags.make
-CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/reducer_context.cpp.o: CMakeFiles/spacetimedb_module_library.dir/includes_CXX.rsp
-CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/reducer_context.cpp.o: /home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/reducer_context.cpp
-CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/reducer_context.cpp.o: CMakeFiles/spacetimedb_module_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/reducer_context.cpp.o"
-	/home/ludvi/emsdk/upstream/emscripten/em++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/reducer_context.cpp.o -MF CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/reducer_context.cpp.o.d -o CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/reducer_context.cpp.o -c /home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/reducer_context.cpp
-
-CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/reducer_context.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/reducer_context.cpp.i"
-	/home/ludvi/emsdk/upstream/emscripten/em++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/reducer_context.cpp > CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/reducer_context.cpp.i
-
-CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/reducer_context.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/reducer_context.cpp.s"
-	/home/ludvi/emsdk/upstream/emscripten/em++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/reducer_context.cpp -o CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/reducer_context.cpp.s
-
 CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_table_registry.cpp.o: CMakeFiles/spacetimedb_module_library.dir/flags.make
 CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_table_registry.cpp.o: CMakeFiles/spacetimedb_module_library.dir/includes_CXX.rsp
 CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_table_registry.cpp.o: /home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_table_registry.cpp
 CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_table_registry.cpp.o: CMakeFiles/spacetimedb_module_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_table_registry.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_table_registry.cpp.o"
 	/home/ludvi/emsdk/upstream/emscripten/em++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_table_registry.cpp.o -MF CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_table_registry.cpp.o.d -o CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_table_registry.cpp.o -c /home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_table_registry.cpp
 
 CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_table_registry.cpp.i: cmake_force
@@ -298,7 +268,7 @@ CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindin
 CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types.cpp.o: CMakeFiles/spacetimedb_module_library.dir/includes_CXX.rsp
 CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types.cpp.o: /home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types.cpp
 CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types.cpp.o: CMakeFiles/spacetimedb_module_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Building CXX object CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types.cpp.o"
 	/home/ludvi/emsdk/upstream/emscripten/em++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types.cpp.o -MF CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types.cpp.o.d -o CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types.cpp.o -c /home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types.cpp
 
 CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types.cpp.i: cmake_force
@@ -309,26 +279,41 @@ CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindin
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types.cpp.s"
 	/home/ludvi/emsdk/upstream/emscripten/em++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types.cpp -o CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types.cpp.s
 
-CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types_impl.cpp.o: CMakeFiles/spacetimedb_module_library.dir/flags.make
-CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types_impl.cpp.o: CMakeFiles/spacetimedb_module_library.dir/includes_CXX.rsp
-CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types_impl.cpp.o: /home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types_impl.cpp
-CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types_impl.cpp.o: CMakeFiles/spacetimedb_module_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Building CXX object CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types_impl.cpp.o"
-	/home/ludvi/emsdk/upstream/emscripten/em++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types_impl.cpp.o -MF CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types_impl.cpp.o.d -o CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types_impl.cpp.o -c /home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types_impl.cpp
+CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/time_duration.cpp.o: CMakeFiles/spacetimedb_module_library.dir/flags.make
+CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/time_duration.cpp.o: CMakeFiles/spacetimedb_module_library.dir/includes_CXX.rsp
+CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/time_duration.cpp.o: /home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/time_duration.cpp
+CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/time_duration.cpp.o: CMakeFiles/spacetimedb_module_library.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/time_duration.cpp.o"
+	/home/ludvi/emsdk/upstream/emscripten/em++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/time_duration.cpp.o -MF CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/time_duration.cpp.o.d -o CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/time_duration.cpp.o -c /home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/time_duration.cpp
 
-CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types_impl.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types_impl.cpp.i"
-	/home/ludvi/emsdk/upstream/emscripten/em++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types_impl.cpp > CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types_impl.cpp.i
+CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/time_duration.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/time_duration.cpp.i"
+	/home/ludvi/emsdk/upstream/emscripten/em++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/time_duration.cpp > CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/time_duration.cpp.i
 
-CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types_impl.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types_impl.cpp.s"
-	/home/ludvi/emsdk/upstream/emscripten/em++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types_impl.cpp -o CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types_impl.cpp.s
+CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/time_duration.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/time_duration.cpp.s"
+	/home/ludvi/emsdk/upstream/emscripten/em++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/time_duration.cpp -o CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/time_duration.cpp.s
+
+CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/timestamp.cpp.o: CMakeFiles/spacetimedb_module_library.dir/flags.make
+CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/timestamp.cpp.o: CMakeFiles/spacetimedb_module_library.dir/includes_CXX.rsp
+CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/timestamp.cpp.o: /home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/timestamp.cpp
+CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/timestamp.cpp.o: CMakeFiles/spacetimedb_module_library.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Building CXX object CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/timestamp.cpp.o"
+	/home/ludvi/emsdk/upstream/emscripten/em++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/timestamp.cpp.o -MF CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/timestamp.cpp.o.d -o CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/timestamp.cpp.o -c /home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/timestamp.cpp
+
+CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/timestamp.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/timestamp.cpp.i"
+	/home/ludvi/emsdk/upstream/emscripten/em++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/timestamp.cpp > CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/timestamp.cpp.i
+
+CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/timestamp.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/timestamp.cpp.s"
+	/home/ludvi/emsdk/upstream/emscripten/em++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/timestamp.cpp -o CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/timestamp.cpp.s
 
 CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/transaction.cpp.o: CMakeFiles/spacetimedb_module_library.dir/flags.make
 CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/transaction.cpp.o: CMakeFiles/spacetimedb_module_library.dir/includes_CXX.rsp
 CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/transaction.cpp.o: /home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/transaction.cpp
 CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/transaction.cpp.o: CMakeFiles/spacetimedb_module_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_18) "Building CXX object CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/transaction.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Building CXX object CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/transaction.cpp.o"
 	/home/ludvi/emsdk/upstream/emscripten/em++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/transaction.cpp.o -MF CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/transaction.cpp.o.d -o CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/transaction.cpp.o -c /home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/transaction.cpp
 
 CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/transaction.cpp.i: cmake_force
@@ -343,7 +328,7 @@ CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindin
 CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/versioning.cpp.o: CMakeFiles/spacetimedb_module_library.dir/includes_CXX.rsp
 CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/versioning.cpp.o: /home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/versioning.cpp
 CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/versioning.cpp.o: CMakeFiles/spacetimedb_module_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_19) "Building CXX object CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/versioning.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_18) "Building CXX object CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/versioning.cpp.o"
 	/home/ludvi/emsdk/upstream/emscripten/em++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/versioning.cpp.o -MF CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/versioning.cpp.o.d -o CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/versioning.cpp.o -c /home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/versioning.cpp
 
 CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/versioning.cpp.i: cmake_force
@@ -358,7 +343,7 @@ CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindin
 CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/wasi_shims.cpp.o: CMakeFiles/spacetimedb_module_library.dir/includes_CXX.rsp
 CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/wasi_shims.cpp.o: /home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/wasi_shims.cpp
 CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/wasi_shims.cpp.o: CMakeFiles/spacetimedb_module_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_20) "Building CXX object CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/wasi_shims.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_19) "Building CXX object CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/wasi_shims.cpp.o"
 	/home/ludvi/emsdk/upstream/emscripten/em++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/wasi_shims.cpp.o -MF CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/wasi_shims.cpp.o.d -o CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/wasi_shims.cpp.o -c /home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/wasi_shims.cpp
 
 CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/wasi_shims.cpp.i: cmake_force
@@ -383,11 +368,10 @@ spacetimedb_module_library_OBJECTS = \
 "CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/exceptions.cpp.o" \
 "CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/index_management.cpp.o" \
 "CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/logging.cpp.o" \
-"CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/logging.cpp.o" \
-"CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/reducer_context.cpp.o" \
 "CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_table_registry.cpp.o" \
 "CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types.cpp.o" \
-"CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types_impl.cpp.o" \
+"CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/time_duration.cpp.o" \
+"CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/timestamp.cpp.o" \
 "CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/transaction.cpp.o" \
 "CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/versioning.cpp.o" \
 "CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/wasi_shims.cpp.o"
@@ -407,17 +391,16 @@ libspacetimedb_module_library.a: CMakeFiles/spacetimedb_module_library.dir/home/
 libspacetimedb_module_library.a: CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/exceptions.cpp.o
 libspacetimedb_module_library.a: CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/index_management.cpp.o
 libspacetimedb_module_library.a: CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/logging.cpp.o
-libspacetimedb_module_library.a: CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/logging.cpp.o
-libspacetimedb_module_library.a: CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/reducer_context.cpp.o
 libspacetimedb_module_library.a: CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_table_registry.cpp.o
 libspacetimedb_module_library.a: CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types.cpp.o
-libspacetimedb_module_library.a: CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types_impl.cpp.o
+libspacetimedb_module_library.a: CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/time_duration.cpp.o
+libspacetimedb_module_library.a: CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/timestamp.cpp.o
 libspacetimedb_module_library.a: CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/transaction.cpp.o
 libspacetimedb_module_library.a: CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/versioning.cpp.o
 libspacetimedb_module_library.a: CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/wasi_shims.cpp.o
 libspacetimedb_module_library.a: CMakeFiles/spacetimedb_module_library.dir/build.make
 libspacetimedb_module_library.a: CMakeFiles/spacetimedb_module_library.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_21) "Linking CXX static library libspacetimedb_module_library.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_20) "Linking CXX static library libspacetimedb_module_library.a"
 	$(CMAKE_COMMAND) -P CMakeFiles/spacetimedb_module_library.dir/cmake_clean_target.cmake
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/spacetimedb_module_library.dir/link.txt --verbose=$(VERBOSE)
 

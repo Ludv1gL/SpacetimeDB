@@ -2,7 +2,7 @@
 #define MODULE_BINDINGS_GENERATOR_H
 
 // Forward declaration of user-defined reducer
-void insert_one_u8(SpacetimeDb::ReducerContext ctx, SpacetimeDb::byte n);
+void insert_one_u8(SpacetimeDb::ReducerContext ctx, uint8_t n);
 
 // This macro will be expanded after OneU8 is defined
 #define SPACETIMEDB_MODULE_INIT() \

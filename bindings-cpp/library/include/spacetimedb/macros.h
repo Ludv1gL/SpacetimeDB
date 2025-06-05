@@ -1,12 +1,10 @@
 #ifndef SPACETIMEDB_MACROS_H
 #define SPACETIMEDB_MACROS_H
 
-#include "spacetimedb/module.h"
 #include "spacetimedb/bsatn_all.h"
-#include "spacetimedb/library/reducer_context.h"
+#include "spacetimedb/reducer_context.h"
 #include "spacetimedb/table_ops.h"
 #include "spacetimedb/schedule_reducer.h"
-#include "spacetimedb/constraint_validation.h"
 #include "spacetimedb/reducer_args.h"
 #include "spacetimedb/rls.h"
 
@@ -41,8 +39,11 @@
         SPACETIMEDB_FE_6, SPACETIMEDB_FE_5, SPACETIMEDB_FE_4, SPACETIMEDB_FE_3, \
         SPACETIMEDB_FE_2, SPACETIMEDB_FE_1)(MACRO, __VA_ARGS__)
 
+#ifndef SPACETIMEDB_GET_MACRO
 #define SPACETIMEDB_GET_MACRO(_1,_2,_3,_4,_5,_6,_7,_8,_9,_10,NAME,...) NAME
+#endif
 
+#ifndef SPACETIMEDB_FE_1
 #define SPACETIMEDB_FE_1(MACRO, X) MACRO(X)
 #define SPACETIMEDB_FE_2(MACRO, X, ...) MACRO(X) SPACETIMEDB_FE_1(MACRO, __VA_ARGS__)
 #define SPACETIMEDB_FE_3(MACRO, X, ...) MACRO(X) SPACETIMEDB_FE_2(MACRO, __VA_ARGS__)
@@ -53,6 +54,7 @@
 #define SPACETIMEDB_FE_8(MACRO, X, ...) MACRO(X) SPACETIMEDB_FE_7(MACRO, __VA_ARGS__)
 #define SPACETIMEDB_FE_9(MACRO, X, ...) MACRO(X) SPACETIMEDB_FE_8(MACRO, __VA_ARGS__)
 #define SPACETIMEDB_FE_10(MACRO, X, ...) MACRO(X) SPACETIMEDB_FE_9(MACRO, __VA_ARGS__)
+#endif
 
 // Helper macro for stringifying each argument in a variadic list
 #define SPACETIMEDB_STRINGIFY_EACH(...) SPACETIMEDB_STRINGIFY_EACH_IMPL(__VA_ARGS__)
@@ -153,7 +155,7 @@ std::vector<uint8_t> spacetimedb_generate_type() {
         }
     }
     
-    return writer.data();
+    return writer.get_buffer();
 }
 
 // =============================================================================
@@ -209,8 +211,10 @@ std::vector<uint8_t> spacetimedb_generate_type() {
     }
 
 // Scheduled table shorthand
+#ifndef SPACETIMEDB_SCHEDULED_TABLE
 #define SPACETIMEDB_SCHEDULED_TABLE(RowType, table_name, is_public, reducer_name) \
     SPACETIMEDB_TABLE_5(RowType, table_name, is_public, SPACETIMEDB_STRINGIFY(reducer_name), nullptr)
+#endif
 
 // =============================================================================
 // REDUCER MACROS - C# [SpacetimeDB.Reducer] Equivalent
@@ -264,7 +268,7 @@ namespace SpacetimeDb {
     void name(SpacetimeDb::ReducerContext& ctx_param, ##__VA_ARGS__); \
     namespace { \
         SpacetimeDb::Internal::FFI::Errno name##_wrapper( \
-            SpacetimeDb::library::ReducerContext ctx, \
+            SpacetimeDb::ReducerContext ctx, \
             const uint8_t* args, size_t args_len \
         ) { \
             try { \
@@ -476,7 +480,7 @@ namespace SpacetimeDb {
             writer.write_u8(2); /* Product type */ \
             writer.write_u32_le(0); /* Field count placeholder */ \
         } \
-        return writer.data(); \
+        return writer.get_buffer(); \
     }
 
 // Tagged enum support - C# [SpacetimeDB.Type] with tagged enum
@@ -496,6 +500,8 @@ namespace SpacetimeDb {
 
 // Field attribute flags equivalent to C# ColumnAttrs
 namespace SpacetimeDb {
+#ifndef SPACETIMEDB_COLUMN_ATTRS_DEFINED
+#define SPACETIMEDB_COLUMN_ATTRS_DEFINED
     enum class ColumnAttrs : uint8_t {
         UnSet = 0b0000,
         Indexed = 0b0001,
@@ -505,6 +511,7 @@ namespace SpacetimeDb {
         PrimaryKey = 0b1101, // Unique | 0b1000
         PrimaryKeyAuto = 0b1111 // PrimaryKey | AutoInc
     };
+#endif // SPACETIMEDB_COLUMN_ATTRS_DEFINED
 }
 
 // C++ attributes for field decoration

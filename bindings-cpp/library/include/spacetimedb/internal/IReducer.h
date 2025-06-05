@@ -6,7 +6,7 @@
 #include <optional>
 #include "spacetimedb/bsatn/bsatn.h"
 #include "spacetimedb/internal/autogen/RawReducerDefV9.g.h"
-#include "spacetimedb/library/spacetimedb_library_types.h"
+#include "spacetimedb/types.h"
 
 namespace SpacetimeDb {
 namespace Internal {
@@ -33,13 +33,13 @@ public:
     virtual ~IReducerContext() = default;
     
     // Get the sender identity
-    virtual library::Identity GetSender() const = 0;
+    virtual SpacetimeDb::Identity GetSender() const = 0;
     
     // Get the connection ID (if available)
-    virtual std::optional<library::ConnectionId> GetConnectionId() const = 0;
+    virtual std::optional<SpacetimeDb::ConnectionId> GetConnectionId() const = 0;
     
     // Get the timestamp
-    virtual library::Timestamp GetTimestamp() const = 0;
+    virtual SpacetimeDb::Timestamp GetTimestamp() const = 0;
     
     // Convert to Module Library context for user code
     virtual SpacetimeDb::ReducerContext ToSdkContext() = 0;

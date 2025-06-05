@@ -1,1 +1,1 @@
-/home/ludvi/emsdk/upstream/emscripten/em++ -s STANDALONE_WASM=1 -s EXPORT_ALL=1 -s ERROR_ON_UNDEFINED_SYMBOLS=0 -s ALLOW_MEMORY_GROWTH=1 @CMakeFiles/sdk-test-cpp.dir/objects1.rsp -o sdk_test_cpp.wasm @CMakeFiles/sdk-test-cpp.dir/linkLibs.rsp
+/home/ludvi/emsdk/upstream/emscripten/em++ -s STANDALONE_WASM=1 -s EXPORT_ALL=1 -s ERROR_ON_UNDEFINED_SYMBOLS=0 -s ALLOW_MEMORY_GROWTH=1 -fexceptions @CMakeFiles/sdk-test-cpp.dir/objects1.rsp -o sdk_test_cpp.wasm @CMakeFiles/sdk-test-cpp.dir/linkLibs.rsp

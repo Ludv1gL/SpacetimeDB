@@ -14,10 +14,23 @@ namespace library {
 }
 namespace Internal {
 namespace FFI {
-    enum class Errno;
-    typedef Errno (*ReducerFn)(library::ReducerContext, const uint8_t*, size_t);
+    enum class Errno : uint16_t;
+    typedef Errno (*ReducerFn)(ReducerContext, const uint8_t*, size_t);
 }
 }
+}
+
+// Declare FFI export functions that will be friended
+extern "C" {
+    void __describe_module__(uint32_t description);
+    int16_t __call_reducer__(
+        uint32_t id,
+        uint64_t sender_0, uint64_t sender_1, uint64_t sender_2, uint64_t sender_3,
+        uint64_t conn_id_0, uint64_t conn_id_1,
+        uint64_t timestamp,
+        uint32_t args,
+        uint32_t error
+    );
 }
 
 namespace SpacetimeDb {
@@ -208,14 +221,15 @@ private:
         std::string license;
     } metadata_;
 
-    // Friend functions for FFI exports
-    friend extern "C" const uint8_t* __describe_module__();
-    friend extern "C" FFI::Errno __call_reducer__(
-        const uint8_t* reducer_name,
-        size_t reducer_name_len,
-        sdk::ReducerContext ctx,
-        const uint8_t* args,
-        size_t args_len
+    // Friend declarations for FFI exports
+    friend void __describe_module__(uint32_t description);
+    friend int16_t __call_reducer__(
+        uint32_t id,
+        uint64_t sender_0, uint64_t sender_1, uint64_t sender_2, uint64_t sender_3,
+        uint64_t conn_id_0, uint64_t conn_id_1,
+        uint64_t timestamp,
+        uint32_t args,
+        uint32_t error
     );
 };
 

@@ -1,12 +1,12 @@
 #ifndef REDUCER_CONTEXT_H
 #define REDUCER_CONTEXT_H
 
-#include <spacetimedb/library/spacetimedb_library_types.h> // For Identity, Timestamp, ConnectionId
+#include <spacetimedb/types.h> // For Identity, ConnectionId
+#include <spacetimedb/timestamp.h> // For Timestamp
 #include <optional>
 #include <array>
 
 namespace SpacetimeDb {
-namespace library {
 
 // Forward declaration
 class Database;
@@ -28,12 +28,6 @@ struct ReducerContext {
         : sender(s), connection_id(cid), timestamp(ts) {}
 };
 
-} // namespace library
 } // namespace SpacetimeDb
-
-// Alias for consistency with old code
-namespace SpacetimeDb {
-    using ReducerContext = SpacetimeDb::library::ReducerContext;
-}
 
 #endif // REDUCER_CONTEXT_H

@@ -1,5 +1,5 @@
-#include "spacetimedb/library/exceptions.h"
-#include "spacetimedb/library/logging.h"
+#include "spacetimedb/exceptions.h"
+#include "spacetimedb/logger.h"
 
 namespace SpacetimeDB {
 

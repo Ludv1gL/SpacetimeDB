@@ -3,7 +3,7 @@
 
 #include <cstdint>
 #include <cstddef>
-#include "spacetimedb/library/spacetimedb_library_types.h"
+#include "spacetimedb/types.h"
 #include "spacetimedb/abi/spacetimedb_abi.h"
 
 namespace SpacetimeDb {
@@ -27,6 +27,7 @@ enum class Errno : uint16_t {
     SCHEDULE_AT_DELAY_TOO_LONG = 13,
     INDEX_NOT_UNIQUE = 14,
     NO_SUCH_ROW = 15,
+    EXHAUSTED = 16,
     // Custom values for module operations
     NO_SUCH_REDUCER = 999, // Custom value for module errors
     UNKNOWN = 0xFFFF

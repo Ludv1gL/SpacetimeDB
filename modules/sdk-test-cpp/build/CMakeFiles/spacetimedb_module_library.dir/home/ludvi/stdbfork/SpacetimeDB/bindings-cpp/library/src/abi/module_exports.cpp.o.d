@@ -756,7 +756,8 @@ CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindin
   /home/ludvi/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/span \
   /home/ludvi/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__fwd/span.h \
   /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/bsatn/uint128_placeholder.h \
-  /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/library/spacetimedb_library_types.h \
+  /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/types.h \
+  /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/time_duration.h \
   /home/ludvi/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/chrono \
   /home/ludvi/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__chrono/file_clock.h \
   /home/ludvi/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__chrono/calendar.h \
@@ -834,40 +835,35 @@ CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindin
   /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/bsatn/special_types.h \
   /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/bsatn/bsatn_compat.h \
   /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/internal/autogen/RawModuleDefV9.g.h \
-  /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/internal/autogen/RawTableDefV9.g.h \
-  /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/internal/autogen/RawScheduleDefV9.g.h \
-  /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/macros.h \
-  /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/module.h \
-  /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/bsatn_all.h \
-  /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/library/reducer_context.h \
-  /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/table_ops.h \
-  /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/internal/FFI.h \
-  /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/schedule_reducer.h \
-  /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/types.h \
-  /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/module_bindings_generator.h \
-  /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/constraint_validation.h \
-  /home/ludvi/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/set \
-  /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/library/exceptions.h \
-  /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/library/schema_management.h \
-  /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/reducer_args.h \
-  /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/rls.h \
-  /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/internal/autogen/RawConstraintDefV9.g.h \
-  /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/internal/autogen/RawConstraintDataV9.g.h \
-  /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/internal/autogen/TableType.g.h \
-  /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/internal/autogen/TableAccess.g.h \
-  /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/internal/autogen/RawIndexDefV9.g.h \
-  /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/internal/autogen/RawIndexAlgorithm.g.h \
-  /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/internal/autogen/RawSequenceDefV9.g.h \
-  /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/internal/autogen/RawMiscModuleExportV9.g.h \
-  /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/internal/autogen/RawRowLevelSecurityDefV9.g.h \
-  /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/internal/autogen/RawTypeDefV9.g.h \
-  /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/internal/autogen/RawScopedTypeNameV9.g.h \
   /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/internal/autogen/RawReducerDefV9.g.h \
   /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/internal/autogen/ProductType.g.h \
   /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/internal/autogen/ProductTypeElement.g.h \
   /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/internal/autogen/AlgebraicType.g.h \
+  /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/macros.h \
+  /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/bsatn_all.h \
+  /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/reducer_context.h \
+  /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/timestamp.h \
+  /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/table_ops.h \
+  /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/internal/FFI.h \
+  /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/schedule_reducer.h \
+  /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/module_bindings_generator.h \
+  /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/reducer_args.h \
+  /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/rls.h \
   /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/internal/autogen/Lifecycle.g.h \
+  /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/internal/autogen/RawTableDefV9.g.h \
+  /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/internal/autogen/TableAccess.g.h \
+  /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/internal/autogen/RawConstraintDefV9.g.h \
+  /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/internal/autogen/RawConstraintDataV9.g.h \
+  /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/internal/autogen/RawSequenceDefV9.g.h \
+  /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/internal/autogen/RawScheduleDefV9.g.h \
+  /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/internal/autogen/TableType.g.h \
+  /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/internal/autogen/RawIndexDefV9.g.h \
+  /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/internal/autogen/RawIndexAlgorithm.g.h \
+  /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/internal/autogen/RawTypeDefV9.g.h \
+  /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/internal/autogen/RawScopedTypeNameV9.g.h \
+  /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/internal/autogen/RawMiscModuleExportV9.g.h \
   /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/internal/autogen/Typespace.g.h \
+  /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/internal/autogen/RawRowLevelSecurityDefV9.g.h \
   /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/internal/autogen/RawModuleDef.g.h \
   /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/internal/IReducer.h \
   /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/../../bindings-cpp/library/include/spacetimedb/internal/ITable.h \

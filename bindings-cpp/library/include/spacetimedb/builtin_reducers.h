@@ -16,58 +16,13 @@
 #include <vector>
 #include <optional>
 #include <cstring>
+#include "spacetimedb/types.h"
 
 // Helper macros
 #define SPACETIMEDB_CAT_IMPL(a, b) a##b
 #define SPACETIMEDB_CAT(a, b) SPACETIMEDB_CAT_IMPL(a, b)
 
 namespace SpacetimeDb {
-
-// -----------------------------------------------------------------------------
-// Identity Type for Built-in Reducers
-// -----------------------------------------------------------------------------
-
-class Identity {
-public:
-    static constexpr size_t SIZE = 32;
-    using ByteArray = std::array<uint8_t, SIZE>;
-    
-    Identity() : bytes_{} {}
-    explicit Identity(const ByteArray& bytes) : bytes_(bytes) {}
-    
-    // Construct from the raw parts passed to __call_reducer__
-    Identity(uint64_t part0, uint64_t part1, uint64_t part2, uint64_t part3) {
-        // Identity is little-endian encoded in 4 u64 parts
-        std::memcpy(&bytes_[0], &part0, 8);
-        std::memcpy(&bytes_[8], &part1, 8);
-        std::memcpy(&bytes_[16], &part2, 8);
-        std::memcpy(&bytes_[24], &part3, 8);
-    }
-    
-    const ByteArray& to_byte_array() const { return bytes_; }
-    
-    std::string to_hex_string() const {
-        static const char hex_chars[] = "0123456789abcdef";
-        std::string result;
-        result.reserve(SIZE * 2);
-        for (uint8_t byte : bytes_) {
-            result.push_back(hex_chars[byte >> 4]);
-            result.push_back(hex_chars[byte & 0x0F]);
-        }
-        return result;
-    }
-    
-    bool operator==(const Identity& other) const {
-        return bytes_ == other.bytes_;
-    }
-    
-    bool operator!=(const Identity& other) const {
-        return bytes_ != other.bytes_;
-    }
-    
-private:
-    ByteArray bytes_;
-};
 
 // -----------------------------------------------------------------------------
 // Lifecycle Reducer Enum
@@ -85,6 +40,7 @@ enum class Lifecycle : uint8_t {
 
 // Forward declaration
 // ReducerContext is defined in reducer_context_enhanced.h and already includes sender identity
+struct ReducerContext;
 
 // -----------------------------------------------------------------------------
 // Built-in Reducer Registration Helpers
@@ -106,15 +62,22 @@ inline std::optional<Lifecycle> get_lifecycle_for_name(const std::string& name) 
 
 // Specialized reducer wrapper for built-in reducers
 template<typename Func>
-void builtin_reducer_wrapper(Func func, SpacetimeDb::ReducerContext& ctx, 
+void builtin_reducer_wrapper(Func func, ReducerContext& ctx, 
                            uint64_t sender_0, uint64_t sender_1, 
                            uint64_t sender_2, uint64_t sender_3) {
-    Identity sender(sender_0, sender_1, sender_2, sender_3);
+    // Reconstruct identity from parts
+    std::array<uint8_t, 32> senderBytes{};
+    // Copy the 4 uint64_t values into the byte array
+    memcpy(senderBytes.data(), &sender_0, sizeof(uint64_t));
+    memcpy(senderBytes.data() + 8, &sender_1, sizeof(uint64_t));
+    memcpy(senderBytes.data() + 16, &sender_2, sizeof(uint64_t));
+    memcpy(senderBytes.data() + 24, &sender_3, sizeof(uint64_t));
+    Identity sender(senderBytes);
     
-    if constexpr (std::is_invocable_v<Func, SpacetimeDb::ReducerContext>) {
+    if constexpr (std::is_invocable_v<Func, ReducerContext>) {
         // init reducer - no sender
         func(ctx);
-    } else if constexpr (std::is_invocable_v<Func, SpacetimeDb::ReducerContext, Identity>) {
+    } else if constexpr (std::is_invocable_v<Func, ReducerContext, Identity>) {
         // client_connected/disconnected - includes sender
         func(ctx, sender);
     }

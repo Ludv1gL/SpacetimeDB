@@ -10,6 +10,9 @@
 #include <cstring>  // for memcpy
 #include <map>
 #include <typeinfo>
+#include "spacetimedb/types.h"  // For Identity, etc.
+#include "spacetimedb/bsatn/uint128_placeholder.h"  // For Types namespace
+#include "spacetimedb/timestamp.h"  // For Timestamp class
 
 namespace SpacetimeDb {
 
@@ -114,38 +117,38 @@ struct bsatn_type_id<std::optional<T>> {
 };
 
 // Special SpacetimeDB types
-template<> struct bsatn_type_id<SpacetimeDb::library::Identity> { 
+template<> struct bsatn_type_id<Identity> { 
     static constexpr bool is_primitive = false;
     static constexpr uint8_t value = bsatn_type::PRODUCT; 
 };
 
-template<> struct bsatn_type_id<SpacetimeDb::library::ConnectionId> { 
+template<> struct bsatn_type_id<ConnectionId> { 
     static constexpr bool is_primitive = true;
     static constexpr uint8_t value = bsatn_type::U64; 
 };
 
-template<> struct bsatn_type_id<SpacetimeDb::library::Timestamp> { 
+template<> struct bsatn_type_id<Timestamp> { 
     static constexpr bool is_primitive = true;
     static constexpr uint8_t value = bsatn_type::U64; 
 };
 
 // Placeholder 128/256-bit types
-template<> struct bsatn_type_id<SpacetimeDb::Types::uint128_t_placeholder> { 
+template<> struct bsatn_type_id<Types::uint128_t_placeholder> { 
     static constexpr bool is_primitive = true;
     static constexpr uint8_t value = bsatn_type::U128; 
 };
 
-template<> struct bsatn_type_id<SpacetimeDb::Types::uint256_t_placeholder> { 
+template<> struct bsatn_type_id<Types::uint256_t_placeholder> { 
     static constexpr bool is_primitive = true;
     static constexpr uint8_t value = bsatn_type::U256; 
 };
 
-template<> struct bsatn_type_id<SpacetimeDb::Types::int128_t_placeholder> { 
+template<> struct bsatn_type_id<Types::int128_t_placeholder> { 
     static constexpr bool is_primitive = true;
     static constexpr uint8_t value = bsatn_type::I128; 
 };
 
-template<> struct bsatn_type_id<SpacetimeDb::Types::int256_t_placeholder> { 
+template<> struct bsatn_type_id<Types::int256_t_placeholder> { 
     static constexpr bool is_primitive = true;
     static constexpr uint8_t value = bsatn_type::I256; 
 };
@@ -230,7 +233,7 @@ void write_algebraic_type(std::vector<uint8_t>& buf, const std::optional<T>*) {
 }
 
 // Helper to write AlgebraicType for Identity (array of 32 bytes)
-inline void write_algebraic_type(std::vector<uint8_t>& buf, const SpacetimeDb::library::Identity*) {
+inline void write_algebraic_type(std::vector<uint8_t>& buf, const Identity*) {
     buf.push_back(bsatn_type::ARRAY);  // Array type
     write_field_type<uint8_t>(buf);    // Element type: u8 (properly encoded)
     // TODO: Should also encode length = 32, but current format doesn't support fixed-size arrays
@@ -284,11 +287,11 @@ void write_field_type(std::vector<uint8_t>& buf) {
         buf.push_back(bsatn_type::U32);  // Most enums map to u32
     } else if constexpr (bsatn_type_id<T>::is_primitive) {
         write_algebraic_type<T>(buf);
-    } else if constexpr (std::is_same_v<T, SpacetimeDb::library::Identity>) {
-        write_algebraic_type(buf, static_cast<SpacetimeDb::library::Identity*>(nullptr));
-    } else if constexpr (std::is_same_v<T, SpacetimeDb::library::ConnectionId>) {
+    } else if constexpr (std::is_same_v<T, Identity>) {
+        write_algebraic_type(buf, static_cast<Identity*>(nullptr));
+    } else if constexpr (std::is_same_v<T, ConnectionId>) {
         buf.push_back(bsatn_type::U64);  // ConnectionId is serialized as u64
-    } else if constexpr (std::is_same_v<T, SpacetimeDb::library::Timestamp>) {
+    } else if constexpr (std::is_same_v<T, Timestamp>) {
         buf.push_back(bsatn_type::U64);  // Timestamp is serialized as u64
     } else if constexpr (is_vector<T>::value) {
         write_algebraic_type(buf, static_cast<T*>(nullptr));
@@ -301,9 +304,18 @@ void write_field_type(std::vector<uint8_t>& buf) {
 }
 
 // Forward declarations for all serialize_value functions
-template<typename T>
-typename std::enable_if<std::is_arithmetic<T>::value, void>::type
-serialize_value(std::vector<uint8_t>& buf, const T& val);
+// Primitive types - defined in field_registration.cpp
+void serialize_value(std::vector<uint8_t>& buf, const bool& val);
+void serialize_value(std::vector<uint8_t>& buf, const uint8_t& val);
+void serialize_value(std::vector<uint8_t>& buf, const uint16_t& val);
+void serialize_value(std::vector<uint8_t>& buf, const uint32_t& val);
+void serialize_value(std::vector<uint8_t>& buf, const uint64_t& val);
+void serialize_value(std::vector<uint8_t>& buf, const int8_t& val);
+void serialize_value(std::vector<uint8_t>& buf, const int16_t& val);
+void serialize_value(std::vector<uint8_t>& buf, const int32_t& val);
+void serialize_value(std::vector<uint8_t>& buf, const int64_t& val);
+void serialize_value(std::vector<uint8_t>& buf, const float& val);
+void serialize_value(std::vector<uint8_t>& buf, const double& val);
 
 template<typename T>
 typename std::enable_if<std::is_enum<T>::value, void>::type
@@ -317,41 +329,19 @@ void serialize_value(std::vector<uint8_t>& buf, const std::optional<T>& val);
 
 void serialize_value(std::vector<uint8_t>& buf, const std::string& val);
 void serialize_value(std::vector<uint8_t>& buf, const std::vector<uint8_t>& val);
-void serialize_value(std::vector<uint8_t>& buf, const SpacetimeDb::library::Identity& val);
-void serialize_value(std::vector<uint8_t>& buf, const SpacetimeDb::library::ConnectionId& val);
-void serialize_value(std::vector<uint8_t>& buf, const SpacetimeDb::library::Timestamp& val);
-void serialize_value(std::vector<uint8_t>& buf, const SpacetimeDb::Types::uint128_t_placeholder& val);
-void serialize_value(std::vector<uint8_t>& buf, const SpacetimeDb::Types::uint256_t_placeholder& val);
-void serialize_value(std::vector<uint8_t>& buf, const SpacetimeDb::Types::int128_t_placeholder& val);
-void serialize_value(std::vector<uint8_t>& buf, const SpacetimeDb::Types::int256_t_placeholder& val);
+void serialize_value(std::vector<uint8_t>& buf, const Identity& val);
+void serialize_value(std::vector<uint8_t>& buf, const ConnectionId& val);
+void serialize_value(std::vector<uint8_t>& buf, const Timestamp& val);
+void serialize_value(std::vector<uint8_t>& buf, const Types::uint128_t_placeholder& val);
+void serialize_value(std::vector<uint8_t>& buf, const Types::uint256_t_placeholder& val);
+void serialize_value(std::vector<uint8_t>& buf, const Types::int128_t_placeholder& val);
+void serialize_value(std::vector<uint8_t>& buf, const Types::int256_t_placeholder& val);
 
 template<typename T>
 typename std::enable_if<!std::is_arithmetic<T>::value && !std::is_enum<T>::value && !bsatn_type_id<T>::is_primitive, void>::type
 serialize_value(std::vector<uint8_t>& buf, const T& val);
 
 // Include inline implementations for header-only usage
-template<typename T>
-typename std::enable_if<std::is_arithmetic<T>::value, void>::type
-serialize_value(std::vector<uint8_t>& buf, const T& val) {
-    if constexpr (sizeof(T) == 1) {
-        buf.push_back(static_cast<uint8_t>(val));
-    } else if constexpr (sizeof(T) == 2) {
-        uint16_t uval = static_cast<uint16_t>(val);
-        buf.push_back(uval & 0xFF);
-        buf.push_back((uval >> 8) & 0xFF);
-    } else if constexpr (sizeof(T) == 4) {
-        uint32_t uval = static_cast<uint32_t>(val);
-        buf.push_back(uval & 0xFF);
-        buf.push_back((uval >> 8) & 0xFF);
-        buf.push_back((uval >> 16) & 0xFF);
-        buf.push_back((uval >> 24) & 0xFF);
-    } else if constexpr (sizeof(T) == 8) {
-        uint64_t uval = static_cast<uint64_t>(val);
-        for (int i = 0; i < 8; i++) {
-            buf.push_back((uval >> (i * 8)) & 0xFF);
-        }
-    }
-}
 
 inline void serialize_value(std::vector<uint8_t>& buf, const std::string& val) {
     write_u32(buf, val.length());
@@ -401,19 +391,19 @@ serialize_value(std::vector<uint8_t>& buf, const T& val) {
 }
 
 // Serialization for special types
-inline void serialize_value(std::vector<uint8_t>& buf, const SpacetimeDb::library::Identity& val) {
+inline void serialize_value(std::vector<uint8_t>& buf, const SpacetimeDb::Identity& val) {
     const auto& bytes = val.get_bytes();
     for (uint8_t b : bytes) {
         buf.push_back(b);
     }
 }
 
-inline void serialize_value(std::vector<uint8_t>& buf, const SpacetimeDb::library::ConnectionId& val) {
+inline void serialize_value(std::vector<uint8_t>& buf, const SpacetimeDb::ConnectionId& val) {
     serialize_value(buf, val.id);
 }
 
-inline void serialize_value(std::vector<uint8_t>& buf, const SpacetimeDb::library::Timestamp& val) {
-    serialize_value(buf, val.as_milliseconds());
+inline void serialize_value(std::vector<uint8_t>& buf, const SpacetimeDb::Timestamp& val) {
+    serialize_value(buf, val.millis_since_epoch());
 }
 
 // Serialization for placeholder 128/256-bit types

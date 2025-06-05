@@ -52,7 +52,7 @@ public:
     }
     
     // Write RLS policies to BSATN for module definition
-    void write_policies(BsatnWriter& writer) const {
+    void write_policies(bsatn::Writer& writer) const {
         writer.write_vec_len(policies_.size());
         
         for (const auto& policy : policies_) {

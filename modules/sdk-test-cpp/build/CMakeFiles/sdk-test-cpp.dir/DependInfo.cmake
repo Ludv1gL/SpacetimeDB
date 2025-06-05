@@ -8,7 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/src/lib.cpp" "CMakeFiles/sdk-test-cpp.dir/src/lib.cpp.o" "gcc" "CMakeFiles/sdk-test-cpp.dir/src/lib.cpp.o.d"
+  "/home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/src/lib_minimal.cpp" "CMakeFiles/sdk-test-cpp.dir/src/lib_minimal.cpp.o" "gcc" "CMakeFiles/sdk-test-cpp.dir/src/lib_minimal.cpp.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

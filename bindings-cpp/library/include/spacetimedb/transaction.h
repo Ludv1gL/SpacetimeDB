@@ -7,12 +7,15 @@
 #include <vector>
 #include <chrono>
 #include <exception>
+#include <thread>
+#include <spacetimedb/reducer_context.h>
 
 namespace SpacetimeDb {
 
+// ReducerContext is already available in SpacetimeDb namespace
+
 // Forward declarations
 class ModuleDatabase;
-class ReducerContext;
 
 // Transaction isolation levels matching SpacetimeDB's internal implementation
 enum class IsolationLevel {

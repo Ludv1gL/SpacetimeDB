@@ -37,9 +37,9 @@
 // =============================================================================
 
 #include "abi/spacetimedb_abi.h"  // SpacetimeDB ABI
-#include "library/logging.h"        // Enhanced logging system
-#include "library/exceptions.h"     // Rich error handling
-#include "library/database.h"       // Database types
+#include "logger.h"        // Enhanced logging system
+#include "exceptions.h"     // Rich error handling
+#include "database.h"       // Database types
 #include "bsatn/bsatn.h"        // BSATN serialization (includes AlgebraicType)
 #include "field_registration.h"  // Field registration system
 #include "table_ops.h"          // Table operations
@@ -47,7 +47,7 @@
 #include "builtin_reducers.h"   // Built-in reducer support (defines Identity)
 #include "credentials.h"        // Credential management
 // Note: reducer_context_enhanced.h defines ReducerContext, so we don't include the basic version
-#include "library/reducer_context_enhanced.h" // Enhanced reducer context (uses Identity)
+#include "reducer_context.h" // Reducer context (uses Identity)
 #include "internal/Module.h"    // Module registration
 #include "timestamp.h"          // Timestamp type for scheduled reducers
 #include "time_duration.h"      // TimeDuration type for scheduled reducers
@@ -101,6 +101,7 @@ namespace SpacetimeDb {
 // -----------------------------------------------------------------------------
 
 using byte = uint8_t;
+// ReducerContext is now directly in SpacetimeDb namespace
 class Database;
 
 // -----------------------------------------------------------------------------
@@ -142,15 +143,17 @@ inline void write_string(std::vector<uint8_t>& buf, const std::string& str) {
 
 inline uint8_t read_u8(uint32_t source) {
     uint8_t val = 0;
-    ::BytesSource src{static_cast<uint16_t>(source)};
-    _bytes_source_read(src, &val, 1);
+    Internal::FFI::BytesSource src{static_cast<uint32_t>(source)};
+    size_t len = 1;
+    bytes_source_read(src, &val, &len);
     return val;
 }
 
 inline uint32_t read_u32(uint32_t source) {
     uint8_t buf[4] = {0};
-    ::BytesSource src{static_cast<uint16_t>(source)};
-    _bytes_source_read(src, buf, 4);
+    Internal::FFI::BytesSource src{static_cast<uint32_t>(source)};
+    size_t len = 4;
+    bytes_source_read(src, buf, &len);
     return buf[0] | (buf[1] << 8) | (buf[2] << 16) | (buf[3] << 24);
 }
 
@@ -253,7 +256,7 @@ private:
         if (done_) return;
         
         buffer_.resize(0x20000); // 128KB buffer
-        ::Buffer buf_handle;
+        SpacetimeDb::Buffer buf_handle;
         
         auto ret = _iter_next(handle_, &buf_handle);
         
@@ -304,7 +307,7 @@ private:
     
 public:
     explicit TableIterator(uint32_t table_id) {
-        ::BufferIter iter;
+        SpacetimeDb::BufferIter iter;
         if (_iter_start(table_id, &iter) == 0) {
             handle_ = iter;
             fetch_next_batch();
@@ -636,8 +639,9 @@ T read_arg(uint32_t& source) {
         return read_u8(source);
     } else if constexpr (std::is_same_v<T, uint16_t>) {
         uint8_t buf[2];
-        ::BytesSource src{static_cast<uint16_t>(source)};
-        _bytes_source_read(src, buf, 2);
+        Internal::FFI::BytesSource src{static_cast<uint32_t>(source)};
+        size_t len = 2;
+        bytes_source_read(src, buf, &len);
         return buf[0] | (buf[1] << 8);
     } else if constexpr (std::is_same_v<T, uint32_t>) {
         return read_u32(source);
@@ -645,8 +649,9 @@ T read_arg(uint32_t& source) {
         uint32_t len = read_u32(source);
         std::string result;
         result.resize(len);
-        ::BytesSource src{static_cast<uint16_t>(source)};
-        _bytes_source_read(src, reinterpret_cast<uint8_t*>(result.data()), len);
+        Internal::FFI::BytesSource src{static_cast<uint32_t>(source)};
+        size_t str_len = len;
+        bytes_source_read(src, reinterpret_cast<uint8_t*>(result.data()), &str_len);
         return result;
     }
     return T{};
@@ -724,13 +729,12 @@ inline void register_init_reducer(void (*func)(SpacetimeDb::ReducerContext)) {
 }
 
 // Specialized registration for client_connected reducer
-inline void register_client_connected_reducer(void (*func)(SpacetimeDb::ReducerContext, Identity)) {
+inline void register_client_connected_reducer(void (*func)(SpacetimeDb::ReducerContext, SpacetimeDb::Identity)) {
     ModuleDef::Reducer reducer;
     reducer.name = "client_connected";
     reducer.lifecycle = Lifecycle::OnConnect;
     reducer.handler = [func](SpacetimeDb::ReducerContext& ctx, uint32_t) {
-        Identity sender(g_sender_parts[0], g_sender_parts[1], g_sender_parts[2], g_sender_parts[3]);
-        func(ctx, sender);
+        func(ctx, ctx.sender);
     };
     reducer.write_params = [](std::vector<uint8_t>& buf) {
         write_u32(buf, 0);  // No parameters from args
@@ -739,13 +743,12 @@ inline void register_client_connected_reducer(void (*func)(SpacetimeDb::ReducerC
 }
 
 // Specialized registration for client_disconnected reducer
-inline void register_client_disconnected_reducer(void (*func)(SpacetimeDb::ReducerContext, Identity)) {
+inline void register_client_disconnected_reducer(void (*func)(SpacetimeDb::ReducerContext, SpacetimeDb::Identity)) {
     ModuleDef::Reducer reducer;
     reducer.name = "client_disconnected";
     reducer.lifecycle = Lifecycle::OnDisconnect;
     reducer.handler = [func](SpacetimeDb::ReducerContext& ctx, uint32_t) {
-        Identity sender(g_sender_parts[0], g_sender_parts[1], g_sender_parts[2], g_sender_parts[3]);
-        func(ctx, sender);
+        func(ctx, ctx.sender);
     };
     reducer.write_params = [](std::vector<uint8_t>& buf) {
         write_u32(buf, 0);  // No parameters from args
@@ -832,8 +835,8 @@ inline void spacetimedb_write_module_def(uint32_t sink) {
     write_u32(w, 0);
     
     size_t len = w.size();
-    ::BytesSink snk{static_cast<uint16_t>(sink)};
-    ::bytes_sink_write(snk, w.data(), &len);
+    Internal::FFI::BytesSink snk{static_cast<uint32_t>(sink)};
+    bytes_sink_write(snk, w.data(), &len);
 }
 
 // Global variables to pass sender identity to lifecycle reducers

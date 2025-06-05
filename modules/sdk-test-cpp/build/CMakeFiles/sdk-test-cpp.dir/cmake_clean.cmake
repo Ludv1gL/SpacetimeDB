@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/sdk-test-cpp.dir/src/lib.cpp.o"
-  "CMakeFiles/sdk-test-cpp.dir/src/lib.cpp.o.d"
+  "CMakeFiles/sdk-test-cpp.dir/src/lib_minimal.cpp.o"
+  "CMakeFiles/sdk-test-cpp.dir/src/lib_minimal.cpp.o.d"
   "sdk_test_cpp.pdb"
   "sdk_test_cpp.wasm"
 )
