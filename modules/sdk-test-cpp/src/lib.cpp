@@ -1,73 +1,73 @@
-// SpacetimeDB C++ Module using minimal SDK
-#include "spacetimedb_minimal.h"
+// SpacetimeDB C++ Module demonstrating standard library usage with WASI shims
+#include <iostream>
+#include <string>
+#include <vector>
+#include <sstream>
+#include <algorithm>
+#include <cstdint>
 
-// Define a simple table structure
-struct OneU8 {
-    uint8_t n;
-    
-    // Serialize method for BSATN
-    bool serialize(SimpleBsatnWriter& writer) const {
-        return writer.write_u8(n);
-    }
-};
+// SpacetimeDB ABI imports
+extern "C" {
+uint16_t bytes_sink_write(uint32_t sink, const uint8_t* data, size_t* len);
+void console_log(uint8_t log_level, const uint8_t* target, uint32_t target_len,
+                 const uint8_t* filename, uint32_t filename_len, uint32_t line_number,
+                 const uint8_t* message, uint32_t message_len);
+}
+
+// Helper to write to bytes sink
+void write_to_sink(uint32_t sink, const uint8_t* data, size_t len) {
+    size_t written = len;
+    bytes_sink_write(sink, data, &written);
+}
 
 // Module exports
 extern "C" {
 
-// Describe module - start simple and build up
-STDB_EXPORT(__describe_module__)
+// Describe module - minimal module with one reducer
+__attribute__((export_name("__describe_module__")))
 void __describe_module__(uint32_t sink) {
-    uint8_t buffer[1024];
-    SimpleBsatnWriter writer(buffer, sizeof(buffer));
+    // Create a minimal module description
+    // RawModuleDef::V9 (variant 1)
+    uint8_t version = 1;
+    write_to_sink(sink, &version, 1);
     
-    // RawModuleDef::V9
-    writer.write_u8(1);
+    // Empty typespace (0 types)
+    uint32_t type_count = 0;
+    write_to_sink(sink, (uint8_t*)&type_count, 4);
     
-    // typespace: 1 type for our table
-    writer.write_u32_le(1);
+    // Empty tables (0 tables)
+    uint32_t table_count = 0;
+    write_to_sink(sink, (uint8_t*)&table_count, 4);
     
-    // Type 0: Product type for OneU8
-    writer.write_u8(2); // AlgebraicType::Product
-    writer.write_u32_le(1); // 1 field in product
-    // Field 0: "n" : U8
-    writer.write_u8(1); // Option::Some
-    writer.write_string("n");
-    writer.write_u8(12); // AlgebraicType::U8
+    // 1 reducer
+    uint32_t reducer_count = 1;
+    write_to_sink(sink, (uint8_t*)&reducer_count, 4);
     
-    // tables: 1 table
-    writer.write_u32_le(1);
+    // Reducer: "no_op"
+    // name length and name
+    uint32_t name_len = 5;
+    write_to_sink(sink, (uint8_t*)&name_len, 4);
+    write_to_sink(sink, (uint8_t*)"no_op", 5);
     
-    // Table 0: "one_u8"
-    writer.write_string("one_u8");
-    writer.write_u32_le(0); // product_type_ref = type 0
-    writer.write_u32_le(0); // primary_key = empty array
-    writer.write_u32_le(0); // indexes = empty array
-    writer.write_u32_le(0); // constraints = empty array
-    writer.write_u32_le(0); // sequences = empty array
-    writer.write_u8(0); // schedule = None
-    writer.write_u8(0); // table_type = User (variant 0)
-    writer.write_u8(0); // table_access = Public (variant 0)
+    // params: empty ProductType (0 elements)
+    uint32_t param_count = 0;
+    write_to_sink(sink, (uint8_t*)&param_count, 4);
     
-    // reducers: 1 reducer
-    writer.write_u32_le(1);
+    // lifecycle: Some(UserDefined)
+    uint8_t has_lifecycle = 1;
+    write_to_sink(sink, &has_lifecycle, 1);
+    uint8_t lifecycle = 0; // UserDefined
+    write_to_sink(sink, &lifecycle, 1);
     
-    // Reducer: no_op
-    writer.write_string("no_op");
-    writer.write_u32_le(0); // params: 0 elements (empty ProductType)
-    writer.write_u8(1); // lifecycle = Some
-    writer.write_u8(0); // UserDefined
-    
-    // Empty arrays
-    writer.write_u32_le(0); // types
-    writer.write_u32_le(0); // misc_exports
-    writer.write_u32_le(0); // row_level_security
-    
-    size_t len = writer.get_position();
-    bytes_sink_write(sink, buffer, &len);
+    // Empty arrays for the rest
+    uint32_t empty = 0;
+    write_to_sink(sink, (uint8_t*)&empty, 4); // types
+    write_to_sink(sink, (uint8_t*)&empty, 4); // misc_exports
+    write_to_sink(sink, (uint8_t*)&empty, 4); // row_level_security
 }
 
 // Handle reducer calls
-STDB_EXPORT(__call_reducer__)
+__attribute__((export_name("__call_reducer__")))
 int16_t __call_reducer__(
     uint32_t id,
     uint64_t sender_0, uint64_t sender_1, uint64_t sender_2, uint64_t sender_3,
@@ -77,9 +77,41 @@ int16_t __call_reducer__(
     uint32_t error
 ) {
     if (id == 0) {
-        // no_op reducer - just log and succeed
-        log_info("no_op reducer called");
-        return 0;
+        // Demonstrate various C++ standard library features
+        
+        // 1. Using std::string
+        std::string base_message = "C++ Standard Library Demo:";
+        
+        // 2. Using std::vector
+        std::vector<int> numbers = {1, 2, 3, 4, 5};
+        
+        // 3. Using std::algorithm
+        std::transform(numbers.begin(), numbers.end(), numbers.begin(), 
+                      [](int n) { return n * n; });
+        
+        // 4. Using std::stringstream
+        std::stringstream ss;
+        ss << base_message << " squares = [";
+        for (size_t i = 0; i < numbers.size(); ++i) {
+            if (i > 0) ss << ", ";
+            ss << numbers[i];
+        }
+        ss << "]";
+        
+        // 5. Using std::cout (though it goes through our WASI shim)
+        std::cout << "Debug: " << ss.str() << std::endl;
+        
+        // Get the final message
+        std::string message = ss.str();
+        
+        // Log using SpacetimeDB's console_log
+        console_log(2, // INFO level
+                   (uint8_t*)"module", 6,
+                   (uint8_t*)__FILE__, sizeof(__FILE__) - 1,
+                   __LINE__,
+                   (uint8_t*)message.c_str(), message.length());
+        
+        return 0; // Success
     }
     
     return -999; // No such reducer

@@ -11,7 +11,9 @@ set(MODULE_LIBRARY_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../bindings-cpp/library")
 include_directories(${MODULE_LIBRARY_DIR}/include)
 
 # Add the main module source file
-add_executable(sdk-test-cpp src/lib.cpp)
+add_executable(sdk-test-cpp 
+    src/lib.cpp
+)
 
 # Link the Module Library
 file(GLOB_RECURSE MODULE_LIBRARY_SOURCES
@@ -23,9 +25,8 @@ add_library(spacetimedb_module_library STATIC ${MODULE_LIBRARY_SOURCES})
 target_include_directories(spacetimedb_module_library PUBLIC ${MODULE_LIBRARY_DIR}/include)
 target_compile_definitions(spacetimedb_module_library PUBLIC SPACETIMEDB_MODULE_LIBRARY)
 
-# Link the module library to our module
-# Temporarily disabled to avoid WASI dependencies
-# target_link_libraries(sdk-test-cpp spacetimedb_module_library)
+# Link the module library to our module (includes WASI shims)
+target_link_libraries(sdk-test-cpp spacetimedb_module_library)
 
 # Set output name to match expected WASM module name
 set_target_properties(sdk-test-cpp PROPERTIES OUTPUT_NAME "sdk_test_cpp")
@@ -35,6 +36,6 @@ if(EMSCRIPTEN)
     set_target_properties(sdk-test-cpp PROPERTIES
         SUFFIX ".wasm"
         COMPILE_FLAGS ""
-        LINK_FLAGS "-s STANDALONE_WASM=1 -s EXPORT_ALL=1 -s ERROR_ON_UNDEFINED_SYMBOLS=0 -s DISABLE_EXCEPTION_CATCHING=1 -s MALLOC=emmalloc -s WASM=1 --no-entry -s FILESYSTEM=0 -s INITIAL_MEMORY=16MB -s ALLOW_MEMORY_GROWTH=0"
+        LINK_FLAGS "-s STANDALONE_WASM=1 -s EXPORTED_FUNCTIONS=['_malloc','_free'] -s ERROR_ON_UNDEFINED_SYMBOLS=0 -s DISABLE_EXCEPTION_CATCHING=1 -s DISABLE_EXCEPTION_THROWING=1 -s WASM=1 --no-entry -s FILESYSTEM=0 -s INITIAL_MEMORY=16MB -s ALLOW_MEMORY_GROWTH=1 -s ALLOW_TABLE_GROWTH=1"
     )
 endif()

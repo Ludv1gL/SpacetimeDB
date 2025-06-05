@@ -16,6 +16,9 @@
  * - Import declarations: Functions provided by the SpacetimeDB host
  * - Export declarations: Functions that modules must/can provide
  * - C++ convenience definitions: Type-safe wrappers and enums
+ * 
+ * Note: WASI shims for C++ standard library support are provided separately
+ * in spacetimedb/abi/wasi_shims.h and implemented in the module library.
  */
 
 // ========================================================================

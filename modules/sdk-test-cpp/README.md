@@ -5,13 +5,22 @@ This module is a comprehensive test suite for the SpacetimeDB C++ Module Library
 ## Current Status
 
 Successfully implemented:
-- ✅ Minimal C++ module without WASI dependencies
-- ✅ Working reducer with proper ABI integration
-- ✅ Custom minimal SDK (spacetimedb_minimal.h) that avoids C++ standard library
-- ✅ Console logging without iostream
+- ✅ WASI shims to enable C++ standard library usage in WebAssembly modules
+- ✅ Working C++ module that can use std::string, std::vector, std::algorithm, etc.
+- ✅ Proper ABI integration with SpacetimeDB imports/exports
+- ✅ Console logging that works through WASI shims
+- ✅ Clean WASM output with only required SpacetimeDB imports (no WASI dependencies)
+
+Demonstrated C++ standard library features:
+- ✅ std::string for string manipulation
+- ✅ std::vector for dynamic arrays
+- ✅ std::algorithm (std::transform with lambdas)
+- ✅ std::stringstream for string building
+- ✅ std::cout (redirected through WASI shims)
 
 In progress:
-- 🚧 Table support (BSATN encoding issues with AlgebraicType)
+- 🚧 Table support with proper BSATN serialization
+- 🚧 Integration with full SpacetimeDB C++ Module Library
 - 🚧 Full parity with Rust/C# test modules
 
 ## Building
@@ -65,37 +74,39 @@ The output WASM module will be at `build/sdk_test_cpp.wasm`.
 
 ## Implementation Notes
 
-### WASI Dependencies
-The full SpacetimeDB C++ library currently has WASI dependencies from:
-- C++ standard library (iostream, exceptions, etc.)
-- Memory allocation routines
-- File I/O operations
+### WASI Shim Approach
+To enable C++ standard library usage in SpacetimeDB modules, we implemented WASI shims that:
+- Stub out all WASI system calls with minimal implementations
+- Redirect stdout/stderr output through SpacetimeDB's console_log
+- Return success for most operations to avoid runtime errors
+- Handle special cases like fd_write to enable std::cout
 
-To work around this, we've created a minimal SDK (`spacetimedb_minimal.h`) that:
-- Uses only C-style imports/exports
-- Avoids C++ standard library features
-- Implements basic BSATN serialization manually
-- Provides simple logging without iostream
+This approach allows us to:
+- Use the full C++ standard library (STL containers, algorithms, iostream)
+- Avoid WASI imports in the final WASM module
+- Maintain compatibility with SpacetimeDB's security model
 
 ### Module Structure
 
-- `src/lib.cpp` - Main module implementation using minimal SDK
-- `src/spacetimedb_minimal.h` - Minimal SDK without WASI dependencies
-- `src/lib_minimal.cpp` - Ultra-minimal module for testing
+- `src/lib.cpp` - Main module implementation demonstrating C++ standard library usage
+- `src/wasi_shims.cpp` - WASI stub implementations to enable stdlib without WASI imports
 - `CMakeLists.txt` - Build configuration with proper Emscripten flags
+- `src/spacetimedb_minimal.h` - (Historical) Minimal SDK without stdlib
+- `src/lib_minimal.cpp` - (Historical) Ultra-minimal module for testing
 
 ### Emscripten Flags
 
-Critical flags to avoid WASI dependencies:
+Critical flags for SpacetimeDB modules with C++ standard library:
 ```cmake
--s STANDALONE_WASM=1    # Standalone WebAssembly module
--s EXPORT_ALL=1         # Export all functions
--s ERROR_ON_UNDEFINED_SYMBOLS=0  # Allow undefined imports
--s DISABLE_EXCEPTION_CATCHING=1  # No C++ exceptions
--s MALLOC=emmalloc      # Simple allocator
--s WASM=1              # Output WebAssembly
---no-entry             # No main function
--s FILESYSTEM=0        # No filesystem support
+-s STANDALONE_WASM=1              # Standalone WebAssembly module
+-s EXPORTED_FUNCTIONS=['_malloc','_free']  # Export memory management
+-s ERROR_ON_UNDEFINED_SYMBOLS=0   # Allow SpacetimeDB imports
+-s DISABLE_EXCEPTION_CATCHING=1   # Disable exception catching to avoid imports
+-s DISABLE_EXCEPTION_THROWING=1   # Disable exception throwing
+-s WASM=1                        # Output WebAssembly
+--no-entry                       # No main function
+-s FILESYSTEM=0                  # No filesystem support
+-s ALLOW_MEMORY_GROWTH=1         # Allow dynamic memory allocation
 ```
 
 ## Features Tested
