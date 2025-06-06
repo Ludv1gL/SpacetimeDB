@@ -5,15 +5,18 @@ namespace SpacetimeDb::bsatn {
 
     void Writer::write_bytes_raw(const void* data, size_t size) {
         const uint8_t* bytes = static_cast<const uint8_t*>(data);
-        buffer.insert(buffer.end(), bytes, bytes + size);
+        auto& target_buffer = buffer_ ? *buffer_ : buffer;
+        target_buffer.insert(target_buffer.end(), bytes, bytes + size);
     }
 
     void Writer::write_bool(bool value) {
-        buffer.push_back(value ? 1 : 0);
+        auto& target_buffer = buffer_ ? *buffer_ : buffer;
+        target_buffer.push_back(value ? 1 : 0);
     }
 
     void Writer::write_u8(uint8_t value) {
-        buffer.push_back(value);
+        auto& target_buffer = buffer_ ? *buffer_ : buffer;
+        target_buffer.push_back(value);
     }
 
     void Writer::write_u16_le(uint16_t value) {

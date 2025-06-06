@@ -68,7 +68,11 @@ The primary way to build C++ modules is using the centralized CMakeLists.txt loc
 # Navigate to the module directory
 cd modules/sdk-test-cpp
 
-# Configure and build a module with library support (for std::string, std::vector, etc.)
+# Build canonical example (lib_fixed_working.cpp) 
+emcmake cmake -B build
+cmake --build build
+
+# Build specific module
 emcmake cmake -B build -DMODULE_SOURCE=src/my_module.cpp
 cmake --build build
 
@@ -81,7 +85,7 @@ emcmake cmake -B build -DMODULE_SOURCE=src/my_module.cpp -DOUTPUT_NAME=custom_na
 cmake --build build
 
 # To build for release (with optimizations):
-emcmake cmake -B build -DMODULE_SOURCE=src/my_module.cpp -DCMAKE_BUILD_TYPE=Release
+emcmake cmake -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build
 ```
 
@@ -144,15 +148,17 @@ enum {
 };
 ```
 
-#### Current State of C++ Macros
-- **SPACETIMEDB_TABLE**: Compiles but fails at runtime (missing algebraic_type implementation)
-- **SPACETIMEDB_REDUCER**: Does not compile (signature mismatch)
-- **Recommendation**: Use direct FFI approach until macros are fully implemented
+#### Current State of C++ Macros ✅ FULLY WORKING
+- **SPACETIMEDB_REDUCER**: ✅ Fully working with proper parameter parsing
+- **SPACETIMEDB_TABLES_LIST**: ✅ X-Macro table registration system working
+- **Enhanced Logging**: ✅ LOG_INFO, LOG_DEBUG, LOG_TRACE with file/line information
+- **LogStopwatch**: ✅ Performance timing with microsecond precision
+- **Recommendation**: Use lib_fixed_working.cpp as the canonical example
 
 #### Working Module Examples
-- `lib_standalone_working.cpp` - Module with tables and reducers using library support
-- `lib_truly_standalone.cpp` - Module without any library dependencies
-- `lib_simple_table_test.cpp` - Minimal working example
+- `lib_fixed_working.cpp` - **CANONICAL EXAMPLE** ✅ Full feature demonstration with X-Macros
+- `lib_standalone_working.cpp` - ✅ Alternative implementation without X-Macros
+- `lib_truly_standalone.cpp` - ✅ Minimal example without C++ stdlib dependencies
 
 ### Rust Module Development
 ```bash

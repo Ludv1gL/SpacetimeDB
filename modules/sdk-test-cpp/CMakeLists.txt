@@ -25,9 +25,10 @@ message(STATUS "Found SpacetimeDB root: ${SPACETIMEDB_ROOT}")
 set(MODULE_LIBRARY_DIR "${SPACETIMEDB_ROOT}/bindings-cpp/library")
 add_subdirectory(${MODULE_LIBRARY_DIR} ${CMAKE_CURRENT_BINARY_DIR}/library)
 
-# Required parameter: MODULE_SOURCE - the source file to build
+# Optional parameter: MODULE_SOURCE - the source file to build (defaults to canonical example)
 if(NOT DEFINED MODULE_SOURCE)
-    message(FATAL_ERROR "MODULE_SOURCE must be defined. Usage: -DMODULE_SOURCE=path/to/source.cpp")
+    set(MODULE_SOURCE "src/lib_fixed_working.cpp")
+    message(STATUS "Using canonical example: ${MODULE_SOURCE}")
 endif()
 
 # Optional parameter: LINK_LIBRARY - whether to link the SpacetimeDB module library
@@ -83,6 +84,7 @@ message(STATUS "  Link Library: ${LINK_LIBRARY}")
 message(STATUS "  Build Type: ${CMAKE_BUILD_TYPE}")
 message(STATUS "")
 message(STATUS "Usage examples:")
-message(STATUS "  cmake -B build -DMODULE_SOURCE=src/my_module.cpp")
-message(STATUS "  cmake -B build -DMODULE_SOURCE=src/my_module.cpp -DLINK_LIBRARY=OFF")
-message(STATUS "  cmake -B build -DMODULE_SOURCE=src/my_module.cpp -DOUTPUT_NAME=custom_name")
+message(STATUS "  cmake -B build                                   # Build canonical example (lib_fixed_working.cpp)")
+message(STATUS "  cmake -B build -DMODULE_SOURCE=src/my_module.cpp # Build custom module")
+message(STATUS "  cmake -B build -DLINK_LIBRARY=OFF                # Build without C++ stdlib support")
+message(STATUS "  cmake -B build -DOUTPUT_NAME=custom_name         # Custom output name")

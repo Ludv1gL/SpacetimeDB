@@ -1,143 +1,203 @@
-# SDK Test C++ Module
+# SpacetimeDB C++ Module Examples
 
-This module is a comprehensive test suite for the SpacetimeDB C++ Module Library. It replicates the functionality of `sdk-test` (Rust) and `sdk-test-cs` (C#) using the C++ Module Library.
+This directory contains working examples of SpacetimeDB C++ modules using the SpacetimeDB C++ Module Library. The examples demonstrate tables, reducers, logging, and the full range of C++ standard library features available in SpacetimeDB modules.
 
-## Current Status
+## Quick Start
 
-Successfully implemented:
-- ✅ WASI shims to enable C++ standard library usage in WebAssembly modules
-- ✅ Working C++ module that can use std::string, std::vector, std::algorithm, etc.
-- ✅ Proper ABI integration with SpacetimeDB imports/exports
-- ✅ Console logging that works through WASI shims
-- ✅ Clean WASM output with only required SpacetimeDB imports (no WASI dependencies)
+The fastest way to build and test a working C++ module:
 
-Demonstrated C++ standard library features:
-- ✅ std::string for string manipulation
-- ✅ std::vector for dynamic arrays
-- ✅ std::algorithm (std::transform with lambdas)
-- ✅ std::stringstream for string building
-- ✅ std::cout (redirected through WASI shims)
+```bash
+# Build the canonical example (lib_fixed_working.cpp)
+emcmake cmake -B build
+cmake --build build
 
-In progress:
-- 🚧 Table support with proper BSATN serialization
-- 🚧 Integration with full SpacetimeDB C++ Module Library
-- 🚧 Full parity with Rust/C# test modules
+# Publish it to SpacetimeDB
+spacetime start  # if not already running
+spacetime publish --bin-path build/lib_fixed_working.wasm my-cpp-module
+
+# Test the module
+spacetime call my-cpp-module init_db
+spacetime call my-cpp-module insert_one_u8 42
+spacetime sql my-cpp-module "SELECT * FROM one_u8"
+spacetime logs my-cpp-module
+```
+
+## Examples
+
+### 📋 lib_fixed_working.cpp (Canonical Example)
+**Status: ✅ Fully Working**
+
+The primary example demonstrating all core features:
+- **X-Macro Table System**: Clean table definitions using `SPACETIMEDB_TABLES_LIST`
+- **Multiple Tables**: Both public and private tables
+- **Multiple Reducers**: Various parameter types and complexity levels
+- **Enhanced Logging**: INFO/DEBUG/TRACE levels with file/line information
+- **Performance Timing**: Automatic LogStopwatch timing spans
+- **C++ Standard Library**: Full std::string, std::vector support
+
+```cpp
+#define SPACETIMEDB_TABLES_LIST \
+    X(OneU8, one_u8, true) \
+    X(OneU8, another_u8, false)
+
+#include <spacetimedb/spacetimedb.h>
+
+struct OneU8 { uint8_t n; };
+
+SPACETIMEDB_REDUCER(insert_one_u8, ReducerContext ctx, uint8_t n) {
+    OneU8 row{n};
+    ctx.db->one_u8().insert(row);
+}
+```
+
+### 📋 lib_standalone_working.cpp
+**Status: ✅ Working Alternative**
+
+Alternative implementation without X-Macros, showing:
+- Direct table registration
+- Complex struct types (id, name, age)
+- Multiple field types (uint32_t, std::string, uint8_t)
+
+### 📋 lib_truly_standalone.cpp  
+**Status: ✅ Minimal Example**
+
+Minimal module without C++ standard library:
+- No std::string or std::vector dependencies
+- Direct WASM exports
+- Useful for understanding the underlying ABI
 
 ## Building
 
 ### Prerequisites
-- Emscripten SDK (properly activated with `source emsdk_env.sh`)
-- CMake 3.20+
-- C++20 compiler
-- SpacetimeDB CLI
+- **Emscripten SDK** with activated environment (`source emsdk_env.sh`)
+- **CMake 3.20+**
+- **C++20 compiler**
+- **SpacetimeDB CLI**
 
-### Build Steps
+### Build Commands
 
 ```bash
-# Using the build script
-./build.sh
+# Build canonical example
+emcmake cmake -B build
+cmake --build build
 
-# Or manually
-mkdir -p build && cd build
-emcmake cmake ..
-emmake make
+# Build specific module
+emcmake cmake -B build -DMODULE_SOURCE=src/lib_standalone_working.cpp
+cmake --build build
+
+# Build without C++ stdlib (for minimal modules)
+emcmake cmake -B build -DMODULE_SOURCE=src/lib_truly_standalone.cpp -DLINK_LIBRARY=OFF
+cmake --build build
+
+# Custom output name
+emcmake cmake -B build -DOUTPUT_NAME=my_custom_module
+cmake --build build
 ```
 
-The output WASM module will be at `build/sdk_test_cpp.wasm`.
-
-### Publishing and Verification
-
-1. **Start SpacetimeDB** (if not already running):
-   ```bash
-   spacetime start
-   ```
-
-2. **Publish the module**:
-   ```bash
-   spacetime publish sdktestcpp -b build/sdk_test_cpp.wasm
-   ```
-
-3. **Verify the module**:
-   ```bash
-   spacetime describe sdktestcpp --json
-   ```
-
-4. **Call a reducer**:
-   ```bash
-   spacetime call sdktestcpp no_op
-   ```
-
-5. **Check logs**:
-   ```bash
-   spacetime logs sdktestcpp --follow
-   ```
-
-## Implementation Notes
-
-### WASI Shim Approach
-To enable C++ standard library usage in SpacetimeDB modules, we implemented WASI shims that:
-- Stub out all WASI system calls with minimal implementations
-- Redirect stdout/stderr output through SpacetimeDB's console_log
-- Return success for most operations to avoid runtime errors
-- Handle special cases like fd_write to enable std::cout
-
-This approach allows us to:
-- Use the full C++ standard library (STL containers, algorithms, iostream)
-- Avoid WASI imports in the final WASM module
-- Maintain compatibility with SpacetimeDB's security model
-
-### Module Structure
-
-- `src/lib.cpp` - Main module implementation demonstrating C++ standard library usage
-- `src/wasi_shims.cpp` - WASI stub implementations to enable stdlib without WASI imports
-- `CMakeLists.txt` - Build configuration with proper Emscripten flags
-- `src/spacetimedb_minimal.h` - (Historical) Minimal SDK without stdlib
-- `src/lib_minimal.cpp` - (Historical) Ultra-minimal module for testing
-
-### Emscripten Flags
-
-Critical flags for SpacetimeDB modules with C++ standard library:
-```cmake
--s STANDALONE_WASM=1              # Standalone WebAssembly module
--s EXPORTED_FUNCTIONS=['_malloc','_free']  # Export memory management
--s ERROR_ON_UNDEFINED_SYMBOLS=0   # Allow SpacetimeDB imports
--s DISABLE_EXCEPTION_CATCHING=1   # Disable exception catching to avoid imports
--s DISABLE_EXCEPTION_THROWING=1   # Disable exception throwing
--s WASM=1                        # Output WebAssembly
---no-entry                       # No main function
--s FILESYSTEM=0                  # No filesystem support
--s ALLOW_MEMORY_GROWTH=1         # Allow dynamic memory allocation
+### Release Build
+```bash
+emcmake cmake -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build
 ```
 
-## Features Tested
+## Testing Your Module
 
-### Data Types
-- All primitive types (u8-u256, i8-i256, bool, f32, f64, string)
-- SpacetimeDB special types (Identity, ConnectionId, Timestamp, TimeDuration)
-- Vectors of all types
-- Optional types
-- Custom structs (unit, simple, complex)
-- Enums (simple and with payloads)
+After building, test your module with SpacetimeDB:
 
-### Table Features (Planned)
-- Basic tables
-- Tables with unique constraints
-- Tables with primary keys
-- Tables with indexes (btree)
-- Auto-increment fields
-- Scheduled tables
+```bash
+# 1. Start SpacetimeDB
+spacetime start
 
-### Operations
-- ✅ Reducer calls
-- ✅ Console logging
-- 🚧 Insert operations for all types
-- 🚧 Update operations for unique/primary key tables
-- 🚧 Delete operations
-- 🚧 Batch operations
-- 🚧 Complex queries
+# 2. Publish module
+spacetime publish --bin-path build/lib_fixed_working.wasm test-module
 
-### Advanced Features (Planned)
-- Client visibility filters
-- Scheduled reducers
-- Connection/identity tracking
-- Timestamp tracking
+# 3. Check schema
+spacetime describe test-module --json
+
+# 4. Test reducers
+spacetime call test-module init_db
+spacetime call test-module insert_one_u8 123
+spacetime call test-module insert_with_offset 10 20
+
+# 5. Query data
+spacetime sql test-module "SELECT * FROM one_u8"
+
+# 6. Monitor logs
+spacetime logs test-module -f
+```
+
+## Features Demonstrated
+
+### ✅ Core Features (Working)
+- **Table Registration**: X-Macro and direct registration patterns
+- **Reducer Definitions**: 0-3 parameter reducers with various types
+- **Data Types**: uint8_t, uint32_t, std::string
+- **BSATN Serialization**: Automatic struct serialization
+- **Enhanced Logging**: Multi-level logging with context information
+- **Performance Timing**: LogStopwatch for microsecond-precision timing
+- **Memory Management**: Full C++ stdlib support via WASI shims
+
+### ✅ Table Operations (Working)
+- Table creation (public/private)
+- Row insertion
+- Data querying via SQL
+- Multiple table support
+
+### ✅ Advanced Features (Working)
+- Enhanced ReducerContext with database access
+- Automatic table accessor generation
+- Complex parameter parsing
+- Error handling and logging
+
+## Architecture
+
+### WASI Shims Approach
+To enable C++ standard library in WebAssembly modules:
+- **WASI shims** provide minimal implementations of system calls
+- **stdout/stderr** redirected through SpacetimeDB's console_log
+- **No WASI imports** in final WASM (maintains security model)
+- **Full C++ stdlib** including std::string, std::vector, std::algorithm
+
+### Module Library Integration
+- **CMake build system** with automatic SpacetimeDB root detection
+- **Static library compilation** for consistent builds
+- **Emscripten toolchain** with optimized WASM flags
+- **Header-only components** for maximum compatibility
+
+### Generated Code Integration
+- **Autogenerated headers** (.g.h files) for BSATN types
+- **Code regeneration** via `cargo run --example regen-cpp-moduledef`
+- **Type-safe bindings** for SpacetimeDB core types
+
+## Troubleshooting
+
+### Common Issues
+
+**Module won't publish:**
+- Ensure you're using `LINK_LIBRARY=ON` for modules using std::string/std::vector
+- Check that WASI shims are properly linked
+- Verify Emscripten environment is activated
+
+**BSATN errors:**
+- Regenerate autogen headers if needed
+- Ensure struct fields match registered field descriptors
+
+**Runtime errors:**
+- Check `spacetime logs your-module` for detailed error information
+- Verify reducer parameter types match call arguments
+
+### Getting Help
+- Check SpacetimeDB documentation
+- Review working examples in this directory
+- Use `spacetime describe` to debug module schema issues
+
+## Development Workflow
+
+1. **Create** your module source file in `src/`
+2. **Build** with CMake targeting your source file
+3. **Publish** to local SpacetimeDB instance
+4. **Test** with spacetime CLI commands
+5. **Debug** using logs and describe commands
+6. **Iterate** based on results
+
+The lib_fixed_working.cpp example provides a complete template for most SpacetimeDB module use cases.
