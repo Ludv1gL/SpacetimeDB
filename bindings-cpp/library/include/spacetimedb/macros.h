@@ -263,8 +263,8 @@ namespace SpacetimeDb {
     }
 
 // Enhanced reducer macro with ReducerKind support
-// Usage: SPACETIMEDB_REDUCER(my_reducer, UserDefined, ctx, int arg1, std::string arg2)
-#define SPACETIMEDB_REDUCER(name, kind, ctx_param, ...) \
+// Usage: SPACETIMEDB_REDUCER_EX(my_reducer, UserDefined, ctx, int arg1, std::string arg2)
+#define SPACETIMEDB_REDUCER_EX(name, kind, ctx_param, ...) \
     void name(SpacetimeDb::ReducerContext& ctx_param, ##__VA_ARGS__); \
     namespace { \
         SpacetimeDb::Internal::FFI::Errno name##_wrapper( \
@@ -295,13 +295,13 @@ namespace SpacetimeDb {
 
 // Lifecycle reducer shortcuts - C# Attribute Equivalents
 #define SPACETIMEDB_INIT(name, ctx_param, ...) \
-    SPACETIMEDB_REDUCER(name, Init, ctx_param, ##__VA_ARGS__)
+    SPACETIMEDB_REDUCER_EX(name, Init, ctx_param, ##__VA_ARGS__)
 
 #define SPACETIMEDB_CLIENT_CONNECTED(name, ctx_param, ...) \
-    SPACETIMEDB_REDUCER(name, ClientConnected, ctx_param, ##__VA_ARGS__)
+    SPACETIMEDB_REDUCER_EX(name, ClientConnected, ctx_param, ##__VA_ARGS__)
 
 #define SPACETIMEDB_CLIENT_DISCONNECTED(name, ctx_param, ...) \
-    SPACETIMEDB_REDUCER(name, ClientDisconnected, ctx_param, ##__VA_ARGS__)
+    SPACETIMEDB_REDUCER_EX(name, ClientDisconnected, ctx_param, ##__VA_ARGS__)
 
 // Required versions (future enhancement)
 #define SPACETIMEDB_CLIENT_CONNECTED_REQUIRED(name, ctx_param, ...) \
@@ -312,7 +312,7 @@ namespace SpacetimeDb {
 
 // Scheduled reducer with duration
 #define SPACETIMEDB_SCHEDULED(name, duration, ctx_param, ...) \
-    SPACETIMEDB_REDUCER(name, Scheduled, ctx_param, ##__VA_ARGS__) \
+    SPACETIMEDB_REDUCER_EX(name, Scheduled, ctx_param, ##__VA_ARGS__) \
     namespace { \
         struct Register_##name##_Schedule { \
             Register_##name##_Schedule() { \
@@ -324,7 +324,7 @@ namespace SpacetimeDb {
 
 // Scheduled at specific time
 #define SPACETIMEDB_SCHEDULED_AT(name, ctx_param, ...) \
-    SPACETIMEDB_REDUCER(name, Scheduled, ctx_param, ##__VA_ARGS__) \
+    SPACETIMEDB_REDUCER_EX(name, Scheduled, ctx_param, ##__VA_ARGS__) \
     namespace { \
         struct Register_##name##_ScheduleAt { \
             Register_##name##_ScheduleAt() { \

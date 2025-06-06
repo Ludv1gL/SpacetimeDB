@@ -530,6 +530,14 @@ public:
     #undef X
 };
 
+// Now that ModuleDatabase is defined, implement ReducerContext::get_db
+namespace SpacetimeDb {
+    inline ::ModuleDatabase& ReducerContext::get_db() {
+        static thread_local ::ModuleDatabase db_instance;
+        return db_instance;
+    }
+}
+
 namespace SpacetimeDb {
 
 // -----------------------------------------------------------------------------
@@ -927,7 +935,16 @@ inline void initialize_module() {
 SPACETIMEDB_TABLES_LIST
 #undef X
 
-// Macros are already defined in macros.h
+// Simple reducer macro that matches lib_fixed_working.cpp syntax
+#ifndef SPACETIMEDB_REDUCER
+#define SPACETIMEDB_REDUCER(name, ...) \
+    void name(__VA_ARGS__); \
+    __attribute__((export_name("__preinit__30_reducer_" #name))) \
+    extern "C" void SPACETIMEDB_CAT(_preinit_register_reducer_, name)() { \
+        SpacetimeDb::register_reducer_impl(#name, name); \
+    } \
+    void name(__VA_ARGS__)
+#endif
 
 // =============================================================================
 // MODULE EXPORTS

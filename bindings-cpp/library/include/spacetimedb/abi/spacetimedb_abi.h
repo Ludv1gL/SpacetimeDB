@@ -265,11 +265,14 @@ extern "C" {
 
 // These match the existing SDK usage but are deprecated
 // New code should use the non-underscore versions above
-STDB_IMPORT(_get_table_id)
-uint16_t _get_table_id(const uint8_t* name_ptr, size_t name_len, uint32_t* out_table_id_ptr);
+// Note: _get_table_id is an alias to table_id_from_name for API compatibility
+#define _get_table_id table_id_from_name
 
-STDB_IMPORT(_insert)
-uint16_t _insert(uint32_t table_id, uint8_t* row_bsatn_ptr, size_t row_bsatn_len);
+// Wrapper function for _insert to match expected signature
+inline uint16_t _insert(uint32_t table_id, uint8_t* row_bsatn_ptr, size_t row_bsatn_len) {
+    size_t len = row_bsatn_len;
+    return datastore_insert_bsatn(table_id, row_bsatn_ptr, &len);
+}
 
 STDB_IMPORT(_delete_by_col_eq)
 uint16_t _delete_by_col_eq(uint32_t table_id, uint32_t col_id, const uint8_t* value_bsatn_ptr,

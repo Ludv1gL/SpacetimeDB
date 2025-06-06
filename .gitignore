@@ -217,3 +217,7 @@ new.json
 *.pem
 .ok.sql
 *.wasm
+
+# C++ module build directories
+modules/sdk-test-cpp/build/
+modules/**/build/
