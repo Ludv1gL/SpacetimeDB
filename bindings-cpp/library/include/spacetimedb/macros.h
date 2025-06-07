@@ -730,4 +730,53 @@ Result<T, E> Err(E&& error) {
     return Result<T, E>(std::forward<E>(error));
 }
 
+// =============================================================================
+// CONSTRAINT MACROS - Primary Key and Unique Constraints
+// =============================================================================
+
+// Primary key constraint macro
+#define SPACETIMEDB_PRIMARY_KEY(table_type, column_name) \
+    namespace { \
+        struct Register_##table_type##_##column_name##_PK { \
+            Register_##table_type##_##column_name##_PK() { \
+                auto field_getter = [](const table_type& row) -> const auto& { return row.column_name; }; \
+                SpacetimeDb::IndexRegistry::instance().register_primary_key<table_type, decltype(field_getter(std::declval<const table_type&>()))>( \
+                    #table_type, #column_name, \
+                    std::function<const decltype(field_getter(std::declval<const table_type&>()))&(const table_type&)>(field_getter) \
+                ); \
+            } \
+        }; \
+        static Register_##table_type##_##column_name##_PK register_##table_type##_##column_name##_pk_instance; \
+    }
+
+// Unique constraint macro
+#define SPACETIMEDB_UNIQUE(table_type, column_name) \
+    namespace { \
+        struct Register_##table_type##_##column_name##_Unique { \
+            Register_##table_type##_##column_name##_Unique() { \
+                auto field_getter = [](const table_type& row) -> const auto& { return row.column_name; }; \
+                SpacetimeDb::IndexRegistry::instance().register_unique_constraint<table_type, decltype(field_getter(std::declval<const table_type&>()))>( \
+                    #table_type, #column_name, \
+                    std::function<const decltype(field_getter(std::declval<const table_type&>()))&(const table_type&)>(field_getter) \
+                ); \
+            } \
+        }; \
+        static Register_##table_type##_##column_name##_Unique register_##table_type##_##column_name##_unique_instance; \
+    }
+
+// Index macro (for non-unique indexes)
+#define SPACETIMEDB_INDEX(table_type, column_name, index_name) \
+    namespace { \
+        struct Register_##table_type##_##index_name##_Index { \
+            Register_##table_type##_##index_name##_Index() { \
+                auto field_getter = [](const table_type& row) -> const auto& { return row.column_name; }; \
+                SpacetimeDb::IndexRegistry::instance().register_index<table_type, decltype(field_getter(std::declval<const table_type&>()))>( \
+                    #table_type, #column_name, #index_name, false, \
+                    std::function<const decltype(field_getter(std::declval<const table_type&>()))&(const table_type&)>(field_getter) \
+                ); \
+            } \
+        }; \
+        static Register_##table_type##_##index_name##_Index register_##table_type##_##index_name##_index_instance; \
+    }
+
 #endif // SPACETIMEDB_MACROS_H

@@ -174,6 +174,53 @@ public:
     std::string name() const override { return "CHECK " + constraint_name_; }
 };
 
+
+/**
+ * @brief Primary key constraint validator.
+ * @ingroup sdk_constraints
+ */
+template<typename T, typename FieldType>
+class PrimaryKeyValidator : public IConstraintValidator<T> {
+private:
+    std::string column_name_;
+    std::function<const FieldType&(const T&)> field_getter_;
+    
+public:
+    PrimaryKeyValidator(const std::string& column, std::function<const FieldType&(const T&)> getter)
+        : column_name_(column), field_getter_(getter) {}
+    
+    ValidationResult validate(const T& row) const override {
+        ValidationResult result;
+        const FieldType& value = field_getter_(row);
+        
+        // Check for NULL in primary key (if applicable)
+        if constexpr (std::is_pointer_v<FieldType>) {
+            if (value == nullptr) {
+                result.add_violation(ConstraintViolation(
+                    ConstraintViolation::PRIMARY_KEY,
+                    "pk_" + column_name_,
+                    column_name_,
+                    "Primary key column '" + column_name_ + "' cannot be NULL"
+                ));
+            }
+        } else if constexpr (std::is_same_v<FieldType, std::optional<typename FieldType::value_type>>) {
+            if (!value.has_value()) {
+                result.add_violation(ConstraintViolation(
+                    ConstraintViolation::PRIMARY_KEY,
+                    "pk_" + column_name_,
+                    column_name_,
+                    "Primary key column '" + column_name_ + "' cannot be NULL"
+                ));
+            }
+        }
+        
+        return result;
+    }
+    
+    std::string name() const override { return "PRIMARY KEY " + column_name_; }
+    std::string column() const { return column_name_; }
+};
+
 /**
  * @brief Data type constraint validator.
  * @ingroup sdk_constraints

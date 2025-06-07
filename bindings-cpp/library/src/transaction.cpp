@@ -65,8 +65,8 @@ public:
         
         state_ = TransactionState::Committed;
         
-        // Log transaction completion
-        SpacetimeDb::log(SpacetimeDb::LogLevel::DEBUG, "Transaction committed");
+        // Log transaction completion (using proper spacetimedb.h logging)
+        SpacetimeDb::log_info("Transaction committed successfully");
     }
     
     void rollback() {
@@ -81,7 +81,7 @@ public:
         // Clear all savepoints
         savepoints_.clear();
         
-        SpacetimeDb::log(SpacetimeDb::LogLevel::DEBUG, "Transaction rolled back");
+        SpacetimeDb::log_info("Transaction rolled back");
         
         // To actually rollback in SpacetimeDB, we need to make the reducer fail
         throw TransactionError("Transaction explicitly rolled back");
@@ -150,7 +150,7 @@ public:
         }
         
         // Note: Actual data rollback would require SpacetimeDB support
-        SpacetimeDb::log(SpacetimeDb::LogLevel::DEBUG, "Rolled back to savepoint: " + name);
+        SpacetimeDb::log_info("Rolled back to savepoint: " + name);
     }
     
     ModuleDatabase& database() {
@@ -273,8 +273,7 @@ Transaction TransactionManager::begin(ReducerContext& ctx, const TransactionOpti
         case IsolationLevel::Serializable: isolation_str = "Serializable"; break;
     }
     
-    SpacetimeDb::log(SpacetimeDb::LogLevel::DEBUG,
-                     "Beginning transaction with isolation level: " + isolation_str);
+    SpacetimeDb::log_info("Beginning transaction with isolation level: " + isolation_str);
     
     return Transaction(std::move(impl));
 }

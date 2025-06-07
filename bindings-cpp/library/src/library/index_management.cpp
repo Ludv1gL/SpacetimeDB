@@ -17,60 +17,7 @@ namespace index_utils {
     }
 }
 
-// Template specializations will need to be implemented for specific types
-// For now, we provide the basic infrastructure
-
-template<typename RowType>
-IndexIterator<RowType>::IndexIterator(RowIter iter) 
-    : row_iter_(iter), is_end_(false) {
-    LoadNext();
-}
-
-template<typename RowType>
-IndexIterator<RowType>::IndexIterator() 
-    : row_iter_(0), is_end_(true) {
-}
-
-template<typename RowType>
-void IndexIterator<RowType>::LoadNext() {
-    // TODO: Implement row loading from iterator
-    // This will require FFI calls to get the next row
-    is_end_ = true;  // For now, mark as end
-}
-
-template<typename RowType>
-IndexIterator<RowType>& IndexIterator<RowType>::operator++() {
-    if (!is_end_) {
-        LoadNext();
-    }
-    return *this;
-}
-
-template<typename RowType>
-const RowType& IndexIterator<RowType>::operator*() const {
-    if (is_end_ || !current_row_) {
-        throw std::runtime_error("Iterator is at end or invalid");
-    }
-    return *current_row_;
-}
-
-template<typename RowType>
-const RowType* IndexIterator<RowType>::operator->() const {
-    if (is_end_ || !current_row_) {
-        return nullptr;
-    }
-    return &(*current_row_);
-}
-
-template<typename RowType>
-bool IndexIterator<RowType>::operator!=(const IndexIterator& other) const {
-    return is_end_ != other.is_end_ || row_iter_ != other.row_iter_;
-}
-
-template<typename RowType>
-bool IndexIterator<RowType>::operator==(const IndexIterator& other) const {
-    return !(*this != other);
-}
+// Template specializations for specific types can be added here if needed
 
 // Helper function for BSATN serialization of bounds
 template<typename T>
