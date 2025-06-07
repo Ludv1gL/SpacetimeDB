@@ -282,11 +282,8 @@ namespace SpacetimeDb {
         \
         struct Register_##name##_Reducer { \
             Register_##name##_Reducer() { \
-                SpacetimeDb::Internal::Module::RegisterReducer( \
-                    SPACETIMEDB_STRINGIFY(name), \
-                    name##_wrapper, \
-                    static_cast<int>(SpacetimeDb::ReducerKind::kind) \
-                ); \
+                /* FIXED: Use the working register_reducer_impl instead of broken Module::RegisterReducer */ \
+                SpacetimeDb::register_reducer_impl(SPACETIMEDB_STRINGIFY(name), name); \
             } \
         }; \
         static Register_##name##_Reducer register_##name##_reducer_instance; \

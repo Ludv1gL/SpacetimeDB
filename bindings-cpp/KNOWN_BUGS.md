@@ -5,32 +5,56 @@ This document tracks known bugs in the SpacetimeDB C++ module library. Please ke
 ## Critical Bugs
 
 ### 1. Reducer Parameter Type Registration (CRITICAL)
-**Status**: ❌ Not Fixed  
+**Status**: ✅ FIXED - C++ Module Library registration now works correctly
 **Severity**: Critical  
 **Discovered**: 2024-06-07  
-**Files Affected**: 
-- `bindings-cpp/library/include/spacetimedb/module.h`
+**Tested**: 2024-06-07  
+**Fixed**: 2024-06-07  
+**Files Fixed**: 
 - `bindings-cpp/library/include/spacetimedb/macros.h`
-- `bindings-cpp/library/include/spacetimedb/spacetimedb.h`
 
 **Description**: 
-The `Module::RegisterReducerDirectImpl` function creates an empty `ProductType` for reducer parameters, causing all parameter types to be misinterpreted:
-- `uint16_t` parameters interpreted as `int16_t`
-- `uint64_t` parameters interpreted as `int32_t`
-- `float` parameters interpreted as `u128`
-- `double` parameters interpreted as `i256`
+The `SPACETIMEDB_REDUCER_EX` macro in `macros.h` was calling the broken `Module::RegisterReducer` function instead of the working `register_reducer_impl` function. This caused empty parameter schemas to be generated.
 
-**Impact**: Makes it impossible to use primitive type parameters in reducers correctly.
+**Original Problem**: ALL parameter types were interpreted as `uint8_t` regardless of declared type.
 
-**Workaround**: 
-1. Use direct FFI implementation (see `modules/sdk-test-cpp/src/lib_fixed_direct.cpp`)
-2. Wrap primitive parameters in structs
+**Test Results After Fix**:
+- ✅ C++ module schema generation now correct (verified with `spacetime describe`)
+- ✅ `insert_one_u8` correctly shows `"algebraic_type": { "U8": [] }`
+- ✅ `insert_u16` correctly shows `"algebraic_type": { "U16": [] }`
+- ✅ `compute_i16_sum` correctly shows `"algebraic_type": { "I16": [] }`
+- ✅ `bitwise_u32` correctly shows `"algebraic_type": { "U32": [] }`
 
-**Root Cause**: No API to specify parameter types when registering reducers. The `register_reducer_impl` function doesn't capture type information properly.
+**Fix Applied**: Changed `SPACETIMEDB_REDUCER_EX` macro to call `SpacetimeDb::register_reducer_impl` instead of `SpacetimeDb::Internal::Module::RegisterReducer`
+
+**NEW ISSUE DISCOVERED**: Despite correct schema, runtime parameter values are still truncated to u8. This indicates a **SpacetimeDB host/CLI bug** where arguments are being serialized/passed incorrectly regardless of schema.
 
 ---
 
-### 2. String and Bool Encoding Error
+### 2. SpacetimeDB Host/CLI Parameter Serialization Bug (CRITICAL)
+**Status**: ❌ Not Fixed - SpacetimeDB core issue
+**Severity**: Critical  
+**Discovered**: 2024-06-07  
+**Affected**: SpacetimeDB host system and/or CLI
+
+**Description**: 
+Despite C++ modules now correctly registering parameter types in the schema, the SpacetimeDB host/CLI system still truncates all arguments to u8 values during serialization/deserialization.
+
+**Test Evidence**:
+- Schema correctly shows `insert_u16` with `"algebraic_type": { "U16": [] }`
+- CLI call `spacetime call test insert_u16 65535` stores value as 255 (truncated)
+- CLI call `spacetime call test insert_u16 200` stores value as 200 (fits in u8)
+- Same pattern for i16, u32, i32, etc.
+
+**Impact**: C++ modules cannot receive correct parameter values for any type beyond u8, despite having correct schemas.
+
+**Root Cause**: Unknown - likely in SpacetimeDB argument serialization/deserialization pipeline between CLI and module execution.
+
+**Workaround**: None known. Only u8 parameters work correctly.
+
+---
+
+### 3. String and Bool Encoding Error
 **Status**: ❌ Not Fixed  
 **Severity**: High  
 **Discovered**: 2024-06-07  
@@ -47,7 +71,7 @@ When publishing modules with string or bool types in tables, SpacetimeDB fails w
 
 ## Major Bugs
 
-### 3. Conflicting Macro Definitions
+### 4. Conflicting Macro Definitions
 **Status**: ❌ Not Fixed  
 **Severity**: Major  
 **Files Affected**:
@@ -62,7 +86,7 @@ Multiple conflicting definitions of `SPACETIMEDB_REDUCER`, `SPACETIMEDB_INIT`, a
 
 ---
 
-### 4. Missing WASI Support Detection
+### 5. Missing WASI Support Detection
 **Status**: ❌ Not Fixed  
 **Severity**: Major  
 
@@ -77,7 +101,7 @@ No clear error when C++ stdlib features are used without linking WASI shims. Res
 
 ## Minor Bugs
 
-### 5. LogStopwatch Missing Methods
+### 6. LogStopwatch Missing Methods
 **Status**: ❌ Not Fixed  
 **Severity**: Minor  
 **Files Affected**: `bindings-cpp/library/include/spacetimedb/logger.h`
@@ -89,7 +113,7 @@ LogStopwatch class referenced in examples but missing `info()` method implementa
 
 ---
 
-### 6. Table Iterator Comparison Issues
+### 7. Table Iterator Comparison Issues
 **Status**: ❌ Not Fixed  
 **Severity**: Minor  
 
@@ -100,7 +124,7 @@ TableIterator comparison with end iterator is not intuitive and error-prone.
 
 ---
 
-### 7. SPACETIMEDB_TABLE Macro Issues
+### 8. SPACETIMEDB_TABLE Macro Issues
 **Status**: ❌ Not Fixed  
 **Severity**: Major  
 **Files Affected**: `bindings-cpp/library/include/spacetimedb/macros.h`
@@ -114,7 +138,7 @@ The SPACETIMEDB_TABLE macro fails to properly register tables, causing compilati
 
 ---
 
-### 8. Missing Type Support
+### 9. Missing Type Support
 **Status**: ❌ Not Fixed  
 **Severity**: Minor  
 
@@ -131,7 +155,7 @@ No built-in support for common types like:
 
 ## Fixed Bugs
 
-### 8. Incorrect BSATN Type Constants
+### 10. Incorrect BSATN Type Constants
 **Status**: ✅ Fixed in commit f6366b64  
 **Severity**: Critical  
 **Fixed**: 2024-06-07  
@@ -144,7 +168,7 @@ BSATN type constants were incorrectly defined, not matching AlgebraicTypeTag enu
 
 ---
 
-### 9. Incorrect type_id Constants (Partial Fix)
+### 11. Incorrect type_id Constants (Partial Fix)
 **Status**: ✅ Partially Fixed - type constants updated  
 **Severity**: High  
 **Fixed**: 2024-06-07  

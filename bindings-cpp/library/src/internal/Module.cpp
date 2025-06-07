@@ -115,6 +115,7 @@ void Module::RegisterReducerDirectImpl(const std::string& name, ReducerFn fn) {
     reducerNames.push_back(name);
 }
 
+
 AlgebraicTypeRef Module::RegisterTypeGeneric(const std::string& typeName,
                                      std::function<std::vector<uint8_t>(AlgebraicTypeRef)> makeType) {
     auto& types = moduleDef.typespace.types;

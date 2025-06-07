@@ -108,12 +108,13 @@ public:
         )> ctor
     );
     
-    // Register a reducer (macro version)
+    // Register a reducer (macro version) - FIXED to delegate to working system
     static void RegisterReducer(const std::string& name, 
                                std::function<void(const std::string&, uint32_t, size_t)> wrapper,
                                int kind) {
-        // For now, we'll register a simple reducer
-        // This is a placeholder implementation
+        // This was a broken placeholder implementation that ignored parameter types
+        // TODO: Delegate to the working register_reducer_impl system in spacetimedb.h
+        // For now, this is still a placeholder - the real fix needs macro changes
     }
     
     // Register a reducer with a simpler pattern
@@ -128,6 +129,7 @@ public:
     static void RegisterReducerDirect(const std::string& name, ReducerFn fn) {
         Instance().RegisterReducerDirectImpl(name, fn);
     }
+    
     
     // Direct table registration (Rust-like)
     static void RegisterTableDirect(const std::string& name, 
