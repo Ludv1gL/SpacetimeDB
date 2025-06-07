@@ -221,3 +221,9 @@ new.json
 # C++ module build directories
 modules/sdk-test-cpp/build/
 modules/**/build/
+
+# Test modules
+modules/sdk-test-cpp/src/debug_*.cpp
+modules/sdk-test-cpp/src/test_*.cpp
+modules/sdk-test-cpp/src/minimal_type_test.cpp
+modules/sdk-test-cpp/src/lib_simple_types.cpp
