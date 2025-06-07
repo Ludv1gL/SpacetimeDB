@@ -244,6 +244,7 @@ cargo run --example regen-csharp-moduledef
 - Link against `spacetimedb_module_library` to get WASI support for C++ stdlib
 - Use CMake with the provided toolchain file for consistent builds
 - Module entry point should include table definitions and reducer implementations
+- **IMPORTANT**: Check `bindings-cpp/KNOWN_BUGS.md` for current C++ module library issues and workarounds
 
 ### Testing Best Practices
 - Always run tests before committing: `cargo test --all`

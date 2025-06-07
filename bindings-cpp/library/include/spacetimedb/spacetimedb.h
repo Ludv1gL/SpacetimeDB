@@ -31,6 +31,7 @@
 #include <stdexcept>
 #include <memory>
 #include <optional>
+#include <cstring>  // For memcpy
 
 // =============================================================================
 // MODULE LIBRARY FEATURE INCLUDES
@@ -162,18 +163,18 @@ inline uint32_t read_u32(uint32_t source) {
 // -----------------------------------------------------------------------------
 
 template<typename T> struct type_id { static constexpr uint8_t value = 0; };
-template<> struct type_id<bool> { static constexpr uint8_t value = 1; };
-template<> struct type_id<uint8_t> { static constexpr uint8_t value = 7; };
-template<> struct type_id<uint16_t> { static constexpr uint8_t value = 8; };
-template<> struct type_id<uint32_t> { static constexpr uint8_t value = 9; };
-template<> struct type_id<uint64_t> { static constexpr uint8_t value = 10; };
-template<> struct type_id<int8_t> { static constexpr uint8_t value = 11; };
-template<> struct type_id<int16_t> { static constexpr uint8_t value = 12; };
-template<> struct type_id<int32_t> { static constexpr uint8_t value = 13; };
-template<> struct type_id<int64_t> { static constexpr uint8_t value = 14; };
-template<> struct type_id<float> { static constexpr uint8_t value = 15; };
-template<> struct type_id<double> { static constexpr uint8_t value = 16; };
-template<> struct type_id<std::string> { static constexpr uint8_t value = 3; };
+template<> struct type_id<bool> { static constexpr uint8_t value = 5; };      // BOOL = 5
+template<> struct type_id<uint8_t> { static constexpr uint8_t value = 7; };   // U8 = 7
+template<> struct type_id<uint16_t> { static constexpr uint8_t value = 9; };  // U16 = 9
+template<> struct type_id<uint32_t> { static constexpr uint8_t value = 11; }; // U32 = 11
+template<> struct type_id<uint64_t> { static constexpr uint8_t value = 13; }; // U64 = 13
+template<> struct type_id<int8_t> { static constexpr uint8_t value = 6; };    // I8 = 6
+template<> struct type_id<int16_t> { static constexpr uint8_t value = 8; };   // I16 = 8
+template<> struct type_id<int32_t> { static constexpr uint8_t value = 10; };  // I32 = 10
+template<> struct type_id<int64_t> { static constexpr uint8_t value = 12; };  // I64 = 12
+template<> struct type_id<float> { static constexpr uint8_t value = 18; };    // F32 = 18
+template<> struct type_id<double> { static constexpr uint8_t value = 19; };   // F64 = 19
+template<> struct type_id<std::string> { static constexpr uint8_t value = 4; }; // STRING = 4
 // For complex types, we'll use 0 which will need proper handling
 template<typename T> struct type_id<std::vector<T>> { static constexpr uint8_t value = 0; };
 template<typename T> struct type_id<std::optional<T>> { static constexpr uint8_t value = 0; };
@@ -643,16 +644,46 @@ void register_table_impl(const char* name, bool is_public) {
 
 template<typename T>
 T read_arg(uint32_t& source) {
-    if constexpr (std::is_same_v<T, uint8_t>) {
+    if constexpr (std::is_same_v<T, bool>) {
+        return read_u8(source) != 0;
+    } else if constexpr (std::is_same_v<T, uint8_t>) {
         return read_u8(source);
+    } else if constexpr (std::is_same_v<T, int8_t>) {
+        return static_cast<int8_t>(read_u8(source));
     } else if constexpr (std::is_same_v<T, uint16_t>) {
         uint8_t buf[2];
         Internal::FFI::BytesSource src{static_cast<uint32_t>(source)};
         size_t len = 2;
         bytes_source_read(src, buf, &len);
         return buf[0] | (buf[1] << 8);
+    } else if constexpr (std::is_same_v<T, int16_t>) {
+        return static_cast<int16_t>(read_arg<uint16_t>(source));
     } else if constexpr (std::is_same_v<T, uint32_t>) {
         return read_u32(source);
+    } else if constexpr (std::is_same_v<T, int32_t>) {
+        return static_cast<int32_t>(read_u32(source));
+    } else if constexpr (std::is_same_v<T, uint64_t>) {
+        uint8_t buf[8];
+        Internal::FFI::BytesSource src{static_cast<uint32_t>(source)};
+        size_t len = 8;
+        bytes_source_read(src, buf, &len);
+        uint64_t result = 0;
+        for (int i = 0; i < 8; i++) {
+            result |= static_cast<uint64_t>(buf[i]) << (i * 8);
+        }
+        return result;
+    } else if constexpr (std::is_same_v<T, int64_t>) {
+        return static_cast<int64_t>(read_arg<uint64_t>(source));
+    } else if constexpr (std::is_same_v<T, float>) {
+        uint32_t bits = read_u32(source);
+        float result;
+        memcpy(&result, &bits, sizeof(float));
+        return result;
+    } else if constexpr (std::is_same_v<T, double>) {
+        uint64_t bits = read_arg<uint64_t>(source);
+        double result;
+        memcpy(&result, &bits, sizeof(double));
+        return result;
     } else if constexpr (std::is_same_v<T, std::string>) {
         uint32_t len = read_u32(source);
         std::string result;
