@@ -612,4 +612,122 @@ namespace SpacetimeDb {
 #define SPACETIMEDB_RLS_DELETE(table_name, policy_name, condition) \
     SPACETIMEDB_RLS_POLICY(table_name, policy_name, Delete, condition)
 
+// =============================================================================
+// ENUM MACROS - Sum Type Support
+// =============================================================================
+
+// Helper macro to generate a single enum variant for BSATN
+#define SPACETIMEDB_ENUM_VARIANT_UNIT(name) \
+    SpacetimeDb::bsatn::SumTypeVariant(#name, 0)
+
+#define SPACETIMEDB_ENUM_VARIANT_TYPED(name, type) \
+    SpacetimeDb::bsatn::SumTypeVariant(#name, SpacetimeDb::bsatn::type_registry::get_type_id<type>())
+
+// Basic enum macro for unit variants only (like C enums)
+#define SPACETIMEDB_ENUM_UNIT(enum_name, ...) \
+    enum class enum_name : uint8_t { \
+        __VA_ARGS__ \
+    }; \
+    \
+    namespace SpacetimeDb::bsatn { \
+        template<> \
+        struct bsatn_traits<enum_name> { \
+            static void serialize(Writer& writer, const enum_name& value) { \
+                writer.write_u8(static_cast<uint8_t>(value)); \
+            } \
+            \
+            static enum_name deserialize(Reader& reader) { \
+                uint8_t tag = reader.read_u8(); \
+                return static_cast<enum_name>(tag); \
+            } \
+            \
+            static AlgebraicType algebraic_type() { \
+                SumTypeBuilder builder; \
+                SPACETIMEDB_FOR_EACH(SPACETIMEDB_ENUM_ADD_UNIT_VARIANT, __VA_ARGS__) \
+                return AlgebraicType::make_sum(builder.build()); \
+            } \
+        }; \
+    }
+
+// Helper macro to add unit variants to builder
+#define SPACETIMEDB_ENUM_ADD_UNIT_VARIANT(variant) \
+    builder.with_unit_variant(#variant);
+
+// Advanced enum macro for variants with data (like Rust enums)
+#define SPACETIMEDB_ENUM_ADV(enum_name, variant_list...) \
+    class enum_name { \
+    private: \
+        using VariantType = SpacetimeDb::bsatn::SumType<SPACETIMEDB_ENUM_EXTRACT_TYPES(variant_list)>; \
+        VariantType value_; \
+        \
+    public: \
+        template<typename T> \
+        enum_name(T&& value) : value_(std::forward<T>(value)) {} \
+        \
+        uint8_t tag() const { return value_.tag(); } \
+        \
+        template<typename T> \
+        bool is() const { return value_.template is<T>(); } \
+        \
+        template<typename T> \
+        const T& get() const { return value_.template get<T>(); } \
+        \
+        template<typename T> \
+        T& get() { return value_.template get<T>(); } \
+        \
+        template<typename Visitor> \
+        auto visit(Visitor&& visitor) const { \
+            return value_.visit(std::forward<Visitor>(visitor)); \
+        } \
+        \
+        bool operator==(const enum_name& other) const { \
+            return value_ == other.value_; \
+        } \
+        \
+        bool operator!=(const enum_name& other) const { \
+            return !(*this == other); \
+        } \
+    }; \
+    \
+    namespace SpacetimeDb::bsatn { \
+        template<> \
+        struct bsatn_traits<enum_name> { \
+            static void serialize(Writer& writer, const enum_name& value) { \
+                value.value_.bsatn_serialize(writer); \
+            } \
+            \
+            static enum_name deserialize(Reader& reader) { \
+                auto variant = VariantType::bsatn_deserialize(reader); \
+                enum_name result; \
+                result.value_ = std::move(variant); \
+                return result; \
+            } \
+            \
+            static AlgebraicType algebraic_type() { \
+                return bsatn_traits<VariantType>::algebraic_type(); \
+            } \
+        }; \
+    }
+
+// Helper to extract types from variant list (placeholder for now)
+#define SPACETIMEDB_ENUM_EXTRACT_TYPES(...) __VA_ARGS__
+
+// Option type helper (specialized sum type for nullable values)
+#define SPACETIMEDB_OPTION(type) SpacetimeDb::bsatn::Option<type>
+
+// Result type helper (like Rust's Result<T, E>)
+template<typename T, typename E>
+using Result = SpacetimeDb::bsatn::SumType<T, E>;
+
+// Factory functions for Result
+template<typename T, typename E>
+Result<T, E> Ok(T&& value) {
+    return Result<T, E>(std::forward<T>(value));
+}
+
+template<typename T, typename E>
+Result<T, E> Err(E&& error) {
+    return Result<T, E>(std::forward<E>(error));
+}
+
 #endif // SPACETIMEDB_MACROS_H
