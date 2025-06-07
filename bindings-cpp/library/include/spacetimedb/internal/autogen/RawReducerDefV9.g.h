@@ -11,8 +11,8 @@
 #include <optional>
 #include <memory>
 #include "spacetimedb/bsatn/bsatn.h"
-#include "ProductType.g.h"
 #include "Lifecycle.g.h"
+#include "ProductType.g.h"
 #include "spacetimedb/macros.h"
 
 namespace SpacetimeDb::Internal {

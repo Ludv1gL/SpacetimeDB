@@ -12,9 +12,9 @@
 #include <memory>
 #include "spacetimedb/bsatn/bsatn.h"
 #include "RawColumnDefV8.g.h"
-#include "RawConstraintDefV8.g.h"
 #include "RawIndexDefV8.g.h"
 #include "RawSequenceDefV8.g.h"
+#include "RawConstraintDefV8.g.h"
 #include "spacetimedb/macros.h"
 
 namespace SpacetimeDb::Internal {

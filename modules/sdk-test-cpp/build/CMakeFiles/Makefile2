@@ -63,70 +63,85 @@ CMAKE_BINARY_DIR = /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/build
 # Directory level rules for the build root directory
 
 # The main recursive "all" target.
-all: CMakeFiles/sdk-test-cpp.dir/all
-all: CMakeFiles/spacetimedb_module_library.dir/all
+all: CMakeFiles/module.dir/all
+all: library/all
 .PHONY : all
 
 # The main recursive "preinstall" target.
-preinstall:
+preinstall: library/preinstall
 .PHONY : preinstall
 
 # The main recursive "clean" target.
-clean: CMakeFiles/sdk-test-cpp.dir/clean
-clean: CMakeFiles/spacetimedb_module_library.dir/clean
+clean: CMakeFiles/module.dir/clean
+clean: library/clean
 .PHONY : clean
 
 #=============================================================================
-# Target rules for target CMakeFiles/sdk-test-cpp.dir
+# Directory level rules for directory library
 
-# All Build rule for target.
-CMakeFiles/sdk-test-cpp.dir/all:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/sdk-test-cpp.dir/build.make CMakeFiles/sdk-test-cpp.dir/depend
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/sdk-test-cpp.dir/build.make CMakeFiles/sdk-test-cpp.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/build/CMakeFiles --progress-num=1,2 "Built target sdk-test-cpp"
-.PHONY : CMakeFiles/sdk-test-cpp.dir/all
+# Recursive "all" directory target.
+library/all: library/CMakeFiles/spacetimedb_cpp_library.dir/all
+.PHONY : library/all
 
-# Build rule for subdir invocation for target.
-CMakeFiles/sdk-test-cpp.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/build/CMakeFiles 2
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/sdk-test-cpp.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/build/CMakeFiles 0
-.PHONY : CMakeFiles/sdk-test-cpp.dir/rule
+# Recursive "preinstall" directory target.
+library/preinstall:
+.PHONY : library/preinstall
 
-# Convenience name for target.
-sdk-test-cpp: CMakeFiles/sdk-test-cpp.dir/rule
-.PHONY : sdk-test-cpp
-
-# clean rule for target.
-CMakeFiles/sdk-test-cpp.dir/clean:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/sdk-test-cpp.dir/build.make CMakeFiles/sdk-test-cpp.dir/clean
-.PHONY : CMakeFiles/sdk-test-cpp.dir/clean
+# Recursive "clean" directory target.
+library/clean: library/CMakeFiles/spacetimedb_cpp_library.dir/clean
+.PHONY : library/clean
 
 #=============================================================================
-# Target rules for target CMakeFiles/spacetimedb_module_library.dir
+# Target rules for target CMakeFiles/module.dir
 
 # All Build rule for target.
-CMakeFiles/spacetimedb_module_library.dir/all:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/depend
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/build/CMakeFiles --progress-num=3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22 "Built target spacetimedb_module_library"
-.PHONY : CMakeFiles/spacetimedb_module_library.dir/all
+CMakeFiles/module.dir/all: library/CMakeFiles/spacetimedb_cpp_library.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/module.dir/build.make CMakeFiles/module.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/module.dir/build.make CMakeFiles/module.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/build/CMakeFiles --progress-num=1,2 "Built target module"
+.PHONY : CMakeFiles/module.dir/all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/spacetimedb_module_library.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/build/CMakeFiles 20
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/spacetimedb_module_library.dir/all
+CMakeFiles/module.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/build/CMakeFiles 22
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/module.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/build/CMakeFiles 0
-.PHONY : CMakeFiles/spacetimedb_module_library.dir/rule
+.PHONY : CMakeFiles/module.dir/rule
 
 # Convenience name for target.
-spacetimedb_module_library: CMakeFiles/spacetimedb_module_library.dir/rule
-.PHONY : spacetimedb_module_library
+module: CMakeFiles/module.dir/rule
+.PHONY : module
 
 # clean rule for target.
-CMakeFiles/spacetimedb_module_library.dir/clean:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/clean
-.PHONY : CMakeFiles/spacetimedb_module_library.dir/clean
+CMakeFiles/module.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/module.dir/build.make CMakeFiles/module.dir/clean
+.PHONY : CMakeFiles/module.dir/clean
+
+#=============================================================================
+# Target rules for target library/CMakeFiles/spacetimedb_cpp_library.dir
+
+# All Build rule for target.
+library/CMakeFiles/spacetimedb_cpp_library.dir/all:
+	$(MAKE) $(MAKESILENT) -f library/CMakeFiles/spacetimedb_cpp_library.dir/build.make library/CMakeFiles/spacetimedb_cpp_library.dir/depend
+	$(MAKE) $(MAKESILENT) -f library/CMakeFiles/spacetimedb_cpp_library.dir/build.make library/CMakeFiles/spacetimedb_cpp_library.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/build/CMakeFiles --progress-num=3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22 "Built target spacetimedb_cpp_library"
+.PHONY : library/CMakeFiles/spacetimedb_cpp_library.dir/all
+
+# Build rule for subdir invocation for target.
+library/CMakeFiles/spacetimedb_cpp_library.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/build/CMakeFiles 20
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 library/CMakeFiles/spacetimedb_cpp_library.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/ludvi/stdbfork/SpacetimeDB/modules/sdk-test-cpp/build/CMakeFiles 0
+.PHONY : library/CMakeFiles/spacetimedb_cpp_library.dir/rule
+
+# Convenience name for target.
+spacetimedb_cpp_library: library/CMakeFiles/spacetimedb_cpp_library.dir/rule
+.PHONY : spacetimedb_cpp_library
+
+# clean rule for target.
+library/CMakeFiles/spacetimedb_cpp_library.dir/clean:
+	$(MAKE) $(MAKESILENT) -f library/CMakeFiles/spacetimedb_cpp_library.dir/build.make library/CMakeFiles/spacetimedb_cpp_library.dir/clean
+.PHONY : library/CMakeFiles/spacetimedb_cpp_library.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.

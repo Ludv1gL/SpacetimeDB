@@ -117,510 +117,54 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named sdk-test-cpp
+# Target rules for targets named module
 
 # Build rule for target.
-sdk-test-cpp: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 sdk-test-cpp
-.PHONY : sdk-test-cpp
+module: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 module
+.PHONY : module
 
 # fast build rule for target.
-sdk-test-cpp/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/sdk-test-cpp.dir/build.make CMakeFiles/sdk-test-cpp.dir/build
-.PHONY : sdk-test-cpp/fast
+module/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/module.dir/build.make CMakeFiles/module.dir/build
+.PHONY : module/fast
 
 #=============================================================================
-# Target rules for targets named spacetimedb_module_library
+# Target rules for targets named spacetimedb_cpp_library
 
 # Build rule for target.
-spacetimedb_module_library: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 spacetimedb_module_library
-.PHONY : spacetimedb_module_library
+spacetimedb_cpp_library: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 spacetimedb_cpp_library
+.PHONY : spacetimedb_cpp_library
 
 # fast build rule for target.
-spacetimedb_module_library/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/build
-.PHONY : spacetimedb_module_library/fast
+spacetimedb_cpp_library/fast:
+	$(MAKE) $(MAKESILENT) -f library/CMakeFiles/spacetimedb_cpp_library.dir/build.make library/CMakeFiles/spacetimedb_cpp_library.dir/build
+.PHONY : spacetimedb_cpp_library/fast
 
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/abi/module_exports.o: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/abi/module_exports.cpp.o
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/abi/module_exports.o
-
-# target to build an object file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/abi/module_exports.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/abi/module_exports.cpp.o
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/abi/module_exports.cpp.o
-
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/abi/module_exports.i: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/abi/module_exports.cpp.i
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/abi/module_exports.i
-
-# target to preprocess a source file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/abi/module_exports.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/abi/module_exports.cpp.i
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/abi/module_exports.cpp.i
-
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/abi/module_exports.s: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/abi/module_exports.cpp.s
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/abi/module_exports.s
-
-# target to generate assembly for a file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/abi/module_exports.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/abi/module_exports.cpp.s
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/abi/module_exports.cpp.s
-
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/bsatn/reader.o: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/bsatn/reader.cpp.o
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/bsatn/reader.o
+src/lib_fixed_working.o: src/lib_fixed_working.cpp.o
+.PHONY : src/lib_fixed_working.o
 
 # target to build an object file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/bsatn/reader.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/bsatn/reader.cpp.o
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/bsatn/reader.cpp.o
+src/lib_fixed_working.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/module.dir/build.make CMakeFiles/module.dir/src/lib_fixed_working.cpp.o
+.PHONY : src/lib_fixed_working.cpp.o
 
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/bsatn/reader.i: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/bsatn/reader.cpp.i
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/bsatn/reader.i
-
-# target to preprocess a source file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/bsatn/reader.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/bsatn/reader.cpp.i
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/bsatn/reader.cpp.i
-
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/bsatn/reader.s: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/bsatn/reader.cpp.s
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/bsatn/reader.s
-
-# target to generate assembly for a file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/bsatn/reader.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/bsatn/reader.cpp.s
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/bsatn/reader.cpp.s
-
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/bsatn/writer.o: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/bsatn/writer.cpp.o
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/bsatn/writer.o
-
-# target to build an object file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/bsatn/writer.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/bsatn/writer.cpp.o
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/bsatn/writer.cpp.o
-
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/bsatn/writer.i: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/bsatn/writer.cpp.i
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/bsatn/writer.i
+src/lib_fixed_working.i: src/lib_fixed_working.cpp.i
+.PHONY : src/lib_fixed_working.i
 
 # target to preprocess a source file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/bsatn/writer.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/bsatn/writer.cpp.i
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/bsatn/writer.cpp.i
+src/lib_fixed_working.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/module.dir/build.make CMakeFiles/module.dir/src/lib_fixed_working.cpp.i
+.PHONY : src/lib_fixed_working.cpp.i
 
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/bsatn/writer.s: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/bsatn/writer.cpp.s
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/bsatn/writer.s
-
-# target to generate assembly for a file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/bsatn/writer.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/bsatn/writer.cpp.s
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/bsatn/writer.cpp.s
-
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/constraint_validation.o: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/constraint_validation.cpp.o
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/constraint_validation.o
-
-# target to build an object file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/constraint_validation.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/constraint_validation.cpp.o
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/constraint_validation.cpp.o
-
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/constraint_validation.i: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/constraint_validation.cpp.i
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/constraint_validation.i
-
-# target to preprocess a source file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/constraint_validation.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/constraint_validation.cpp.i
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/constraint_validation.cpp.i
-
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/constraint_validation.s: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/constraint_validation.cpp.s
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/constraint_validation.s
+src/lib_fixed_working.s: src/lib_fixed_working.cpp.s
+.PHONY : src/lib_fixed_working.s
 
 # target to generate assembly for a file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/constraint_validation.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/constraint_validation.cpp.s
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/constraint_validation.cpp.s
-
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/credentials.o: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/credentials.cpp.o
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/credentials.o
-
-# target to build an object file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/credentials.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/credentials.cpp.o
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/credentials.cpp.o
-
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/credentials.i: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/credentials.cpp.i
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/credentials.i
-
-# target to preprocess a source file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/credentials.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/credentials.cpp.i
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/credentials.cpp.i
-
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/credentials.s: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/credentials.cpp.s
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/credentials.s
-
-# target to generate assembly for a file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/credentials.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/credentials.cpp.s
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/credentials.cpp.s
-
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/database.o: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/database.cpp.o
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/database.o
-
-# target to build an object file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/database.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/database.cpp.o
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/database.cpp.o
-
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/database.i: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/database.cpp.i
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/database.i
-
-# target to preprocess a source file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/database.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/database.cpp.i
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/database.cpp.i
-
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/database.s: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/database.cpp.s
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/database.s
-
-# target to generate assembly for a file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/database.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/database.cpp.s
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/database.cpp.s
-
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/field_registration.o: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/field_registration.cpp.o
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/field_registration.o
-
-# target to build an object file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/field_registration.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/field_registration.cpp.o
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/field_registration.cpp.o
-
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/field_registration.i: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/field_registration.cpp.i
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/field_registration.i
-
-# target to preprocess a source file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/field_registration.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/field_registration.cpp.i
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/field_registration.cpp.i
-
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/field_registration.s: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/field_registration.cpp.s
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/field_registration.s
-
-# target to generate assembly for a file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/field_registration.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/field_registration.cpp.s
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/field_registration.cpp.s
-
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/internal/FFI.o: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/internal/FFI.cpp.o
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/internal/FFI.o
-
-# target to build an object file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/internal/FFI.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/internal/FFI.cpp.o
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/internal/FFI.cpp.o
-
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/internal/FFI.i: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/internal/FFI.cpp.i
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/internal/FFI.i
-
-# target to preprocess a source file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/internal/FFI.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/internal/FFI.cpp.i
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/internal/FFI.cpp.i
-
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/internal/FFI.s: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/internal/FFI.cpp.s
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/internal/FFI.s
-
-# target to generate assembly for a file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/internal/FFI.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/internal/FFI.cpp.s
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/internal/FFI.cpp.s
-
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/internal/Module.o: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/internal/Module.cpp.o
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/internal/Module.o
-
-# target to build an object file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/internal/Module.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/internal/Module.cpp.o
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/internal/Module.cpp.o
-
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/internal/Module.i: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/internal/Module.cpp.i
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/internal/Module.i
-
-# target to preprocess a source file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/internal/Module.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/internal/Module.cpp.i
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/internal/Module.cpp.i
-
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/internal/Module.s: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/internal/Module.cpp.s
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/internal/Module.s
-
-# target to generate assembly for a file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/internal/Module.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/internal/Module.cpp.s
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/internal/Module.cpp.s
-
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/exceptions.o: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/exceptions.cpp.o
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/exceptions.o
-
-# target to build an object file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/exceptions.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/exceptions.cpp.o
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/exceptions.cpp.o
-
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/exceptions.i: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/exceptions.cpp.i
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/exceptions.i
-
-# target to preprocess a source file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/exceptions.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/exceptions.cpp.i
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/exceptions.cpp.i
-
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/exceptions.s: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/exceptions.cpp.s
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/exceptions.s
-
-# target to generate assembly for a file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/exceptions.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/exceptions.cpp.s
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/exceptions.cpp.s
-
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/index_management.o: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/index_management.cpp.o
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/index_management.o
-
-# target to build an object file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/index_management.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/index_management.cpp.o
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/index_management.cpp.o
-
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/index_management.i: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/index_management.cpp.i
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/index_management.i
-
-# target to preprocess a source file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/index_management.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/index_management.cpp.i
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/index_management.cpp.i
-
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/index_management.s: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/index_management.cpp.s
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/index_management.s
-
-# target to generate assembly for a file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/index_management.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/index_management.cpp.s
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/index_management.cpp.s
-
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/logging.o: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/logging.cpp.o
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/logging.o
-
-# target to build an object file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/logging.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/logging.cpp.o
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/logging.cpp.o
-
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/logging.i: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/logging.cpp.i
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/logging.i
-
-# target to preprocess a source file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/logging.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/logging.cpp.i
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/logging.cpp.i
-
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/logging.s: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/logging.cpp.s
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/logging.s
-
-# target to generate assembly for a file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/logging.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/logging.cpp.s
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/logging.cpp.s
-
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_table_registry.o: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_table_registry.cpp.o
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_table_registry.o
-
-# target to build an object file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_table_registry.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_table_registry.cpp.o
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_table_registry.cpp.o
-
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_table_registry.i: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_table_registry.cpp.i
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_table_registry.i
-
-# target to preprocess a source file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_table_registry.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_table_registry.cpp.i
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_table_registry.cpp.i
-
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_table_registry.s: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_table_registry.cpp.s
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_table_registry.s
-
-# target to generate assembly for a file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_table_registry.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_table_registry.cpp.s
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_table_registry.cpp.s
-
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types.o: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types.cpp.o
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types.o
-
-# target to build an object file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types.cpp.o
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types.cpp.o
-
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types.i: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types.cpp.i
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types.i
-
-# target to preprocess a source file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types.cpp.i
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types.cpp.i
-
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types.s: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types.cpp.s
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types.s
-
-# target to generate assembly for a file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types.cpp.s
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types.cpp.s
-
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/time_duration.o: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/time_duration.cpp.o
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/time_duration.o
-
-# target to build an object file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/time_duration.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/time_duration.cpp.o
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/time_duration.cpp.o
-
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/time_duration.i: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/time_duration.cpp.i
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/time_duration.i
-
-# target to preprocess a source file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/time_duration.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/time_duration.cpp.i
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/time_duration.cpp.i
-
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/time_duration.s: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/time_duration.cpp.s
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/time_duration.s
-
-# target to generate assembly for a file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/time_duration.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/time_duration.cpp.s
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/time_duration.cpp.s
-
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/timestamp.o: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/timestamp.cpp.o
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/timestamp.o
-
-# target to build an object file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/timestamp.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/timestamp.cpp.o
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/timestamp.cpp.o
-
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/timestamp.i: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/timestamp.cpp.i
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/timestamp.i
-
-# target to preprocess a source file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/timestamp.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/timestamp.cpp.i
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/timestamp.cpp.i
-
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/timestamp.s: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/timestamp.cpp.s
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/timestamp.s
-
-# target to generate assembly for a file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/timestamp.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/timestamp.cpp.s
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/timestamp.cpp.s
-
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/transaction.o: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/transaction.cpp.o
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/transaction.o
-
-# target to build an object file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/transaction.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/transaction.cpp.o
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/transaction.cpp.o
-
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/transaction.i: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/transaction.cpp.i
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/transaction.i
-
-# target to preprocess a source file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/transaction.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/transaction.cpp.i
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/transaction.cpp.i
-
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/transaction.s: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/transaction.cpp.s
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/transaction.s
-
-# target to generate assembly for a file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/transaction.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/transaction.cpp.s
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/transaction.cpp.s
-
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/versioning.o: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/versioning.cpp.o
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/versioning.o
-
-# target to build an object file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/versioning.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/versioning.cpp.o
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/versioning.cpp.o
-
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/versioning.i: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/versioning.cpp.i
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/versioning.i
-
-# target to preprocess a source file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/versioning.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/versioning.cpp.i
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/versioning.cpp.i
-
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/versioning.s: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/versioning.cpp.s
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/versioning.s
-
-# target to generate assembly for a file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/versioning.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/versioning.cpp.s
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/versioning.cpp.s
-
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/wasi_shims.o: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/wasi_shims.cpp.o
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/wasi_shims.o
-
-# target to build an object file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/wasi_shims.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/wasi_shims.cpp.o
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/wasi_shims.cpp.o
-
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/wasi_shims.i: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/wasi_shims.cpp.i
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/wasi_shims.i
-
-# target to preprocess a source file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/wasi_shims.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/wasi_shims.cpp.i
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/wasi_shims.cpp.i
-
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/wasi_shims.s: home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/wasi_shims.cpp.s
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/wasi_shims.s
-
-# target to generate assembly for a file
-home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/wasi_shims.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spacetimedb_module_library.dir/build.make CMakeFiles/spacetimedb_module_library.dir/home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/wasi_shims.cpp.s
-.PHONY : home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/wasi_shims.cpp.s
-
-src/lib.o: src/lib.cpp.o
-.PHONY : src/lib.o
-
-# target to build an object file
-src/lib.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/sdk-test-cpp.dir/build.make CMakeFiles/sdk-test-cpp.dir/src/lib.cpp.o
-.PHONY : src/lib.cpp.o
-
-src/lib.i: src/lib.cpp.i
-.PHONY : src/lib.i
-
-# target to preprocess a source file
-src/lib.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/sdk-test-cpp.dir/build.make CMakeFiles/sdk-test-cpp.dir/src/lib.cpp.i
-.PHONY : src/lib.cpp.i
-
-src/lib.s: src/lib.cpp.s
-.PHONY : src/lib.s
-
-# target to generate assembly for a file
-src/lib.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/sdk-test-cpp.dir/build.make CMakeFiles/sdk-test-cpp.dir/src/lib.cpp.s
-.PHONY : src/lib.cpp.s
+src/lib_fixed_working.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/module.dir/build.make CMakeFiles/module.dir/src/lib_fixed_working.cpp.s
+.PHONY : src/lib_fixed_working.cpp.s
 
 # Help Target
 help:
@@ -630,68 +174,11 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... sdk-test-cpp"
-	@echo "... spacetimedb_module_library"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/abi/module_exports.o"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/abi/module_exports.i"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/abi/module_exports.s"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/bsatn/reader.o"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/bsatn/reader.i"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/bsatn/reader.s"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/bsatn/writer.o"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/bsatn/writer.i"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/bsatn/writer.s"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/constraint_validation.o"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/constraint_validation.i"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/constraint_validation.s"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/credentials.o"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/credentials.i"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/credentials.s"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/database.o"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/database.i"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/database.s"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/field_registration.o"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/field_registration.i"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/field_registration.s"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/internal/FFI.o"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/internal/FFI.i"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/internal/FFI.s"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/internal/Module.o"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/internal/Module.i"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/internal/Module.s"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/exceptions.o"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/exceptions.i"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/exceptions.s"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/index_management.o"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/index_management.i"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/index_management.s"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/logging.o"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/logging.i"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/library/logging.s"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_table_registry.o"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_table_registry.i"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_table_registry.s"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types.o"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types.i"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/spacetimedb_library_types.s"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/time_duration.o"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/time_duration.i"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/time_duration.s"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/timestamp.o"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/timestamp.i"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/timestamp.s"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/transaction.o"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/transaction.i"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/transaction.s"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/versioning.o"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/versioning.i"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/versioning.s"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/wasi_shims.o"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/wasi_shims.i"
-	@echo "... home/ludvi/stdbfork/SpacetimeDB/bindings-cpp/library/src/wasi_shims.s"
-	@echo "... src/lib.o"
-	@echo "... src/lib.i"
-	@echo "... src/lib.s"
+	@echo "... module"
+	@echo "... spacetimedb_cpp_library"
+	@echo "... src/lib_fixed_working.o"
+	@echo "... src/lib_fixed_working.i"
+	@echo "... src/lib_fixed_working.s"
 .PHONY : help
 
 

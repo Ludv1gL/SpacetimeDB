@@ -11,10 +11,10 @@
 #include <optional>
 #include <memory>
 #include "spacetimedb/bsatn/bsatn.h"
+#include "RawMiscModuleExportV9.g.h"
+#include "RawTypeDefV9.g.h"
 #include "RawReducerDefV9.g.h"
 #include "RawTableDefV9.g.h"
-#include "RawTypeDefV9.g.h"
-#include "RawMiscModuleExportV9.g.h"
 #include "Typespace.g.h"
 #include "RawRowLevelSecurityDefV9.g.h"
 #include "spacetimedb/macros.h"

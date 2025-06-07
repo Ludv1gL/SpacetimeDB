@@ -11,10 +11,10 @@
 #include <optional>
 #include <memory>
 #include "spacetimedb/bsatn/bsatn.h"
-#include "TableDesc.g.h"
 #include "Typespace.g.h"
-#include "ReducerDef.g.h"
+#include "TableDesc.g.h"
 #include "MiscModuleExport.g.h"
+#include "ReducerDef.g.h"
 #include "spacetimedb/macros.h"
 
 namespace SpacetimeDb::Internal {
