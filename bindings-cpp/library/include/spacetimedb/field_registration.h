@@ -18,29 +18,30 @@ namespace SpacetimeDb {
 
 // Extended type system for BSATN
 namespace bsatn_type {
-    constexpr uint8_t BOOL = 1;
-    constexpr uint8_t U8 = 7;
-    constexpr uint8_t U16 = 8;
-    constexpr uint8_t U32 = 9;
-    constexpr uint8_t U64 = 10;
-    constexpr uint8_t U128 = 5;  // Using AlgebraicType tag for U128
-    constexpr uint8_t U256 = 6;  // Using AlgebraicType tag for U256
-    constexpr uint8_t I8 = 11;
-    constexpr uint8_t I16 = 12;
-    constexpr uint8_t I32 = 13;
-    constexpr uint8_t I64 = 14;
-    constexpr uint8_t I128 = 17; // Using AlgebraicType tag for I128
-    constexpr uint8_t I256 = 18; // Using AlgebraicType tag for I256
-    constexpr uint8_t F32 = 15;
-    constexpr uint8_t F64 = 16;
-    constexpr uint8_t STRING = 3;
-    constexpr uint8_t BYTES = 4;
-    
-    // Complex type tags (these need special handling)
-    constexpr uint8_t PRODUCT = 2;
-    constexpr uint8_t SUM = 1;
-    constexpr uint8_t ARRAY = 4;
     constexpr uint8_t REF = 0;
+    constexpr uint8_t SUM = 1;
+    constexpr uint8_t PRODUCT = 2;
+    constexpr uint8_t ARRAY = 3;
+    constexpr uint8_t STRING = 4;
+    constexpr uint8_t BOOL = 5;
+    constexpr uint8_t I8 = 6;
+    constexpr uint8_t U8 = 7;
+    constexpr uint8_t I16 = 8;
+    constexpr uint8_t U16 = 9;
+    constexpr uint8_t I32 = 10;
+    constexpr uint8_t U32 = 11;
+    constexpr uint8_t I64 = 12;
+    constexpr uint8_t U64 = 13;
+    constexpr uint8_t I128 = 14;
+    constexpr uint8_t U128 = 15;
+    constexpr uint8_t I256 = 16;
+    constexpr uint8_t U256 = 17;
+    constexpr uint8_t F32 = 18;
+    constexpr uint8_t F64 = 19;
+    
+    // Note: BYTES is not a primitive type in the AlgebraicType enum
+    // It's represented as ARRAY of U8
+    constexpr uint8_t BYTES = ARRAY; // Special case: vector<uint8_t> = Array<U8>
 }
 
 // Type traits for BSATN type mapping
